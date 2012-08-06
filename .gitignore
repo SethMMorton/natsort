@@ -13,6 +13,9 @@ sdist
 develop-eggs
 .installed.cfg
 
+# We are using MANIFEST.in instead
+MANIFEST
+
 # Installer logs
 pip-log.txt
 

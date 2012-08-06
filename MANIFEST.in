@@ -1,0 +1,4 @@
+include README
+include natsort.py
+include setup.py
+include scripts/natsort
