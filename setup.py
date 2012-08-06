@@ -5,8 +5,8 @@ from os.path import join
 import re
 VERSIONFILE = 'natsort.py'
 with open(VERSIONFILE, "rt") as fl:
-    dummy = fl.read()
-    versionstring = fl.read().strip()
+    dummy = fl.readline()
+    versionstring = fl.readline().strip()
 m = re.search(r"^__version__ = ['\"]([^'\"]*)['\"]", versionstring)
 if m:
     version = m.group(1)
