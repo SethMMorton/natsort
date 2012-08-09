@@ -4,7 +4,7 @@ from __future__ import print_function, division
 import sys
 import os
 import re
-from natsort import natsort_key, natsorted
+from natsort import natsort_key, natsorted, __version__
 
 def main():
     '''\
@@ -17,7 +17,8 @@ def main():
     from textwrap import dedent
     parser = ArgumentParser(description=dedent(main.__doc__),
                             formatter_class=RawDescriptionHelpFormatter)
-    parser.add_argument('--version', action='version', version='%(prog)s 1.2')
+    parser.add_argument('--version', action='version',
+                        version='%(prog)s {0}'.format(__version__))
     parser.add_argument('-a', '--all', help='By default, only real files that '
                         'are readable and non-empty are listed.  This will '
                         'also list folders and undeadable files.',

@@ -1,4 +1,5 @@
 #! /usr/bin/env python
+__version__ = '1.2.0'
 
 import re
 num_splitter = re.compile(r'(\d+|\D+)')
