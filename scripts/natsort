@@ -54,16 +54,6 @@ def main():
     # Sort by directory then by file within directory and print.
     sort_and_print_paths(paths, filterdata, args.exclude, args.reverse)
 
-def string2int(string):
-    '''Convert to integer if an integer string.'''
-    try:
-        if string.isdigit():
-            return int(string)
-        else:
-            return string
-    except:
-        return string
-
 def range_check(low, high):
     '''\
     Verifies that that given range has a low lower than the high.

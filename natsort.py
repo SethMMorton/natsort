@@ -2,7 +2,7 @@
 __version__ = '1.2.0'
 
 import re
-num_splitter = re.compile(r'(\d+|\D+)')
+splitter = re.compile(r'(\d+|\D+)')
 
 __all__ = [
            'natsort_key',
@@ -10,37 +10,80 @@ __all__ = [
            'index_natsorted',
           ]
 
+def string2int(string):
+    '''Convert to integer if an integer string.'''
+    if not isinstance(string, str):
+        return string
+    try:
+        return int(string)
+    except ValueError:
+        return string
+
 def natsort_key(s):
     '''\
     Key to sort strings and numbers naturally, not by ASCII.
     For use in passing to the :py:func:`sorted` builtin or
     :py:meth:`sort` attribute of lists.
     '''
-    # Split
+    # Split.  If not possible, just return 
     try:
-        s = num_splitter.findall(s)
+        s = splitter.findall(s)
     except TypeError:
-        s = [s]
-    # Convert floats that were split on the decimal back into floats
-    ix = next((i for i, x in enumerate(s) if x == '.'), False)
-    while ix:
-        # Dots at front or back of the string don't affect sorting
-        if ix == 0 or ix == len(s)-1:
-            pass
-        # If the elements in the front and back of a dot are ints,
-        # then it is considered the decimal point in a float.
-        # Construct this float
-        elif s[ix-1].isdigit() and s[ix+1].isdigit():
-            flt = float(s[ix-1]+'.'+s[ix+1])
-            # Check if the float is negative or not.
-            if s[ix-2].endswith('-'):
-                s[ix-2] = s[ix-2][0:len(s)-1] # Remove dash from string.
-                flt = -flt
-            # Replace the three string that made up the float with the float
-            s = s[0:ix-1] + [flt] + s[ix+2:]
-        ix = next((i for i, x in enumerate(s) if x == '.'), False)
-    # Now, convert remaining ints to int and return.
-    return [string2int(x) for x in s]
+        return (s,)
+
+    # Loop over each element of the split string and try to parse
+    # numbers into tuples.  I.E 4.5 => (4, 5) or 4.5.3.2 => (4, 5, 3, 2)
+    maxind = len(s)
+    ix = 0
+    t = []
+    while ix < maxind:
+
+        # If this element corresponds to a non-number, do nothing more
+        if not s[ix].isdigit():
+            t.append(s[ix])
+            ix += 1
+            continue
+
+        # Otherwise try to build up a numbers tuple
+        tmp = [int(s[ix])]
+
+        # If there is a dot and number after this number, add it
+        while True:
+
+            # Make sure that there is a . and number up next, also
+            # ensuring that we aren't checking elemnts that don't exist
+            try:
+                if not (s[ix+1] == '.' and s[ix+2].isdigit()):
+                    ix += 1
+                    break
+            except IndexError:
+                ix += 1
+                break
+
+            # Add the next number to the tuple
+            ix += 2
+            tmp.append(int(s[ix]))
+
+        # If there are only two elements, assume that this is a float
+        if len(tmp) == 2:
+            tmp = [float('.'.join([str(tmp[0]), str(tmp[1])]))]
+
+        # Last, if this is a float or just an int (length 1) and the
+        # previous element ends with a dash, assume this is a negative
+        # sign
+        if len(tmp) == 1:
+            try:
+                if t[-1].endswith('-'):
+                    tmp[0] = -tmp[0]
+                    t[-1] = t[-1][0:-2]
+            except AttributeError:
+                pass
+
+        # Add this to the list to return
+        t.append(tmp)
+
+    # Now, convert this list to a tuple
+    return tuple(t)
 
 def natsorted(seq):
     '''\
@@ -65,6 +108,6 @@ def index_natsorted(seq):
     :rtype: list
     '''
     # Pair the index and sequence together, then sort by 
-    index_seq_pair = [[x, y] for x, y in zip(range(len(seq)), seq)]
+    index_seq_pair = [[x, y] for x, y in zip(xrange(len(seq)), seq)]
     index_seq_pair.sort(key=lambda x: natsort_key(x[1]))
     return [x[0] for x in index_seq_pair]
