@@ -2,7 +2,12 @@
 __version__ = '1.2.0'
 
 import re
-splitter = re.compile(r'(\d+|\D+)')
+# The regex that locates version numbers and floats
+num_re = re.compile(r'(\d+\.\d+\.\d+|[-+]?[0-9]*\.?[0-9]+([eE][-+]?[0-9]+)?)')
+# The regex of the exponent
+exp_re = re.compile(r'^[eE][-+]?[0-9]+$')
+# Version regex
+ver_re = re.compile(r'^\d+\.\d+\.\d+$')
 
 __all__ = [
            'natsort_key',
@@ -22,68 +27,54 @@ def string2int(string):
 def natsort_key(s):
     '''\
     Key to sort strings and numbers naturally, not by ASCII.
+    It also has basic support for version numbers.
     For use in passing to the :py:func:`sorted` builtin or
     :py:meth:`sort` attribute of lists.
     '''
-    # Split.  If not possible, just return 
-    try:
-        s = splitter.findall(s)
-    except TypeError:
+
+    # If we are dealing with non-strings, return now
+    if not isinstance(s, str):
         return (s,)
 
-    # Loop over each element of the split string and try to parse
-    # numbers into tuples.  I.E 4.5 => (4, 5) or 4.5.3.2 => (4, 5, 3, 2)
-    maxind = len(s)
-    ix = 0
-    t = []
-    while ix < maxind:
+    # Split.  If there are no splits, return now
+    s = num_re.split(s)
+    if len(s) == 1:
+        return tuple(s)
 
-        # If this element corresponds to a non-number, do nothing more
-        if not s[ix].isdigit():
-            t.append(s[ix])
-            ix += 1
-            continue
+    # Remove all the None elements and exponentoals from the list.
+    # This results from the way split works when there are parenthesis
+    # in the regular expression
+    ix = [i for i, x in enumerate(s) if x is None or exp_re.match(x)]
+    for i in reversed(ix):
+        s.pop(i)
 
-        # Otherwise try to build up a numbers tuple
-        tmp = [int(s[ix])]
+    # Try to remove empty strings
+    try:
+        s.remove('')
+    except ValueError:
+        pass
 
-        # If there is a dot and number after this number, add it
-        while True:
+    # Now convert floats to floats and 
+    # versions to tuples, i.e. 4.5.2 => (4, 5, 2)
+    for i in xrange(len(s)):
 
-            # Make sure that there is a . and number up next, also
-            # ensuring that we aren't checking elemnts that don't exist
+        # The versions
+        if ver_re.match(s[i]):
+            s[i] = tuple([int(x) for x in s[i].split('.')])
+        else:
+            # Try to make an int
             try:
-                if not (s[ix+1] == '.' and s[ix+2].isdigit()):
-                    ix += 1
-                    break
-            except IndexError:
-                ix += 1
-                break
-
-            # Add the next number to the tuple
-            ix += 2
-            tmp.append(int(s[ix]))
-
-        # If there are only two elements, assume that this is a float
-        if len(tmp) == 2:
-            tmp = [float('.'.join([str(tmp[0]), str(tmp[1])]))]
-
-        # Last, if this is a float or just an int (length 1) and the
-        # previous element ends with a dash, assume this is a negative
-        # sign
-        if len(tmp) == 1:
-            try:
-                if t[-1].endswith('-'):
-                    tmp[0] = -tmp[0]
-                    t[-1] = t[-1][0:-2]
-            except AttributeError:
-                pass
-
-        # Add this to the list to return
-        t.append(tmp)
+                s[i] = int(s[i])
+            except ValueError:
+                # If an int doesn't work, try a float
+                try:
+                    s[i] = float(s[i])
+                # It's just a string, do nothing
+                except ValueError:
+                    pass
 
     # Now, convert this list to a tuple
-    return tuple(t)
+    return tuple(s)
 
 def natsorted(seq):
     '''\
