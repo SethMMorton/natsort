@@ -1,4 +1,4 @@
-__version__ = '1.2.0'
+__version__ = '1.3.0'
 
 import re
 # The regex that locates version numbers and floats
