@@ -1,4 +1,4 @@
-__version__ = '1.3.0'
+__version__ = '1.3.1'
 
 import re
 # The regex that locates version numbers and floats
@@ -105,4 +105,7 @@ def index_natsorted(seq):
 # Test this module
 if __name__ == '__main__':
     import doctest
-    doctest.testfile('README.rst')
+    try:
+        doctest.testfile('README.rst')
+    except OSError:
+        doctest.testfile('README')
