@@ -1,7 +1,8 @@
 natsort
 =======
 
-Natural sorting for python
+Natural sorting for python.  ``natsort`` requires 2.7 or (2.6 with the argparse
+module).  It has not been tested against python 3 or greater.
 
 Synopsis
 --------
