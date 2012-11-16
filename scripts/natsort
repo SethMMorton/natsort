@@ -19,9 +19,9 @@ def main():
                             formatter_class=RawDescriptionHelpFormatter)
     parser.add_argument('--version', action='version',
                         version='%(prog)s {0}'.format(__version__))
-    parser.add_argument('-a', '--all', help='By default, only real files that '
-                        'are readable and non-empty are listed.  This will '
-                        'also list folders and undeadable files.',
+    parser.add_argument('-F', '--onlyfiles', help='Only files that '
+                        'are readable and non-empty are read in.  '
+                        'This will exculude folders from being read in.',
                         action='store_true', default=False)
     parser.add_argument('-f', '--filter', help='Used for '
                         'filtering out only the files that have a number '
@@ -49,7 +49,7 @@ def main():
         paths = [f.strip() for f in args.paths]
 
     # Split into directory path and filenames
-    paths = split_paths(paths, args.all)
+    paths = split_paths(paths, args.onlyfiles)
 
     # Sort by directory then by file within directory and print.
     sort_and_print_paths(paths, filterdata, args.exclude, args.reverse)
@@ -81,7 +81,7 @@ def split_paths(paths, a):
     '''
     dirs = {}
     for path in paths:
-        if not a:
+        if a:
             try:
                 with open(path) as fl:
                     pass
