@@ -108,20 +108,48 @@ Shell Script
 ------------
 
 For your convenience, there is a natsort shell script supplied to you that
-allows you to call natsort from the command line.  ``natsort`` was written to
+allows you to call natsort from the command-line.  ``natsort`` was written to
 aid in computational chemistry researh so that it would be easy to analyze
-large sets of output files named after the parameter used:
+large sets of output files named after the parameter used::
 
-    $ ls
+    $ ls *.out
     mode1000.35.out mode1243.34.out mode744.43.out mode943.54.out
 
 (Obvously, in reality there would be more files, but you get the idea.)  Notice
 that the shell sorts in ASCII order.  This is the behavior of programs like
 ``find`` as well as ``ls``.  The problem is, when passing these files to an
 analysis program causes them not to appear in numerical order, which can lead
-to bad analysis.  To remedy this, use ``natsort``:
+to bad analysis.  To remedy this, use ``natsort``::
 
     # This won't get you what you want
     $ foo *.out
     # This will sort naturally
-    natsort *.out | xargs foo
+    mode744.43.out
+    mode943.54.out
+    mode1000.35.out 
+    mode1243.34.out
+    $ natsort *.out | xargs foo
+
+You can also filter out numbers using the ``natsort`` command-line script::
+
+    $ natsort *.out -f 900 1100 # Select only numbers between 900-1100
+    mode943.54.out
+    mode1000.35.out 
+
+If needed, you can exclude specific numbers::
+
+    $ natsort *.out -e 1000.35 # Exclude 1000.35 from search
+    mode744.43.out
+    mode943.54.out
+    mode1243.34.out
+
+For other options, use ``natsort --help``.
+
+It is also helpful to note that ``natsort`` accepts pipes, and also will sort
+each directory in a PATH independently of each other.  Files in the current
+directory are listed before files in subdirectories.
+
+Author
+------
+
+Seth M. Morton
