@@ -1,4 +1,3 @@
-#! /usr/bin/env python
 __version__ = '1.2.0'
 
 import re
@@ -64,11 +63,11 @@ def natsort_key(s):
         else:
             # Try to make an int
             try:
-                s[i] = int(s[i])
+                s[i] = (int(s[i]),)
             except ValueError:
                 # If an int doesn't work, try a float
                 try:
-                    s[i] = float(s[i])
+                    s[i] = (float(s[i]),)
                 # It's just a string, do nothing
                 except ValueError:
                     pass
@@ -102,3 +101,8 @@ def index_natsorted(seq):
     index_seq_pair = [[x, y] for x, y in zip(xrange(len(seq)), seq)]
     index_seq_pair.sort(key=lambda x: natsort_key(x[1]))
     return [x[0] for x in index_seq_pair]
+
+# Test this module
+if __name__ == '__main__':
+    import doctest
+    doctest.testfile('README.rst')
