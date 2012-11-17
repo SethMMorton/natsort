@@ -1,9 +1,9 @@
 #! /usr/bin/env python
 
-# In case setuptools is not installed
-from  distribute_setup import use_setuptools
-use_setuptools()
-from setuptools import setup
+try:
+    from setuptools import setup
+except ImportError:
+    from distutils.core import setup
 from os.path import join
 
 # Read the natsort.py file for the module version number
@@ -19,8 +19,8 @@ else:
     raise RuntimeError (s.format(VERSIONFILE))
 
 # A description
-DESCRIPTION = 'Provides routines and a command-line script to sort lists '
-              'naturally'
+DESCRIPTION = ('Provides routines and a command-line script to sort lists '
+               'naturally')
 
 # Read in the documentation for the long_description
 try:
