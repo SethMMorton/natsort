@@ -14,7 +14,7 @@ support for sorting version numbers (1.2.3, no letters).
 
 When you try to sort a list of strings that contain numbers, the normal python
 sort algorithm sorts by ASCII, so you might not get the results that you
-expect:
+expect::
 
     >>> a = ['a2', 'a8', 'a7', 'a5', 'a9', 'a1', 'a4', 'a10', 'a3', 'a6']
     >>> sorted(a)
@@ -24,7 +24,7 @@ Notice that it has the order ('1', '10', '2')?  This is because the list is
 being sorted in ASCII order, which sorts numbers like you would letters (i.e.
 'a', 'at', 'b').  It would be better if you had a sorting algorithm that
 recognized numbers as numbers and treated them like numbers, not letters.  This
-is where ``natsort`` comes in:
+is where ``natsort`` comes in::
 
     >>> from natsort import natsorted
     >>> a = ['a2', 'a8', 'a7', 'a5', 'a9', 'a1', 'a4', 'a10', 'a3', 'a6']
@@ -33,7 +33,7 @@ is where ``natsort`` comes in:
 
 ``natsort`` identifies the numbers and sorts them separately from the numbers.
 It not only works on integers, but on floats as well (even in exponential
-notation!):
+notation!)::
 
     >>> a = ['a50', 'a51.', 'a50.4', 'a5.034e1', 'a50.300']
     >>> sorted(a)
@@ -45,7 +45,7 @@ Last, ``natsort`` can also handle version numbers appropriately, provided they
 are in the format "M.m.p" where M=major version number, m=minor version number,
 and p=patch.  The patch can be just a number, or can also be a number followed
 by a letter.  You must include the patch, otherwise ``natsort`` will think it
-is a float:
+is a float::
 
     >>> a = ['1.9.9a', '1.11', '1.9.9b', '1.11.4', '1.10.1']
     >>> sorted(a)
@@ -69,7 +69,7 @@ The ``natsort`` package provides three functions: ``natsort_key``,
 natsort_key
 '''''''''''
 
-Using ``natsort_key`` is just like any other sorting key in python:
+Using ``natsort_key`` is just like any other sorting key in python::
 
     >>> from natsort import natsort_key
     >>> a = ['num3', 'num5', 'num2']
@@ -80,7 +80,7 @@ Using ``natsort_key`` is just like any other sorting key in python:
 natsorted
 '''''''''
 
-``natsorted`` is simply a wrapper for ``sorted(list, key=natsort_key)``:
+``natsorted`` is simply a wrapper for ``sorted(list, key=natsort_key)``::
 
     >>> from natsort import natsorted
     >>> a = ['num3', 'num5', 'num2']
@@ -91,7 +91,7 @@ index_natsorted
 '''''''''''''''
 
 Use ``index_natsorted`` if you want to sort multiple lists by the sorting of
-one list:
+one list::
 
     >>> from natsort import index_natsorted
     >>> a = ['num3', 'num5', 'num2']
@@ -154,3 +154,14 @@ Author
 ------
 
 Seth M. Morton
+
+History
+-------
+
+11-16-2012, v. 2.0.0
+''''''''''''''''''''
+
+    - Updated sorting algorithm to support floats (including exponentials) and
+      basic version number support
+    - Added better README documentation
+    - Added doctests
