@@ -1,4 +1,31 @@
-__version__ = '2.0.0'
+'''
+Here are a collection of examples of how this module can be used.
+See the README or the natsort homepage for more details.
+
+    >>> a = ['a2', 'a8', 'a7', 'a5', 'a9', 'a1', 'a4', 'a10', 'a3', 'a6']
+    >>> sorted(a)
+    ['a1', 'a10', 'a2', 'a3', 'a4', 'a5', 'a6', 'a7', 'a8', 'a9']
+    >>> natsorted(a)
+    ['a1', 'a2', 'a3', 'a4', 'a5', 'a6', 'a7', 'a8', 'a9', 'a10']
+
+    >>> a = ['a50', 'a51.', 'a50.4', 'a5.034e1', 'a50.300']
+    >>> sorted(a)
+    ['a5.034e1', 'a50', 'a50.300', 'a50.4', 'a51.']
+    >>> natsorted(a)
+    ['a50', 'a50.300', 'a5.034e1', 'a50.4', 'a51.']
+
+    >>> a = ['1.9.9a', '1.11', '1.9.9b', '1.11.4', '1.10.1']
+    >>> sorted(a)
+    ['1.10.1', '1.11', '1.11.4', '1.9.9a', '1.9.9b']
+    >>> natsorted(a)
+    ['1.9.9a', '1.9.9b', '1.10.1', '1.11.4', '1.11']
+    >>> a = ['1.9.9a', '1.11.0', '1.9.9b', '1.11.4', '1.10.1']
+    >>> natsorted(a)
+    ['1.9.9a', '1.9.9b', '1.10.1', '1.11.0', '1.11.4']
+
+'''
+
+__version__ = '2.0.1'
 
 import re
 # The regex that locates version numbers and floats
@@ -29,6 +56,12 @@ def natsort_key(s):
     It also has basic support for version numbers.
     For use in passing to the :py:func:`sorted` builtin or
     :py:meth:`sort` attribute of lists.
+
+        >>> a = ['num3', 'num5', 'num2']
+        >>> a.sort(key=natsort_key)
+        >>> a
+        ['num2', 'num3', 'num5']
+
     '''
 
     # If we are dealing with non-strings, return now
@@ -80,6 +113,10 @@ def natsorted(seq):
     Sorts a sequence naturally (alphabetically and numerically),
     not by ASCII.
 
+        >>> a = ['num3', 'num5', 'num2']
+        >>> natsorted(a)
+        ['num2', 'num3', 'num5']
+
     :argument seq:
         The sequence to be sorted.
     :type seq: sequence-like
@@ -91,6 +128,17 @@ def index_natsorted(seq):
     '''\
     Sorts a sequence naturally, but returns a list of sorted the 
     indeces and not the sorted list.
+
+        >>> a = ['num3', 'num5', 'num2']
+        >>> b = ['foo', 'bar', 'baz']
+        >>> index = index_natsorted(a)
+        >>> # Sort both lists by the sort order of a
+        >>> a = [a[i] for i in index]
+        >>> b = [b[i] for i in index]
+        >>> a
+        ['num2', 'num3', 'num5']
+        >>> b
+        ['baz', 'foo', 'bar']
 
     :argument seq:
         The sequence that you want the sorted index of.
@@ -105,7 +153,4 @@ def index_natsorted(seq):
 # Test this module
 if __name__ == '__main__':
     import doctest
-    try:
-        doctest.testfile('README.rst')
-    except OSError:
-        doctest.testfile('README')
+    doctest.testmod()

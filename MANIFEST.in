@@ -2,4 +2,4 @@ include README.rst
 include LICENSE
 include natsort.py
 include setup.py
-include scripts/natsort
+include bin/natsort

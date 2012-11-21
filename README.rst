@@ -158,6 +158,12 @@ Seth M. Morton
 History
 -------
 
+11-21-2012 v. 2.0.1
+'''''''''''''''''''
+
+    - Reorganized directory structure
+    - Added tests into the natsort.py file iteself
+
 11-16-2012, v. 2.0.0
 ''''''''''''''''''''
 
