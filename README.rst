@@ -125,6 +125,7 @@ to bad analysis.  To remedy this, use ``natsort``::
     # This won't get you what you want
     $ foo *.out
     # This will sort naturally
+    $ natsort *.out
     mode744.43.out
     mode943.54.out
     mode1000.35.out 
