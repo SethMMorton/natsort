@@ -37,6 +37,7 @@ setup(name='natsort',
       license='MIT',
       py_modules=['natsort'],
       scripts=[join('bin', 'natsort')],
+      test_suite='natsort.test',
       description=DESCRIPTION,
       long_description=LONG_DESCRIPTION,
       classifiers=(
