@@ -150,6 +150,10 @@ def index_natsorted(seq):
     index_seq_pair.sort(key=lambda x: natsort_key(x[1]))
     return [x[0] for x in index_seq_pair]
 
+def test():
+    from doctest import DocTestSuite
+    return DocTestSuite()
+
 # Test this module
 if __name__ == '__main__':
     import doctest
