@@ -4,6 +4,7 @@ from ez_setup import use_setuptools
 use_setuptools()
 from setuptools import setup
 from os.path import join
+import sys
 
 # Read the natsort.py file for the module version number
 import re
@@ -27,6 +28,9 @@ try:
 except IOError:
     LONG_DESCRIPTION = DESCRIPTION
 
+# python2.6 needs the argparse module
+REQUIRES = 'argparse' if sys.version[:3] == '2.6' else ''
+
 # The setup parameters
 setup(name='natsort',
       version=VERSION,
@@ -34,6 +38,7 @@ setup(name='natsort',
       author_email='drtuba78@gmail.com',
       url='https://github.com/SethMMorton/natsort',
       license='MIT',
+      install_requires=REQUIRES,
       py_modules=['natsort'],
       scripts=[join('bin', 'natsort')],
       test_suite='natsort.test',

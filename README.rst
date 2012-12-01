@@ -159,6 +159,12 @@ Seth M. Morton
 History
 -------
 
+11-30-2012 v. 2.0.2
+'''''''''''''''''''
+
+    - Added ez_setup.py to the distribution
+    - Added dependency to the argparse module (for python2.6)
+
 11-21-2012 v. 2.0.1
 '''''''''''''''''''
 
