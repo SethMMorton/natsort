@@ -25,7 +25,7 @@ See the README or the natsort homepage for more details.
 
 '''
 
-__version__ = '2.0.1'
+__version__ = '2.0.2'
 
 import re
 # The regex that locates version numbers and floats

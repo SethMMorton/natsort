@@ -1,9 +1,8 @@
 #! /usr/bin/env python
 
-try:
-    from setuptools import setup
-except ImportError:
-    from distutils.core import setup
+from ez_setup import use_setuptools
+use_setuptools()
+from setuptools import setup
 from os.path import join
 
 # Read the natsort.py file for the module version number
