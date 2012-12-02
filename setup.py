@@ -42,6 +42,7 @@ setup(name='natsort',
       py_modules=['natsort'],
       scripts=[join('bin', 'natsort')],
       test_suite='natsort.test',
+      use_2to3 = True,
       description=DESCRIPTION,
       long_description=LONG_DESCRIPTION,
       classifiers=(
