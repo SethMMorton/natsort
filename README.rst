@@ -2,7 +2,9 @@ natsort
 =======
 
 Natural sorting for python.  ``natsort`` requires 2.7 or (2.6 with the argparse
-module).  It has not been tested against python 3 or greater.
+module).  It has not been tested against python 3 or greater, but it should
+automatically convert the code to work with python 3 when you install it (let
+me know if you have issues with this).
 
 Synopsis
 --------
@@ -162,7 +164,8 @@ History
 11-30-2012 v. 2.0.2
 '''''''''''''''''''
 
-    - Added ez_setup.py to the distribution
+    - Added the use_2to3 option to setup.py
+    - Added distribute_setup.py to the distribution
     - Added dependency to the argparse module (for python2.6)
 
 11-21-2012 v. 2.0.1
