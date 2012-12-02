@@ -2,5 +2,5 @@ include README.rst
 include LICENSE
 include natsort.py
 include setup.py
-include ez_setup.py
+include distribute_setup.py
 include bin/natsort
