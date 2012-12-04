@@ -1,10 +1,9 @@
 natsort
 =======
 
-Natural sorting for python.  ``natsort`` requires 2.7 or (2.6 with the argparse
-module).  It has not been tested against python 3 or greater, but it should
-automatically convert the code to work with python 3 when you install it (let
-me know if you have issues with this).
+Natural sorting for python.  ``natsort`` requires python version 2.6 or greater
+(this includes python 3.x). To run version 2.6, the argparse module is
+required.
 
 Synopsis
 --------
