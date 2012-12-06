@@ -1,7 +1,6 @@
 include README.rst
 include LICENSE
 include natsort/natsort.py
-include natsort/main.py
 include natsort/_version.py
 include natsort/__main__.py
 include natsort/__init__.py
