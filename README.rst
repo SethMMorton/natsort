@@ -5,6 +5,9 @@ Natural sorting for python.  ``natsort`` requires python version 2.6 or greater
 (this includes python 3.x). To run version 2.6, the argparse module is
 required.
 
+``natsort`` comes with a shell script that is desecribed below.  You can
+also execute ``natsort`` from the command line with ``python -m natsort``.
+
 Synopsis
 --------
 
