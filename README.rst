@@ -163,6 +163,15 @@ Seth M. Morton
 History
 -------
 
+12-5-2012 v. 2.1.0
+''''''''''''''''''
+
+    - Reorganized package
+    - Now using a platform independent shell script generator (entry_points
+      from distribute)
+    - Can now execute natsort from command line with ``python -m natsort``
+      as well
+
 11-30-2012 v. 2.0.2
 '''''''''''''''''''
 
