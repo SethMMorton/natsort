@@ -25,8 +25,6 @@ See the README or the natsort homepage for more details.
 
 '''
 
-__version__ = '2.0.2'
-
 import re
 # The regex that locates version numbers and floats
 num_re = re.compile(r'(\d+\.\d+\.\d+|[-+]?[0-9]*\.?[0-9]+([eE][-+]?[0-9]+)?)')
@@ -34,12 +32,6 @@ num_re = re.compile(r'(\d+\.\d+\.\d+|[-+]?[0-9]*\.?[0-9]+([eE][-+]?[0-9]+)?)')
 exp_re = re.compile(r'^[eE][-+]?[0-9]+$')
 # Version regex
 ver_re = re.compile(r'^\d+\.\d+\.\d+$')
-
-__all__ = [
-           'natsort_key',
-           'natsorted',
-           'index_natsorted',
-          ]
 
 def string2int(string):
     '''Convert to integer if an integer string.'''
