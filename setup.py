@@ -2,13 +2,13 @@
 
 from distribute_setup import use_setuptools
 use_setuptools()
-from setuptools import setup
+from setuptools import setup, find_packages
 from os.path import join
 import sys
 
 # Read the natsort.py file for the module version number
 import re
-VERSIONFILE = 'natsort.py'
+VERSIONFILE = join('natsort', '_version.py')
 versionsearch = re.compile(r"^__version__ = ['\"]([^'\"]*)['\"]")
 with open(VERSIONFILE, "rt") as fl:
     for line in fl:
@@ -39,10 +39,10 @@ setup(name='natsort',
       url='https://github.com/SethMMorton/natsort',
       license='MIT',
       install_requires=REQUIRES,
-      py_modules=['natsort'],
-      scripts=[join('bin', 'natsort')],
+      packages=find_packages(),
+      entry_points={'console_scripts':['natsort = natsort.main:main']}
       test_suite='natsort.test',
-      use_2to3 = True,
+      use_2to3=True,
       description=DESCRIPTION,
       long_description=LONG_DESCRIPTION,
       classifiers=(
