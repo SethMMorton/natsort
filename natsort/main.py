@@ -1,10 +1,9 @@
-#! /usr/bin/env python
-
 from __future__ import print_function, division
 import sys
 import os
 import re
-from natsort import natsort_key, natsorted, __version__
+from .natsort import natsort_key, natsorted
+from ._version import __version__
 
 def main():
     '''\
@@ -60,7 +59,7 @@ def range_check(low, high):
     '''
     low, high = float(low), float(high)
     if low >= high:
-        raise ValuError('low >= high')
+        raise ValueError ('low >= high')
     else:
         return low, high
 
@@ -71,8 +70,8 @@ def check_filter(filt):
         return None
     try:
         low, high = range_check(filt[0], filt[1])
-    except AssertionError as a:
-        raise AssertionError ('Error in --filter: '+str(a))
+    except ValueError as a:
+        raise ValueError ('Error in --filter: '+str(a))
     return low, high, re.compile(r'[+-]?\d+\.?\d*')
 
 def split_paths(paths, a):
@@ -116,10 +115,3 @@ def sort_and_print_paths(dirs, filterdata, exclude, reverse):
             if exclude and exclude in file: continue
             print(os.path.join(dir, file))
 
-if __name__ == '__main__':
-    try:
-        main()
-    except AssertionError as a:
-        sys.exit(str(a))
-    except KeyboardInterrupt:
-        sys.exit(1)
