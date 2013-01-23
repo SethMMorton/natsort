@@ -1,4 +1,4 @@
-'''
+"""
 Here are a collection of examples of how this module can be used.
 See the README or the natsort homepage for more details.
 
@@ -23,7 +23,7 @@ See the README or the natsort homepage for more details.
     >>> natsorted(a)
     ['1.9.9a', '1.9.9b', '1.10.1', '1.11.0', '1.11.4']
 
-'''
+"""
 
 import re
 # The regex that locates version numbers and floats
@@ -34,7 +34,7 @@ exp_re = re.compile(r'^[eE][-+]?[0-9]+$')
 ver_re = re.compile(r'^\d+\.\d+\.\d+$')
 
 def string2int(string):
-    '''Convert to integer if an integer string.'''
+    """Convert to integer if an integer string."""
     if not isinstance(string, str):
         return string
     try:
@@ -43,7 +43,7 @@ def string2int(string):
         return string
 
 def natsort_key(s):
-    '''\
+    """\
     Key to sort strings and numbers naturally, not by ASCII.
     It also has basic support for version numbers.
     For use in passing to the :py:func:`sorted` builtin or
@@ -54,7 +54,7 @@ def natsort_key(s):
         >>> a
         ['num2', 'num3', 'num5']
 
-    '''
+    """
 
     # If we are dealing with non-strings, return now
     if not isinstance(s, str):
@@ -101,7 +101,7 @@ def natsort_key(s):
     return tuple(s)
 
 def natsorted(seq):
-    '''\
+    """\
     Sorts a sequence naturally (alphabetically and numerically),
     not by ASCII.
 
@@ -113,11 +113,11 @@ def natsorted(seq):
         The sequence to be sorted.
     :type seq: sequence-like
     :rtype: list
-    '''
+    """
     return sorted(seq, key=natsort_key)
 
 def index_natsorted(seq):
-    '''\
+    """\
     Sorts a sequence naturally, but returns a list of sorted the 
     indeces and not the sorted list.
 
@@ -136,7 +136,7 @@ def index_natsorted(seq):
         The sequence that you want the sorted index of.
     :type seq: sequence-like
     :rtype: list
-    '''
+    """
     # Pair the index and sequence together, then sort by 
     index_seq_pair = [[x, y] for x, y in zip(xrange(len(seq)), seq)]
     index_seq_pair.sort(key=lambda x: natsort_key(x[1]))

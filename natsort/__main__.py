@@ -6,11 +6,11 @@ from natsort import natsort_key, natsorted
 from _version import __version__
 
 def main():
-    '''\
+    """\
     Performs a natural sort on pathnames given on the command-line.
     A natural sort sorts numerically then alphabetically, and will sort
     by numbers in the middle of a pathname.
-    '''
+    """
 
     from argparse import ArgumentParser, RawDescriptionHelpFormatter
     from textwrap import dedent
@@ -54,9 +54,9 @@ def main():
     sort_and_print_paths(paths, filterdata, args.exclude, args.reverse)
 
 def range_check(low, high):
-    '''\
+    """\
     Verifies that that given range has a low lower than the high.
-    '''
+    """
     low, high = float(low), float(high)
     if low >= high:
         raise ValueError ('low >= high')
@@ -64,7 +64,7 @@ def range_check(low, high):
         return low, high
 
 def check_filter(filt):
-    '''Check that the low value of the filter is lower than the high.'''
+    """Check that the low value of the filter is lower than the high."""
     # Quick return if no filter.
     if not filt:
         return None
@@ -75,9 +75,9 @@ def check_filter(filt):
     return low, high, re.compile(r'[+-]?\d+\.?\d*')
 
 def split_paths(paths, a):
-    '''For each file, separate into directory and filename. Store all files
+    """For each file, separate into directory and filename. Store all files
     in a dir into a dict where the dir is the key and filename is the value.
-    '''
+    """
     dirs = {}
     for path in paths:
         if a:
@@ -95,9 +95,9 @@ def split_paths(paths, a):
     return dirs
 
 def sort_and_print_paths(dirs, filterdata, exclude, reverse):
-    '''Sort the paths by directoy then by file within that directory.
+    """Sort the paths by directoy then by file within that directory.
     Print off the results.
-    '''
+    """
     for dir in natsorted(dirs.keys()):
         dirs[dir].sort(key=natsort_key)
         if reverse:
