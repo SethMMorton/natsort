@@ -64,6 +64,35 @@ is a float::
 ``natsort`` is not necessarily optimized for speed, but it is designed to be as
 flexible as possible.
 
+A Note About Sorting Version Numbers
+''''''''''''''''''''''''''''''''''''
+
+The algorithm that ``natsort`` uses is optimized to find negative numbers and
+floating point numbers (including those with exponentials).  Because of this, you
+might not get results you expect when sorting version numbers.  For example::
+
+    >>> available_versions = ['1.8.1-r26', '1.8.1-r30', '2.0-r2', '2.0-r7', '2.0-r11']
+    >>> natsorted(available_versions)
+    ['1.8.1-r26', '1.8.1-r30', '2.0-r2', '2.0-r7', '2.0-r11']
+
+The above works fine, but adding a prefix can mess things up if you are not careful::
+
+    >>> natsorted(['my-package-{0}'.format(v) for v in available_versions])
+    ['my-package-2.0-r2', 'my-package-2.0-r7', 'my-package-2.0-r11', 'my-package-1.8.1-r26', 'my-package-1.8.1-r30']
+
+This is not in the order you might expect.  ``natsort`` sees the '-'
+before the number and starts to look for a float.  It sees ones in ``-2.0``
+and ``-1.8``, and then sorts them in increasing order.  Obviously, this
+is not what you want for version numbers (but would be good for floats).
+This can be fixed by not using a dash as a separator::
+
+    >>> natsorted(['my-package{0}'.format(v) for v in available_versions])
+    ['my-package1.8.1-r26', 'my-package1.8.1-r30', 'my-package2.0-r2', 'my-package2.0-r7', 'my-package2.0-r11']
+
+If you find that you need to be able to sort version numbers more reliably, I
+recommend taking a look at the `naturalsort <https://pypi.python.org/pypi/naturalsort>`_ 
+package which will give you what you expect for version numbers.
+
 API
 ---
 
@@ -81,6 +110,26 @@ Using ``natsort_key`` is just like any other sorting key in python::
     >>> a
     ['num2', 'num3', 'num5']
 
+Of course, you can chain ``natsort_key`` with other functions to sort by some attribute 
+of a class (for example). The easiest way is to make a ``lambda`` expression
+that calls ``natsort_key``::
+
+    >>> class Foo:
+    ...    def __init__(self, bar):
+    ...        self.bar = bar
+    ...    def __repr__(self):
+    ...        return "Foo('{0}')".format(self.bar)
+    >>> b = [Foo('num3'), Foo('num5'), Foo('num2')]
+    >>> b.sort(key=lambda x: natsort_key(x.bar)) # Get attribute explicitly
+    >>> b
+    [Foo('num2'), Foo('num3'), Foo('num5')]
+    >>> c = [Foo('num3'), Foo('num5'), Foo('num2')]
+    >>> from operator import attrgetter
+    >>> f = attrgetter('bar') # Using the operator module gives more flexibility
+    >>> c.sort(key=lambda x: natsort_key(f(x)))
+    >>> c
+    [Foo('num2'), Foo('num3'), Foo('num5')]
+
 natsorted
 '''''''''
 
@@ -90,6 +139,13 @@ natsorted
     >>> a = ['num3', 'num5', 'num2']
     >>> natsorted(a)
     ['num2', 'num3', 'num5']
+
+``natsorted`` also supports a ``key`` argument just like the ``sorted`` function.
+Using our ``Foo`` class from above::
+
+    >>> b = [Foo('num3'), Foo('num5'), Foo('num2')]
+    >>> natsorted(b, key=attrgetter('bar'))
+    [Foo('num2'), Foo('num3'), Foo('num5')]
 
 index_natsorted
 '''''''''''''''
@@ -101,26 +157,32 @@ one list::
     >>> a = ['num3', 'num5', 'num2']
     >>> b = ['foo', 'bar', 'baz']
     >>> index = index_natsorted(a)
+    >>> index
+    [2, 0, 1]
     >>> # Sort both lists by the sort order of a
-    >>> a = [a[i] for i in index]
-    >>> b = [b[i] for i in index]
-    >>> a
+    >>> [a[i] for i in index]
     ['num2', 'num3', 'num5']
-    >>> b
+    >>> [b[i] for i in index]
     ['baz', 'foo', 'bar']
+
+Again, ``index_natsorted`` accepts a ``key`` argument::
+
+    >>> c = [Foo('num3'), Foo('num5'), Foo('num2')]
+    >>> index_natsorted(c, key=attrgetter('bar'))
+    [2, 0, 1]
 
 Shell Script
 ------------
 
-For your convenience, there is a natsort shell script supplied to you that
-allows you to call natsort from the command-line.  ``natsort`` was written to
-aid in computational chemistry researh so that it would be easy to analyze
+For your convenience, there is a ``natsort`` shell script supplied to you that
+allows you to call ``natsort`` from the command-line.  ``natsort`` was written to
+aid in computational chemistry research so that it would be easy to analyze
 large sets of output files named after the parameter used::
 
     $ ls *.out
     mode1000.35.out mode1243.34.out mode744.43.out mode943.54.out
 
-(Obvously, in reality there would be more files, but you get the idea.)  Notice
+(Obviously, in reality there would be more files, but you get the idea.)  Notice
 that the shell sorts in ASCII order.  This is the behavior of programs like
 ``find`` as well as ``ls``.  The problem is, when passing these files to an
 analysis program causes them not to appear in numerical order, which can lead
@@ -162,6 +224,14 @@ Seth M. Morton
 
 History
 -------
+
+6-25-2013 v. 2.2.0
+''''''''''''''''''
+
+    - Added ``key`` attribute to ``natsorted`` and ``index_natsorted`` so that
+      it mimics the functionality of the built-in ``sorted``
+    - Added tests to reflect the new functionality, as well as tests demonstrating
+      how to get similar functionality using ``natsort_key``.
 
 12-5-2012 v. 2.1.0
 ''''''''''''''''''

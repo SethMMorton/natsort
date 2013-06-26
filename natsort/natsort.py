@@ -53,6 +53,21 @@ def natsort_key(s):
         >>> a.sort(key=natsort_key)
         >>> a
         ['num2', 'num3', 'num5']
+        >>> class Foo:
+        ...    def __init__(self, bar):
+        ...        self.bar = bar
+        ...    def __repr__(self):
+        ...        return "Foo('{0}')".format(self.bar)
+        >>> b = [Foo('num3'), Foo('num5'), Foo('num2')]
+        >>> b.sort(key=lambda x: natsort_key(x.bar))
+        >>> b
+        [Foo('num2'), Foo('num3'), Foo('num5')]
+        >>> from operator import attrgetter
+        >>> c = [Foo('num3'), Foo('num5'), Foo('num2')]
+        >>> f = attrgetter('bar')
+        >>> c.sort(key=lambda x: natsort_key(f(x)))
+        >>> c
+        [Foo('num2'), Foo('num3'), Foo('num5')]
 
     '''
 
@@ -65,7 +80,7 @@ def natsort_key(s):
     if len(s) == 1:
         return tuple(s)
 
-    # Remove all the None elements and exponentoals from the list.
+    # Remove all the None elements and exponentials from the list.
     # This results from the way split works when there are parenthesis
     # in the regular expression
     ix = [i for i, x in enumerate(s) if x is None or exp_re.match(x)]
@@ -100,7 +115,7 @@ def natsort_key(s):
     # Now, convert this list to a tuple
     return tuple(s)
 
-def natsorted(seq):
+def natsorted(seq, key=None):
     '''\
     Sorts a sequence naturally (alphabetically and numerically),
     not by ASCII.
@@ -108,15 +123,27 @@ def natsorted(seq):
         >>> a = ['num3', 'num5', 'num2']
         >>> natsorted(a)
         ['num2', 'num3', 'num5']
+        >>> class Foo:
+        ...    def __init__(self, bar):
+        ...        self.bar = bar
+        ...    def __repr__(self):
+        ...        return "Foo('{0}')".format(self.bar)
+        >>> b = [Foo('num3'), Foo('num5'), Foo('num2')]
+        >>> from operator import attrgetter
+        >>> natsorted(b, key=attrgetter('bar'))
+        [Foo('num2'), Foo('num3'), Foo('num5')]
 
     :argument seq:
         The sequence to be sorted.
     :type seq: sequence-like
     :rtype: list
     '''
-    return sorted(seq, key=natsort_key)
+    if key:
+        return sorted(seq, key=lambda x: natsort_key(key(x)))
+    else:
+        return sorted(seq, key=natsort_key)
 
-def index_natsorted(seq):
+def index_natsorted(seq, key=lambda x: x):
     '''\
     Sorts a sequence naturally, but returns a list of sorted the 
     indeces and not the sorted list.
@@ -124,22 +151,33 @@ def index_natsorted(seq):
         >>> a = ['num3', 'num5', 'num2']
         >>> b = ['foo', 'bar', 'baz']
         >>> index = index_natsorted(a)
+        >>> index
+        [2, 0, 1]
         >>> # Sort both lists by the sort order of a
-        >>> a = [a[i] for i in index]
-        >>> b = [b[i] for i in index]
-        >>> a
+        >>> [a[i] for i in index]
         ['num2', 'num3', 'num5']
-        >>> b
+        >>> [b[i] for i in index]
         ['baz', 'foo', 'bar']
+        >>> class Foo:
+        ...    def __init__(self, bar):
+        ...        self.bar = bar
+        ...    def __repr__(self):
+        ...        return "Foo('{0}')".format(self.bar)
+        >>> c = [Foo('num3'), Foo('num5'), Foo('num2')]
+        >>> from operator import attrgetter
+        >>> index_natsorted(c, key=attrgetter('bar'))
+        [2, 0, 1]
 
     :argument seq:
         The sequence that you want the sorted index of.
     :type seq: sequence-like
     :rtype: list
     '''
+    from operator import itemgetter
+    item1 = itemgetter(1)
     # Pair the index and sequence together, then sort by 
-    index_seq_pair = [[x, y] for x, y in zip(xrange(len(seq)), seq)]
-    index_seq_pair.sort(key=lambda x: natsort_key(x[1]))
+    index_seq_pair = [[x, key(y)] for x, y in zip(xrange(len(seq)), seq)]
+    index_seq_pair.sort(key=lambda x: natsort_key(item1(x)))
     return [x[0] for x in index_seq_pair]
 
 def test():
