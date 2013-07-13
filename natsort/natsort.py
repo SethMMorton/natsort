@@ -13,28 +13,60 @@ See the README or the natsort homepage for more details.
     ['a5.034e1', 'a50', 'a50.300', 'a50.4', 'a51.']
     >>> natsorted(a)
     ['a50', 'a50.300', 'a5.034e1', 'a50.4', 'a51.']
+    >>> natsorted(a, number_type=None)
+    ['a5.034e1', 'a50', 'a50.4', 'a50.300', 'a51.']
 
     >>> a = ['1.9.9a', '1.11', '1.9.9b', '1.11.4', '1.10.1']
     >>> sorted(a)
     ['1.10.1', '1.11', '1.11.4', '1.9.9a', '1.9.9b']
     >>> natsorted(a)
-    ['1.9.9a', '1.9.9b', '1.10.1', '1.11.4', '1.11']
-    >>> a = ['1.9.9a', '1.11.0', '1.9.9b', '1.11.4', '1.10.1']
+    ['1.10.1', '1.11', '1.11.4', '1.9.9a', '1.9.9b']
+    >>> natsorted(a, number_type=None)
+    ['1.9.9a', '1.9.9b', '1.10.1', '1.11', '1.11.4']
+
+    >>> a = ['name.1', 'name.101', 'name.01', 'name.200', 'name.21']
+    >>> sorted(a)
+    ['name.01', 'name.1', 'name.101', 'name.200', 'name.21']
     >>> natsorted(a)
-    ['1.9.9a', '1.9.9b', '1.10.1', '1.11.0', '1.11.4']
+    ['name.01', 'name.1', 'name.101', 'name.200', 'name.21']
+    >>> natsorted(a, number_type=None)
+    ['name.1', 'name.01', 'name.21', 'name.101', 'name.200']
+
+    >>> a = ['version-2', 'version-20', 'version-4', 'version-1']
+    >>> sorted(a)
+    ['version-1', 'version-2', 'version-20', 'version-4']
+    >>> natsorted(a)
+    ['version-20', 'version-4', 'version-2', 'version-1']
+    >>> natsorted(a, number_type=int)
+    ['version-20', 'version-4', 'version-2', 'version-1']
+    >>> natsorted(a, number_type=None)
+    ['version-1', 'version-2', 'version-4', 'version-20']
 
 """
 
 import re
 # The regex that locates version numbers and floats
-num_re = re.compile(r'(\d+\.\d+\.\d+|[-+]?[0-9]*\.?[0-9]+([eE][-+]?[0-9]+)?)')
+float_re = re.compile(r'([-+]?[0-9]*\.?[0-9]+([eE][-+]?[0-9]+)?)')
 # The regex of the exponent
 exp_re = re.compile(r'^[eE][-+]?[0-9]+$')
-# Version regex
-ver_re = re.compile(r'^\d+\.\d+\.\d+$')
+# A basic digit splitter
+digit_re = re.compile(r'(\d+)')
+# Integer regex
+int_re = re.compile(r'([-+]?[0-9]+)')
+
 
 def string2int(string):
-    """Convert to integer if an integer string."""
+    """\
+    Convert to integer if an integer string.
+
+        >>> isinstance(string2int('2'), int)
+        True
+        >>> isinstance(string2int('a'), str)
+        True
+        >>> isinstance(string2int('2.0'), str)
+        True
+
+    """
     if not isinstance(string, str):
         return string
     try:
@@ -42,7 +74,112 @@ def string2int(string):
     except ValueError:
         return string
 
-def natsort_key(s):
+
+def remove_empty(s):
+    """\
+    Remove empty strings from a list.
+
+        >>> a = ['a', 2, '', 'b']
+        >>> remove_empty(a)
+        ['a', 2, 'b']
+
+    """
+    try:
+        s.remove('')
+    except ValueError:
+        pass
+    return s
+
+
+def find_floats(s):
+    """\
+    Locate all the floats in a string, and return a tuple of
+    strings and floats.
+
+        >>> find_floats('name3.5')
+        ['name', 3.5]
+        >>> find_floats('a5.034e1')
+        ['a', 50.34]
+        >>> find_floats('b-40.2')
+        ['b', -40.2]
+
+    """
+
+    # Split.  If there are no splits, return now
+    s = float_re.split(s)
+    if len(s) == 1:
+        return tuple(s)
+
+    # Remove all the None elements and exponentials from the list.
+    # This results from the way split works when there are parenthesis
+    # in the regular expression
+    ix = [i for i, x in enumerate(s) if x is None or exp_re.match(x)]
+    for i in reversed(ix):
+        s.pop(i)
+
+    # Now convert floats to floats, and leave strings as strings
+    s = remove_empty(s)
+    for i in xrange(len(s)):
+        try:
+            s[i] = float(s[i])
+        except ValueError:
+            pass
+
+    return s
+
+
+def _simple_finder(s, regex):
+    """Helper to split ints"""
+
+    # Split.  If there are no splits, return now
+    s = regex.split(s)
+    if len(s) == 1:
+        return tuple(s)
+
+    # Now convert ints to ints, and leave strings as strings
+    s = remove_empty(s)
+    for i in xrange(len(s)):
+        try:
+            s[i] = int(s[i])
+        except ValueError:
+            pass
+
+    return s
+
+
+def find_ints(s):
+    """\
+    Locate all the ints in a string, and return a tuple of
+    strings and ints.
+
+        >>> find_ints('name3.5')
+        ['name', 3, '.', 5]
+        >>> find_ints('a5.034e1')
+        ['a', 5, '.', 34, 'e', 1]
+        >>> find_ints('b-40.2')
+        ['b', -40, '.', 2]
+
+    """
+    return _simple_finder(s, int_re)
+
+
+def find_digits(s):
+    """\
+    Locate all the digits in a string, and return a tuple of
+    strings and ints.
+
+        >>> find_digits('name3.5')
+        ['name', 3, '.', 5]
+        >>> find_digits('a5.034e1')
+        ['a', 5, '.', 34, 'e', 1]
+        >>> find_digits('b-40.2')
+        ['b-', 40, '.', 2]
+
+    """
+    return _simple_finder(s, digit_re)
+
+
+def natsort_key(s, number_type=float):
     """\
     Key to sort strings and numbers naturally, not by ASCII.
     It also has basic support for version numbers.
@@ -75,47 +212,15 @@ def natsort_key(s):
     if not isinstance(s, str):
         return (s,)
 
-    # Split.  If there are no splits, return now
-    s = num_re.split(s)
-    if len(s) == 1:
-        return tuple(s)
-
-    # Remove all the None elements and exponentials from the list.
-    # This results from the way split works when there are parenthesis
-    # in the regular expression
-    ix = [i for i, x in enumerate(s) if x is None or exp_re.match(x)]
-    for i in reversed(ix):
-        s.pop(i)
-
-    # Try to remove empty strings
+    # Convert to the proper tuple and return
+    find_method = {float: find_floats, int: find_ints, None: find_digits}
     try:
-        s.remove('')
-    except ValueError:
-        pass
+        return tuple(find_method[number_type](s))
+    except KeyError:
+        raise ValueError("natsort_key: 'search' parameter {0} invalid".format(str(number_type)))
 
-    # Now convert floats to floats and 
-    # versions to tuples, i.e. 4.5.2 => (4, 5, 2)
-    for i in xrange(len(s)):
 
-        # The versions
-        if ver_re.match(s[i]):
-            s[i] = tuple([int(x) for x in s[i].split('.')])
-        else:
-            # Try to make an int
-            try:
-                s[i] = (int(s[i]),)
-            except ValueError:
-                # If an int doesn't work, try a float
-                try:
-                    s[i] = (float(s[i]),)
-                # It's just a string, do nothing
-                except ValueError:
-                    pass
-
-    # Now, convert this list to a tuple
-    return tuple(s)
-
-def natsorted(seq, key=None):
+def natsorted(seq, key=lambda x: x, number_type=float):
     """\
     Sorts a sequence naturally (alphabetically and numerically),
     not by ASCII.
@@ -138,14 +243,12 @@ def natsorted(seq, key=None):
     :type seq: sequence-like
     :rtype: list
     """
-    if key:
-        return sorted(seq, key=lambda x: natsort_key(key(x)))
-    else:
-        return sorted(seq, key=natsort_key)
+    return sorted(seq, key=lambda x: natsort_key(key(x), number_type=number_type))
 
-def index_natsorted(seq, key=lambda x: x):
+
+def index_natsorted(seq, key=lambda x: x, number_type=float):
     """\
-    Sorts a sequence naturally, but returns a list of sorted the 
+    Sorts a sequence naturally, but returns a list of sorted the
     indeces and not the sorted list.
 
         >>> a = ['num3', 'num5', 'num2']
@@ -175,10 +278,11 @@ def index_natsorted(seq, key=lambda x: x):
     """
     from operator import itemgetter
     item1 = itemgetter(1)
-    # Pair the index and sequence together, then sort by 
+    # Pair the index and sequence together, then sort by
     index_seq_pair = [[x, key(y)] for x, y in zip(xrange(len(seq)), seq)]
-    index_seq_pair.sort(key=lambda x: natsort_key(item1(x)))
+    index_seq_pair.sort(key=lambda x: natsort_key(item1(x), number_type=number_type))
     return [x[0] for x in index_seq_pair]
+
 
 def test():
     from doctest import DocTestSuite

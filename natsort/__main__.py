@@ -32,6 +32,9 @@ def main():
                         action='store_true', default=False)
     parser.add_argument('-R', '--recursive', help='Recursively decend the '
                         'directory tree.', action='store_true', default=False)
+    parser.add_argument('-t', '--number_type', choices=('digit', 'int', 'float'),
+                         default='float', help='Choose the type of number '
+                         'to search for.')
     parser.add_argument('paths', help='The paths to sort.', nargs='*',
                         default=sys.stdin)
     args = parser.parse_args()
@@ -51,7 +54,7 @@ def main():
     paths = split_paths(paths, args.onlyfiles)
 
     # Sort by directory then by file within directory and print.
-    sort_and_print_paths(paths, filterdata, args.exclude, args.reverse)
+    sort_and_print_paths(paths, filterdata, args.exclude, args.reverse, args.number_type)
 
 def range_check(low, high):
     """\
@@ -94,12 +97,13 @@ def split_paths(paths, a):
             dirs[dir].append(file)
     return dirs
 
-def sort_and_print_paths(dirs, filterdata, exclude, reverse):
+def sort_and_print_paths(dirs, filterdata, exclude, reverse, number_type):
     """Sort the paths by directoy then by file within that directory.
     Print off the results.
     """
-    for dir in natsorted(dirs.keys()):
-        dirs[dir].sort(key=natsort_key)
+    number_type = {'digit': None, 'int': int, 'float': float}[number_type]
+    for dir in natsorted(dirs.keys(), number_type=number_type):
+        dirs[dir].sort(key=lambda x: natsort_key(x, number_type=number_type))
         if reverse:
             dirs[dir] = reversed(dirs[dir])
         for file in dirs[dir]:
