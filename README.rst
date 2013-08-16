@@ -45,6 +45,15 @@ Using ``natsort`` is simple::
 
 ``natsort`` identifies the numbers and sorts them separately from letters.
 
+You can also mix and match ``int``, ``float``, ``str``, and ``unicode`` types
+when you sort::
+
+    >>> a = ['4.5', 6, 2.3, u'5']
+    >>> sorted(a)
+    [2.3, 6, '4.5', u'5']
+    >>> natsorted(a)
+    [2.3, '4.5', u'5', 6]
+
 The sorting algorithms
 ''''''''''''''''''''''
 
@@ -279,6 +288,13 @@ Seth M. Morton
 
 History
 -------
+
+8-15-2013 v. 3.0.1
+''''''''''''''''''
+
+    - Added support for unicode strings.
+    - Removed extraneous ``string2int`` function.
+    - Fixed empty string removal function.
 
 7-13-2013 v. 3.0.0
 ''''''''''''''''''

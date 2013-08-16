@@ -42,6 +42,12 @@ See the README or the natsort homepage for more details.
     >>> natsorted(a, number_type=None)
     ['version-1', 'version-2', 'version-4', 'version-20']
 
+    >>> a = [6, 4.5, '7', u'2.5']
+    >>> sorted(a)
+    [4.5, 6, u'2.5', '7']
+    >>> natsorted(a)
+    [u'2.5', 4.5, 6, '7']
+
 """
 
 import re
@@ -55,26 +61,6 @@ digit_re = re.compile(r'(\d+)')
 int_re = re.compile(r'([-+]?[0-9]+)')
 
 
-def string2int(string):
-    """\
-    Convert to integer if an integer string.
-
-        >>> isinstance(string2int('2'), int)
-        True
-        >>> isinstance(string2int('a'), str)
-        True
-        >>> isinstance(string2int('2.0'), str)
-        True
-
-    """
-    if not isinstance(string, str):
-        return string
-    try:
-        return int(string)
-    except ValueError:
-        return string
-
-
 def remove_empty(s):
     """\
     Remove empty strings from a list.
@@ -84,10 +70,11 @@ def remove_empty(s):
         ['a', 2, 'b']
 
     """
-    try:
-        s.remove('')
-    except ValueError:
-        pass
+    while True:
+        try:
+            s.remove('')
+        except ValueError:
+            break
     return s
 
 
@@ -209,7 +196,7 @@ def natsort_key(s, number_type=float):
     """
 
     # If we are dealing with non-strings, return now
-    if not isinstance(s, str):
+    if not isinstance(s, basestring):
         return (s,)
 
     # Convert to the proper tuple and return
