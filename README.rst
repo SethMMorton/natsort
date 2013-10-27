@@ -289,6 +289,13 @@ Seth M. Morton
 History
 -------
 
+10-01-2013 v. 3.0.2
+'''''''''''''''''''
+
+    - Made float, int, and digit searching algorithms all share the same base function
+    - Fixed some outdated comments
+    - Made the ``__version__`` variable available when importing the module
+
 8-15-2013 v. 3.0.1
 ''''''''''''''''''
 
