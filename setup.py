@@ -1,7 +1,5 @@
 #! /usr/bin/env python
 
-from distribute_setup import use_setuptools
-use_setuptools()
 from setuptools import setup, find_packages
 from os.path import join
 import sys
@@ -18,7 +16,7 @@ with open(VERSIONFILE, "rt") as fl:
             break
     else:
         s = "Unable to locate version string in {0}"
-        raise RuntimeError (s.format(VERSIONFILE))
+        raise RuntimeError(s.format(VERSIONFILE))
 
 # Read in the documentation for the long_description
 DESCRIPTION = 'Sort lists naturally'

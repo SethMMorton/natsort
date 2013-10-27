@@ -5,4 +5,3 @@ include natsort/_version.py
 include natsort/__main__.py
 include natsort/__init__.py
 include setup.py
-include distribute_setup.py
