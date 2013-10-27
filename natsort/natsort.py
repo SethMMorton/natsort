@@ -51,10 +51,8 @@ See the README or the natsort homepage for more details.
 """
 
 import re
-# The regex that locates version numbers and floats
-float_re = re.compile(r'([-+]?[0-9]*\.?[0-9]+([eE][-+]?[0-9]+)?)')
-# The regex of the exponent
-exp_re = re.compile(r'^[eE][-+]?[0-9]+$')
+# The regex that locates floats
+float_re = re.compile(r'([-+]?[0-9]*\.?[0-9]+(?:[eE][-+]?[0-9]+)?)')
 # A basic digit splitter
 digit_re = re.compile(r'(\d+)')
 # Integer regex
@@ -78,6 +76,25 @@ def remove_empty(s):
     return s
 
 
+def _number_finder(s, regex, numconv):
+    """Helper to split numbers"""
+
+    # Split.  If there are no splits, return now
+    s = regex.split(s)
+    if len(s) == 1:
+        return tuple(s)
+
+    # Now convert the numbers to numbers, and leave strings as strings
+    s = remove_empty(s)
+    for i in xrange(len(s)):
+        try:
+            s[i] = numconv(s[i])
+        except ValueError:
+            pass
+
+    return s
+
+
 def find_floats(s):
     """\
     Locate all the floats in a string, and return a tuple of
@@ -91,47 +108,7 @@ def find_floats(s):
         ['b', -40.2]
 
     """
-
-    # Split.  If there are no splits, return now
-    s = float_re.split(s)
-    if len(s) == 1:
-        return tuple(s)
-
-    # Remove all the None elements and exponentials from the list.
-    # This results from the way split works when there are parenthesis
-    # in the regular expression
-    ix = [i for i, x in enumerate(s) if x is None or exp_re.match(x)]
-    for i in reversed(ix):
-        s.pop(i)
-
-    # Now convert floats to floats, and leave strings as strings
-    s = remove_empty(s)
-    for i in xrange(len(s)):
-        try:
-            s[i] = float(s[i])
-        except ValueError:
-            pass
-
-    return s
-
-
-def _simple_finder(s, regex):
-    """Helper to split ints"""
-
-    # Split.  If there are no splits, return now
-    s = regex.split(s)
-    if len(s) == 1:
-        return tuple(s)
-
-    # Now convert ints to ints, and leave strings as strings
-    s = remove_empty(s)
-    for i in xrange(len(s)):
-        try:
-            s[i] = int(s[i])
-        except ValueError:
-            pass
-
-    return s
+    return _number_finder(s, float_re, float)
 
 
 def find_ints(s):
@@ -147,7 +124,7 @@ def find_ints(s):
         ['b', -40, '.', 2]
 
     """
-    return _simple_finder(s, int_re)
+    return _number_finder(s, int_re, int)
 
 
 def find_digits(s):
@@ -163,7 +140,7 @@ def find_digits(s):
         ['b-', 40, '.', 2]
 
     """
-    return _simple_finder(s, digit_re)
+    return _number_finder(s, digit_re, int)
 
 
 def natsort_key(s, number_type=float):
