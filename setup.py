@@ -40,7 +40,6 @@ setup(name='natsort',
       packages=find_packages(),
       entry_points={'console_scripts':['natsort = natsort.__main__:main']},
       test_suite='natsort.natsort.test',
-      use_2to3=True,
       description=DESCRIPTION,
       long_description=LONG_DESCRIPTION,
       classifiers=(

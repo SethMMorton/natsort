@@ -3,11 +3,10 @@ from __future__ import print_function, division, unicode_literals
 import sys
 import os
 import re
-from natsort import natsort_key, natsorted
-from _version import __version__
+from .natsort import natsort_key, natsorted
+from ._version import __version__
+from .py23compat import py23_str
 
-# Python 2 and 3 compatibility - Assume all strings are Unicode in Python 2
-py23_str = str if sys.version[0] == '3' else unicode
 
 def main():
     """\
