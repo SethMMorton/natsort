@@ -1,9 +1,13 @@
-from __future__ import print_function, division
+# -*- coding: utf-8 -*-
+from __future__ import print_function, division, unicode_literals
 import sys
 import os
 import re
 from natsort import natsort_key, natsorted
 from _version import __version__
+
+# Python 2 and 3 compatibility - Assume all strings are Unicode in Python 2
+py23_str = str if sys.version[0] == '3' else unicode
 
 def main():
     """\
@@ -62,7 +66,7 @@ def range_check(low, high):
     """
     low, high = float(low), float(high)
     if low >= high:
-        raise ValueError ('low >= high')
+        raise ValueError('low >= high')
     else:
         return low, high
 
@@ -74,7 +78,7 @@ def check_filter(filt):
     try:
         low, high = range_check(filt[0], filt[1])
     except ValueError as a:
-        raise ValueError ('Error in --filter: '+str(a))
+        raise ValueError('Error in --filter: '+py23_str(a))
     return low, high, re.compile(r'[+-]?\d+\.?\d*')
 
 def split_paths(paths, a):
@@ -123,6 +127,6 @@ if __name__ == '__main__':
     try:
         main()
     except ValueError as a:
-        sys.exit(str(a))
+        sys.exit(py23_str(a))
     except KeyboardInterrupt:
         sys.exit(1)

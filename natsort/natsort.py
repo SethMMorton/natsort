@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 """
 Here are a collection of examples of how this module can be used.
 See the README or the natsort homepage for more details.
@@ -42,21 +43,47 @@ See the README or the natsort homepage for more details.
     >>> natsorted(a, number_type=None)
     ['version-1', 'version-2', 'version-4', 'version-20']
 
+    >>> import sys
     >>> a = [6, 4.5, '7', u'2.5']
-    >>> sorted(a)
-    [4.5, 6, u'2.5', '7']
+    >>> if sys.version[0] == '3':
+    ...     try:
+    ...         sorted(a)
+    ...     except TypeError as e:
+    ...         print(e)
+    ... else:
+    ...     # This will get the doctest to work properly while illustrating the point
+    ...     if sorted(a) == [4.5, 6, u'2.5', '7']:
+    ...         print('unorderable types: str() < float()')
+    ...
+    unorderable types: str() < float()
     >>> natsorted(a)
     [u'2.5', 4.5, 6, '7']
 
 """
 
+from __future__ import unicode_literals
+from .py23compat import u_format
 import re
+import sys
 # The regex that locates floats
 float_re = re.compile(r'([-+]?[0-9]*\.?[0-9]+(?:[eE][-+]?[0-9]+)?)')
 # A basic digit splitter
 digit_re = re.compile(r'(\d+)')
 # Integer regex
 int_re = re.compile(r'([-+]?[0-9]+)')
+
+# Python 2 and 3 compatibility - Assume all strings are Unicode in Python 2
+# Python 2 and 3 compatibility - Use the range iterator always
+# Python 2 and 3 compatibility - Uniform base string type
+# Python 2 and 3 compatibility - zip as an iterator
+py23_str = str if sys.version[0] == '3' else unicode
+py23_range = range if sys.version[0] == '3' else xrange
+py23_basestring = str if sys.version[0] == '3' else basestring
+if sys.version[0] == '3':
+    py23_zip = zip
+else:
+    import itertools
+    py23_zip = itertools.izip
 
 
 def remove_empty(s):
@@ -86,7 +113,7 @@ def _number_finder(s, regex, numconv):
 
     # Now convert the numbers to numbers, and leave strings as strings
     s = remove_empty(s)
-    for i in xrange(len(s)):
+    for i in py23_range(len(s)):
         try:
             s[i] = numconv(s[i])
         except ValueError:
@@ -173,7 +200,7 @@ def natsort_key(s, number_type=float):
     """
 
     # If we are dealing with non-strings, return now
-    if not isinstance(s, basestring):
+    if not isinstance(s, py23_basestring):
         return (s,)
 
     # Convert to the proper tuple and return
@@ -181,7 +208,7 @@ def natsort_key(s, number_type=float):
     try:
         return tuple(find_method[number_type](s))
     except KeyError:
-        raise ValueError("natsort_key: 'search' parameter {0} invalid".format(str(number_type)))
+        raise ValueError("natsort_key: 'search' parameter {0} invalid".format(py23_str(number_type)))
 
 
 def natsorted(seq, key=lambda x: x, number_type=float):
@@ -243,7 +270,7 @@ def index_natsorted(seq, key=lambda x: x, number_type=float):
     from operator import itemgetter
     item1 = itemgetter(1)
     # Pair the index and sequence together, then sort by
-    index_seq_pair = [[x, key(y)] for x, y in zip(xrange(len(seq)), seq)]
+    index_seq_pair = [[x, key(y)] for x, y in py23_zip(py23_range(len(seq)), seq)]
     index_seq_pair.sort(key=lambda x: natsort_key(item1(x), number_type=number_type))
     return [x[0] for x in index_seq_pair]
 
