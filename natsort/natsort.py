@@ -52,11 +52,13 @@ See the README or the natsort homepage for more details.
 
 import re
 # The regex that locates floats
-float_re = re.compile(r'([-+]?[0-9]*\.?[0-9]+(?:[eE][-+]?[0-9]+)?)')
-# A basic digit splitter
-digit_re = re.compile(r'(\d+)')
-# Integer regex
-int_re = re.compile(r'([-+]?[0-9]+)')
+float_sign_exp_re = re.compile(r'([-+]?\d*\.?\d+(?:[eE][-+]?\d+)?)')
+float_nosign_exp_re = re.compile(r'(\d*\.?\d+(?:[eE][-+]?\d+)?)')
+float_sign_noexp_re = re.compile(r'([-+]?\d*\.?\d+)')
+float_nosign_noexp_re = re.compile(r'(\d*\.?\d+)')
+# Integer regexes
+int_nosign_re = re.compile(r'(\d+)')
+int_sign_re = re.compile(r'([-+]?\d+)')
 
 
 def remove_empty(s):
@@ -95,7 +97,7 @@ def _number_finder(s, regex, numconv):
     return s
 
 
-def find_floats(s):
+def find_floats(s, signed=True, exp=True):
     """\
     Locate all the floats in a string, and return a tuple of
     strings and floats.
@@ -108,10 +110,17 @@ def find_floats(s):
         ['b', -40.2]
 
     """
-    return _number_finder(s, float_re, float)
+    if signed and exp:
+        return _number_finder(s, float_sign_exp_re, float)
+    elif signed:
+        return _number_finder(s, float_sign_noexp_re, float)
+    elif exp:
+        return _number_finder(s, float_nosign_exp_re, float)
+    else:
+        return _number_finder(s, float_nosign_noexp_re, float)
 
 
-def find_ints(s):
+def find_ints(s, signed=True, exp=True):
     """\
     Locate all the ints in a string, and return a tuple of
     strings and ints.
@@ -124,10 +133,13 @@ def find_ints(s):
         ['b', -40, '.', 2]
 
     """
-    return _number_finder(s, int_re, int)
+    if signed:
+        return _number_finder(s, int_sign_re, int)
+    else:
+        return _number_finder(s, int_nosign_re, int)
 
 
-def find_digits(s):
+def find_digits(s, **kwargs):
     """\
     Locate all the digits in a string, and return a tuple of
     strings and ints.
@@ -140,10 +152,10 @@ def find_digits(s):
         ['b-', 40, '.', 2]
 
     """
-    return _number_finder(s, digit_re, int)
+    return _number_finder(s, int_nosign_re, int)
 
 
-def natsort_key(s, number_type=float):
+def natsort_key(s, number_type=float, signed=True, exp=True):
     """\
     Key to sort strings and numbers naturally, not by ASCII.
     It also has basic support for version numbers.
@@ -179,15 +191,15 @@ def natsort_key(s, number_type=float):
     # Convert to the proper tuple and return
     find_method = {float: find_floats, int: find_ints, None: find_digits}
     try:
-        return tuple(find_method[number_type](s))
+        return tuple(find_method[number_type](s, signed=signed, exp=exp))
     except KeyError:
         raise ValueError("natsort_key: 'search' parameter {0} invalid".format(str(number_type)))
 
 
-def natsorted(seq, key=lambda x: x, number_type=float):
+def natsorted(seq, key=lambda x: x, number_type=float, signed=True, exp=True):
     """\
     Sorts a sequence naturally (alphabetically and numerically),
-    not by ASCII.
+    not lexicographically.
 
         >>> a = ['num3', 'num5', 'num2']
         >>> natsorted(a)
@@ -207,10 +219,12 @@ def natsorted(seq, key=lambda x: x, number_type=float):
     :type seq: sequence-like
     :rtype: list
     """
-    return sorted(seq, key=lambda x: natsort_key(key(x), number_type=number_type))
+    return sorted(seq, key=lambda x: natsort_key(key(x),
+                                                 number_type=number_type,
+                                                 signed=signed, exp=exp))
 
 
-def index_natsorted(seq, key=lambda x: x, number_type=float):
+def index_natsorted(seq, key=lambda x: x, number_type=float, signed=True, exp=True):
     """\
     Sorts a sequence naturally, but returns a list of sorted the
     indeces and not the sorted list.
@@ -244,7 +258,9 @@ def index_natsorted(seq, key=lambda x: x, number_type=float):
     item1 = itemgetter(1)
     # Pair the index and sequence together, then sort by
     index_seq_pair = [[x, key(y)] for x, y in zip(xrange(len(seq)), seq)]
-    index_seq_pair.sort(key=lambda x: natsort_key(item1(x), number_type=number_type))
+    index_seq_pair.sort(key=lambda x: natsort_key(item1(x), 
+                                                  number_type=number_type,
+                                                  signed=signed, exp=exp))
     return [x[0] for x in index_seq_pair]
 
 
