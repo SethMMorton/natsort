@@ -289,6 +289,26 @@ Seth M. Morton
 History
 -------
 
+01-20-2014 v. 3.1.0
+'''''''''''''''''''
+
+    - Added the ``signed`` and ``exp`` options to allow finer tuning of the sorting
+    - Entire codebase now works for both Python 2 and Python 3 without needing to run
+      ``2to3``.
+    - Updated all doctests.
+    - Further simplified the natsort base code by removing unneeded functions.
+    - Simplified documentation where possible.
+    - Improved the shell script code
+
+        - Made the documentation less "path"-centric to make it clear it is not just
+          for sorting file paths.
+        - Removed the filesystem-based options because these can be achieved better
+          though a pipeline.
+        - Added doctests.
+        - Added new options that correspond to ``signed`` and ``exp``.
+        - The user can now specify multiple numbers to exclude or multiple ranges
+          to filter on.
+
 10-01-2013 v. 3.0.2
 '''''''''''''''''''
 
