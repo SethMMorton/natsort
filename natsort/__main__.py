@@ -135,41 +135,41 @@ def sort_and_print_entries(entries, args):
     Sort the entries, applying the filters first if necessary.
     
         >>> class Args:
-        ...     def __init__(self, filter, exclude, reverse, number_type):
+        ...     def __init__(self, filter, exclude, reverse):
         ...         self.filter = filter
         ...         self.exclude = exclude
         ...         self.reverse = reverse
-        ...         self.number_type = number_type
+        ...         self.number_type = 'float'
         >>> entries = ['tmp/a57/path2',
         ...            'tmp/a23/path1',
         ...            'tmp/a1/path1', 
         ...            'tmp/a130/path1',
         ...            'tmp/a64/path1',
         ...            'tmp/a64/path2']
-        >>> sort_and_print_entries(entries, Args(None, False, False, 'float'))
+        >>> sort_and_print_entries(entries, Args(None, False, False))
         tmp/a1/path1
         tmp/a23/path1
         tmp/a57/path2
         tmp/a64/path1
         tmp/a64/path2
         tmp/a130/path1
-        >>> sort_and_print_entries(entries, Args((20, 100), False, False, 'float'))
+        >>> sort_and_print_entries(entries, Args((20, 100), False, False))
         tmp/a23/path1
         tmp/a57/path2
         tmp/a64/path1
         tmp/a64/path2
-        >>> sort_and_print_entries(entries, Args(None, 23, False, 'float'))
+        >>> sort_and_print_entries(entries, Args(None, 23, False))
         tmp/a1/path1
         tmp/a57/path2
         tmp/a64/path1
         tmp/a64/path2
         tmp/a130/path1
-        >>> sort_and_print_entries(entries, Args(None, 2, False, 'float'))
+        >>> sort_and_print_entries(entries, Args(None, 2, False))
         tmp/a1/path1
         tmp/a23/path1
         tmp/a64/path1
         tmp/a130/path1
-        >>> sort_and_print_entries(entries, Args(None, False, True, 'float'))
+        >>> sort_and_print_entries(entries, Args(None, False, True))
         tmp/a130/path1
         tmp/a64/path2
         tmp/a64/path1
@@ -179,23 +179,27 @@ def sort_and_print_entries(entries, args):
 
     """
 
-    number_type = {'digit': None, 'int': int, 'float': float}[args.number_type]
-    inp_options = (number_type, True, True)
-    regex, num_function = regex_and_num_function_chooser[inp_options]
+    # Extract the proper number type.
+    kwargs = {'number_type': {'digit': None, 'int': int, 'float': float}[args.number_type],
+              'signed': args.signed,
+              'exp': args.exp}
 
     # Pre-remove entries that don't pass the filtering criteria
-    if args.filter is not None:
-        low, high = args.filter
-        entries = [entry for entry in entries
-                        if keep_entry_range(entry, low, high, num_function, regex)]
-    if args.exclude:
-        exclude = args.exclude
-        entries = [entry for entry in entries
-                        if exclude_entry(entry, exclude, num_function, regex)]
+    # Make sure we use the same searching algorithm for filtering as for sorting.
+    if args.filter is not None or args.exclude:
+        inp_options = (kwargs['number_type'], args.signed, args.exp)
+        regex, num_function = regex_and_num_function_chooser[inp_options]
+        if args.filter is not None:
+            low, high = args.filter
+            entries = [entry for entry in entries
+                            if keep_entry_range(entry, low, high, num_function, regex)]
+        if args.exclude:
+            exclude = args.exclude
+            entries = [entry for entry in entries
+                            if exclude_entry(entry, exclude, num_function, regex)]
 
     # Print off the sorted results
-    key = lambda x: natsort_key(x, number_type=number_type, signed=True, exp=True)
-    entries.sort(key=key, reverse=args.reverse)
+    entries.sort(key=lambda x: natsort_key(x, **kwargs), reverse=args.reverse)
     for entry in entries:
         print(entry)
 
