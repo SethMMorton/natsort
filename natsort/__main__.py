@@ -271,13 +271,13 @@ def sort_and_print_entries(entries, args):
 
 
 if __name__ == '__main__':
-    # try:
-    #     main()
-    # except ValueError as a:
-    #     sys.exit(py23_str(a))
-    # except KeyboardInterrupt:
-    #     sys.exit(1)
-    import doctest
-    ret = doctest.testmod()
-    if ret[0] == 0:
-        print('natsort: All {0[1]} tests successful!'.format(ret))
+    try:
+        main()
+    except ValueError as a:
+        sys.exit(py23_str(a))
+    except KeyboardInterrupt:
+        sys.exit(1)
+    # import doctest
+    # ret = doctest.testmod()
+    # if ret[0] == 0:
+    #     print('natsort: All {0[1]} tests successful!'.format(ret))
