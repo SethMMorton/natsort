@@ -105,10 +105,9 @@ def sort_and_print_paths(dirs, filterdata, exclude, reverse, number_type):
     Print off the results.
     """
     number_type = {'digit': None, 'int': int, 'float': float}[number_type]
-    for dir in natsorted(dirs.keys(), number_type=number_type):
-        dirs[dir].sort(key=lambda x: natsort_key(x, number_type=number_type))
-        if reverse:
-            dirs[dir] = reversed(dirs[dir])
+    for dir in natsorted(dirs, number_type=number_type):
+        dirs[dir].sort(key=lambda x: natsort_key(x, number_type=number_type),
+                       reverse=reverse)
         for file in dirs[dir]:
             if filterdata is not None:
                 # Find all the numbers in the filename.
