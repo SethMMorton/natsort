@@ -35,33 +35,16 @@ def main():
     parser.add_argument('-t', '--number_type', choices=('digit', 'int', 'float'),
                          default='float', help='Choose the type of number '
                          'to search for.')
-    parser.add_argument('--test', default=False, action='store_true',
-                        help='Execute doctests on this file. '
-                             'No other actions will be performed.')
     parser.add_argument('entries', help='The entries to sort. Taken from stdin '
                         'if nothing is given on the command line.', nargs='*',
                         default=sys.stdin)
     args = parser.parse_args()
 
-    # Run tests if requested
-    if args.test:
-        raise ExecuteTestRunner
-
     # Make sure the filter range is given properly. Does nothing if no filter
     args.filter = check_filter(args.filter)
 
-    # # Recursively collect entries, if necessary.
-    # if args.recursive:
-    #     jn = os.path.join
-    #     entries = [jn(p, fn) for p, d, f in os.walk(os.curdir) for fn in f]
-    # # Collect entries either from a pipe or the command-line arguments.
-    # else:
-    #     entries = [f.strip() for f in args.entries]
     # Remove trailing whitespace from all the entries
     entries = [e.strip() for e in args.entries]
-
-    # # Split into directory path and filenames
-    # entries = split_entries(entries, args.onlyfiles)
 
     # Sort by directory then by file within directory and print.
     sort_and_print_entries(entries, args)
@@ -111,26 +94,6 @@ def check_filter(filt):
         return range_check(filt[0], filt[1])
     except ValueError as a:
         raise ValueError('Error in --filter: '+py23_str(a))
-
-# def split_entries(entries, a):
-#     """For each file, separate into directory and filename. Store all files
-#     in a dir into a dict where the dir is the key and filename is the value.
-#     """
-#     dirs = {}
-#     for path in entries:
-#         if a:
-#             try:
-#                 with open(path) as fl:
-#                     pass
-#             except IOError:
-#                 continue
-#         dir, file = os.path.split(path)
-#         try:
-#             dirs[dir].append(file)
-#         except KeyError:
-#             dirs[dir] = []
-#             dirs[dir].append(file)
-#     return dirs
 
 
 def keep_entry_range(entry, low, high, converter, regex):
@@ -235,37 +198,16 @@ def sort_and_print_entries(entries, args):
     entries.sort(key=key, reverse=args.reverse)
     for entry in entries:
         print(entry)
-    # for dir in natsorted(entries, number_type=number_type):
-    #     entries[dir].sort(key=lambda x: natsort_key(x, number_type=number_type),
-    #                    reverse=reverse)
-    #     for file in entries[dir]:
-    #         if filterdata is not None:
-    #             # Find all the numbers in the filename.
-    #             nums = filterdata[2].findall(file)
-    #             # If any numbers are between the range, print.
-    #             # Otherwise, move to next file.
-    #             for num in nums:
-    #                 if filterdata[0] <= float(num) <= filterdata[1]: break
-    #             else:
-    #                 continue
-    #         if exclude and exclude in file: continue
-    #         print(os.path.join(dir, file))
-
-
-class ExecuteTestRunner(Exception):
-    """Class used to quit execution and run the doctests"""
-    pass
 
 
 if __name__ == '__main__':
-    try:
-        main()
-    except ValueError as a:
-        sys.exit(py23_str(a))
-    except KeyboardInterrupt:
-        sys.exit(1)
-    except ExecuteTestRunner:
-        import doctest
-        ret = doctest.testmod()
-        if ret[0] == 0:
-            print('natsort: All {0[1]} tests successful!'.format(ret))
+    # try:
+    #     main()
+    # except ValueError as a:
+    #     sys.exit(py23_str(a))
+    # except KeyboardInterrupt:
+    #     sys.exit(1)
+    import doctest
+    ret = doctest.testmod()
+    if ret[0] == 0:
+        print('natsort: All {0[1]} tests successful!'.format(ret))
