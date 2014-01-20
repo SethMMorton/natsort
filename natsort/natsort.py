@@ -142,20 +142,15 @@ def natsort_key(s, number_type=float, signed=True, exp=True):
     For use in passing to the :py:func:`sorted` builtin or
     :py:meth:`sort` attribute of lists.
 
+    Use natsort_key just like any other sorting key.
+
         >>> a = ['num3', 'num5', 'num2']
         >>> a.sort(key=natsort_key)
         >>> a
         [{u}'num2', {u}'num3', {u}'num5']
-        >>> b = [('a', 'num3'), ('b', 'num5'), ('c', 'num2')]
-        >>> b.sort(key=lambda x: natsort_key(x[1]))
-        >>> b
-        [({u}'c', {u}'num2'), ({u}'a', {u}'num3'), ({u}'b', {u}'num5')]
-        >>> from operator import itemgetter
-        >>> c = [('a', 'num3'), ('b', 'num5'), ('c', 'num2')]
-        >>> f = itemgetter(1)
-        >>> c.sort(key=lambda x: natsort_key(f(x)))
-        >>> c
-        [({u}'c', {u}'num2'), ({u}'a', {u}'num3'), ({u}'b', {u}'num5')]
+
+    Below illustrates how the key works, and how the different options affect sorting.
+
         >>> natsort_key('a-5.034e1')
         ({u}'a', -50.34)
         >>> natsort_key('a-5.034e1', number_type=float, signed=True, exp=True)
@@ -176,6 +171,9 @@ def natsort_key(s, number_type=float, signed=True, exp=True):
         ({u}'a', -5, {u}'.', 34, {u}'e', 1)
         >>> natsort_key('a-5.034e1', number_type=None)
         ({u}'a-', 5, {u}'.', 34, {u}'e', 1)
+
+    This is a demonstration of what number_type=None works.
+
         >>> natsort_key('a-5.034e1', number_type=None) == natsort_key('a-5.034e1', number_type=None, signed=False)
         True
         >>> natsort_key('a-5.034e1', number_type=None) == natsort_key('a-5.034e1', number_type=None, exp=False)
@@ -217,18 +215,10 @@ def natsorted(seq, key=lambda x: x, number_type=float, signed=True, exp=True):
         >>> natsorted(a)
         [{u}'num2', {u}'num3', {u}'num5']
         >>> b = [('a', 'num3'), ('b', 'num5'), ('c', 'num2')]
-        >>> b.sort(key=lambda x: natsort_key(x[1]))
-        >>> b
-        [({u}'c', {u}'num2'), ({u}'a', {u}'num3'), ({u}'b', {u}'num5')]
-        >>> c = [('a', 'num3'), ('b', 'num5'), ('c', 'num2')]
         >>> from operator import itemgetter
-        >>> natsorted(c, key=itemgetter(1))
+        >>> natsorted(b, key=itemgetter(1))
         [({u}'c', {u}'num2'), ({u}'a', {u}'num3'), ({u}'b', {u}'num5')]
 
-    :argument seq:
-        The sequence to be sorted.
-    :type seq: sequence-like
-    :rtype: list
     """
     return sorted(seq, key=lambda x: natsort_key(key(x),
                                                  number_type=number_type,
@@ -256,10 +246,6 @@ def index_natsorted(seq, key=lambda x: x, number_type=float, signed=True, exp=Tr
         >>> index_natsorted(c, key=itemgetter(1))
         [2, 0, 1]
 
-    :argument seq:
-        The sequence that you want the sorted index of.
-    :type seq: sequence-like
-    :rtype: list
     """
     from operator import itemgetter
     item1 = itemgetter(1)
