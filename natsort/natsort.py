@@ -81,7 +81,21 @@ float_nosign_noexp_re = re.compile(r'(\d*\.?\d+)')
 # Integer regexes
 int_nosign_re = re.compile(r'(\d+)')
 int_sign_re = re.compile(r'([-+]?\d+)')
-
+# This dict will help select the correct regex and number conversion function.
+regex_and_num_function_chooser = {
+    (float, True,  True)  : (float_sign_exp_re,     float),
+    (float, True,  False) : (float_sign_noexp_re,   float),
+    (float, False, True)  : (float_nosign_exp_re,   float),
+    (float, False, False) : (float_nosign_noexp_re, float),
+    (int,   True,  True)  : (int_sign_re,   int),
+    (int,   True,  False) : (int_sign_re,   int),
+    (int,   False, True)  : (int_nosign_re, int),
+    (int,   False, False) : (int_nosign_re, int),
+    (None,  True,  True)  : (int_nosign_re, int),
+    (None,  True,  False) : (int_nosign_re, int),
+    (None,  False, True)  : (int_nosign_re, int),
+    (None,  False, False) : (int_nosign_re, int),
+}
 
 @u_format
 def remove_empty(s):
@@ -176,23 +190,10 @@ def natsort_key(s, number_type=float, signed=True, exp=True):
         return (s,)
 
     # Convert to the proper tuple and return
-    find_method = {
-        (float, True,  True)  : (s, float_sign_exp_re,     float),
-        (float, True,  False) : (s, float_sign_noexp_re,   float),
-        (float, False, True)  : (s, float_nosign_exp_re,   float),
-        (float, False, False) : (s, float_nosign_noexp_re, float),
-        (int,   True,  True)  : (s, int_sign_re,   int),
-        (int,   True,  False) : (s, int_sign_re,   int),
-        (int,   False, True)  : (s, int_nosign_re, int),
-        (int,   False, False) : (s, int_nosign_re, int),
-        (None,  True,  True)  : (s, int_nosign_re, int),
-        (None,  True,  False) : (s, int_nosign_re, int),
-        (None,  False, True)  : (s, int_nosign_re, int),
-        (None,  False, False) : (s, int_nosign_re, int),
-    }
     inp_options = (number_type, signed, exp)
+    args = (s,) + regex_and_num_function_chooser[inp_options]
     try:
-        return tuple(_number_finder(*find_method[inp_options]))
+        return tuple(_number_finder(*args))
     except KeyError:
         # Report errors properly
         if number_type not in (float, int) or number_type is not None:
