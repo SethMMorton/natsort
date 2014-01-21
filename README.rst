@@ -93,8 +93,8 @@ to sort by ints, not floats::
     >>> natsorted(a, number_type=int)
     ['ver1.9.9a', 'ver1.9.9b', 'ver1.10.1', 'ver1.11', 'ver1.11.4']
 
-Sort by digits
-++++++++++++++
+Sort by digits (best for version numbers)
++++++++++++++++++++++++++++++++++++++++++
 
 The only difference between sorting by ints and sorting by digits is that
 sorting by ints may take into account a negative sign, and sorting by digits
@@ -326,7 +326,7 @@ Seth M. Morton
 History
 -------
 
-01-21-2014 v. 3.1.0
+01-20-2014 v. 3.1.0
 '''''''''''''''''''
 
     - Added the ``signed`` and ``exp`` options to allow finer tuning of the sorting
