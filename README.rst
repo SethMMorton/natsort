@@ -326,7 +326,7 @@ Seth M. Morton
 History
 -------
 
-01-20-2014 v. 3.1.0
+01-21-2014 v. 3.1.0
 '''''''''''''''''''
 
     - Added the ``signed`` and ``exp`` options to allow finer tuning of the sorting
