@@ -75,9 +75,11 @@ Natsort will recursively descend into lists of lists so you can sort by the subl
 """
 
 from __future__ import unicode_literals
-from .py23compat import u_format, py23_basestring, py23_range, py23_str, py23_zip
+
 import re
 import sys
+
+from .py23compat import u_format, py23_basestring, py23_range, py23_str, py23_zip
 
 __doc__ = u_format(__doc__) # Make sure the doctest works for either python2 or python3
 
@@ -104,6 +106,7 @@ regex_and_num_function_chooser = {
     (None,  False, True)  : (int_nosign_re, int),
     (None,  False, False) : (int_nosign_re, int),
 }
+
 
 @u_format
 def remove_empty(s):
