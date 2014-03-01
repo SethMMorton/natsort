@@ -334,6 +334,12 @@ Seth M. Morton
 History
 -------
 
+03-01-2014 v. 3.1.1
+'''''''''''''''''''
+
+    - Added ability to sort lists of lists
+    - Cleaned up import statements
+
 01-20-2014 v. 3.1.0
 '''''''''''''''''''
 
