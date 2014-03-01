@@ -54,6 +54,14 @@ when you sort::
     >>> # On Python 2, sorted(a) would return [2.3, 6, '4.5', '5']
     >>> # On Python 3, sorted(a) would raise an "unorderable types" TypeError
 
+The natsort algorithm will recursively descend into lists of lists so you can sort by
+the sublist contents::
+
+    >>> data = [['a1', 'a5'], ['a1', 'a40'], ['a10', 'a1'], ['a2', 'a5']]
+    >>> sorted(data)
+    [['a1', 'a40'], ['a1', 'a5'], ['a10', 'a1'], ['a2', 'a5']]
+    >>> natsorted(data)
+    [['a1', 'a5'], ['a1', 'a40'], ['a2', 'a5'], ['a10', 'a1']]
 
 The Sorting Algorithms
 ''''''''''''''''''''''
@@ -325,6 +333,12 @@ Seth M. Morton
 
 History
 -------
+
+03-01-2014 v. 3.1.1
+'''''''''''''''''''
+
+    - Added ability to sort lists of lists
+    - Cleaned up import statements
 
 01-20-2014 v. 3.1.0
 '''''''''''''''''''
