@@ -64,6 +64,14 @@ You can mix types with natsorted.  This can get around the new
     >>> natsorted(a)
     [{u}'2.5', 4.5, 6, {u}'7']
 
+Natsort will recursively descend into lists of lists so you can sort by the sublist contents.
+
+    >>> data = [['a1', 'a5'], ['a1', 'a40'], ['a10', 'a1'], ['a2', 'a5']]
+    >>> sorted(data)
+    [[{u}'a1', {u}'a40'], [{u}'a1', {u}'a5'], [{u}'a10', {u}'a1'], [{u}'a2', {u}'a5']]
+    >>> natsorted(data)
+    [[{u}'a1', {u}'a5'], [{u}'a1', {u}'a40'], [{u}'a2', {u}'a5'], [{u}'a10', {u}'a1']]
+
 """
 
 from __future__ import unicode_literals
@@ -181,11 +189,24 @@ def natsort_key(s, number_type=float, signed=True, exp=True):
         >>> natsort_key('a-5.034e1', number_type=None) == natsort_key('a-5.034e1', number_type=int, signed=False)
         True
 
+    Iterables are parsed recursively so you can sort lists of lists.
+
+        >>> natsort_key(('a1', 'a10'))
+        (({u}'a', 1.0), ({u}'a', 10.0))
+
+    You can give numbers, too.
+
+        >>> natsort_key(10)
+        (10,)
+
     """
 
     # If we are dealing with non-strings, return now
     if not isinstance(s, py23_basestring):
-        return (s,)
+        if hasattr(s, '__getitem__'):
+            return tuple(natsort_key(x) for x in s)
+        else:
+            return (s,)
 
     # Convert to the proper tuple and return
     inp_options = (number_type, signed, exp)
