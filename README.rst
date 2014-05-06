@@ -334,6 +334,12 @@ Seth M. Morton
 History
 -------
 
+05-05-2014 v. 3.1.2
+'''''''''''''''''''
+
+    - Added setup.cfg to support universal wheels
+    - Added Python 3.0 and Python 3.1 as requiring the argparse module
+
 03-01-2014 v. 3.1.1
 '''''''''''''''''''
 
