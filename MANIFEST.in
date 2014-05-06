@@ -6,3 +6,4 @@ include natsort/__main__.py
 include natsort/__init__.py
 include natsort/py23compat.py
 include setup.py
+include setup.cfg

@@ -26,8 +26,8 @@ try:
 except IOError:
     LONG_DESCRIPTION = DESCRIPTION
 
-# python2.6 needs the argparse module
-REQUIRES = 'argparse' if sys.version[:3] == '2.6' else ''
+# The argparse module was introduced in python 2.7 or python 3.2
+REQUIRES = 'argparse' if sys.version[:3] in ('2.6', '3.0', '3.1') else ''
 
 # The setup parameters
 setup(name='natsort',
