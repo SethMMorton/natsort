@@ -49,7 +49,7 @@ You can mix types with natsorted.  This can get around the new
 'unorderable types' issue with Python 3.
 
     >>> import sys
-    >>> a = [6, 4.5, '7', u'2.5']
+    >>> a = [6, 4.5, '7', u'2.5', 'a']
     >>> if sys.version[0] == '3': # Python 3
     ...     try:
     ...         sorted(a)
@@ -57,14 +57,14 @@ You can mix types with natsorted.  This can get around the new
     ...         print(e)
     ... else: # Python 2
     ...     # This will get the doctest to work properly while illustrating the point
-    ...     if sorted(a) == [4.5, 6, u'2.5', '7']:
+    ...     if sorted(a) == [4.5, 6, u'2.5', '7', 'a']:
     ...         print('unorderable types: str() < float()')
     ...
     unorderable types: str() < float()
     >>> natsorted(a)
-    [{u}'2.5', 4.5, 6, {u}'7']
+    [{u}'2.5', 4.5, 6, {u}'7', {u}'a']
 
-Natsort will recursively descend into lists of lists so you can sort by the sublist contents.
+natsort will recursively descend into lists of lists so you can sort by the sublist contents.
 
     >>> data = [['a1', 'a5'], ['a1', 'a40'], ['a10', 'a1'], ['a2', 'a5']]
     >>> sorted(data)
@@ -142,7 +142,12 @@ def _number_finder(s, regex, numconv):
         except ValueError:
             pass
 
-    return s
+    # If the list begins with a number, lead with an empty string.
+    # This is used to get around the "unorderable types" issue. 
+    if not isinstance(s[0], py23_basestring):
+        return [''] + s
+    else:
+        return s
 
 
 @u_format
@@ -197,10 +202,16 @@ def natsort_key(s, number_type=float, signed=True, exp=True):
         >>> natsort_key(('a1', 'a10'))
         (({u}'a', 1.0), ({u}'a', 10.0))
 
+    Strings that lead with a number get an empty string at the front of the tuple.
+    This is designed to get around the "unorderable types" issue.
+
+        >>> natsort_key(('15a', '6'))
+        (({u}'', 15.0, {u}'a'), ({u}'', 6.0))
+
     You can give numbers, too.
 
         >>> natsort_key(10)
-        (10,)
+        ({u}'', 10)
 
     """
 
@@ -209,7 +220,7 @@ def natsort_key(s, number_type=float, signed=True, exp=True):
         if hasattr(s, '__getitem__'):
             return tuple(natsort_key(x) for x in s)
         else:
-            return (s,)
+            return ('', s,)
 
     # Convert to the proper tuple and return
     inp_options = (number_type, signed, exp)
