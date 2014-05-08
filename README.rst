@@ -2,7 +2,7 @@ natsort
 =======
 
 Natural sorting for python.  ``natsort`` requires python version 2.6 or greater
-(this includes python 3.x). To run version 2.6, 3.1, or 3.2 the 
+(this includes python 3.x). To run version 2.6, 3.0, or 3.1 the 
 `argparse <https://pypi.python.org/pypi/argparse>`_ module is required.
 
 ``natsort`` comes with a shell script that is described below.  You can
@@ -24,7 +24,7 @@ expect::
     ['a1', 'a10', 'a2', 'a4', 'a9']
 
 Notice that it has the order ('1', '10', '2') - this is because the list is
-being sorted in lexicographically order, which sorts numbers like you would
+being sorted in lexicographical order, which sorts numbers like you would
 letters (i.e. 'a', 'at', 'b').  It would be better if you had a sorting
 algorithm that recognized numbers as numbers and treated them like numbers,
 not letters.
@@ -48,9 +48,9 @@ Using ``natsort`` is simple::
 You can also mix and match ``int``, ``float``, and ``str`` (or ``unicode``) types
 when you sort::
 
-    >>> a = ['4.5', 6, 2.3, '5']
+    >>> a = ['4.5', 6, 2.3, '5', 'a']
     >>> natsorted(a)
-    [2.3, '4.5', '5', 6]
+    [2.3, '4.5', '5', 6, 'a']
     >>> # On Python 2, sorted(a) would return [2.3, 6, '4.5', '5']
     >>> # On Python 3, sorted(a) would raise an "unorderable types" TypeError
 
@@ -334,17 +334,26 @@ Seth M. Morton
 History
 -------
 
+05-07-2014 v. 3.2.0
+'''''''''''''''''''
+
+    - "Fixed" unorderable types issue on Python 3.x with a workaround that
+      attempts to replicate the Python 2.x behavior by putting all the numbers
+      (or strings that begin with numbers) first.
+    - Now explicitly excluding __pycache__ from releases by adding a prune statement
+      to MANIFEST.in.
+
 05-05-2014 v. 3.1.2
 '''''''''''''''''''
 
-    - Added setup.cfg to support universal wheels
-    - Added Python 3.0 and Python 3.1 as requiring the argparse module
+    - Added setup.cfg to support universal wheels.
+    - Added Python 3.0 and Python 3.1 as requiring the argparse module.
 
 03-01-2014 v. 3.1.1
 '''''''''''''''''''
 
-    - Added ability to sort lists of lists
-    - Cleaned up import statements
+    - Added ability to sort lists of lists.
+    - Cleaned up import statements.
 
 01-20-2014 v. 3.1.0
 '''''''''''''''''''
@@ -369,9 +378,9 @@ History
 10-01-2013 v. 3.0.2
 '''''''''''''''''''
 
-    - Made float, int, and digit searching algorithms all share the same base function
-    - Fixed some outdated comments
-    - Made the ``__version__`` variable available when importing the module
+    - Made float, int, and digit searching algorithms all share the same base function.
+    - Fixed some outdated comments.
+    - Made the ``__version__`` variable available when importing the module.
 
 8-15-2013 v. 3.0.1
 ''''''''''''''''''
@@ -398,29 +407,29 @@ History
 12-5-2012 v. 2.1.0
 ''''''''''''''''''
 
-    - Reorganized package
+    - Reorganized package.
     - Now using a platform independent shell script generator (entry_points
-      from distribute)
+      from distribute).
     - Can now execute natsort from command line with ``python -m natsort``
-      as well
+      as well.
 
 11-30-2012 v. 2.0.2
 '''''''''''''''''''
 
-    - Added the use_2to3 option to setup.py
-    - Added distribute_setup.py to the distribution
-    - Added dependency to the argparse module (for python2.6)
+    - Added the use_2to3 option to setup.py.
+    - Added distribute_setup.py to the distribution.
+    - Added dependency to the argparse module (for python2.6).
 
 11-21-2012 v. 2.0.1
 '''''''''''''''''''
 
-    - Reorganized directory structure
-    - Added tests into the natsort.py file iteself
+    - Reorganized directory structure.
+    - Added tests into the natsort.py file iteself.
 
 11-16-2012, v. 2.0.0
 ''''''''''''''''''''
 
     - Updated sorting algorithm to support floats (including exponentials) and
-      basic version number support
-    - Added better README documentation
-    - Added doctests
+      basic version number support.
+    - Added better README documentation.
+    - Added doctests.
