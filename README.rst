@@ -51,7 +51,7 @@ when you sort::
     >>> a = ['4.5', 6, 2.3, '5', 'a']
     >>> natsorted(a)
     [2.3, '4.5', '5', 6, 'a']
-    >>> # On Python 2, sorted(a) would return [2.3, 6, '4.5', '5']
+    >>> # On Python 2, sorted(a) would return [2.3, 6, '4.5', '5', 'a']
     >>> # On Python 3, sorted(a) would raise an "unorderable types" TypeError
 
 The natsort algorithm will recursively descend into lists of lists so you can sort by
