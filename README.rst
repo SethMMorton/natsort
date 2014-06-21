@@ -334,6 +334,12 @@ Seth M. Morton
 History
 -------
 
+06-20-2014 v. 3.2.1
+'''''''''''''''''''
+
+    - Re-"Fixed" unorderable types issue on Python 3.x - this workaround
+      is for when the problem occurs in the middle of the string.
+
 05-07-2014 v. 3.2.0
 '''''''''''''''''''
 
