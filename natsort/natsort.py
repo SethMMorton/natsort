@@ -74,7 +74,7 @@ natsort will recursively descend into lists of lists so you can sort by the subl
 
 """
 
-from __future__ import unicode_literals
+from __future__ import print_function, division, unicode_literals, absolute_import
 
 import re
 import sys
