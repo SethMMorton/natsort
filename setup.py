@@ -1,11 +1,15 @@
 #! /usr/bin/env python
 
-from setuptools import setup, find_packages
-from os.path import join
+# Std. lib imports
+import re
 import sys
+from os.path import join
+
+# Non-std lib imports
+from setuptools import setup
+
 
 # Read the natsort.py file for the module version number
-import re
 VERSIONFILE = join('natsort', '_version.py')
 versionsearch = re.compile(r"^__version__ = ['\"]([^'\"]*)['\"]")
 with open(VERSIONFILE, "rt") as fl:
@@ -18,6 +22,7 @@ with open(VERSIONFILE, "rt") as fl:
         s = "Unable to locate version string in {0}"
         raise RuntimeError(s.format(VERSIONFILE))
 
+
 # Read in the documentation for the long_description
 DESCRIPTION = 'Sort lists naturally'
 try:
@@ -26,8 +31,10 @@ try:
 except IOError:
     LONG_DESCRIPTION = DESCRIPTION
 
+
 # The argparse module was introduced in python 2.7 or python 3.2
 REQUIRES = 'argparse' if sys.version[:3] in ('2.6', '3.0', '3.1') else ''
+
 
 # The setup parameters
 setup(name='natsort',
@@ -37,8 +44,8 @@ setup(name='natsort',
       url='https://github.com/SethMMorton/natsort',
       license='MIT',
       install_requires=REQUIRES,
-      packages=find_packages(),
-      entry_points={'console_scripts':['natsort = natsort.__main__:main']},
+      packages=['natsort'],
+      entry_points={'console_scripts': ['natsort = natsort.__main__:main']},
       test_suite='natsort.natsort.test',
       description=DESCRIPTION,
       long_description=LONG_DESCRIPTION,

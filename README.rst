@@ -51,7 +51,7 @@ when you sort::
     >>> a = ['4.5', 6, 2.3, '5', 'a']
     >>> natsorted(a)
     [2.3, '4.5', '5', 6, 'a']
-    >>> # On Python 2, sorted(a) would return [2.3, 6, '4.5', '5']
+    >>> # On Python 2, sorted(a) would return [2.3, 6, '4.5', '5', 'a']
     >>> # On Python 3, sorted(a) would raise an "unorderable types" TypeError
 
 The natsort algorithm will recursively descend into lists of lists so you can sort by
@@ -333,6 +333,12 @@ Seth M. Morton
 
 History
 -------
+
+06-20-2014 v. 3.2.1
+'''''''''''''''''''
+
+    - Re-"Fixed" unorderable types issue on Python 3.x - this workaround
+      is for when the problem occurs in the middle of the string.
 
 05-07-2014 v. 3.2.0
 '''''''''''''''''''
