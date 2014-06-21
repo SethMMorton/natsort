@@ -78,6 +78,8 @@ from __future__ import print_function, division, unicode_literals, absolute_impo
 
 import re
 import sys
+from numbers import Number
+from itertools import islice
 
 from .py23compat import u_format, py23_basestring, py23_range, py23_str, py23_zip
 
@@ -126,7 +128,7 @@ def remove_empty(s):
     return s
 
 
-def _number_finder(s, regex, numconv):
+def _number_finder(s, regex, numconv, py3_safe):
     """Helper to split numbers"""
 
     # Split.  If there are no splits, return now
@@ -143,15 +145,34 @@ def _number_finder(s, regex, numconv):
             pass
 
     # If the list begins with a number, lead with an empty string.
-    # This is used to get around the "unorderable types" issue. 
+    # This is used to get around the "unorderable types" issue.
+    # The _py3_safe function inserts "" between numbers in the list,
+    # and is used to get around "unorderable types" in complex cases.
+    # It is a separate function that needs to be requested specifically
+    # because it is expensive to call.
     if not isinstance(s[0], py23_basestring):
-        return [''] + s
+        return _py3_safe([''] + s) if py3_safe else [''] + s
     else:
-        return s
+        return _py3_safe(s) if py3_safe else s
+
+
+def _py3_safe(parsed_list):
+    """Insert "" between two numbers."""
+    if len(parsed_list) < 2:
+        return parsed_list
+    else:
+        new_list = [parsed_list[0]]
+        nl_append = new_list.append
+        for before, after in py23_zip(islice(parsed_list, 0, len(parsed_list)-1),
+                                      islice(parsed_list, 1, None)):
+            if isinstance(before, Number) and isinstance(after, Number):
+                nl_append("")
+            nl_append(after)
+        return tuple(new_list)
 
 
 @u_format
-def natsort_key(s, number_type=float, signed=True, exp=True):
+def natsort_key(s, number_type=float, signed=True, exp=True, py3_safe=False):
     """\
     Key to sort strings and numbers naturally, not lexicographically.
     It also has basic support for version numbers.
@@ -213,6 +234,14 @@ def natsort_key(s, number_type=float, signed=True, exp=True):
         >>> natsort_key(10)
         ({u}'', 10)
 
+    If you have a case where one of your string has two numbers in a row
+    (only possible with "5+5" or "5-5" and signed=True to my knowledge), you
+    can turn on the "py3_safe" option to try to add a "" between sets of two
+    numbers.
+
+        >>> natsort_key('43h7+3', py3_safe=True)
+        ({u}'', 43.0, {u}'h', 7.0, {u}'', 3.0)
+
     """
 
     # If we are dealing with non-strings, return now
@@ -224,7 +253,7 @@ def natsort_key(s, number_type=float, signed=True, exp=True):
 
     # Convert to the proper tuple and return
     inp_options = (number_type, signed, exp)
-    args = (s,) + regex_and_num_function_chooser[inp_options]
+    args = (s,) + regex_and_num_function_chooser[inp_options] + (py3_safe,)
     try:
         return tuple(_number_finder(*args))
     except KeyError:
@@ -254,10 +283,28 @@ def natsorted(seq, key=lambda x: x, number_type=float, signed=True, exp=True):
         >>> natsorted(b, key=itemgetter(1))
         [({u}'c', {u}'num2'), ({u}'a', {u}'num3'), ({u}'b', {u}'num5')]
 
+    It tries really hard to not get the "unorderable types" error
+
+        >>> a = [46, '5a5b2', 'af5', '5a5-4']
+        >>> natsorted(a)
+        [{u}'5a5-4', {u}'5a5b2', 46, {u}'af5']
+
     """
-    return sorted(seq, key=lambda x: natsort_key(key(x),
-                                                 number_type=number_type,
-                                                 signed=signed, exp=exp))
+    try:
+        return sorted(seq, key=lambda x: natsort_key(key(x),
+                                                     number_type=number_type,
+                                                     signed=signed, exp=exp))
+    except TypeError as e:
+        # In the event of an unresolved "unorderable types" error
+        # attempt to sort again, being careful to prevent this error.
+        if 'unorderable types' in str(e):
+            return sorted(seq, key=lambda x: natsort_key(key(x),
+                                                         number_type=number_type,
+                                                         signed=signed, exp=exp,
+                                                         py3_safe=True))
+        else:
+            # Re-raise if the problem was not "unorderable types"
+            raise
 
 
 @u_format
@@ -281,14 +328,32 @@ def index_natsorted(seq, key=lambda x: x, number_type=float, signed=True, exp=Tr
         >>> index_natsorted(c, key=itemgetter(1))
         [2, 0, 1]
 
+    It tries really hard to not get the "unorderable types" error
+
+        >>> a = [46, '5a5b2', 'af5', '5a5-4']
+        >>> index_natsorted(a)
+        [3, 1, 0, 2]
+
     """
     from operator import itemgetter
     item1 = itemgetter(1)
     # Pair the index and sequence together, then sort by
     index_seq_pair = [[x, key(y)] for x, y in py23_zip(py23_range(len(seq)), seq)]
-    index_seq_pair.sort(key=lambda x: natsort_key(item1(x), 
-                                                  number_type=number_type,
-                                                  signed=signed, exp=exp))
+    try:
+        index_seq_pair.sort(key=lambda x: natsort_key(item1(x), 
+                                                      number_type=number_type,
+                                                      signed=signed, exp=exp))
+    except TypeError as e:
+        # In the event of an unresolved "unorderable types" error
+        # attempt to sort again, being careful to prevent this error.
+        if 'unorderable types' in str(e):
+            index_seq_pair.sort(key=lambda x: natsort_key(item1(x), 
+                                                          number_type=number_type,
+                                                          signed=signed, exp=exp,
+                                                          py3_safe=True))
+        else:
+            # Re-raise if the problem was not "unorderable types"
+            raise
     return [x[0] for x in index_seq_pair]
 
 
