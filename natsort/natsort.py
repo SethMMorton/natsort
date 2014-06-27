@@ -49,7 +49,7 @@ You can mix types with natsorted.  This can get around the new
 'unorderable types' issue with Python 3.
 
     >>> import sys
-    >>> a = [6, 4.5, '7', u'2.5', 'a']
+    >>> a = [6, 4.5, '7', {u}'2.5', 'a']
     >>> if sys.version[0] == '3': # Python 3
     ...     try:
     ...         sorted(a)
@@ -57,7 +57,7 @@ You can mix types with natsorted.  This can get around the new
     ...         print(e)
     ... else: # Python 2
     ...     # This will get the doctest to work properly while illustrating the point
-    ...     if sorted(a) == [4.5, 6, u'2.5', '7', 'a']:
+    ...     if sorted(a) == [4.5, 6, {u}'2.5', '7', 'a']:
     ...         print('unorderable types: str() < float()')
     ...
     unorderable types: str() < float()
