@@ -8,10 +8,6 @@ Natural sorting for python.  ``natsort`` requires python version 2.6 or greater
 ``natsort`` comes with a shell script that is described below.  You can
 also execute ``natsort`` from the command line with ``python -m natsort``.
 
-There exists another natural sorting package for python called 
-`naturalsort <https://pypi.python.org/pypi/naturalsort>`_.  You may prefer
-this package if you wish to only sort version numbers.
-
 Problem Statement
 -----------------
 
@@ -182,7 +178,7 @@ Use ``natsorted`` just like the builtin ``sorted``::
 natsort_key
 '''''''''''
 
-``natsort.natsort_key`` (value, *number_type* = ``float``, *signed* = ``True``, *exp* = ``True``)
+``natsort.natsort_key`` (value, *number_type* = ``float``, *signed* = ``True``, *exp* = ``True``, *py3_safe* = ``False``)
 
     value
         The value used by the sorting algorithm
@@ -203,6 +199,11 @@ natsort_key
         like ``"3.5e5"`` will be interpreted as ``350000``, i.e. the exponential part
         is considered to be part of the number.  If ``exp = False``, ``"3.5e5"`` is
         interpreted as ``(3.5, "e", 5)``.  The default behavior is ``exp = True``.
+
+    py3_safe (``True``, ``False``)
+        This will make the string parsing algorithm be more careful by placing
+        an empty string between two adjacent numbers after the parsing algorithm.
+        This will prevent the "unorderable types" error.
 
     returns
         The modified value with numbers extracted.
