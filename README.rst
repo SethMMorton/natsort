@@ -44,10 +44,10 @@ Using ``natsort`` is simple::
 You can also mix and match ``int``, ``float``, and ``str`` (or ``unicode``) types
 when you sort::
 
-    >>> a = ['4.5', 6, 2.3, '5', 'a']
+    >>> a = ['4.5', 6, 2.0, '5', 'a']
     >>> natsorted(a)
-    [2.3, '4.5', '5', 6, 'a']
-    >>> # On Python 2, sorted(a) would return [2.3, 6, '4.5', '5', 'a']
+    [2.0, '4.5', '5', 6, 'a']
+    >>> # On Python 2, sorted(a) would return [2.0, 6, '4.5', '5', 'a']
     >>> # On Python 3, sorted(a) would raise an "unorderable types" TypeError
 
 The natsort algorithm will recursively descend into lists of lists so you can sort by
@@ -216,6 +216,11 @@ Using ``natsort_key`` is just like any other sorting key in python::
     >>> a
     ['num2', 'num3', 'num5']
 
+It works by separating out the numbers from the strings::
+
+    >>> natsort_key('num2')
+    ('num', 2.0)
+
 If you need to call ``natsort_key`` with the ``number_type`` argument, or get a special
 attribute or item of each element of the sequence, the easiest way is to make a 
 ``lambda`` expression that calls ``natsort_key``::
@@ -334,6 +339,18 @@ Seth M. Morton
 
 History
 -------
+
+06-28-2014 v. 3.x.x
+'''''''''''''''''''
+
+    - Moved unit-testing mechanism from being docstring-based to actual unit tests
+      in actual functions.
+
+      - This has provided the ability determine the coverage of the unit tests (99%).
+      - This also makes the pydoc documentation a bit more clear.
+
+    - Made docstrings for public functions mirror the README API.
+    - Connected natsort development to Travis-CI to help ensure quality releases.
 
 06-20-2014 v. 3.2.1
 '''''''''''''''''''

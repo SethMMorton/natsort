@@ -1,76 +1,14 @@
 # -*- coding: utf-8 -*-
 """
-Here are a collection of examples of how this module can be used.
-See the README or the natsort homepage for more details.
-
-    >>> a = ['a2', 'a5', 'a9', 'a1', 'a4', 'a10', 'a6']
-    >>> sorted(a)
-    [{u}'a1', {u}'a10', {u}'a2', {u}'a4', {u}'a5', {u}'a6', {u}'a9']
-    >>> natsorted(a)
-    [{u}'a1', {u}'a2', {u}'a4', {u}'a5', {u}'a6', {u}'a9', {u}'a10']
-
-Here is an example demonstrating how different options sort the same list.
-
-    >>> a = ['a50', 'a51.', 'a50.31', 'a50.4', 'a5.034e1', 'a50.300']
-    >>> sorted(a)
-    [{u}'a5.034e1', {u}'a50', {u}'a50.300', {u}'a50.31', {u}'a50.4', {u}'a51.']
-    >>> natsorted(a)
-    [{u}'a50', {u}'a50.300', {u}'a50.31', {u}'a5.034e1', {u}'a50.4', {u}'a51.']
-    >>> natsorted(a, number_type=float, exp=False)
-    [{u}'a5.034e1', {u}'a50', {u}'a50.300', {u}'a50.31', {u}'a50.4', {u}'a51.']
-    >>> natsorted(a, number_type=int)
-    [{u}'a5.034e1', {u}'a50', {u}'a50.4', {u}'a50.31', {u}'a50.300', {u}'a51.']
-    >>> natsorted(a, number_type=None)
-    [{u}'a5.034e1', {u}'a50', {u}'a50.4', {u}'a50.31', {u}'a50.300', {u}'a51.']
-
-This demonstrates the signed option.  It can account for negative and positive signs.
-Turning it off treats the '+' or '-' as part of the string.
-
-    >>> a = ['a-5', 'a7', 'a+2']
-    >>> sorted(a)
-    [{u}'a+2', {u}'a-5', {u}'a7']
-    >>> natsorted(a) # signed=True is default, -5 comes first on the number line
-    [{u}'a-5', {u}'a+2', {u}'a7']
-    >>> natsorted(a, signed=False) # 'a' comes before 'a+', which is before 'a-'
-    [{u}'a7', {u}'a+2', {u}'a-5']
-
-Sorting version numbers is best with 'number_type=None'.  That is a shortcut
-for 'number_type=int, signed=False'
-
-    >>> a = ['1.9.9a', '1.11', '1.9.9b', '1.11.4', '1.10.1']
-    >>> sorted(a)
-    [{u}'1.10.1', {u}'1.11', {u}'1.11.4', {u}'1.9.9a', {u}'1.9.9b']
-    >>> natsorted(a)
-    [{u}'1.10.1', {u}'1.11', {u}'1.11.4', {u}'1.9.9a', {u}'1.9.9b']
-    >>> natsorted(a, number_type=None)
-    [{u}'1.9.9a', {u}'1.9.9b', {u}'1.10.1', {u}'1.11', {u}'1.11.4']
+Natsort can sort strings with numbers in a natural order.
+It provides the natsorted function to sort strings with
+arbitrary numbers.
 
 You can mix types with natsorted.  This can get around the new
-'unorderable types' issue with Python 3.
+'unorderable types' issue with Python 3. Natsort will recursively
+descend into lists of lists so you can sort by the sublist contents.
 
-    >>> import sys
-    >>> a = [6, 4.5, '7', {u}'2.5', 'a']
-    >>> if sys.version[0] == '3': # Python 3
-    ...     try:
-    ...         sorted(a)
-    ...     except TypeError as e:
-    ...         print(e)
-    ... else: # Python 2
-    ...     # This will get the doctest to work properly while illustrating the point
-    ...     if sorted(a) == [4.5, 6, {u}'2.5', '7', 'a']:
-    ...         print('unorderable types: str() < float()')
-    ...
-    unorderable types: str() < float()
-    >>> natsorted(a)
-    [{u}'2.5', 4.5, 6, {u}'7', {u}'a']
-
-natsort will recursively descend into lists of lists so you can sort by the sublist contents.
-
-    >>> data = [['a1', 'a5'], ['a1', 'a40'], ['a10', 'a1'], ['a2', 'a5']]
-    >>> sorted(data)
-    [[{u}'a1', {u}'a40'], [{u}'a1', {u}'a5'], [{u}'a10', {u}'a1'], [{u}'a2', {u}'a5']]
-    >>> natsorted(data)
-    [[{u}'a1', {u}'a5'], [{u}'a1', {u}'a40'], [{u}'a2', {u}'a5'], [{u}'a10', {u}'a1']]
+See the README or the natsort homepage for more details.
 
 """
 
@@ -78,6 +16,7 @@ from __future__ import print_function, division, unicode_literals, absolute_impo
 
 import re
 import sys
+from operator import itemgetter
 from numbers import Number
 from itertools import islice
 
@@ -110,16 +49,8 @@ regex_and_num_function_chooser = {
 }
 
 
-@u_format
-def remove_empty(s):
-    """\
-    Remove empty strings from a list.
-
-        >>> a = ['a', 2, '', 'b', '']
-        >>> remove_empty(a)
-        [{u}'a', 2, {u}'b']
-
-    """
+def _remove_empty(s):
+    """Remove empty strings from a list."""
     while True:
         try:
             s.remove('')
@@ -137,7 +68,7 @@ def _number_finder(s, regex, numconv, py3_safe):
         return tuple(s)
 
     # Now convert the numbers to numbers, and leave strings as strings
-    s = remove_empty(s)
+    s = _remove_empty(s)
     for i in py23_range(len(s)):
         try:
             s[i] = numconv(s[i])
@@ -157,7 +88,7 @@ def _number_finder(s, regex, numconv, py3_safe):
 
 
 def _py3_safe(parsed_list):
-    """Insert "" between two numbers."""
+    """Insert '' between two numbers."""
     if len(parsed_list) < 2:
         return parsed_list
     else:
@@ -168,55 +99,67 @@ def _py3_safe(parsed_list):
             if isinstance(before, Number) and isinstance(after, Number):
                 nl_append("")
             nl_append(after)
-        return tuple(new_list)
+        return new_list
 
 
 @u_format
 def natsort_key(s, number_type=float, signed=True, exp=True, py3_safe=False):
     """\
     Key to sort strings and numbers naturally, not lexicographically.
-    It also has basic support for version numbers.
-    For use in passing to the :py:func:`sorted` builtin or
-    :py:meth:`sort` attribute of lists.
+    It is designed for use in passing to the 'sorted' builtin or
+    'sort' attribute of lists.
 
-    Use natsort_key just like any other sorting key.
+        s
+            The value used by the sorting algorithm
+
+        number_type (None, float, int)
+            The types of number to sort on: float searches for floating point
+            numbers, int searches for integers, and None searches for digits
+            (like integers but does not take into account negative sign).
+            None is a shortcut for number_type = int and signed = False. 
+
+        signed (True, False)
+            By default a '+' or '-' before a number is taken to be the sign
+            of the number. If signed is False, any '+' or '-' will not be
+            considered to be part of the number, but as part part of the string.
+
+        exp (True, False)
+            This option only applies to number_type = float.  If exp = True,
+            a string like "3.5e5" will be interpreted as 350000, i.e. the
+            exponential part is considered to be part of the number.
+            If exp = False, "3.5e5" is interpreted as (3.5, "e", 5).
+            The default behavior is exp = True.
+
+        py3_safe (True, False)
+            This will make the string parsing algorithm be more careful by
+            placing an empty string between two adjacent numbers after the
+            parsing algorithm. This will prevent the "unorderable types" error.
+
+        returns
+            The modified value with numbers extracted.
+
+    Using natsort_key is just like any other sorting key in python
 
         >>> a = ['num3', 'num5', 'num2']
         >>> a.sort(key=natsort_key)
         >>> a
         [{u}'num2', {u}'num3', {u}'num5']
 
-    Below illustrates how the key works, and how the different options affect sorting.
+    It works by separating out the numbers from the strings
 
-        >>> natsort_key('a-5.034e1')
-        ({u}'a', -50.34)
-        >>> natsort_key('a-5.034e1', number_type=float, signed=True, exp=True)
-        ({u}'a', -50.34)
-        >>> natsort_key('a-5.034e1', number_type=float, signed=True, exp=False)
-        ({u}'a', -5.034, {u}'e', 1.0)
-        >>> natsort_key('a-5.034e1', number_type=float, signed=False, exp=True)
-        ({u}'a-', 50.34)
-        >>> natsort_key('a-5.034e1', number_type=float, signed=False, exp=False)
-        ({u}'a-', 5.034, {u}'e', 1.0)
-        >>> natsort_key('a-5.034e1', number_type=int)
-        ({u}'a', -5, {u}'.', 34, {u}'e', 1)
-        >>> natsort_key('a-5.034e1', number_type=int, signed=True)
-        ({u}'a', -5, {u}'.', 34, {u}'e', 1)
-        >>> natsort_key('a-5.034e1', number_type=int, signed=False)
-        ({u}'a-', 5, {u}'.', 34, {u}'e', 1)
-        >>> natsort_key('a-5.034e1', number_type=int, exp=False)
-        ({u}'a', -5, {u}'.', 34, {u}'e', 1)
-        >>> natsort_key('a-5.034e1', number_type=None)
-        ({u}'a-', 5, {u}'.', 34, {u}'e', 1)
+        >>> natsort_key('num2')
+        ({u}'num', 2.0)
 
-    This is a demonstration of what number_type=None works.
+    If you need to call natsort_key with the number_type argument, or get a special
+    attribute or item of each element of the sequence, the easiest way is to make a 
+    lambda expression that calls natsort_key::
 
-        >>> natsort_key('a-5.034e1', number_type=None) == natsort_key('a-5.034e1', number_type=None, signed=False)
-        True
-        >>> natsort_key('a-5.034e1', number_type=None) == natsort_key('a-5.034e1', number_type=None, exp=False)
-        True
-        >>> natsort_key('a-5.034e1', number_type=None) == natsort_key('a-5.034e1', number_type=int, signed=False)
-        True
+        >>> from operator import itemgetter
+        >>> a = [['num4', 'b'], ['num8', 'c'], ['num2', 'a']]
+        >>> f = itemgetter(0)
+        >>> a.sort(key=lambda x: natsort_key(f(x), number_type=int))
+        >>> a
+        [[{u}'num2', {u}'a'], [{u}'num4', {u}'b'], [{u}'num8', {u}'c']]
 
     Iterables are parsed recursively so you can sort lists of lists.
 
@@ -224,12 +167,12 @@ def natsort_key(s, number_type=float, signed=True, exp=True, py3_safe=False):
         (({u}'a', 1.0), ({u}'a', 10.0))
 
     Strings that lead with a number get an empty string at the front of the tuple.
-    This is designed to get around the "unorderable types" issue.
+    This is designed to get around the "unorderable types" issue of Python3.
 
-        >>> natsort_key(('15a', '6'))
-        (({u}'', 15.0, {u}'a'), ({u}'', 6.0))
+        >>> natsort_key('15a')
+        ({u}'', 15.0, {u}'a')
 
-    You can give numbers, too.
+    You can give bare numbers, too.
 
         >>> natsort_key(10)
         ({u}'', 10)
@@ -253,20 +196,21 @@ def natsort_key(s, number_type=float, signed=True, exp=True, py3_safe=False):
 
     # Convert to the proper tuple and return
     inp_options = (number_type, signed, exp)
-    args = (s,) + regex_and_num_function_chooser[inp_options] + (py3_safe,)
     try:
-        return tuple(_number_finder(*args))
+        args = (s,) + regex_and_num_function_chooser[inp_options] + (py3_safe,)
     except KeyError:
         # Report errors properly
-        if number_type not in (float, int) or number_type is not None:
+        if number_type not in (float, int) and number_type is not None:
             raise ValueError("natsort_key: 'number_type' "
-                             "parameter '{0}'' invalid".format(py23_str(number_type)))
+                             "parameter '{0}' invalid".format(py23_str(number_type)))
         elif signed not in (True, False):
             raise ValueError("natsort_key: 'signed' "
-                             "parameter '{0}'' invalid".format(py23_str(signed)))
+                             "parameter '{0}' invalid".format(py23_str(signed)))
         elif exp not in (True, False):
             raise ValueError("natsort_key: 'exp' "
-                             "parameter '{0}'' invalid".format(py23_str(exp)))
+                             "parameter '{0}' invalid".format(py23_str(exp)))
+    else:
+        return tuple(_number_finder(*args))
 
 
 @u_format
@@ -275,19 +219,38 @@ def natsorted(seq, key=lambda x: x, number_type=float, signed=True, exp=True):
     Sorts a sequence naturally (alphabetically and numerically),
     not lexicographically.
 
+        seq (iterable)
+            The sequence to sort.
+
+        key (function)
+            A key used to determine how to sort each element of the sequence.
+
+        number_type (None, float, int)
+            The types of number to sort on: float searches for floating point
+            numbers, int searches for integers, and None searches for digits
+            (like integers but does not take into account negative sign).
+            None is a shortcut for number_type = int and signed = False. 
+
+        signed (True, False)
+            By default a '+' or '-' before a number is taken to be the sign
+            of the number. If signed is False, any '+' or '-' will not be
+            considered to be part of the number, but as part part of the string.
+
+        exp (True, False)
+            This option only applies to number_type = float.  If exp = True,
+            a string like "3.5e5" will be interpreted as 350000, i.e. the
+            exponential part is considered to be part of the number.
+            If exp = False, "3.5e5" is interpreted as (3.5, "e", 5).
+            The default behavior is exp = True.
+
+        returns
+            The sorted sequence.
+
+    Use natsorted just like the builtin sorted
+
         >>> a = ['num3', 'num5', 'num2']
         >>> natsorted(a)
         [{u}'num2', {u}'num3', {u}'num5']
-        >>> b = [('a', 'num3'), ('b', 'num5'), ('c', 'num2')]
-        >>> from operator import itemgetter
-        >>> natsorted(b, key=itemgetter(1))
-        [({u}'c', {u}'num2'), ({u}'a', {u}'num3'), ({u}'b', {u}'num5')]
-
-    It tries really hard to not get the "unorderable types" error
-
-        >>> a = [46, '5a5b2', 'af5', '5a5-4']
-        >>> natsorted(a)
-        [{u}'5a5-4', {u}'5a5b2', 46, {u}'af5']
 
     """
     try:
@@ -311,8 +274,39 @@ def natsorted(seq, key=lambda x: x, number_type=float, signed=True, exp=True):
 def index_natsorted(seq, key=lambda x: x, number_type=float, signed=True, exp=True):
     """\
     Sorts a sequence naturally, but returns a list of sorted the
-    indeces and not the sorted list.
+    indexes and not the sorted list.
 
+        seq (iterable)
+            The sequence to sort.
+
+        key (function)
+            A key used to determine how to sort each element of the sequence.
+
+        number_type (None, float, int)
+            The types of number to sort on: float searches for floating point
+            numbers, int searches for integers, and None searches for digits
+            (like integers but does not take into account negative sign).
+            None is a shortcut for number_type = int and signed = False. 
+
+        signed (True, False)
+            By default a '+' or '-' before a number is taken to be the sign
+            of the number. If signed is False, any '+' or '-' will not be
+            considered to be part of the number, but as part part of the string.
+
+        exp (True, False)
+            This option only applies to number_type = float.  If exp = True,
+            a string like "3.5e5" will be interpreted as 350000, i.e. the
+            exponential part is considered to be part of the number.
+            If exp = False, "3.5e5" is interpreted as (3.5, "e", 5).
+            The default behavior is exp = True.
+
+        returns
+            The ordered indexes of the sequence.
+
+    Use index_natsorted if you want to sort multiple lists by the sort order of
+    one list:
+
+        >>> from natsort import index_natsorted
         >>> a = ['num3', 'num5', 'num2']
         >>> b = ['foo', 'bar', 'baz']
         >>> index = index_natsorted(a)
@@ -323,21 +317,10 @@ def index_natsorted(seq, key=lambda x: x, number_type=float, signed=True, exp=Tr
         [{u}'num2', {u}'num3', {u}'num5']
         >>> [b[i] for i in index]
         [{u}'baz', {u}'foo', {u}'bar']
-        >>> c = [('a', 'num3'), ('b', 'num5'), ('c', 'num2')]
-        >>> from operator import itemgetter
-        >>> index_natsorted(c, key=itemgetter(1))
-        [2, 0, 1]
-
-    It tries really hard to not get the "unorderable types" error
-
-        >>> a = [46, '5a5b2', 'af5', '5a5-4']
-        >>> index_natsorted(a)
-        [3, 1, 0, 2]
 
     """
-    from operator import itemgetter
     item1 = itemgetter(1)
-    # Pair the index and sequence together, then sort by
+    # Pair the index and sequence together, then sort by element
     index_seq_pair = [[x, key(y)] for x, y in py23_zip(py23_range(len(seq)), seq)]
     try:
         index_seq_pair.sort(key=lambda x: natsort_key(item1(x), 
@@ -355,14 +338,3 @@ def index_natsorted(seq, key=lambda x: x, number_type=float, signed=True, exp=Tr
             # Re-raise if the problem was not "unorderable types"
             raise
     return [x[0] for x in index_seq_pair]
-
-
-def test():
-    from doctest import DocTestSuite
-    return DocTestSuite()
-
-
-# Test this module
-if __name__ == '__main__':
-    import doctest
-    doctest.testmod()

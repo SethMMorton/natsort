@@ -13,5 +13,6 @@ install:
     - if [[ $TRAVIS_PYTHON_VERSION == '2.6' ]]; then pip install argparse; fi
 
 script:
- - python setup.py test
- - python -m doctest README.rst
+    - python -m pytest
+    - python -m pytest --doctest-modules natsort
+    - python -m pytest README.rst
