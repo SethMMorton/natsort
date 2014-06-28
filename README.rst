@@ -1,16 +1,15 @@
 natsort
 =======
 
+.. image:: https://travis-ci.org/SethMMorton/natsort.svg?branch=master
+    :target: https://travis-ci.org/SethMMorton/natsort
+
 Natural sorting for python.  ``natsort`` requires python version 2.6 or greater
 (this includes python 3.x). To run version 2.6, 3.0, or 3.1 the 
 `argparse <https://pypi.python.org/pypi/argparse>`_ module is required.
 
 ``natsort`` comes with a shell script that is described below.  You can
 also execute ``natsort`` from the command line with ``python -m natsort``.
-
-There exists another natural sorting package for python called 
-`naturalsort <https://pypi.python.org/pypi/naturalsort>`_.  You may prefer
-this package if you wish to only sort version numbers.
 
 Problem Statement
 -----------------
@@ -31,7 +30,8 @@ not letters.
 
 This is where ``natsort`` comes in: it provides a key that helps sort lists
 "naturally".  It provides support for ints and floats (including negatives and
-exponential notation) that you can turn off to support sorting version numbers.
+exponential notation), and also a function specifically for sorting version
+numbers.
 
 Synopsis
 --------
@@ -48,10 +48,10 @@ Using ``natsort`` is simple::
 You can also mix and match ``int``, ``float``, and ``str`` (or ``unicode``) types
 when you sort::
 
-    >>> a = ['4.5', 6, 2.3, '5', 'a']
+    >>> a = ['4.5', 6, 2.0, '5', 'a']
     >>> natsorted(a)
-    [2.3, '4.5', '5', 6, 'a']
-    >>> # On Python 2, sorted(a) would return [2.3, 6, '4.5', '5', 'a']
+    [2.0, '4.5', '5', 6, 'a']
+    >>> # On Python 2, sorted(a) would return [2.0, 6, '4.5', '5', 'a']
     >>> # On Python 3, sorted(a) would raise an "unorderable types" TypeError
 
 The natsort algorithm will recursively descend into lists of lists so you can sort by
@@ -62,6 +62,14 @@ the sublist contents::
     [['a1', 'a40'], ['a1', 'a5'], ['a10', 'a1'], ['a2', 'a5']]
     >>> natsorted(data)
     [['a1', 'a5'], ['a1', 'a40'], ['a2', 'a5'], ['a10', 'a1']]
+
+There is also a special convenience function provided that is best for sorting
+version numbers::
+
+    >>> from natsort import versorted
+    >>> a = ['ver-2.9.9a', 'ver-1.11', 'ver-2.9.9b', 'ver-1.11.4', 'ver-1.10.1']
+    >>> versorted(a)
+    ['ver-1.10.1', 'ver-1.11', 'ver-1.11.4', 'ver-2.9.9a', 'ver-2.9.9b']
 
 The Sorting Algorithms
 ''''''''''''''''''''''
@@ -116,6 +124,13 @@ and the ``signed`` option of ``False``::
     >>> natsorted(a, number_type=None)
     ['ver-1.10.1', 'ver-1.11', 'ver-1.11.4', 'ver-2.9.9a', 'ver-2.9.9b']
 
+The ``versorted`` function is simply a wrapper for ``number_type=None``,
+and if you need to sort just version numbers it is best to use the
+``versorted`` function for clarity::
+
+    >>> natsorted(a, number_type=None) == versorted(a)
+    True
+
 Using a sorting key
 '''''''''''''''''''
 
@@ -138,8 +153,10 @@ you can sort based on a particular item of a list or by an attribute of a class:
 API
 ---
 
-The ``natsort`` package provides three functions: ``natsort_key``,
-``natsorted``, and ``index_natsorted``.
+The ``natsort`` package provides five functions: ``natsort_key``,
+``natsorted``, ``versorted``, ``index_natsorted``, and ``index_versorted``.
+You can look at the unit tests to see more thorough examples of how
+``natsort`` can be used.
 
 natsorted
 '''''''''
@@ -179,52 +196,29 @@ Use ``natsorted`` just like the builtin ``sorted``::
     >>> natsorted(a)
     ['num2', 'num3', 'num5']
 
-natsort_key
-'''''''''''
+versorted
+'''''''''
 
-``natsort.natsort_key`` (value, *number_type* = ``float``, *signed* = ``True``, *exp* = ``True``)
+``natsort.versorted`` (*sequence*, *key* = ``lambda x: x``)
 
-    value
-        The value used by the sorting algorithm
+    sequence (*iterable*)
+        The sequence to sort.
 
-    number_type (``None``, ``float``, ``int``)
-        The types of number to sort on: ``float`` searches for floating point numbers,
-        ``int`` searches for integers, and ``None`` searches for digits (like integers 
-        but does not take into account negative sign). ``None`` is a shortcut for 
-        ``number_type = int`` and ``signed = False``. 
-
-    signed (``True``, ``False``)
-        By default a '+' or '-' before a number is taken to be the sign of the number.
-        If ``signed`` is ``False``, any '+' or '-' will not be considered to be part
-        of the number, but as part part of the string.
-
-    exp (``True``, ``False``)
-        This option only applies to ``number_type = float``.  If ``exp = True``, a string
-        like ``"3.5e5"`` will be interpreted as ``350000``, i.e. the exponential part
-        is considered to be part of the number.  If ``exp = False``, ``"3.5e5"`` is
-        interpreted as ``(3.5, "e", 5)``.  The default behavior is ``exp = True``.
+    key (*function*)
+        A key used to determine how to sort each element of the sequence.
 
     returns
-        The modified value with numbers extracted.
+        The sorted sequence.
 
-Using ``natsort_key`` is just like any other sorting key in python::
+Use ``versorted`` just like the builtin ``sorted``::
 
-    >>> from natsort import natsort_key
-    >>> a = ['num3', 'num5', 'num2']
-    >>> a.sort(key=natsort_key)
-    >>> a
-    ['num2', 'num3', 'num5']
+    >>> from natsort import versorted
+    >>> a = ['num4.0.2', 'num3.4.1', 'num3.4.2']
+    >>> versorted(a)
+    ['num3.4.1', 'num3.4.2', 'num4.0.2']
 
-If you need to call ``natsort_key`` with the ``number_type`` argument, or get a special
-attribute or item of each element of the sequence, the easiest way is to make a 
-``lambda`` expression that calls ``natsort_key``::
-
-    >>> from operator import itemgetter
-    >>> a = [['num4', 'b'], ['num8', 'c'], ['num2', 'a']]
-    >>> f = itemgetter(0)
-    >>> a.sort(key=lambda x: natsort_key(f(x), number_type=int))
-    >>> a
-    [['num2', 'a'], ['num4', 'b'], ['num8', 'c']]
+This is a wrapper around ``natsorted(seq, number_type=None)``, and is used
+to easily sort version numbers.
 
 index_natsorted
 '''''''''''''''
@@ -271,6 +265,87 @@ one list::
     ['num2', 'num3', 'num5']
     >>> [b[i] for i in index]
     ['baz', 'foo', 'bar']
+
+index_versorted
+'''''''''''''''
+
+``natsort.index_versorted`` (*sequence*, *key* = ``lambda x: x``)
+
+    sequence (*iterable*)
+        The sequence to sort.
+
+    key (*function*)
+        A key used to determine how to sort each element of the sequence.
+
+    returns
+        The ordered indexes of the sequence.
+
+Use ``index_versorted`` just like the builtin sorted::
+
+    >>> from natsort import index_versorted
+    >>> a = ['num4.0.2', 'num3.4.1', 'num3.4.2']
+    >>> index_versorted(a)
+    [1, 2, 0]
+
+This is a wrapper around ``index_natsorted(seq, number_type=None)``, and is used
+to easily sort version numbers by their indexes.
+
+natsort_key
+'''''''''''
+
+``natsort.natsort_key`` (value, *number_type* = ``float``, *signed* = ``True``, *exp* = ``True``, *py3_safe* = ``False``)
+
+    value
+        The value used by the sorting algorithm
+
+    number_type (``None``, ``float``, ``int``)
+        The types of number to sort on: ``float`` searches for floating point numbers,
+        ``int`` searches for integers, and ``None`` searches for digits (like integers 
+        but does not take into account negative sign). ``None`` is a shortcut for 
+        ``number_type = int`` and ``signed = False``. 
+
+    signed (``True``, ``False``)
+        By default a '+' or '-' before a number is taken to be the sign of the number.
+        If ``signed`` is ``False``, any '+' or '-' will not be considered to be part
+        of the number, but as part part of the string.
+
+    exp (``True``, ``False``)
+        This option only applies to ``number_type = float``.  If ``exp = True``, a string
+        like ``"3.5e5"`` will be interpreted as ``350000``, i.e. the exponential part
+        is considered to be part of the number.  If ``exp = False``, ``"3.5e5"`` is
+        interpreted as ``(3.5, "e", 5)``.  The default behavior is ``exp = True``.
+
+    py3_safe (``True``, ``False``)
+        This will make the string parsing algorithm be more careful by placing
+        an empty string between two adjacent numbers after the parsing algorithm.
+        This will prevent the "unorderable types" error.
+
+    returns
+        The modified value with numbers extracted.
+
+Using ``natsort_key`` is just like any other sorting key in python::
+
+    >>> from natsort import natsort_key
+    >>> a = ['num3', 'num5', 'num2']
+    >>> a.sort(key=natsort_key)
+    >>> a
+    ['num2', 'num3', 'num5']
+
+It works by separating out the numbers from the strings::
+
+    >>> natsort_key('num2')
+    ('num', 2.0)
+
+If you need to call ``natsort_key`` with the ``number_type`` argument, or get a special
+attribute or item of each element of the sequence, the easiest way is to make a 
+``lambda`` expression that calls ``natsort_key``::
+
+    >>> from operator import itemgetter
+    >>> a = [['num4', 'b'], ['num8', 'c'], ['num2', 'a']]
+    >>> f = itemgetter(0)
+    >>> a.sort(key=lambda x: natsort_key(f(x), number_type=int))
+    >>> a
+    [['num2', 'a'], ['num4', 'b'], ['num8', 'c']]
 
 Shell Script
 ------------
@@ -333,6 +408,21 @@ Seth M. Morton
 
 History
 -------
+
+06-28-2014 v. 3.3.0
+'''''''''''''''''''
+
+    - Added a 'versorted' method for more convenient sorting of versions.
+    - Updated command-line tool --number_type option with 'version' and 'ver'
+      to make it more clear how to sort version numbers.
+    - Moved unit-testing mechanism from being docstring-based to actual unit tests
+      in actual functions.
+
+      - This has provided the ability determine the coverage of the unit tests (99%).
+      - This also makes the pydoc documentation a bit more clear.
+
+    - Made docstrings for public functions mirror the README API.
+    - Connected natsort development to Travis-CI to help ensure quality releases.
 
 06-20-2014 v. 3.2.1
 '''''''''''''''''''

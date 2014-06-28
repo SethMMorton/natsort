@@ -1,0 +1,25 @@
+language: python
+python:
+- 2.6
+- 2.7
+- 3.2
+- 3.3
+- 3.4
+- pypy
+install:
+- pip install pytest-cov
+- pip install wheel
+- if [[ $TRAVIS_PYTHON_VERSION == '2.6' ]]; then pip install argparse; fi
+script:
+- python -m pytest --cov-report term-missing --cov natsort
+- python -m pytest --doctest-modules natsort
+- python -m pytest README.rst
+deploy:
+  provider: pypi
+  user: SethMMorton
+  password:
+    secure: OaYQtVh4mGT0ozN7Ar2lSm2IEVMKIyvOESGPGLwVyVxPqp6oC101MovJ7041bZdjMzirMs54EJwtEGQpKFmDBGcKgbjPiYId5Nqb/yDhLC/ojgarbLoFJvUKV6dWJePyY7EOycrqcMdiDabdG80Bw4zziQExbmIOdUiscsAVVmA=
+  on:
+    tags: true
+    repo: SethMMorton/natsort
+  distributions: "sdist bdist_wheel"

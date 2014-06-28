@@ -7,6 +7,24 @@ from os.path import join
 
 # Non-std lib imports
 from setuptools import setup
+from setuptools.command.test import test as TestCommand
+
+
+class PyTest(TestCommand):
+    """Custom command to run pytest on all code."""
+
+    def finalize_options(self):
+        TestCommand.finalize_options(self)
+        self.test_args = []
+        self.test_suite = True
+
+    def run_tests(self):
+        #import here, cause outside the eggs aren't loaded
+        import pytest
+        err1 = pytest.main([])
+        err2 = pytest.main(['--doctest-modules', 'natsort'])
+        err3 = pytest.main(['README.rst'])
+        return err1 | err2 | err3
 
 
 # Read the natsort.py file for the module version number
@@ -46,7 +64,8 @@ setup(name='natsort',
       install_requires=REQUIRES,
       packages=['natsort'],
       entry_points={'console_scripts': ['natsort = natsort.__main__:main']},
-      test_suite='natsort.natsort.test',
+      tests_require=['pytest'],
+      cmdclass = {'test': PyTest},
       description=DESCRIPTION,
       long_description=LONG_DESCRIPTION,
       classifiers=(

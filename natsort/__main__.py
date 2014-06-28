@@ -18,55 +18,6 @@ def main():
     Performs a natural sort on entries given on the command-line.
     A natural sort sorts numerically then alphabetically, and will sort
     by numbers in the middle of an entry.
-
-        >>> import sys
-        >>> sys.argv[1:] = ['num-2', 'num-6', 'num-1']
-        >>> main()
-        num-6
-        num-2
-        num-1
-        >>> sys.argv[1:] = ['-r', 'num-2', 'num-6', 'num-1']
-        >>> main()
-        num-1
-        num-2
-        num-6
-        >>> sys.argv[1:] = ['--nosign', 'num-2', 'num-6', 'num-1']
-        >>> main()
-        num-1
-        num-2
-        num-6
-        >>> sys.argv[1:] = ['-t', 'digit', 'num-2', 'num-6', 'num-1']
-        >>> main()
-        num-1
-        num-2
-        num-6
-        >>> sys.argv[1:] = ['-t', 'int', '-e', '-1', '-e', '6',
-        ...                 'num-2', 'num-6', 'num-1']
-        >>> main()
-        num-6
-        num-2
-        >>> sys.argv[1:] = ['-t', 'digit', '-e', '1', '-e', '6',
-        ...                 'num-2', 'num-6', 'num-1']
-        >>> main()
-        num-2
-        >>> sys.argv[1:] = ['a1.0e3', 'a5.3', 'a453.6']
-        >>> main()
-        a5.3
-        a453.6
-        a1.0e3
-        >>> sys.argv[1:] = ['-f', '1', '10', 'a1.0e3', 'a5.3', 'a453.6']
-        >>> main()
-        a5.3
-        >>> sys.argv[1:] = ['-f', '1', '10', '-f', '400', '500', 'a1.0e3', 'a5.3', 'a453.6']
-        >>> main()
-        a5.3
-        a453.6
-        >>> sys.argv[1:] = ['--noexp', 'a1.0e3', 'a5.3', 'a453.6']
-        >>> main()
-        a1.0e3
-        a5.3
-        a453.6
-
     """
 
     from argparse import ArgumentParser, RawDescriptionHelpFormatter
@@ -79,16 +30,23 @@ def main():
                         'keeping only the entries that have a number '
                         'falling in the given range.', nargs=2, type=float,
                         metavar=('LOW', 'HIGH'), action='append')
+    parser.add_argument('-F', '--reverse-filter', help='Used for '
+                        'excluding the entries that have a number '
+                        'falling in the given range.', nargs=2, type=float,
+                        metavar=('LOW', 'HIGH'), action='append',
+                        dest='reverse_filter')
     parser.add_argument('-e', '--exclude', type=float, action='append',
                         help='Used to exclude an entry '
                         'that contains a specific number.')
     parser.add_argument('-r', '--reverse', help='Returns in reversed order.',
                         action='store_true', default=False)
-    parser.add_argument('-t', '--number_type', choices=('digit', 'int', 'float'),
+    parser.add_argument('-t', '--number-type', '--number_type', dest='number_type',
+                         choices=('digit', 'int', 'float', 'version', 'ver'),
                          default='float', help='Choose the type of number '
                          'to search for. "float" will search for floating-point '
                          'numbers.  "int" will only search for integers. '
-                         '"digit" is a shortcut for "int" with --nosign.')
+                         '"digit", "version", and "ver" are shortcuts for "int" '
+                         'with --nosign.')
     parser.add_argument('--nosign', default=True, action='store_false',
                         dest='signed', help='Do not consider "+" or "-" as part '
                         'of a number, i.e. do not take sign into consideration.')
@@ -111,20 +69,12 @@ def main():
     # Sort by directory then by file within directory and print.
     sort_and_print_entries(entries, args)
 
+
 def range_check(low, high):
     """\
     Verifies that that given range has a low lower than the high.
-
-        >>> range_check(10, 11)
-        (10.0, 11.0)
-        >>> range_check(6.4, 30)
-        (6.4, 30.0)
-        >>> try:
-        ...    range_check(7, 2)
-        ... except ValueError as e:
-        ...    print(e)
-        low >= high
-
+    If the condition is not met, a ValueError is raised.
+    Otherwise, the values are returned, but as floats.
     """
     low, high = float(low), float(high)
     if low >= high:
@@ -137,20 +87,8 @@ def check_filter(filt):
     """\
     Check that the low value of the filter is lower than the high.
     If there is to be no filter, return 'None'.
-
-        >>> check_filter(())
-        >>> check_filter(False)
-        >>> check_filter(None)
-        >>> check_filter([(6, 7)])
-        [(6.0, 7.0)]
-        >>> check_filter([(6, 7), (2, 8)])
-        [(6.0, 7.0), (2.0, 8.0)]
-        >>> try:
-        ...    check_filter([(7, 2)])
-        ... except ValueError as e:
-        ...    print(e)
-        Error in --filter: low >= high
-
+    If the condition is not met, a ValueError is raised.
+    Otherwise, the values are returned, but as floats.
     """
     # Quick return if no filter.
     if not filt:
@@ -166,15 +104,8 @@ def keep_entry_range(entry, lows, highs, converter, regex):
     Boolean function to determine if an entry should be kept out
     based on if any numbers are in a given range.
 
-        >>> import re
-        >>> regex = re.compile(r'\d+')
-        >>> keep_entry_range('a56b23c89', [0], [100], int, regex)
-        True
-        >>> keep_entry_range('a56b23c89', [1, 88], [20, 90], int, regex)
-        True
-        >>> keep_entry_range('a56b23c89', [1], [20], int, regex)
-        False
-
+    Returns True if it should be kept (i.e. falls in the range),
+    and False if it is not in the range and should not be kept.
     """
     return any(low <= converter(num) <= high
                   for num in regex.findall(entry)
@@ -186,81 +117,37 @@ def exclude_entry(entry, values, converter, regex):
     Boolean function to determine if an entry should be kept out
     based on if it contains a specific number.
 
-        >>> import re
-        >>> regex = re.compile(r'\d+')
-        >>> exclude_entry('a56b23c89', [100], int, regex)
-        True
-        >>> exclude_entry('a56b23c89', [23], int, regex)
-        False
-
+    Returns True if it should be kept (i.e. does not match),
+    and False if it matches and should not be kept.
     """
     return not any(converter(num) in values for num in regex.findall(entry))
 
 
 def sort_and_print_entries(entries, args):
-    """\
-    Sort the entries, applying the filters first if necessary.
-    
-        >>> class Args:
-        ...     def __init__(self, filter, exclude, reverse):
-        ...         self.filter = filter
-        ...         self.exclude = exclude
-        ...         self.reverse = reverse
-        ...         self.number_type = 'float'
-        ...         self.signed = True
-        ...         self.exp = True
-        >>> entries = ['tmp/a57/path2',
-        ...            'tmp/a23/path1',
-        ...            'tmp/a1/path1', 
-        ...            'tmp/a130/path1',
-        ...            'tmp/a64/path1',
-        ...            'tmp/a64/path2']
-        >>> sort_and_print_entries(entries, Args(None, False, False))
-        tmp/a1/path1
-        tmp/a23/path1
-        tmp/a57/path2
-        tmp/a64/path1
-        tmp/a64/path2
-        tmp/a130/path1
-        >>> sort_and_print_entries(entries, Args([(20, 100)], False, False))
-        tmp/a23/path1
-        tmp/a57/path2
-        tmp/a64/path1
-        tmp/a64/path2
-        >>> sort_and_print_entries(entries, Args(None, [23, 130], False))
-        tmp/a1/path1
-        tmp/a57/path2
-        tmp/a64/path1
-        tmp/a64/path2
-        >>> sort_and_print_entries(entries, Args(None, [2], False))
-        tmp/a1/path1
-        tmp/a23/path1
-        tmp/a64/path1
-        tmp/a130/path1
-        >>> sort_and_print_entries(entries, Args(None, False, True))
-        tmp/a130/path1
-        tmp/a64/path2
-        tmp/a64/path1
-        tmp/a57/path2
-        tmp/a23/path1
-        tmp/a1/path1
-
-    """
+    """Sort the entries, applying the filters first if necessary."""
 
     # Extract the proper number type.
-    kwargs = {'number_type': {'digit': None, 'int': int, 'float': float}[args.number_type],
+    kwargs = {'number_type': {'digit': None,
+                              'version': None,
+                              'ver': None,
+                              'int': int,
+                              'float': float}[args.number_type],
               'signed': args.signed,
               'exp': args.exp}
 
     # Pre-remove entries that don't pass the filtering criteria
     # Make sure we use the same searching algorithm for filtering as for sorting.
-    if args.filter is not None or args.exclude:
+    if args.filter is not None or args.reverse_filter is not None or args.exclude:
         inp_options = (kwargs['number_type'], args.signed, args.exp)
         regex, num_function = regex_and_num_function_chooser[inp_options]
         if args.filter is not None:
             lows, highs = [f[0] for f in args.filter], [f[1] for f in args.filter]
             entries = [entry for entry in entries
                             if keep_entry_range(entry, lows, highs, num_function, regex)]
+        if args.reverse_filter is not None:
+            lows, highs = [f[0] for f in args.reverse_filter], [f[1] for f in args.reverse_filter]
+            entries = [entry for entry in entries
+                            if not keep_entry_range(entry, lows, highs, num_function, regex)]
         if args.exclude:
             exclude = set(args.exclude)
             entries = [entry for entry in entries
@@ -279,7 +166,3 @@ if __name__ == '__main__':
         sys.exit(py23_str(a))
     except KeyboardInterrupt:
         sys.exit(1)
-    # import doctest
-    # ret = doctest.testmod()
-    # if ret[0] == 0:
-    #     print('natsort: All {0[1]} tests successful!'.format(ret))
