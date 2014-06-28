@@ -9,10 +9,11 @@ python:
   - pypy
 
 install:
+    pip install pytest-cov
     # argparse is not in the 2.6 standard library
     - if [[ $TRAVIS_PYTHON_VERSION == '2.6' ]]; then pip install argparse; fi
 
 script:
-    - python -m pytest
+    - python -m pytest --cov-report term-missing --cov natsort
     - python -m pytest --doctest-modules natsort
     - python -m pytest README.rst

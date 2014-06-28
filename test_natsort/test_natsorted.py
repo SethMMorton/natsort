@@ -5,7 +5,7 @@ See the README or the natsort homepage for more details.
 """
 from operator import itemgetter
 from pytest import raises
-from natsort import natsorted, index_natsorted, natsort_key
+from natsort import natsorted, index_natsorted, natsort_key, versorted, index_versorted
 from natsort.natsort import _remove_empty, _number_finder, _py3_safe
 from natsort.natsort import float_sign_exp_re, float_nosign_exp_re, float_sign_noexp_re
 from natsort.natsort import float_nosign_noexp_re, int_nosign_re, int_sign_re
@@ -129,6 +129,11 @@ def test_natsorted():
     assert natsorted(b, key=itemgetter(1)) == [('c', 'num2'), ('a', 'num3'), ('b', 'num5')]
 
 
+def test_versorted():
+
+    a = ['1.9.9a', '1.11', '1.9.9b', '1.11.4', '1.10.1']
+    assert versorted(a) == natsorted(a, number_type=None)
+
 def test_index_natsorted():
     
     # Return the indexes of how the iterable would be sorted.
@@ -147,8 +152,8 @@ def test_index_natsorted():
     a = [46, '5a5b2', 'af5', '5a5-4']
     assert index_natsorted(a) == [3, 1, 0, 2]
 
-    # You still can't sort non-iterables
-    with raises(TypeError) as err:
-        index_natsorted(100)
-    assert str(err.value) == "object of type 'int' has no len()"
 
+def test_index_versorted():
+
+    a = ['1.9.9a', '1.11', '1.9.9b', '1.11.4', '1.10.1']
+    assert index_versorted(a) == index_natsorted(a, number_type=None)

@@ -271,6 +271,31 @@ def natsorted(seq, key=lambda x: x, number_type=float, signed=True, exp=True):
 
 
 @u_format
+def versorted(seq, key=lambda x: x):
+    """\
+    Convenience function to sort version numbers. This is a wrapper
+    around natsorted(seq, number_type=None).
+
+        seq (iterable)
+            The sequence to sort.
+
+        key (function)
+            A key used to determine how to sort each element of the sequence.
+
+        returns
+            The sorted sequence.
+
+    Use versorted just like the builtin sorted
+
+        >>> a = ['num4.0.2', 'num3.4.1', 'num3.4.2']
+        >>> versorted(a)
+        [{u}'num3.4.1', {u}'num3.4.2', {u}'num4.0.2']
+
+    """
+    return natsorted(seq, key=key, number_type=None)
+
+
+@u_format
 def index_natsorted(seq, key=lambda x: x, number_type=float, signed=True, exp=True):
     """\
     Sorts a sequence naturally, but returns a list of sorted the
@@ -338,3 +363,30 @@ def index_natsorted(seq, key=lambda x: x, number_type=float, signed=True, exp=Tr
             # Re-raise if the problem was not "unorderable types"
             raise
     return [x[0] for x in index_seq_pair]
+
+
+@u_format
+def index_versorted(seq, key=lambda x: x):
+    """\
+    Convenience function to sort version numbers but return the
+    indexes of how the sequence would be sorted.
+    This is a wrapper around index_natsorted(seq, number_type=None).
+
+        seq (iterable)
+            The sequence to sort.
+
+        key (function)
+            A key used to determine how to sort each element of the sequence.
+
+        returns
+            The ordered indexes of the sequence.
+
+    Use index_versorted just like the builtin sorted
+
+        >>> a = ['num4.0.2', 'num3.4.1', 'num3.4.2']
+        >>> index_versorted(a)
+        [1, 2, 0]
+
+    """
+    return index_natsorted(seq, key=key, number_type=None)
+

@@ -52,6 +52,16 @@ num-2
 num-6
 """
 
+    # Sort as versions (synonym for digits)
+    sys.argv[1:] = ['-t', 'version', 'num-2', 'num-6', 'num-1']
+    main()
+    out, __ = capsys.readouterr()
+    assert out == """\
+num-1
+num-2
+num-6
+"""
+
     # Exclude the number -1 and 6.  Only -1 is present.
     sys.argv[1:] = ['-t', 'int', '-e', '-1', '-e', '6',
                     'num-2', 'num-6', 'num-1']
@@ -62,8 +72,8 @@ num-6
 num-2
 """
 
-    # Exclude the number 1 and 6.  Both are present because we use digits.
-    sys.argv[1:] = ['-t', 'digit', '-e', '1', '-e', '6',
+    # Exclude the number 1 and 6.  Both are present because we use digits/versions.
+    sys.argv[1:] = ['-t', 'ver', '-e', '1', '-e', '6',
                     'num-2', 'num-6', 'num-1']
     main()
     out, __ = capsys.readouterr()

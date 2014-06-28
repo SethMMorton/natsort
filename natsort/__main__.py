@@ -35,11 +35,13 @@ def main():
                         'that contains a specific number.')
     parser.add_argument('-r', '--reverse', help='Returns in reversed order.',
                         action='store_true', default=False)
-    parser.add_argument('-t', '--number_type', choices=('digit', 'int', 'float'),
+    parser.add_argument('-t', '--number-type', '--number_type', dest='number_type',
+                         choices=('digit', 'int', 'float', 'version', 'ver'),
                          default='float', help='Choose the type of number '
                          'to search for. "float" will search for floating-point '
                          'numbers.  "int" will only search for integers. '
-                         '"digit" is a shortcut for "int" with --nosign.')
+                         '"digit", "version", and "ver" are shortcuts for "int" '
+                         'with --nosign.')
     parser.add_argument('--nosign', default=True, action='store_false',
                         dest='signed', help='Do not consider "+" or "-" as part '
                         'of a number, i.e. do not take sign into consideration.')
@@ -120,7 +122,11 @@ def sort_and_print_entries(entries, args):
     """Sort the entries, applying the filters first if necessary."""
 
     # Extract the proper number type.
-    kwargs = {'number_type': {'digit': None, 'int': int, 'float': float}[args.number_type],
+    kwargs = {'number_type': {'digit': None,
+                              'version': None,
+                              'ver': None,
+                              'int': int,
+                              'float': float}[args.number_type],
               'signed': args.signed,
               'exp': args.exp}
 
