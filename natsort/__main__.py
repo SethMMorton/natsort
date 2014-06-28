@@ -30,6 +30,11 @@ def main():
                         'keeping only the entries that have a number '
                         'falling in the given range.', nargs=2, type=float,
                         metavar=('LOW', 'HIGH'), action='append')
+    parser.add_argument('-F', '--reverse-filter', help='Used for '
+                        'excluding the entries that have a number '
+                        'falling in the given range.', nargs=2, type=float,
+                        metavar=('LOW', 'HIGH'), action='append',
+                        dest='reverse_filter')
     parser.add_argument('-e', '--exclude', type=float, action='append',
                         help='Used to exclude an entry '
                         'that contains a specific number.')
@@ -132,13 +137,17 @@ def sort_and_print_entries(entries, args):
 
     # Pre-remove entries that don't pass the filtering criteria
     # Make sure we use the same searching algorithm for filtering as for sorting.
-    if args.filter is not None or args.exclude:
+    if args.filter is not None or args.reverse_filter is not None or args.exclude:
         inp_options = (kwargs['number_type'], args.signed, args.exp)
         regex, num_function = regex_and_num_function_chooser[inp_options]
         if args.filter is not None:
             lows, highs = [f[0] for f in args.filter], [f[1] for f in args.filter]
             entries = [entry for entry in entries
                             if keep_entry_range(entry, lows, highs, num_function, regex)]
+        if args.reverse_filter is not None:
+            lows, highs = [f[0] for f in args.reverse_filter], [f[1] for f in args.reverse_filter]
+            entries = [entry for entry in entries
+                            if not keep_entry_range(entry, lows, highs, num_function, regex)]
         if args.exclude:
             exclude = set(args.exclude)
             entries = [entry for entry in entries

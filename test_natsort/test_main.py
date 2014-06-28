@@ -99,6 +99,15 @@ a1.0e3
 a5.3
 """
 
+    # Don't include in the range of 1-10.
+    sys.argv[1:] = ['-F', '1', '10', 'a1.0e3', 'a5.3', 'a453.6']
+    main()
+    out, __ = capsys.readouterr()
+    assert out == """\
+a453.6
+a1.0e3
+"""
+
     # Include two ranges.
     sys.argv[1:] = ['-f', '1', '10', '-f', '400', '500', 'a1.0e3', 'a5.3', 'a453.6']
     main()
@@ -168,8 +177,9 @@ def test_sort_and_print_entries(capsys):
     
     class Args:
         """A dummy class to simulate the argparse Namespace object"""
-        def __init__(self, filter, exclude, reverse):
+        def __init__(self, filter, reverse_filter, exclude, reverse):
             self.filter = filter
+            self.reverse_filter = reverse_filter
             self.exclude = exclude
             self.reverse = reverse
             self.number_type = 'float'
@@ -184,7 +194,7 @@ def test_sort_and_print_entries(capsys):
                'tmp/a64/path2']
 
     # Just sort the paths
-    sort_and_print_entries(entries, Args(None, False, False))
+    sort_and_print_entries(entries, Args(None, None, False, False))
     out, __ = capsys.readouterr()
     assert out == """\
 tmp/a1/path1
@@ -196,7 +206,7 @@ tmp/a130/path1
 """
 
     # Sort the paths with numbers between 20-100
-    sort_and_print_entries(entries, Args([(20, 100)], False, False))
+    sort_and_print_entries(entries, Args([(20, 100)], None, False, False))
     out, __ = capsys.readouterr()
     assert out == """\
 tmp/a23/path1
@@ -205,8 +215,16 @@ tmp/a64/path1
 tmp/a64/path2
 """
 
+    # Sort the paths without numbers between 20-100
+    sort_and_print_entries(entries, Args(None, [(20, 100)], False, False))
+    out, __ = capsys.readouterr()
+    assert out == """\
+tmp/a1/path1
+tmp/a130/path1
+"""
+
     # Sort the paths, excluding 23 and 130
-    sort_and_print_entries(entries, Args(None, [23, 130], False))
+    sort_and_print_entries(entries, Args(None, None, [23, 130], False))
     out, __ = capsys.readouterr()
     assert out == """\
 tmp/a1/path1
@@ -216,7 +234,7 @@ tmp/a64/path2
 """
 
     # Sort the paths, excluding 2
-    sort_and_print_entries(entries, Args(None, [2], False))
+    sort_and_print_entries(entries, Args(None, None, [2], False))
     out, __ = capsys.readouterr()
     assert out == """\
 tmp/a1/path1
@@ -226,7 +244,7 @@ tmp/a130/path1
 """
 
     # Sort in reverse order
-    sort_and_print_entries(entries, Args(None, False, True))
+    sort_and_print_entries(entries, Args(None, None, False, True))
     out, __ = capsys.readouterr()
     assert out == """\
 tmp/a130/path1
