@@ -1,7 +1,7 @@
 natsort
 =======
 
-.. image:: https://travis-ci.org/SethMMorton/natsort.svg?branch=master
+.. image:: https://travis-ci.org/SethMMorton/natsort.svg?branch=develop
     :target: https://travis-ci.org/SethMMorton/natsort
 
 Natural sorting for python.  ``natsort`` requires python version 2.6 or greater
