@@ -338,7 +338,7 @@ def natsort_keygen(key=None, number_type=float, signed=True, exp=True, py3_safe=
 
 
 @u_format
-def natsorted(seq, key=None, number_type=float, signed=True, exp=True):
+def natsorted(seq, key=None, number_type=float, signed=True, exp=True, reverse=False):
     """\
     Sorts a sequence naturally.
 
@@ -376,6 +376,10 @@ def natsorted(seq, key=None, number_type=float, signed=True, exp=True):
         the number. If `exp = False`, "3.5e5" is interpreted as
         ``(3.5, "e", 5)``. The default behavior is `exp = True`.
 
+    reverse : {{True, False}}, optional
+        Return the list in reversed sorted order. The default is
+        `False`.
+
     Returns
     -------
     out: list
@@ -396,21 +400,23 @@ def natsorted(seq, key=None, number_type=float, signed=True, exp=True):
 
     """
     try:
-        return sorted(seq, key=natsort_keygen(key, number_type,
-                                              signed, exp))
+        return sorted(seq, reverse=reverse,
+                      key=natsort_keygen(key, number_type,
+                                         signed, exp))
     except TypeError as e:
         # In the event of an unresolved "unorderable types" error
         # attempt to sort again, being careful to prevent this error.
         if 'unorderable types' in str(e):
-            return sorted(seq, key=natsort_keygen(key, number_type,
-                                                  signed, exp, True))
+            return sorted(seq, reverse=reverse,
+                          key=natsort_keygen(key, number_type,
+                                             signed, exp, True))
         else:
             # Re-raise if the problem was not "unorderable types"
             raise
 
 
 @u_format
-def versorted(seq, key=None):
+def versorted(seq, key=None, reverse=False):
     """\
     Convenience function to sort version numbers.
 
@@ -426,6 +432,10 @@ def versorted(seq, key=None):
         A key used to determine how to sort each element of the sequence.
         It is **not** applied recursively.
         It should accept a single argument and return a single value.
+
+    reverse : {{True, False}}, optional
+        Return the list in reversed sorted order. The default is
+        `False`.
 
     Returns
     -------
@@ -445,11 +455,11 @@ def versorted(seq, key=None):
         [{u}'num3.4.1', {u}'num3.4.2', {u}'num4.0.2']
 
     """
-    return natsorted(seq, key, None)
+    return natsorted(seq, key, None, reverse=reverse)
 
 
 @u_format
-def index_natsorted(seq, key=None, number_type=float, signed=True, exp=True):
+def index_natsorted(seq, key=None, number_type=float, signed=True, exp=True, reverse=False):
     """\
     Return the list of the indexes used to sort the input sequence.
 
@@ -488,6 +498,10 @@ def index_natsorted(seq, key=None, number_type=float, signed=True, exp=True):
         the number. If `exp = False`, "3.5e5" is interpreted as
         ``(3.5, "e", 5)``. The default behavior is `exp = True`.
 
+    reverse : {{True, False}}, optional
+        Return the list in reversed sorted order. The default is
+        `False`.
+
     Returns
     -------
     out : tuple
@@ -523,13 +537,15 @@ def index_natsorted(seq, key=None, number_type=float, signed=True, exp=True):
     # Pair the index and sequence together, then sort by element
     index_seq_pair = [[x, y] for x, y in enumerate(seq)]
     try:
-        index_seq_pair.sort(key=natsort_keygen(newkey, number_type,
+        index_seq_pair.sort(reverse=reverse,
+                            key=natsort_keygen(newkey, number_type,
                                                signed, exp))
     except TypeError as e:
         # In the event of an unresolved "unorderable types" error
         # attempt to sort again, being careful to prevent this error.
         if 'unorderable types' in str(e):
-            index_seq_pair.sort(key=natsort_keygen(newkey, number_type,
+            index_seq_pair.sort(reverse=reverse,
+                                key=natsort_keygen(newkey, number_type,
                                                    signed, exp, True))
         else:
             # Re-raise if the problem was not "unorderable types"
@@ -538,7 +554,7 @@ def index_natsorted(seq, key=None, number_type=float, signed=True, exp=True):
 
 
 @u_format
-def index_versorted(seq, key=None):
+def index_versorted(seq, key=None, reverse=False):
     """\
     Return the list of the indexes used to sort the input sequence
     of version numbers.
@@ -560,6 +576,10 @@ def index_versorted(seq, key=None):
         It is **not** applied recursively.
         It should accept a single argument and return a single value.
 
+    reverse : {{True, False}}, optional
+        Return the list in reversed sorted order. The default is
+        `False`.
+
     Returns
     -------
     out : tuple
@@ -579,7 +599,7 @@ def index_versorted(seq, key=None):
         [1, 2, 0]
 
     """
-    return index_natsorted(seq, key, None)
+    return index_natsorted(seq, key, None, reverse=reverse)
 
 
 @u_format

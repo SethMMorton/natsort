@@ -150,11 +150,16 @@ def test_natsorted():
     b = [('a', 'num3'), ('b', 'num5'), ('c', 'num2')]
     assert natsorted(b, key=itemgetter(1)) == [('c', 'num2'), ('a', 'num3'), ('b', 'num5')]
 
+    # Reversing the order is allowed
+    a = ['a50', 'a51.', 'a50.31', 'a50.4', 'a5.034e1', 'a50.300']
+    assert natsorted(a, reverse=True) == ['a50', 'a50.300', 'a50.31', 'a5.034e1', 'a50.4', 'a51.'][::-1]
+
 
 def test_versorted():
 
     a = ['1.9.9a', '1.11', '1.9.9b', '1.11.4', '1.10.1']
     assert versorted(a) == natsorted(a, number_type=None)
+    assert versorted(a, reverse=True) == versorted(a)[::-1]
     a = [('a', '1.9.9a'), ('a', '1.11'), ('a', '1.9.9b'), ('a', '1.11.4'), ('a', '1.10.1')]
     assert versorted(a) == [('a', '1.9.9a'), ('a', '1.9.9b'), ('a', '1.10.1'), ('a', '1.11'), ('a', '1.11.4')]
 
@@ -168,6 +173,7 @@ def test_index_natsorted():
     assert index == [2, 0, 1]
     assert [a[i] for i in index] == ['num2', 'num3', 'num5']
     assert [b[i] for i in index] == ['baz', 'foo', 'bar']
+    assert index_natsorted(a, reverse=True) == [1, 0, 2]
 
     # It accepts a key argument.
     c = [('a', 'num3'), ('b', 'num5'), ('c', 'num2')]
@@ -186,6 +192,7 @@ def test_index_versorted():
 
     a = ['1.9.9a', '1.11', '1.9.9b', '1.11.4', '1.10.1']
     assert index_versorted(a) == index_natsorted(a, number_type=None)
+    assert index_versorted(a, reverse=True) == index_versorted(a)[::-1]
     a = [('a', '1.9.9a'), ('a', '1.11'), ('a', '1.9.9b'), ('a', '1.11.4'), ('a', '1.10.1')]
     assert index_versorted(a) == [0, 2, 4, 1, 3]
 

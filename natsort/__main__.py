@@ -5,10 +5,7 @@ import sys
 import os
 import re
 
-from .natsort import natsort_key, natsorted, int_nosign_re, int_sign_re
-from .natsort import float_sign_exp_re, float_nosign_exp_re
-from .natsort import float_sign_noexp_re, float_nosign_noexp_re
-from .natsort import regex_and_num_function_chooser
+from .natsort import natsorted, regex_and_num_function_chooser 
 from ._version import __version__
 from .py23compat import py23_str
 
@@ -133,7 +130,8 @@ def sort_and_print_entries(entries, args):
                               'int': int,
                               'float': float}[args.number_type],
               'signed': args.signed,
-              'exp': args.exp}
+              'exp': args.exp,
+              'reverse': args.reverse,}
 
     # Pre-remove entries that don't pass the filtering criteria
     # Make sure we use the same searching algorithm for filtering as for sorting.
@@ -154,8 +152,7 @@ def sort_and_print_entries(entries, args):
                             if exclude_entry(entry, exclude, num_function, regex)]
 
     # Print off the sorted results
-    entries.sort(key=lambda x: natsort_key(x, **kwargs), reverse=args.reverse)
-    for entry in entries:
+    for entry in natsorted(entries, **kwargs):
         print(entry)
 
 
@@ -166,3 +163,4 @@ if __name__ == '__main__':
         sys.exit(py23_str(a))
     except KeyboardInterrupt:
         sys.exit(1)
+
