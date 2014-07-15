@@ -8,12 +8,15 @@ python:
 - pypy
 install:
 - pip install pytest-cov
+- pip install coveralls
 - pip install wheel
 - if [[ $TRAVIS_PYTHON_VERSION == '2.6' ]]; then pip install argparse; fi
 script:
-- python -m pytest --cov-report term-missing --cov natsort
+- python -m pytest --cov natsort
 - python -m pytest --doctest-modules natsort
 - python -m pytest README.rst
+after_success:
+  coveralls
 deploy:
   provider: pypi
   user: SethMMorton
