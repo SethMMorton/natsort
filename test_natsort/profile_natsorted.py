@@ -3,6 +3,7 @@ import cProfile
 import random
 import sys
 
+sys.path.insert(0, '.')
 from natsort import natsorted, index_natsorted
 
 
@@ -13,7 +14,7 @@ astr = ['a'+x+'num' for x in map(str,random.sample(xrange(10000), 1000))]
 tstr = [['a'+x, 'a-'+x] for x in map(str,random.sample(xrange(10000), 1000))]
 cstr = ['a'+x+'-'+x for x in map(str,random.sample(xrange(10000), 1000))]
 
-'''
+
 def prof_nums(a):
     print('*** Basic Call, Numbers ***')
     for _ in xrange(1000):
@@ -26,7 +27,7 @@ def prof_num_str(a):
     for _ in xrange(1000):
         natsorted(a)
 cProfile.run('prof_num_str(nstr)', sort='time')
-'''
+
 
 def prof_str(a):
     print('*** Basic Call, Strings ***')
@@ -34,7 +35,7 @@ def prof_str(a):
         natsorted(a)
 cProfile.run('prof_str(astr)', sort='time')
 
-'''
+
 def prof_str_index(a):
     print('*** Basic Index Call ***')
     for _ in xrange(1000):
@@ -82,14 +83,14 @@ def prof_str_asint_unsigned(a):
     for _ in xrange(1000):
         natsorted(a, number_type=int, signed=False)
 cProfile.run('prof_str_asint_unsigned(astr)', sort='time')
-'''
+
 
 def prof_str_key(a):
     print('*** Basic Call With Key ***')
     for _ in xrange(1000):
         natsorted(a, key=lambda x: x.upper())
 cProfile.run('prof_str_key(astr)', sort='time')
-sys.exit()
+
 
 def prof_str_index_key(a):
     print('*** Basic Index Call With Key ***')
