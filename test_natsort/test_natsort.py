@@ -5,7 +5,7 @@ See the README or the natsort homepage for more details.
 """
 from operator import itemgetter
 from pytest import raises
-from natsort import natsorted, index_natsorted, natsort_key, versorted, index_versorted
+from natsort import natsorted, index_natsorted, natsort_key, versorted, index_versorted, natsort_keygen
 from natsort.natsort import _remove_empty, _number_finder, _py3_safe
 from natsort.natsort import float_sign_exp_re, float_nosign_exp_re, float_sign_noexp_re
 from natsort.natsort import float_nosign_noexp_re, int_nosign_re, int_sign_re
@@ -85,6 +85,30 @@ def test_natsort_key():
     assert str(err.value) == "natsort_key: 'exp' parameter 'False' invalid"
 
 
+def test_natsort_keygen():
+
+    # Creates equivalent natsort keys
+    a = 'a-5.034e1'
+    assert natsort_keygen()(a) == natsort_key(a)
+    assert natsort_keygen(signed=False)(a) == natsort_key(a, signed=False)
+    assert natsort_keygen(exp=False)(a) == natsort_key(a, exp=False)
+    assert natsort_keygen(signed=False, exp=False)(a) == natsort_key(a, signed=False, exp=False)
+    assert natsort_keygen(number_type=int)(a) == natsort_key(a, number_type=int)
+    assert natsort_keygen(number_type=int, signed=False)(a) == natsort_key(a, number_type=int, signed=False)
+    assert natsort_keygen(number_type=None)(a) == natsort_key(a, number_type=None)
+
+    # Custom keys are more straightforward with keygen
+    f1 = natsort_keygen(key=lambda x: x.upper())
+    f2 = lambda x: natsort_key(x.upper())
+    assert f1(a) == f2(a)
+
+    # It also makes sorting lists in-place easier (no lambdas!)
+    a = ['a50', 'a51.', 'a50.31', 'a50.4', 'a5.034e1', 'a50.300']
+    b = a[:]
+    a.sort(key=natsort_keygen(number_type=int))
+    assert a == natsorted(b, number_type=int)
+
+
 def test_natsorted():
 
     # Basic usage
@@ -135,7 +159,7 @@ def test_versorted():
     assert versorted(a) == natsorted(a, number_type=None)
 
 def test_index_natsorted():
-    
+
     # Return the indexes of how the iterable would be sorted.
     a = ['num3', 'num5', 'num2']
     b = ['foo', 'bar', 'baz']
@@ -143,7 +167,7 @@ def test_index_natsorted():
     assert index == [2, 0, 1]
     assert [a[i] for i in index] == ['num2', 'num3', 'num5']
     assert [b[i] for i in index] == ['baz', 'foo', 'bar']
-    
+
     # It accepts a key argument.
     c = [('a', 'num3'), ('b', 'num5'), ('c', 'num2')]
     assert index_natsorted(c, key=itemgetter(1)) == [2, 0, 1]

@@ -17,6 +17,7 @@ from __future__ import print_function, division, unicode_literals, absolute_impo
 import re
 import sys
 from operator import itemgetter
+from functools import partial
 from numbers import Number
 from itertools import islice
 
@@ -233,6 +234,96 @@ def natsort_key(s, number_type=float, signed=True, exp=True, py3_safe=False):
 
 
 @u_format
+def natsort_keygen(key=None, number_type=float, signed=True, exp=True, py3_safe=False):
+    """\
+    Generate a key to sort strings and numbers naturally.
+
+    Generate a key to sort strings and numbers naturally,
+    not lexicographically. This key is designed for use as the
+    `key` argument to functions such as the `sorted` builtin.
+
+    The user may customize the generated function with the
+    arguments to `natsort_keygen`, including an optional
+    `key` function which will be called before the `natsort_key`.
+
+    Parameters
+    ----------
+    key : callable, optional
+        A key used to manipulate the input value before parsing for
+        numbers. It is **not** applied recursively.
+        It should accept a single argument and return a single value.
+
+    number_type : {{None, float, int}}, optional
+        The types of number to sort on: `float` searches for floating
+        point numbers, `int` searches for integers, and `None `searches
+        for digits (like integers but does not take into account
+        negative sign). `None` is a shortcut for `number_type = int`
+        and `signed = False`.
+
+    signed : {{True, False}}, optional
+        By default a '+' or '-' before a number is taken to be the sign
+        of the number. If `signed` is `False`, any '+' or '-' will not
+        be considered to be part of the number, but as part part of the
+        string.
+
+    exp : {{True, False}}, optional
+        This option only applies to `number_type = float`.  If
+        `exp = True`, a string like "3.5e5" will be interpreted as
+        350000, i.e. the exponential part is considered to be part of
+        the number. If `exp = False`, "3.5e5" is interpreted as
+        ``(3.5, "e", 5)``. The default behavior is `exp = True`.
+
+    py3_safe : {{True, False}}, optional
+        This will make the string parsing algorithm be more careful by
+        placing an empty string between two adjacent numbers after the
+        parsing algorithm. This will prevent the "unorderable types"
+        error.
+
+    Returns
+    -------
+    out : function
+        A wrapped version of the `natsort_key` function that is
+        suitable for passing as the `key` argument to functions
+        such as `sorted`.
+
+    Examples
+    --------
+    `natsort_keygen` is a convenient waynto create a custom key
+    to sort lists in-place (for example). Calling with no objects
+    will return a plain `natsort_key` instance::
+
+        >>> a = ['num5.10', 'num-3', 'num5.3', 'num2']
+        >>> b = a[:]
+        >>> a.sort(key=natsort_key)
+        >>> b.sort(key=natsort_keygen())
+        >>> a == b
+        True
+
+    The power of `natsort_keygen` is when you want to want to pass
+    arguments to the `natsort_key`.  Consider the following
+    equivalent examples; which is more clear? ::
+
+        >>> a = [[1, 'num5.10'], [2, 'num-3'], [3, 'num5.3'], [4, 'num2']]
+        >>> b = a[:]
+        >>> a.sort(key=lambda x: natsort_key(itemgetter(1)(x), signed=False))
+        >>> b.sort(key=natsort_keygen(key=itemgetter(1), signed=False))
+        >>> a == b
+        True
+
+    """
+    # If no key, simply wrap the function
+    if key is None:
+        return partial(natsort_key, number_type=number_type,
+                                    signed=signed,
+                                    exp=exp,
+                                    py3_safe=py3_safe)
+    # If a key is given, wrap the function and make sure
+    # the key is called before the natsort_key.
+    else:
+        return lambda val: natsort_key(key(val), number_type, signed, exp, py3_safe)
+
+
+@u_format
 def natsorted(seq, key=lambda x: x, number_type=float, signed=True, exp=True):
     """\
     Sorts a sequence naturally.
@@ -291,17 +382,14 @@ def natsorted(seq, key=lambda x: x, number_type=float, signed=True, exp=True):
 
     """
     try:
-        return sorted(seq, key=lambda x: natsort_key(key(x),
-                                                     number_type=number_type,
-                                                     signed=signed, exp=exp))
+        return sorted(seq, key=natsort_keygen(key, number_type,
+                                              signed, exp))
     except TypeError as e:
         # In the event of an unresolved "unorderable types" error
         # attempt to sort again, being careful to prevent this error.
         if 'unorderable types' in str(e):
-            return sorted(seq, key=lambda x: natsort_key(key(x),
-                                                         number_type=number_type,
-                                                         signed=signed, exp=exp,
-                                                         py3_safe=True))
+            return sorted(seq, key=natsort_keygen(key, number_type,
+                                                  signed, exp, True))
         else:
             # Re-raise if the problem was not "unorderable types"
             raise
@@ -417,17 +505,14 @@ def index_natsorted(seq, key=lambda x: x, number_type=float, signed=True, exp=Tr
     # Pair the index and sequence together, then sort by element
     index_seq_pair = [[x, key(y)] for x, y in py23_zip(py23_range(len(seq)), seq)]
     try:
-        index_seq_pair.sort(key=lambda x: natsort_key(item1(x), 
-                                                      number_type=number_type,
-                                                      signed=signed, exp=exp))
+        index_seq_pair.sort(key=natsort_keygen(item1, number_type,
+                                               signed, exp))
     except TypeError as e:
         # In the event of an unresolved "unorderable types" error
         # attempt to sort again, being careful to prevent this error.
         if 'unorderable types' in str(e):
-            index_seq_pair.sort(key=lambda x: natsort_key(item1(x), 
-                                                          number_type=number_type,
-                                                          signed=signed, exp=exp,
-                                                          py3_safe=True))
+            index_seq_pair.sort(key=natsort_keygen(item1, number_type,
+                                                   signed, exp, True))
         else:
             # Re-raise if the problem was not "unorderable types"
             raise
