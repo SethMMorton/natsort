@@ -105,82 +105,101 @@ def _py3_safe(parsed_list):
 @u_format
 def natsort_key(s, number_type=float, signed=True, exp=True, py3_safe=False):
     """\
+    Key to sort strings and numbers naturally.
+
     Key to sort strings and numbers naturally, not lexicographically.
     It is designed for use in passing to the 'sorted' builtin or
     'sort' attribute of lists.
 
-        s
-            The value used by the sorting algorithm
+    .. note:: Depreciation Notice (3.3.1)
+              This function remains in the publicly exposed API for
+              backwards-compatibility reasons, but future development
+              should use the newer `natsort_keygen` function. There
+              are no plans to officially remove this method from the
+              public API, but it leads to messier code than using
+              `natsort_keygen` so the latter should be preferred.
 
-        number_type (None, float, int)
-            The types of number to sort on: float searches for floating point
-            numbers, int searches for integers, and None searches for digits
-            (like integers but does not take into account negative sign).
-            None is a shortcut for number_type = int and signed = False. 
+    Parameters
+    ----------
+    val : {{str, unicode}}
+        The value used by the sorting algorithm
 
-        signed (True, False)
-            By default a '+' or '-' before a number is taken to be the sign
-            of the number. If signed is False, any '+' or '-' will not be
-            considered to be part of the number, but as part part of the string.
+    number_type : {{None, float, int}}, optional
+        The types of number to sort on: `float` searches for floating
+        point numbers, `int` searches for integers, and `None `searches
+        for digits (like integers but does not take into account
+        negative sign). `None` is a shortcut for `number_type = int`
+        and `signed = False`.
 
-        exp (True, False)
-            This option only applies to number_type = float.  If exp = True,
-            a string like "3.5e5" will be interpreted as 350000, i.e. the
-            exponential part is considered to be part of the number.
-            If exp = False, "3.5e5" is interpreted as (3.5, "e", 5).
-            The default behavior is exp = True.
+    signed : {{True, False}}, optional
+        By default a '+' or '-' before a number is taken to be the sign
+        of the number. If `signed` is `False`, any '+' or '-' will not
+        be considered to be part of the number, but as part part of the
+        string.
 
-        py3_safe (True, False)
-            This will make the string parsing algorithm be more careful by
-            placing an empty string between two adjacent numbers after the
-            parsing algorithm. This will prevent the "unorderable types" error.
+    exp : {{True, False}}, optional
+        This option only applies to `number_type = float`.  If
+        `exp = True`, a string like "3.5e5" will be interpreted as
+        350000, i.e. the exponential part is considered to be part of
+        the number. If `exp = False`, "3.5e5" is interpreted as
+        ``(3.5, "e", 5)``. The default behavior is `exp = True`.
 
-        returns
-            The modified value with numbers extracted.
+    py3_safe : {{True, False}}, optional
+        This will make the string parsing algorithm be more careful by
+        placing an empty string between two adjacent numbers after the
+        parsing algorithm. This will prevent the "unorderable types"
+        error.
 
-    Using natsort_key is just like any other sorting key in python
+    Returns
+    -------
+    out : tuple
+        The modified value with numbers extracted.
+
+    See Also
+    --------
+    natsort_keygen : Generates a properly wrapped `natsort_key`.
+
+    Examples
+    --------
+    Using natsort_key is just like any other sorting key in python::
 
         >>> a = ['num3', 'num5', 'num2']
         >>> a.sort(key=natsort_key)
         >>> a
         [{u}'num2', {u}'num3', {u}'num5']
 
-    It works by separating out the numbers from the strings
+    It works by separating out the numbers from the strings::
 
         >>> natsort_key('num2')
         ({u}'num', 2.0)
 
-    If you need to call natsort_key with the number_type argument, or get a special
-    attribute or item of each element of the sequence, the easiest way is to make a 
-    lambda expression that calls natsort_key::
+    If you need to call natsort_key with the number_type argument, or get a
+    special attribute or item of each element of the sequence, please use
+    the `natsort_keygen` function.  Actually, please just use the
+    `natsort_keygen` function.
 
-        >>> from operator import itemgetter
-        >>> a = [['num4', 'b'], ['num8', 'c'], ['num2', 'a']]
-        >>> f = itemgetter(0)
-        >>> a.sort(key=lambda x: natsort_key(f(x), number_type=int))
-        >>> a
-        [[{u}'num2', {u}'a'], [{u}'num4', {u}'b'], [{u}'num8', {u}'c']]
-
-    Iterables are parsed recursively so you can sort lists of lists.
+    Notes
+    -----
+    Iterables are parsed recursively so you can sort lists of lists::
 
         >>> natsort_key(('a1', 'a10'))
         (({u}'a', 1.0), ({u}'a', 10.0))
 
-    Strings that lead with a number get an empty string at the front of the tuple.
-    This is designed to get around the "unorderable types" issue of Python3.
+    Strings that lead with a number get an empty string at the front of the
+    tuple. This is designed to get around the "unorderable types" issue of
+    Python3::
 
         >>> natsort_key('15a')
         ({u}'', 15.0, {u}'a')
 
-    You can give bare numbers, too.
+    You can give bare numbers, too::
 
         >>> natsort_key(10)
         ({u}'', 10)
 
-    If you have a case where one of your string has two numbers in a row
-    (only possible with "5+5" or "5-5" and signed=True to my knowledge), you
-    can turn on the "py3_safe" option to try to add a "" between sets of two
-    numbers.
+    If you have a case where one of your string has two numbers in a row,
+    you can turn on the "py3_safe" option to try to add a "" between sets
+    of two numbers::
 
         >>> natsort_key('43h7+3', py3_safe=True)
         ({u}'', 43.0, {u}'h', 7.0, {u}'', 3.0)
@@ -216,37 +235,55 @@ def natsort_key(s, number_type=float, signed=True, exp=True, py3_safe=False):
 @u_format
 def natsorted(seq, key=lambda x: x, number_type=float, signed=True, exp=True):
     """\
+    Sorts a sequence naturally.
+
     Sorts a sequence naturally (alphabetically and numerically),
-    not lexicographically.
+    not lexicographically. Returns a new copy of the sorted
+    sequence as a list.
 
-        seq (iterable)
-            The sequence to sort.
+    Parameters
+    ----------
+    seq : iterable
+        The sequence to sort.
 
-        key (function)
-            A key used to determine how to sort each element of the sequence.
+    key : callable, optional
+        A key used to determine how to sort each element of the sequence.
+        It is **not** applied recursively.
+        It should accept a single argument and return a single value.
 
-        number_type (None, float, int)
-            The types of number to sort on: float searches for floating point
-            numbers, int searches for integers, and None searches for digits
-            (like integers but does not take into account negative sign).
-            None is a shortcut for number_type = int and signed = False. 
+    number_type : {{None, float, int}}, optional
+        The types of number to sort on: `float` searches for floating
+        point numbers, `int` searches for integers, and `None `searches
+        for digits (like integers but does not take into account
+        negative sign). `None` is a shortcut for `number_type = int`
+        and `signed = False`.
 
-        signed (True, False)
-            By default a '+' or '-' before a number is taken to be the sign
-            of the number. If signed is False, any '+' or '-' will not be
-            considered to be part of the number, but as part part of the string.
+    signed : {{True, False}}, optional
+        By default a '+' or '-' before a number is taken to be the sign
+        of the number. If `signed` is `False`, any '+' or '-' will not
+        be considered to be part of the number, but as part part of the
+        string.
 
-        exp (True, False)
-            This option only applies to number_type = float.  If exp = True,
-            a string like "3.5e5" will be interpreted as 350000, i.e. the
-            exponential part is considered to be part of the number.
-            If exp = False, "3.5e5" is interpreted as (3.5, "e", 5).
-            The default behavior is exp = True.
+    exp : {{True, False}}, optional
+        This option only applies to `number_type = float`.  If
+        `exp = True`, a string like "3.5e5" will be interpreted as
+        350000, i.e. the exponential part is considered to be part of
+        the number. If `exp = False`, "3.5e5" is interpreted as
+        ``(3.5, "e", 5)``. The default behavior is `exp = True`.
 
-        returns
-            The sorted sequence.
+    Returns
+    -------
+    out: list
+        The sorted sequence.
 
-    Use natsorted just like the builtin sorted
+    See Also
+    --------
+    versorted : A wrapper for ``natsorted(seq, number_type=None)``.
+    index_natsorted : Returns the sorted indexes from `natsorted`.
+
+    Examples
+    --------
+    Use `natsorted` just like the builtin `sorted`::
 
         >>> a = ['num3', 'num5', 'num2']
         >>> natsorted(a)
@@ -273,19 +310,33 @@ def natsorted(seq, key=lambda x: x, number_type=float, signed=True, exp=True):
 @u_format
 def versorted(seq, key=lambda x: x):
     """\
+    Convenience function to sort version numbers.
+
     Convenience function to sort version numbers. This is a wrapper
-    around natsorted(seq, number_type=None).
+    around ``natsorted(seq, number_type=None)``.
 
-        seq (iterable)
-            The sequence to sort.
+    Parameters
+    ----------
+    seq : iterable
+        The sequence to sort.
 
-        key (function)
-            A key used to determine how to sort each element of the sequence.
+    key : callable, optional
+        A key used to determine how to sort each element of the sequence.
+        It is **not** applied recursively.
+        It should accept a single argument and return a single value.
 
-        returns
-            The sorted sequence.
+    Returns
+    -------
+    out : list
+        The sorted sequence.
 
-    Use versorted just like the builtin sorted
+    See Also
+    --------
+    index_versorted : Returns the sorted indexes from `versorted`.
+
+    Examples
+    --------
+    Use `versorted` just like the builtin `sorted`::
 
         >>> a = ['num4.0.2', 'num3.4.1', 'num3.4.2']
         >>> versorted(a)
@@ -298,40 +349,58 @@ def versorted(seq, key=lambda x: x):
 @u_format
 def index_natsorted(seq, key=lambda x: x, number_type=float, signed=True, exp=True):
     """\
+    Return the list of the indexes used to sort the input sequence.
+
     Sorts a sequence naturally, but returns a list of sorted the
-    indexes and not the sorted list.
+    indexes and not the sorted list. This list of indexes can be
+    used to sort multiple lists by the sorted order of the given
+    sequence.
 
-        seq (iterable)
-            The sequence to sort.
+    Parameters
+    ----------
+    seq : iterable
+        The sequence to sort.
 
-        key (function)
-            A key used to determine how to sort each element of the sequence.
+    key : callable, optional
+        A key used to determine how to sort each element of the sequence.
+        It is **not** applied recursively.
+        It should accept a single argument and return a single value.
 
-        number_type (None, float, int)
-            The types of number to sort on: float searches for floating point
-            numbers, int searches for integers, and None searches for digits
-            (like integers but does not take into account negative sign).
-            None is a shortcut for number_type = int and signed = False. 
+    number_type : {{None, float, int}}, optional
+        The types of number to sort on: `float` searches for floating
+        point numbers, `int` searches for integers, and `None `searches
+        for digits (like integers but does not take into account
+        negative sign). `None` is a shortcut for `number_type = int`
+        and `signed = False`.
 
-        signed (True, False)
-            By default a '+' or '-' before a number is taken to be the sign
-            of the number. If signed is False, any '+' or '-' will not be
-            considered to be part of the number, but as part part of the string.
+    signed : {{True, False}}, optional
+        By default a '+' or '-' before a number is taken to be the sign
+        of the number. If `signed` is `False`, any '+' or '-' will not
+        be considered to be part of the number, but as part part of the
+        string.
 
-        exp (True, False)
-            This option only applies to number_type = float.  If exp = True,
-            a string like "3.5e5" will be interpreted as 350000, i.e. the
-            exponential part is considered to be part of the number.
-            If exp = False, "3.5e5" is interpreted as (3.5, "e", 5).
-            The default behavior is exp = True.
+    exp : {{True, False}}, optional
+        This option only applies to `number_type = float`.  If
+        `exp = True`, a string like "3.5e5" will be interpreted as
+        350000, i.e. the exponential part is considered to be part of
+        the number. If `exp = False`, "3.5e5" is interpreted as
+        ``(3.5, "e", 5)``. The default behavior is `exp = True`.
 
-        returns
-            The ordered indexes of the sequence.
+    Returns
+    -------
+    out : tuple
+        The ordered indexes of the sequence.
 
-    Use index_natsorted if you want to sort multiple lists by the sort order of
-    one list:
+    See Also
+    --------
+    natsorted
 
-        >>> from natsort import index_natsorted
+    Examples
+    --------
+
+    Use index_natsorted if you want to sort multiple lists by the
+    sorted order of one list::
+
         >>> a = ['num3', 'num5', 'num2']
         >>> b = ['foo', 'bar', 'baz']
         >>> index = index_natsorted(a)
@@ -368,20 +437,38 @@ def index_natsorted(seq, key=lambda x: x, number_type=float, signed=True, exp=Tr
 @u_format
 def index_versorted(seq, key=lambda x: x):
     """\
-    Convenience function to sort version numbers but return the
-    indexes of how the sequence would be sorted.
-    This is a wrapper around index_natsorted(seq, number_type=None).
+    Return the list of the indexes used to sort the input sequence
+    of version numbers.
 
-        seq (iterable)
-            The sequence to sort.
+    Sorts a sequence naturally, but returns a list of sorted the
+    indexes and not the sorted list. This list of indexes can be
+    used to sort multiple lists by the sorted order of the given
+    sequence.
 
-        key (function)
-            A key used to determine how to sort each element of the sequence.
+    This is a wrapper around ``index_natsorted(seq, number_type=None)``.
 
-        returns
-            The ordered indexes of the sequence.
+    Parameters
+    ----------
+    seq: iterable
+        The sequence to sort.
 
-    Use index_versorted just like the builtin sorted
+    key: callable, optional
+        A key used to determine how to sort each element of the sequence.
+        It is **not** applied recursively.
+        It should accept a single argument and return a single value.
+
+    Returns
+    -------
+    out : tuple
+        The ordered indexes of the sequence.
+
+    See Also
+    --------
+    versorted
+
+    Examples
+    --------
+    Use `index_versorted` just like the builtin `sorted`::
 
         >>> a = ['num4.0.2', 'num3.4.1', 'num3.4.2']
         >>> index_versorted(a)
