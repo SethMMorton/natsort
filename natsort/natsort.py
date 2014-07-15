@@ -50,6 +50,10 @@ regex_and_num_function_chooser = {
     (None,  False, False) : (int_nosign_re, int),
 }
 
+# Number types.  I have to use set([...]) and not {...}
+# because I am supporting Python 2.6.
+number_types = set([float, int])
+
 
 def _number_finder(s, regex, numconv, py3_safe):
     """Helper to split numbers"""
@@ -93,7 +97,7 @@ def _py3_safe(parsed_list):
     else:
         new_list = [parsed_list[0]]
         nl_append = new_list.append
-        ntypes = {float, int}
+        ntypes = number_types
         for before, after in py23_zip(islice(parsed_list, 0, len(parsed_list)-1),
                                       islice(parsed_list, 1, None)):
             # I realize that isinstance is favored over type, but

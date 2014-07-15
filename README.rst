@@ -4,6 +4,9 @@ natsort
 .. image:: https://travis-ci.org/SethMMorton/natsort.svg?branch=develop
     :target: https://travis-ci.org/SethMMorton/natsort
 
+.. image:: https://coveralls.io/repos/SethMMorton/natsort/badge.png?branch=develop
+    :target: https://coveralls.io/r/SethMMorton/natsort?branch=develop
+
 Natural sorting for python.  ``natsort`` requires python version 2.6 or greater
 (this includes python 3.x). To run version 2.6, 3.0, or 3.1 the 
 `argparse <https://pypi.python.org/pypi/argparse>`_ module is required.
