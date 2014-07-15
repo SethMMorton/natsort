@@ -54,9 +54,13 @@ def test_natsort_key():
     assert natsort_key('a-5.034e1', number_type=int)                            == ('a', -5, '.', 34, 'e', 1)
     assert natsort_key('a-5.034e1', number_type=int, signed=False)              == ('a-', 5, '.', 34, 'e', 1)
     assert natsort_key('a-5.034e1', number_type=None) == natsort_key('a-5.034e1', number_type=int, signed=False)
+    assert natsort_key('a-5.034e1', key=lambda x: x.upper()) == ('A', -50.34)
 
     # Iterables are parsed recursively so you can sort lists of lists.
-    assert natsort_key(('a1', 'a10')) == (('a', 1.0), ('a', 10.0))
+    assert natsort_key(('a1', 'a-5.034e1')) == (('a', 1.0), ('a', -50.34))
+    assert natsort_key(('a1', 'a-5.034e1'), number_type=None) == (('a', 1), ('a-', 5, '.', 34, 'e', 1))
+    # A key is applied before recursion, but not in the recursive calls.
+    assert natsort_key(('a1', 'a-5.034e1'), key=itemgetter(1)) == ('a', -50.34)
 
     # Strings that lead with a number get an empty string at the front of the tuple.
     # This is designed to get around the "unorderable types" issue.
@@ -137,7 +141,8 @@ def test_natsorted():
         natsorted(100)
     assert str(err.value) == "'int' object is not iterable"
 
-    # natsort will recursively descend into lists of lists so you can sort by the sublist contents.
+    # natsort will recursively descend into lists of lists so you can
+    # sort by the sublist contents.
     data = [['a1', 'a5'], ['a1', 'a40'], ['a10', 'a1'], ['a2', 'a5']]
     assert natsorted(data) == [['a1', 'a5'], ['a1', 'a40'], ['a2', 'a5'], ['a10', 'a1']]
 
@@ -150,6 +155,9 @@ def test_versorted():
 
     a = ['1.9.9a', '1.11', '1.9.9b', '1.11.4', '1.10.1']
     assert versorted(a) == natsorted(a, number_type=None)
+    a = [('a', '1.9.9a'), ('a', '1.11'), ('a', '1.9.9b'), ('a', '1.11.4'), ('a', '1.10.1')]
+    assert versorted(a) == [('a', '1.9.9a'), ('a', '1.9.9b'), ('a', '1.10.1'), ('a', '1.11'), ('a', '1.11.4')]
+
 
 def test_index_natsorted():
 
@@ -169,11 +177,17 @@ def test_index_natsorted():
     a = [46, '5a5b2', 'af5', '5a5-4']
     assert index_natsorted(a) == [3, 1, 0, 2]
 
+    # It can sort lists of lists.
+    data = [['a1', 'a5'], ['a1', 'a40'], ['a10', 'a1'], ['a2', 'a5']]
+    assert index_natsorted(data) == [0, 1, 3, 2]
+
 
 def test_index_versorted():
 
     a = ['1.9.9a', '1.11', '1.9.9b', '1.11.4', '1.10.1']
     assert index_versorted(a) == index_natsorted(a, number_type=None)
+    a = [('a', '1.9.9a'), ('a', '1.11'), ('a', '1.9.9b'), ('a', '1.11.4'), ('a', '1.10.1')]
+    assert index_versorted(a) == [0, 2, 4, 1, 3]
 
 
 def test_order_by_index():
