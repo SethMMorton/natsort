@@ -18,7 +18,6 @@ import re
 import sys
 from operator import itemgetter
 from functools import partial
-from numbers import Number
 from itertools import islice
 
 from .py23compat import u_format, py23_basestring, py23_range, py23_str, py23_zip
@@ -50,42 +49,39 @@ regex_and_num_function_chooser = {
 }
 
 
-def _remove_empty(s):
-    """Remove empty strings from a list."""
-    while True:
-        try:
-            s.remove('')
-        except ValueError:
-            break
-    return s
-
-
 def _number_finder(s, regex, numconv, py3_safe):
     """Helper to split numbers"""
 
-    # Split.  If there are no splits, return now
+    # Split the input string by numbers.
+    # If there are no splits, return now.
+    # If the input is not a string, ValueError is raised.
     s = regex.split(s)
     if len(s) == 1:
         return tuple(s)
 
-    # Now convert the numbers to numbers, and leave strings as strings
-    s = _remove_empty(s)
-    for i in py23_range(len(s)):
-        try:
-            s[i] = numconv(s[i])
-        except ValueError:
-            pass
+    # Now convert the numbers to numbers, and leave strings as strings.
+    # Remove empty strings from the list.
+    # Profiling showed that using regex here is much faster than
+    # try/except with the numconv function.
+    r = regex.match
+    s = [numconv(x) if r(x) else x for x in s if x]
 
     # If the list begins with a number, lead with an empty string.
     # This is used to get around the "unorderable types" issue.
+    # The most common case will be a string at the front of the
+    # list, and in that case the try/except method is faster than
+    # using isinstance. This was chosen at the expense of the less
+    # common case of a number being at the front of the list.
+    try:
+        s[0][0] # str supports indexing, but not numbers
+    except TypeError:
+        s = [''] + s
+
     # The _py3_safe function inserts "" between numbers in the list,
     # and is used to get around "unorderable types" in complex cases.
     # It is a separate function that needs to be requested specifically
     # because it is expensive to call.
-    if not isinstance(s[0], py23_basestring):
-        return _py3_safe([''] + s) if py3_safe else [''] + s
-    else:
-        return _py3_safe(s) if py3_safe else s
+    return  _py3_safe(s) if py3_safe else s
 
 
 def _py3_safe(parsed_list):
@@ -95,16 +91,19 @@ def _py3_safe(parsed_list):
     else:
         new_list = [parsed_list[0]]
         nl_append = new_list.append
+        ntypes = {float, int}
         for before, after in py23_zip(islice(parsed_list, 0, len(parsed_list)-1),
                                       islice(parsed_list, 1, None)):
-            if isinstance(before, Number) and isinstance(after, Number):
+            # I realize that isinstance is favored over type, but
+            # in this case type is SO MUCH FASTER than isinstance!!
+            if type(before) in ntypes and type(after) in ntypes:
                 nl_append("")
             nl_append(after)
         return new_list
 
 
 @u_format
-def natsort_key(s, number_type=float, signed=True, exp=True, py3_safe=False):
+def natsort_key(val, key=None, number_type=float, signed=True, exp=True, py3_safe=False):
     """\
     Key to sort strings and numbers naturally.
 
@@ -124,6 +123,11 @@ def natsort_key(s, number_type=float, signed=True, exp=True, py3_safe=False):
     ----------
     val : {{str, unicode}}
         The value used by the sorting algorithm
+
+    key : callable, optional
+        A key used to manipulate the input value before parsing for
+        numbers. It is **not** applied recursively.
+        It should accept a single argument and return a single value.
 
     number_type : {{None, float, int}}, optional
         The types of number to sort on: `float` searches for floating
@@ -206,18 +210,11 @@ def natsort_key(s, number_type=float, signed=True, exp=True, py3_safe=False):
         ({u}'', 43.0, {u}'h', 7.0, {u}'', 3.0)
 
     """
-
-    # If we are dealing with non-strings, return now
-    if not isinstance(s, py23_basestring):
-        if hasattr(s, '__getitem__'):
-            return tuple(natsort_key(x) for x in s)
-        else:
-            return ('', s,)
-
-    # Convert to the proper tuple and return
+    
+    # Convert the arguments to the proper input tuple
     inp_options = (number_type, signed, exp)
     try:
-        args = (s,) + regex_and_num_function_chooser[inp_options] + (py3_safe,)
+        regex, num_function = regex_and_num_function_chooser[inp_options]
     except KeyError:
         # Report errors properly
         if number_type not in (float, int) and number_type is not None:
@@ -230,7 +227,27 @@ def natsort_key(s, number_type=float, signed=True, exp=True, py3_safe=False):
             raise ValueError("natsort_key: 'exp' "
                              "parameter '{0}' invalid".format(py23_str(exp)))
     else:
-        return tuple(_number_finder(*args))
+        # Apply key if needed.
+        if key is not None:
+            val = key(val)
+        # Assume the input are strings, which is the most common case.
+        try:
+            return tuple(_number_finder(val, regex, num_function, py3_safe))
+        except TypeError:
+            # If not strings, assume it is an iterable that must
+            # be parsed recursively. Do not apply the key recursively.
+            try:
+                return tuple([natsort_key(x, None, number_type, signed,
+                                             exp, py3_safe) for x in val])
+            # If there is still an error, it must be a number.
+            # Return as-is, with a leading empty string.
+            # Waiting for two raised errors instead of calling
+            # isinstance at the opening of the function is slower
+            # for numbers but much faster for strings, and since
+            # numbers are not a common input to natsort this is
+            # an acceptable sacrifice.
+            except TypeError:
+                return ('', val,)
 
 
 @u_format
@@ -303,28 +320,23 @@ def natsort_keygen(key=None, number_type=float, signed=True, exp=True, py3_safe=
     arguments to the `natsort_key`.  Consider the following
     equivalent examples; which is more clear? ::
 
-        >>> a = [[1, 'num5.10'], [2, 'num-3'], [3, 'num5.3'], [4, 'num2']]
+        >>> a = ['num5.10', 'num-3', 'num5.3', 'num2']
         >>> b = a[:]
-        >>> a.sort(key=lambda x: natsort_key(itemgetter(1)(x), signed=False))
-        >>> b.sort(key=natsort_keygen(key=itemgetter(1), signed=False))
+        >>> a.sort(key=lambda x: natsort_key(x, key=lambda y: y.upper(), signed=False))
+        >>> b.sort(key=natsort_keygen(key=lambda x: x.upper(), signed=False))
         >>> a == b
         True
 
     """
-    # If no key, simply wrap the function
-    if key is None:
-        return partial(natsort_key, number_type=number_type,
-                                    signed=signed,
-                                    exp=exp,
-                                    py3_safe=py3_safe)
-    # If a key is given, wrap the function and make sure
-    # the key is called before the natsort_key.
-    else:
-        return lambda val: natsort_key(key(val), number_type, signed, exp, py3_safe)
+    return partial(natsort_key, key=key,
+                                number_type=number_type,
+                                signed=signed,
+                                exp=exp,
+                                py3_safe=py3_safe)
 
 
 @u_format
-def natsorted(seq, key=lambda x: x, number_type=float, signed=True, exp=True):
+def natsorted(seq, key=None, number_type=float, signed=True, exp=True):
     """\
     Sorts a sequence naturally.
 
@@ -396,7 +408,7 @@ def natsorted(seq, key=lambda x: x, number_type=float, signed=True, exp=True):
 
 
 @u_format
-def versorted(seq, key=lambda x: x):
+def versorted(seq, key=None):
     """\
     Convenience function to sort version numbers.
 
@@ -431,11 +443,11 @@ def versorted(seq, key=lambda x: x):
         [{u}'num3.4.1', {u}'num3.4.2', {u}'num4.0.2']
 
     """
-    return natsorted(seq, key=key, number_type=None)
+    return natsorted(seq, key, None)
 
 
 @u_format
-def index_natsorted(seq, key=lambda x: x, number_type=float, signed=True, exp=True):
+def index_natsorted(seq, key=None, number_type=float, signed=True, exp=True):
     """\
     Return the list of the indexes used to sort the input sequence.
 
@@ -501,26 +513,29 @@ def index_natsorted(seq, key=lambda x: x, number_type=float, signed=True, exp=Tr
         [{u}'baz', {u}'foo', {u}'bar']
 
     """
-    item1 = itemgetter(1)
+    if key is None:
+        newkey = itemgetter(1)
+    else:
+        newkey = lambda x : key(itemgetter(1)(x))
     # Pair the index and sequence together, then sort by element
-    index_seq_pair = [[x, key(y)] for x, y in py23_zip(py23_range(len(seq)), seq)]
+    index_seq_pair = [[x, y] for x, y in enumerate(seq)]
     try:
-        index_seq_pair.sort(key=natsort_keygen(item1, number_type,
+        index_seq_pair.sort(key=natsort_keygen(newkey, number_type,
                                                signed, exp))
     except TypeError as e:
         # In the event of an unresolved "unorderable types" error
         # attempt to sort again, being careful to prevent this error.
         if 'unorderable types' in str(e):
-            index_seq_pair.sort(key=natsort_keygen(item1, number_type,
+            index_seq_pair.sort(key=natsort_keygen(newkey, number_type,
                                                    signed, exp, True))
         else:
             # Re-raise if the problem was not "unorderable types"
             raise
-    return [x[0] for x in index_seq_pair]
+    return [x for x, _ in index_seq_pair]
 
 
 @u_format
-def index_versorted(seq, key=lambda x: x):
+def index_versorted(seq, key=None):
     """\
     Return the list of the indexes used to sort the input sequence
     of version numbers.
@@ -560,5 +575,5 @@ def index_versorted(seq, key=lambda x: x):
         [1, 2, 0]
 
     """
-    return index_natsorted(seq, key=key, number_type=None)
+    return index_natsorted(seq, key, None)
 

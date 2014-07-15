@@ -6,16 +6,9 @@ See the README or the natsort homepage for more details.
 from operator import itemgetter
 from pytest import raises
 from natsort import natsorted, index_natsorted, natsort_key, versorted, index_versorted, natsort_keygen
-from natsort.natsort import _remove_empty, _number_finder, _py3_safe
+from natsort.natsort import _number_finder, _py3_safe
 from natsort.natsort import float_sign_exp_re, float_nosign_exp_re, float_sign_noexp_re
 from natsort.natsort import float_nosign_noexp_re, int_nosign_re, int_sign_re
-
-
-def test__remove_empty():
-
-    assert _remove_empty(['a', 2, '', 'b', '']) == ['a', 2, 'b']
-    assert _remove_empty(['a', 2, 'b', ''])     == ['a', 2, 'b']
-    assert _remove_empty(['a', 2, 'b'])         == ['a', 2, 'b']
 
 
 def test_number_finder():
@@ -99,7 +92,7 @@ def test_natsort_keygen():
 
     # Custom keys are more straightforward with keygen
     f1 = natsort_keygen(key=lambda x: x.upper())
-    f2 = lambda x: natsort_key(x.upper())
+    f2 = lambda x: natsort_key(x, key=lambda y: y.upper())
     assert f1(a) == f2(a)
 
     # It also makes sorting lists in-place easier (no lambdas!)
