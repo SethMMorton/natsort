@@ -20,9 +20,11 @@ from operator import itemgetter
 from functools import partial
 from itertools import islice
 
-from .py23compat import u_format, py23_basestring, py23_range, py23_str, py23_zip
+from .py23compat import u_format, py23_basestring, py23_str, \
+                        py23_range, py23_zip
 
-__doc__ = u_format(__doc__) # Make sure the doctest works for either python2 or python3
+__doc__ = u_format(__doc__) # Make sure the doctest works for either
+                            # python2 or python3
 
 # The regex that locates floats
 float_sign_exp_re = re.compile(r'([-+]?\d*\.?\d+(?:[eE][-+]?\d+)?)')
@@ -494,6 +496,7 @@ def index_natsorted(seq, key=None, number_type=float, signed=True, exp=True):
     See Also
     --------
     natsorted
+    order_by_index
 
     Examples
     --------
@@ -507,9 +510,9 @@ def index_natsorted(seq, key=None, number_type=float, signed=True, exp=True):
         >>> index
         [2, 0, 1]
         >>> # Sort both lists by the sort order of a
-        >>> [a[i] for i in index]
+        >>> order_by_index(a, index)
         [{u}'num2', {u}'num3', {u}'num5']
-        >>> [b[i] for i in index]
+        >>> order_by_index(b, index)
         [{u}'baz', {u}'foo', {u}'bar']
 
     """
@@ -565,6 +568,7 @@ def index_versorted(seq, key=None):
     See Also
     --------
     versorted
+    order_by_index
 
     Examples
     --------
@@ -576,4 +580,63 @@ def index_versorted(seq, key=None):
 
     """
     return index_natsorted(seq, key, None)
+
+
+@u_format
+def order_by_index(seq, index, iter=False):
+    """\
+    Order a given sequence by an index sequence.
+    
+    The output of `index_natsorted` and `index_versorted` is a
+    sequence of integers (index) that correspond to how its input
+    sequence **would** be sorted. The idea is that this index can
+    be used to reorder multiple sequences by the sorted order of the
+    first sequence. This function is a convenient wrapper to
+    apply this ordering to a sequence.
+    
+    Parameters
+    ----------
+    seq : iterable
+        The sequence to order.
+        
+    index : iterable
+        The sequence that indicates how to order `seq`.
+        It should be the same length as `seq` and consist
+        of integers only.
+        
+    iter : {{True, False}}, optional
+        If `True`, the ordered sequence is returned as a
+        generator expression; otherwise it is returned as a
+        list. The default is `False`.
+        
+    Returns
+    -------
+    out : {{list, generator}}
+        The sequence ordered by `index`, as a `list` or as a
+        generator expression (depending on the value of `iter`).
+
+    See Also
+    --------
+    index_natsorted
+    index_versorted
+    
+    Examples
+    --------
+
+    `order_by_index` is a comvenience function that helps you apply
+    the result of `index_natsorted` or `index_versorted`::
+
+        >>> a = ['num3', 'num5', 'num2']
+        >>> b = ['foo', 'bar', 'baz']
+        >>> index = index_natsorted(a)
+        >>> index
+        [2, 0, 1]
+        >>> # Sort both lists by the sort order of a
+        >>> order_by_index(a, index)
+        [{u}'num2', {u}'num3', {u}'num5']
+        >>> order_by_index(b, index)
+        [{u}'baz', {u}'foo', {u}'bar']
+
+    """
+    return (seq[i] for i in index) if iter else [seq[i] for i in index]
 
