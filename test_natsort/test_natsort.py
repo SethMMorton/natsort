@@ -3,10 +3,11 @@
 Here are a collection of examples of how this module can be used.
 See the README or the natsort homepage for more details.
 """
+import warnings
 from operator import itemgetter
 from pytest import raises
 from natsort import natsorted, index_natsorted, natsort_key, versorted, index_versorted, natsort_keygen, order_by_index
-from natsort.natsort import _number_finder, _py3_safe
+from natsort.natsort import _number_finder, _py3_safe, _natsort_key
 from natsort.natsort import float_sign_exp_re, float_nosign_exp_re, float_sign_noexp_re
 from natsort.natsort import float_nosign_noexp_re, int_nosign_re, int_sign_re
 
@@ -39,64 +40,83 @@ def test_py3_safe():
     assert _py3_safe([5, 9]) == [5, '', 9]
 
 
-def test_natsort_key():
+def test_natsort_key_private():
 
     a = ['num3', 'num5', 'num2']
-    a.sort(key=natsort_key)
+    a.sort(key=_natsort_key)
     assert a == ['num2', 'num3', 'num5']
 
     # The below illustrates how the key works, and how the different options affect sorting.
-    assert natsort_key('a-5.034e1')                                             == ('a', -50.34)
-    assert natsort_key('a-5.034e1', number_type=float, signed=True,  exp=True)  == ('a', -50.34)
-    assert natsort_key('a-5.034e1', number_type=float, signed=True,  exp=False) == ('a', -5.034, 'e', 1.0)
-    assert natsort_key('a-5.034e1', number_type=float, signed=False, exp=True)  == ('a-', 50.34)
-    assert natsort_key('a-5.034e1', number_type=float, signed=False, exp=False) == ('a-', 5.034, 'e', 1.0)
-    assert natsort_key('a-5.034e1', number_type=int)                            == ('a', -5, '.', 34, 'e', 1)
-    assert natsort_key('a-5.034e1', number_type=int, signed=False)              == ('a-', 5, '.', 34, 'e', 1)
-    assert natsort_key('a-5.034e1', number_type=None) == natsort_key('a-5.034e1', number_type=int, signed=False)
-    assert natsort_key('a-5.034e1', key=lambda x: x.upper()) == ('A', -50.34)
+    assert _natsort_key('a-5.034e1')                                             == ('a', -50.34)
+    assert _natsort_key('a-5.034e1', number_type=float, signed=True,  exp=True)  == ('a', -50.34)
+    assert _natsort_key('a-5.034e1', number_type=float, signed=True,  exp=False) == ('a', -5.034, 'e', 1.0)
+    assert _natsort_key('a-5.034e1', number_type=float, signed=False, exp=True)  == ('a-', 50.34)
+    assert _natsort_key('a-5.034e1', number_type=float, signed=False, exp=False) == ('a-', 5.034, 'e', 1.0)
+    assert _natsort_key('a-5.034e1', number_type=int)                            == ('a', -5, '.', 34, 'e', 1)
+    assert _natsort_key('a-5.034e1', number_type=int, signed=False)              == ('a-', 5, '.', 34, 'e', 1)
+    assert _natsort_key('a-5.034e1', number_type=None) == _natsort_key('a-5.034e1', number_type=int, signed=False)
+    assert _natsort_key('a-5.034e1', key=lambda x: x.upper()) == ('A', -50.34)
 
     # Iterables are parsed recursively so you can sort lists of lists.
-    assert natsort_key(('a1', 'a-5.034e1')) == (('a', 1.0), ('a', -50.34))
-    assert natsort_key(('a1', 'a-5.034e1'), number_type=None) == (('a', 1), ('a-', 5, '.', 34, 'e', 1))
+    assert _natsort_key(('a1', 'a-5.034e1')) == (('a', 1.0), ('a', -50.34))
+    assert _natsort_key(('a1', 'a-5.034e1'), number_type=None) == (('a', 1), ('a-', 5, '.', 34, 'e', 1))
     # A key is applied before recursion, but not in the recursive calls.
-    assert natsort_key(('a1', 'a-5.034e1'), key=itemgetter(1)) == ('a', -50.34)
+    assert _natsort_key(('a1', 'a-5.034e1'), key=itemgetter(1)) == ('a', -50.34)
 
     # Strings that lead with a number get an empty string at the front of the tuple.
     # This is designed to get around the "unorderable types" issue.
-    assert natsort_key(('15a', '6')) == (('', 15.0, 'a'), ('', 6.0))
-    assert natsort_key(10) == ('', 10)
+    assert _natsort_key(('15a', '6')) == (('', 15.0, 'a'), ('', 6.0))
+    assert _natsort_key(10) == ('', 10)
 
     # Turn on py3_safe to put a '' between adjacent numbers
-    assert natsort_key('43h7+3', py3_safe=True) == ('', 43.0, 'h', 7.0, '', 3.0)
+    assert _natsort_key('43h7+3', py3_safe=True) == ('', 43.0, 'h', 7.0, '', 3.0)
 
     # Invalid arguments give the correct response
     with raises(ValueError) as err:
-        natsort_key('a', number_type='float')
-    assert str(err.value) == "natsort_key: 'number_type' parameter 'float' invalid"
+        _natsort_key('a', number_type='float')
+    assert str(err.value) == "_natsort_key: 'number_type' parameter 'float' invalid"
     with raises(ValueError) as err:
-        natsort_key('a', signed='True')
-    assert str(err.value) == "natsort_key: 'signed' parameter 'True' invalid"
+        _natsort_key('a', signed='True')
+    assert str(err.value) == "_natsort_key: 'signed' parameter 'True' invalid"
     with raises(ValueError) as err:
-        natsort_key('a', exp='False')
-    assert str(err.value) == "natsort_key: 'exp' parameter 'False' invalid"
+        _natsort_key('a', exp='False')
+    assert str(err.value) == "_natsort_key: 'exp' parameter 'False' invalid"
+
+
+def test_natsort_key_public():
+
+    # Identical to _natsort_key
+    # But it raises a depreciation warning
+    with warnings.catch_warnings(record=True) as w:
+        warnings.simplefilter("always")
+        assert natsort_key('a-5.034e1') == _natsort_key('a-5.034e1')
+        assert len(w) == 1
+        assert "natsort_key is depreciated as of 3.4.0, please use natsort_keygen" in str(w[-1].message)
+        assert natsort_key('a-5.034e1', number_type=float, signed=False, exp=False) == _natsort_key('a-5.034e1', number_type=float, signed=False, exp=False)
+
+    # It is called for each element in a list when sorting
+    with warnings.catch_warnings(record=True) as w:
+        warnings.simplefilter("always")
+        a = ['a2', 'a5', 'a9', 'a1', 'a4', 'a10', 'a6']
+        a.sort(key=natsort_key)
+        assert len(w) == 7
 
 
 def test_natsort_keygen():
 
     # Creates equivalent natsort keys
     a = 'a-5.034e1'
-    assert natsort_keygen()(a) == natsort_key(a)
-    assert natsort_keygen(signed=False)(a) == natsort_key(a, signed=False)
-    assert natsort_keygen(exp=False)(a) == natsort_key(a, exp=False)
-    assert natsort_keygen(signed=False, exp=False)(a) == natsort_key(a, signed=False, exp=False)
-    assert natsort_keygen(number_type=int)(a) == natsort_key(a, number_type=int)
-    assert natsort_keygen(number_type=int, signed=False)(a) == natsort_key(a, number_type=int, signed=False)
-    assert natsort_keygen(number_type=None)(a) == natsort_key(a, number_type=None)
+    assert natsort_keygen()(a) == _natsort_key(a)
+    assert natsort_keygen(signed=False)(a) == _natsort_key(a, signed=False)
+    assert natsort_keygen(exp=False)(a) == _natsort_key(a, exp=False)
+    assert natsort_keygen(signed=False, exp=False)(a) == _natsort_key(a, signed=False, exp=False)
+    assert natsort_keygen(number_type=int)(a) == _natsort_key(a, number_type=int)
+    assert natsort_keygen(number_type=int, signed=False)(a) == _natsort_key(a, number_type=int, signed=False)
+    assert natsort_keygen(number_type=None)(a) == _natsort_key(a, number_type=None)
 
     # Custom keys are more straightforward with keygen
     f1 = natsort_keygen(key=lambda x: x.upper())
-    f2 = lambda x: natsort_key(x, key=lambda y: y.upper())
+    f2 = lambda x: _natsort_key(x, key=lambda y: y.upper())
     assert f1(a) == f2(a)
 
     # It also makes sorting lists in-place easier (no lambdas!)

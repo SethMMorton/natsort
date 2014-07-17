@@ -19,6 +19,7 @@ import sys
 from operator import itemgetter
 from functools import partial
 from itertools import islice
+from warnings import warn
 
 from .py23compat import u_format, py23_basestring, py23_str, \
                         py23_range, py23_zip
@@ -108,6 +109,69 @@ def _py3_safe(parsed_list):
         return new_list
 
 
+def _natsort_key(val, key=None, number_type=float, signed=True, exp=True, py3_safe=False):
+    """\
+    Key to sort strings and numbers naturally.
+
+    It works by separating out the numbers from the strings. This function for
+    internal use only. See the natsort_keygen documentation for details of each
+    parameter.
+
+    Parameters
+    ----------
+    val : {str, unicode}
+    key : callable, optional
+    number_type : {None, float, int}, optional
+    signed : {True, False}, optional
+    exp : {True, False}, optional
+    py3_safe : {True, False}, optional
+
+    Returns
+    -------
+    out : tuple
+        The modified value with numbers extracted.
+
+    """
+    
+    # Convert the arguments to the proper input tuple
+    inp_options = (number_type, signed, exp)
+    try:
+        regex, num_function = regex_and_num_function_chooser[inp_options]
+    except KeyError:
+        # Report errors properly
+        if number_type not in (float, int) and number_type is not None:
+            raise ValueError("_natsort_key: 'number_type' "
+                             "parameter '{0}' invalid".format(py23_str(number_type)))
+        elif signed not in (True, False):
+            raise ValueError("_natsort_key: 'signed' "
+                             "parameter '{0}' invalid".format(py23_str(signed)))
+        elif exp not in (True, False):
+            raise ValueError("_natsort_key: 'exp' "
+                             "parameter '{0}' invalid".format(py23_str(exp)))
+    else:
+        # Apply key if needed.
+        if key is not None:
+            val = key(val)
+        # Assume the input are strings, which is the most common case.
+        try:
+            return tuple(_number_finder(val, regex, num_function, py3_safe))
+        except TypeError:
+            # If not strings, assume it is an iterable that must
+            # be parsed recursively. Do not apply the key recursively.
+            try:
+                return tuple([_natsort_key(x, None, number_type, signed,
+                                              exp, py3_safe) for x in val])
+            # If there is still an error, it must be a number.
+            # Return as-is, with a leading empty string.
+            # Waiting for two raised errors instead of calling
+            # isinstance at the opening of the function is slower
+            # for numbers but much faster for strings, and since
+            # numbers are not a common input to natsort this is
+            # an acceptable sacrifice.
+            except TypeError:
+                return ('', val,)
+
+
 @u_format
 def natsort_key(val, key=None, number_type=float, signed=True, exp=True, py3_safe=False):
     """\
@@ -117,13 +181,15 @@ def natsort_key(val, key=None, number_type=float, signed=True, exp=True, py3_saf
     It is designed for use in passing to the 'sorted' builtin or
     'sort' attribute of lists.
 
-    .. note:: Depreciation Notice (3.3.1)
+    .. note:: Depreciation Notice (3.4.0)
               This function remains in the publicly exposed API for
               backwards-compatibility reasons, but future development
-              should use the newer `natsort_keygen` function. There
-              are no plans to officially remove this method from the
-              public API, but it leads to messier code than using
-              `natsort_keygen` so the latter should be preferred.
+              should use the newer `natsort_keygen` function. It is
+              planned to remove this from the public API in natsort
+              version 4.0.0.  A DeprecationWarning will be raised
+              via the warnings module; set warnings.simplefilter("always")
+              to raise them to see if your code will work in version
+              4.0.0.
 
     Parameters
     ----------
@@ -216,44 +282,9 @@ def natsort_key(val, key=None, number_type=float, signed=True, exp=True, py3_saf
         ({u}'', 43.0, {u}'h', 7.0, {u}'', 3.0)
 
     """
-    
-    # Convert the arguments to the proper input tuple
-    inp_options = (number_type, signed, exp)
-    try:
-        regex, num_function = regex_and_num_function_chooser[inp_options]
-    except KeyError:
-        # Report errors properly
-        if number_type not in (float, int) and number_type is not None:
-            raise ValueError("natsort_key: 'number_type' "
-                             "parameter '{0}' invalid".format(py23_str(number_type)))
-        elif signed not in (True, False):
-            raise ValueError("natsort_key: 'signed' "
-                             "parameter '{0}' invalid".format(py23_str(signed)))
-        elif exp not in (True, False):
-            raise ValueError("natsort_key: 'exp' "
-                             "parameter '{0}' invalid".format(py23_str(exp)))
-    else:
-        # Apply key if needed.
-        if key is not None:
-            val = key(val)
-        # Assume the input are strings, which is the most common case.
-        try:
-            return tuple(_number_finder(val, regex, num_function, py3_safe))
-        except TypeError:
-            # If not strings, assume it is an iterable that must
-            # be parsed recursively. Do not apply the key recursively.
-            try:
-                return tuple([natsort_key(x, None, number_type, signed,
-                                             exp, py3_safe) for x in val])
-            # If there is still an error, it must be a number.
-            # Return as-is, with a leading empty string.
-            # Waiting for two raised errors instead of calling
-            # isinstance at the opening of the function is slower
-            # for numbers but much faster for strings, and since
-            # numbers are not a common input to natsort this is
-            # an acceptable sacrifice.
-            except TypeError:
-                return ('', val,)
+    msg = "natsort_key is depreciated as of 3.4.0, please use natsort_keygen"
+    warn(msg, DeprecationWarning)
+    return _natsort_key(val, key, number_type, signed, exp, py3_safe)
 
 
 @u_format
@@ -334,11 +365,11 @@ def natsort_keygen(key=None, number_type=float, signed=True, exp=True, py3_safe=
         True
 
     """
-    return partial(natsort_key, key=key,
-                                number_type=number_type,
-                                signed=signed,
-                                exp=exp,
-                                py3_safe=py3_safe)
+    return partial(_natsort_key, key=key,
+                                 number_type=number_type,
+                                 signed=signed,
+                                 exp=exp,
+                                 py3_safe=py3_safe)
 
 
 @u_format
