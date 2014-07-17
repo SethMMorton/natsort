@@ -16,6 +16,8 @@ from __future__ import print_function, division, unicode_literals, absolute_impo
 
 import re
 import sys
+from os import curdir, pardir
+from os.path import split, splitext
 from operator import itemgetter
 from functools import partial
 from itertools import islice
@@ -55,6 +57,9 @@ regex_and_num_function_chooser = {
 # because I am supporting Python 2.6.
 number_types = set([float, int])
 
+# This regex is to make sure we don't mistake a number for a file extension
+decimal = re.compile(r'\.\d')
+
 
 def _number_finder(s, regex, numconv, py3_safe):
     """Helper to split numbers"""
@@ -91,6 +96,44 @@ def _number_finder(s, regex, numconv, py3_safe):
     return  _py3_safe(s) if py3_safe else s
 
 
+def _path_splitter(s):
+    """Split a string into its path components. Assumes a string is a path."""
+    path_parts = []
+    p_append = path_parts.append
+    path_location = s
+    # Continue splitting the path from the back until we have reached
+    # '..' or '.', or until there is nothing left to split.
+    while path_location != curdir and path_location != pardir:
+        parent_path = path_location
+        path_location, child_path = split(parent_path)
+        if path_location == parent_path:
+            break
+        p_append(child_path)
+    # This last append is the base path. Only append if the string is non-empty.
+    if path_location:
+        p_append(path_location)
+    # We created this list in reversed order, so we now correct the order.
+    path_parts.reverse()
+    # Now, split off the file extensions using a similar method to above.
+    # Continue splitting off file extensions until we reach a decimal number
+    # or there are no more extensions.
+    base = path_parts.pop()
+    base_parts = []
+    b_append = base_parts.append
+    d_match = decimal.match
+    while True:
+        front = base
+        base, ext = splitext(front)
+        if d_match(ext) or not ext:
+            base = front # Reset base to before the split if the split is invalid.
+            break
+        b_append(ext)
+    b_append(base)
+    base_parts.reverse()
+    # Return the split parent paths and then the split basename.
+    return path_parts + base_parts
+
+
 def _py3_safe(parsed_list):
     """Insert '' between two numbers."""
     if len(parsed_list) < 2:
@@ -109,7 +152,8 @@ def _py3_safe(parsed_list):
         return new_list
 
 
-def _natsort_key(val, key=None, number_type=float, signed=True, exp=True, py3_safe=False):
+def _natsort_key(val, key=None, number_type=float, signed=True, exp=True,
+                      as_path=False, py3_safe=False):
     """\
     Key to sort strings and numbers naturally.
 
@@ -124,6 +168,7 @@ def _natsort_key(val, key=None, number_type=float, signed=True, exp=True, py3_sa
     number_type : {None, float, int}, optional
     signed : {True, False}, optional
     exp : {True, False}, optional
+    as_path : {True, False}, optional
     py3_safe : {True, False}, optional
 
     Returns
@@ -152,15 +197,30 @@ def _natsort_key(val, key=None, number_type=float, signed=True, exp=True, py3_sa
         # Apply key if needed.
         if key is not None:
             val = key(val)
+
+        # If this is a path, convert it. An AttrubuteError is raised if not a string.
+        split_as_path = False
+        if as_path:
+            try:
+                val = _path_splitter(val)
+            except AttributeError:
+                pass
+            else:
+                # Record that this string was split as a path so that
+                # we can set as_path to False in the recursive call.
+                split_as_path = True
+
         # Assume the input are strings, which is the most common case.
         try:
             return tuple(_number_finder(val, regex, num_function, py3_safe))
         except TypeError:
             # If not strings, assume it is an iterable that must
             # be parsed recursively. Do not apply the key recursively.
+            # If this string was split as a path, set as_path to False.
             try:
                 return tuple([_natsort_key(x, None, number_type, signed,
-                                              exp, py3_safe) for x in val])
+                                              exp, as_path and not split_as_path,
+                                              py3_safe) for x in val])
             # If there is still an error, it must be a number.
             # Return as-is, with a leading empty string.
             # Waiting for two raised errors instead of calling
@@ -173,7 +233,8 @@ def _natsort_key(val, key=None, number_type=float, signed=True, exp=True, py3_sa
 
 
 @u_format
-def natsort_key(val, key=None, number_type=float, signed=True, exp=True, py3_safe=False):
+def natsort_key(val, key=None, number_type=float, signed=True, exp=True,
+                     as_path=False, py3_safe=False):
     """\
     Key to sort strings and numbers naturally.
 
@@ -220,6 +281,15 @@ def natsort_key(val, key=None, number_type=float, signed=True, exp=True, py3_saf
         350000, i.e. the exponential part is considered to be part of
         the number. If `exp = False`, "3.5e5" is interpreted as
         ``(3.5, "e", 5)``. The default behavior is `exp = True`.
+
+    as_path : {{True, False}}, optional
+        This option will force strings to be interpreted as filesystem
+        paths, so they will be split according to the filesystem separator
+        (i.e. '/' on UNIX, '\\' on Windows), as well as splitting on the
+        file extension, if any. Without this, lists of file paths like
+        ``['Folder', 'Folder (1)', 'Folder (10)']`` will not be sorted
+        properly; ``'Folder'`` will be placed at the end, not at the front.
+        The default behavior is `as_path = False`.
 
     py3_safe : {{True, False}}, optional
         This will make the string parsing algorithm be more careful by
@@ -284,11 +354,12 @@ def natsort_key(val, key=None, number_type=float, signed=True, exp=True, py3_saf
     """
     msg = "natsort_key is depreciated as of 3.4.0, please use natsort_keygen"
     warn(msg, DeprecationWarning)
-    return _natsort_key(val, key, number_type, signed, exp, py3_safe)
+    return _natsort_key(val, key, number_type, signed, exp, as_path, py3_safe)
 
 
 @u_format
-def natsort_keygen(key=None, number_type=float, signed=True, exp=True, py3_safe=False):
+def natsort_keygen(key=None, number_type=float, signed=True, exp=True,
+                   as_path=False, py3_safe=False):
     """\
     Generate a key to sort strings and numbers naturally.
 
@@ -326,6 +397,15 @@ def natsort_keygen(key=None, number_type=float, signed=True, exp=True, py3_safe=
         350000, i.e. the exponential part is considered to be part of
         the number. If `exp = False`, "3.5e5" is interpreted as
         ``(3.5, "e", 5)``. The default behavior is `exp = True`.
+
+    as_path : {{True, False}}, optional
+        This option will force strings to be interpreted as filesystem
+        paths, so they will be split according to the filesystem separator
+        (i.e. '/' on UNIX, '\\' on Windows), as well as splitting on the
+        file extension, if any. Without this, lists with file paths like
+        ``['Folder/', 'Folder (1)/', 'Folder (10)/']`` will not be sorted
+        properly; ``'Folder'`` will be placed at the end, not at the front.
+        The default behavior is `as_path = False`.
 
     py3_safe : {{True, False}}, optional
         This will make the string parsing algorithm be more careful by
@@ -369,11 +449,13 @@ def natsort_keygen(key=None, number_type=float, signed=True, exp=True, py3_safe=
                                  number_type=number_type,
                                  signed=signed,
                                  exp=exp,
+                                 as_path=as_path,
                                  py3_safe=py3_safe)
 
 
 @u_format
-def natsorted(seq, key=None, number_type=float, signed=True, exp=True, reverse=False):
+def natsorted(seq, key=None, number_type=float, signed=True, exp=True,
+                   reverse=False, as_path=False):
     """\
     Sorts a sequence naturally.
 
@@ -415,6 +497,15 @@ def natsorted(seq, key=None, number_type=float, signed=True, exp=True, reverse=F
         Return the list in reversed sorted order. The default is
         `False`.
 
+    as_path : {{True, False}}, optional
+        This option will force strings to be interpreted as filesystem
+        paths, so they will be split according to the filesystem separator
+        (i.e. '/' on UNIX, '\\' on Windows), as well as splitting on the
+        file extension, if any. Without this, lists of file paths like
+        ``['Folder', 'Folder (1)', 'Folder (10)']`` will not be sorted
+        properly; ``'Folder'`` will be placed at the end, not at the front.
+        The default behavior is `as_path = False`.
+
     Returns
     -------
     out: list
@@ -437,21 +528,22 @@ def natsorted(seq, key=None, number_type=float, signed=True, exp=True, reverse=F
     try:
         return sorted(seq, reverse=reverse,
                       key=natsort_keygen(key, number_type,
-                                         signed, exp))
+                                         signed, exp, as_path))
     except TypeError as e:
         # In the event of an unresolved "unorderable types" error
         # attempt to sort again, being careful to prevent this error.
         if 'unorderable types' in str(e):
             return sorted(seq, reverse=reverse,
                           key=natsort_keygen(key, number_type,
-                                             signed, exp, True))
+                                             signed, exp, as_path,
+                                             True))
         else:
             # Re-raise if the problem was not "unorderable types"
             raise
 
 
 @u_format
-def versorted(seq, key=None, reverse=False):
+def versorted(seq, key=None, reverse=False, as_path=False):
     """\
     Convenience function to sort version numbers.
 
@@ -472,6 +564,15 @@ def versorted(seq, key=None, reverse=False):
         Return the list in reversed sorted order. The default is
         `False`.
 
+    as_path : {{True, False}}, optional
+        This option will force strings to be interpreted as filesystem
+        paths, so they will be split according to the filesystem separator
+        (i.e. '/' on UNIX, '\\' on Windows), as well as splitting on the
+        file extension, if any. Without this, lists of file paths like
+        ``['Folder', 'Folder (1)', 'Folder (10)']`` will not be sorted
+        properly; ``'Folder'`` will be placed at the end, not at the front.
+        The default behavior is `as_path = False`.
+
     Returns
     -------
     out : list
@@ -490,11 +591,12 @@ def versorted(seq, key=None, reverse=False):
         [{u}'num3.4.1', {u}'num3.4.2', {u}'num4.0.2']
 
     """
-    return natsorted(seq, key, None, reverse=reverse)
+    return natsorted(seq, key, None, reverse=reverse, as_path=as_path)
 
 
 @u_format
-def index_natsorted(seq, key=None, number_type=float, signed=True, exp=True, reverse=False):
+def index_natsorted(seq, key=None, number_type=float, signed=True, exp=True,
+                         reverse=False, as_path=False):
     """\
     Return the list of the indexes used to sort the input sequence.
 
@@ -537,6 +639,15 @@ def index_natsorted(seq, key=None, number_type=float, signed=True, exp=True, rev
         Return the list in reversed sorted order. The default is
         `False`.
 
+    as_path : {{True, False}}, optional
+        This option will force strings to be interpreted as filesystem
+        paths, so they will be split according to the filesystem separator
+        (i.e. '/' on UNIX, '\\' on Windows), as well as splitting on the
+        file extension, if any. Without this, lists of file paths like
+        ``['Folder', 'Folder (1)', 'Folder (10)']`` will not be sorted
+        properly; ``'Folder'`` will be placed at the end, not at the front.
+        The default behavior is `as_path = False`.
+
     Returns
     -------
     out : tuple
@@ -574,14 +685,15 @@ def index_natsorted(seq, key=None, number_type=float, signed=True, exp=True, rev
     try:
         index_seq_pair.sort(reverse=reverse,
                             key=natsort_keygen(newkey, number_type,
-                                               signed, exp))
+                                               signed, exp, as_path))
     except TypeError as e:
         # In the event of an unresolved "unorderable types" error
         # attempt to sort again, being careful to prevent this error.
         if 'unorderable types' in str(e):
             index_seq_pair.sort(reverse=reverse,
                                 key=natsort_keygen(newkey, number_type,
-                                                   signed, exp, True))
+                                                   signed, exp, as_path,
+                                                   True))
         else:
             # Re-raise if the problem was not "unorderable types"
             raise
@@ -589,7 +701,7 @@ def index_natsorted(seq, key=None, number_type=float, signed=True, exp=True, rev
 
 
 @u_format
-def index_versorted(seq, key=None, reverse=False):
+def index_versorted(seq, key=None, reverse=False, as_path=False):
     """\
     Return the list of the indexes used to sort the input sequence
     of version numbers.
@@ -615,6 +727,15 @@ def index_versorted(seq, key=None, reverse=False):
         Return the list in reversed sorted order. The default is
         `False`.
 
+    as_path : {{True, False}}, optional
+        This option will force strings to be interpreted as filesystem
+        paths, so they will be split according to the filesystem separator
+        (i.e. '/' on UNIX, '\\' on Windows), as well as splitting on the
+        file extension, if any. Without this, lists of file paths like
+        ``['Folder', 'Folder (1)', 'Folder (10)']`` will not be sorted
+        properly; ``'Folder'`` will be placed at the end, not at the front.
+        The default behavior is `as_path = False`.
+
     Returns
     -------
     out : tuple
@@ -634,7 +755,7 @@ def index_versorted(seq, key=None, reverse=False):
         [1, 2, 0]
 
     """
-    return index_natsorted(seq, key, None, reverse=reverse)
+    return index_natsorted(seq, key, None, reverse=reverse, as_path=as_path)
 
 
 @u_format

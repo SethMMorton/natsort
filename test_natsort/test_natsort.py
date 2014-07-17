@@ -68,6 +68,15 @@ def test_natsort_key_private():
     assert _natsort_key(('15a', '6')) == (('', 15.0, 'a'), ('', 6.0))
     assert _natsort_key(10) == ('', 10)
 
+    # Turn on as_path to split a file path into components
+    assert _natsort_key('/p/Folder (10)/file34.5nm (2).tar.gz', as_path=True) == (('/',), ('p', ), ('Folder (', 10.0, ')',), ('file', 34.5, 'nm (', 2.0, ')'), ('.tar',), ('.gz',))
+    assert _natsort_key('../Folder (10)/file (2).tar.gz', as_path=True) == (('..', ), ('Folder (', 10.0, ')',), ('file (', 2.0, ')'), ('.tar',), ('.gz',))
+    assert _natsort_key('Folder (10)/file.f34.5nm (2).tar.gz', as_path=True) == (('Folder (', 10.0, ')',), ('file.f', 34.5, 'nm (', 2.0, ')'), ('.tar',), ('.gz',))
+
+    # It gracefully handles as_path for numeric input.  It also handles recursion well.
+    assert _natsort_key(10, as_path=True) == ('', 10)
+    assert _natsort_key(('/Folder', '/Folder (1)'), as_path=True) == ((('/',), ('Folder',)), (('/',), ('Folder (', 1.0, ')')))
+
     # Turn on py3_safe to put a '' between adjacent numbers
     assert _natsort_key('43h7+3', py3_safe=True) == ('', 43.0, 'h', 7.0, '', 3.0)
 
@@ -113,6 +122,7 @@ def test_natsort_keygen():
     assert natsort_keygen(number_type=int)(a) == _natsort_key(a, number_type=int)
     assert natsort_keygen(number_type=int, signed=False)(a) == _natsort_key(a, number_type=int, signed=False)
     assert natsort_keygen(number_type=None)(a) == _natsort_key(a, number_type=None)
+    assert natsort_keygen(as_path=True)(a) == _natsort_key(a, as_path=True)
 
     # Custom keys are more straightforward with keygen
     f1 = natsort_keygen(key=lambda x: x.upper())
@@ -174,6 +184,20 @@ def test_natsorted():
     a = ['a50', 'a51.', 'a50.31', 'a50.4', 'a5.034e1', 'a50.300']
     assert natsorted(a, reverse=True) == ['a50', 'a50.300', 'a50.31', 'a5.034e1', 'a50.4', 'a51.'][::-1]
 
+    # Sorting paths just got easier
+    a = ['/p/Folder (10)/file.tar.gz',
+         '/p/Folder/file.tar.gz',
+         '/p/Folder (1)/file (1).tar.gz',
+         '/p/Folder (1)/file.tar.gz',]
+    assert natsorted(a) == ['/p/Folder (1)/file (1).tar.gz',
+                            '/p/Folder (1)/file.tar.gz',
+                            '/p/Folder (10)/file.tar.gz',
+                            '/p/Folder/file.tar.gz',]
+    assert natsorted(a, as_path=True) == ['/p/Folder/file.tar.gz',
+                                          '/p/Folder (1)/file.tar.gz',
+                                          '/p/Folder (1)/file (1).tar.gz',
+                                          '/p/Folder (10)/file.tar.gz',]
+
 
 def test_versorted():
 
@@ -182,6 +206,20 @@ def test_versorted():
     assert versorted(a, reverse=True) == versorted(a)[::-1]
     a = [('a', '1.9.9a'), ('a', '1.11'), ('a', '1.9.9b'), ('a', '1.11.4'), ('a', '1.10.1')]
     assert versorted(a) == [('a', '1.9.9a'), ('a', '1.9.9b'), ('a', '1.10.1'), ('a', '1.11'), ('a', '1.11.4')]
+
+    # Sorting paths just got easier
+    a = ['/p/Folder (10)/file1.1.0.tar.gz',
+         '/p/Folder/file1.1.0.tar.gz',
+         '/p/Folder (1)/file1.1.0 (1).tar.gz',
+         '/p/Folder (1)/file1.1.0.tar.gz',]
+    assert versorted(a) == ['/p/Folder (1)/file1.1.0 (1).tar.gz',
+                            '/p/Folder (1)/file1.1.0.tar.gz',
+                            '/p/Folder (10)/file1.1.0.tar.gz',
+                            '/p/Folder/file1.1.0.tar.gz',]
+    assert versorted(a, as_path=True) == ['/p/Folder/file1.1.0.tar.gz',
+                                          '/p/Folder (1)/file1.1.0.tar.gz',
+                                          '/p/Folder (1)/file1.1.0 (1).tar.gz',
+                                          '/p/Folder (10)/file1.1.0.tar.gz',]
 
 
 def test_index_natsorted():
@@ -207,6 +245,12 @@ def test_index_natsorted():
     data = [['a1', 'a5'], ['a1', 'a40'], ['a10', 'a1'], ['a2', 'a5']]
     assert index_natsorted(data) == [0, 1, 3, 2]
 
+    # It can sort paths too
+    a = ['/p/Folder (10)/',
+         '/p/Folder/',
+         '/p/Folder (1)/',]
+    assert index_natsorted(a, as_path=True) == [1, 2, 0]
+
 
 def test_index_versorted():
 
@@ -215,6 +259,13 @@ def test_index_versorted():
     assert index_versorted(a, reverse=True) == index_versorted(a)[::-1]
     a = [('a', '1.9.9a'), ('a', '1.11'), ('a', '1.9.9b'), ('a', '1.11.4'), ('a', '1.10.1')]
     assert index_versorted(a) == [0, 2, 4, 1, 3]
+
+    # It can sort paths too
+    a = ['/p/Folder (10)/file1.1.0.tar.gz',
+         '/p/Folder/file1.1.0.tar.gz',
+         '/p/Folder (1)/file1.1.0 (1).tar.gz',
+         '/p/Folder (1)/file1.1.0.tar.gz',]
+    assert index_versorted(a, as_path=True) == [1, 3, 2, 0]
 
 
 def test_order_by_index():
