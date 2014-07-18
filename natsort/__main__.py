@@ -2,8 +2,6 @@
 from __future__ import print_function, division, unicode_literals, absolute_import
 
 import sys
-import os
-import re
 
 from .natsort import natsorted, regex_and_num_function_chooser 
 from ._version import __version__

@@ -15,7 +15,6 @@ See the README or the natsort homepage for more details.
 from __future__ import print_function, division, unicode_literals, absolute_import
 
 import re
-import sys
 from os import curdir, pardir
 from os.path import split, splitext
 from operator import itemgetter
@@ -23,8 +22,7 @@ from functools import partial
 from itertools import islice
 from warnings import warn
 
-from .py23compat import u_format, py23_basestring, py23_str, \
-                        py23_range, py23_zip
+from .py23compat import u_format, py23_str, py23_zip
 
 __doc__ = u_format(__doc__) # Make sure the doctest works for either
                             # python2 or python3
