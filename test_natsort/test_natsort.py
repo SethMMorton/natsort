@@ -73,8 +73,10 @@ def test_natsort_key_private():
     assert _natsort_key('../Folder (10)/file (2).tar.gz', as_path=True) == (('..', ), ('Folder (', 10.0, ')',), ('file (', 2.0, ')'), ('.tar',), ('.gz',))
     assert _natsort_key('Folder (10)/file.f34.5nm (2).tar.gz', as_path=True) == (('Folder (', 10.0, ')',), ('file.f', 34.5, 'nm (', 2.0, ')'), ('.tar',), ('.gz',))
 
-    # It gracefully handles as_path for numeric input.  It also handles recursion well.
-    assert _natsort_key(10, as_path=True) == ('', 10)
+    # It gracefully handles as_path for numeric input by putting an extra tuple around it
+    # so it will sort against the other as_path results.
+    assert _natsort_key(10, as_path=True) == (('', 10),)
+    # as_path also handles recursion well.
     assert _natsort_key(('/Folder', '/Folder (1)'), as_path=True) == ((('/',), ('Folder',)), (('/',), ('Folder (', 1.0, ')')))
 
     # Turn on py3_safe to put a '' between adjacent numbers
@@ -197,6 +199,9 @@ def test_natsorted():
                                           '/p/Folder (1)/file.tar.gz',
                                           '/p/Folder (1)/file (1).tar.gz',
                                           '/p/Folder (10)/file.tar.gz',]
+
+    # You can sort paths and numbers, not that you'd want to
+    assert natsorted(['/Folder (9)/file.exe', 43], as_path=True) == [43, '/Folder (9)/file.exe']
 
 
 def test_versorted():

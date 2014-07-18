@@ -229,7 +229,7 @@ def _natsort_key(val, key=None, number_type=float, signed=True, exp=True,
             # numbers are not a common input to natsort this is
             # an acceptable sacrifice.
             except TypeError:
-                return ('', val,)
+                return (('', val,),) if as_path else ('', val,)
 
 
 @u_format
