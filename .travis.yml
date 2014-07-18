@@ -14,6 +14,7 @@ script:
 - python -m pytest --cov natsort
 - python -m pytest --doctest-modules natsort
 - python -m pytest README.rst
+- python -m pytest test_natsort/stress_natsort.py
 after_success:
   coveralls
 deploy:
