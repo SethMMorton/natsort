@@ -23,6 +23,13 @@ def main():
                             formatter_class=RawDescriptionHelpFormatter)
     parser.add_argument('--version', action='version',
                         version='%(prog)s {0}'.format(__version__))
+    parser.add_argument('-p', '--paths', default=False, action='store_true',
+                        help='Interpret the input as file paths.  This is not '
+                        'strictly necessary to sort all file paths, but in cases '
+                        'where there are OS-generated file paths like "Folder/" '
+                        'and "Folder (1)/", this option is needed to make the '
+                        'paths sorted in the order you expect ("Folder/" before '
+                        '"Folder (1)/").')
     parser.add_argument('-f', '--filter', help='Used for '
                         'keeping only the entries that have a number '
                         'falling in the given range.', nargs=2, type=float,
@@ -51,7 +58,7 @@ def main():
                         dest='exp', help='Do not consider an exponential as part '
                         'of a number, i.e. 1e4, would be considered as 1, "e", '
                         'and 4, not as 10000.  This only effects the '
-                        '--number_type=float.')
+                        '--number-type=float.')
     parser.add_argument('entries', help='The entries to sort. Taken from stdin '
                         'if nothing is given on the command line.', nargs='*',
                         default=sys.stdin)
@@ -131,6 +138,7 @@ def sort_and_print_entries(entries, args):
                               'float': float}[args.number_type],
               'signed': args.signed,
               'exp': args.exp,
+              'as_path': args.paths,
               'reverse': args.reverse,}
 
     # Pre-remove entries that don't pass the filtering criteria
