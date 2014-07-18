@@ -12,7 +12,8 @@ See the README or the natsort homepage for more details.
 
 """
 
-from __future__ import print_function, division, unicode_literals, absolute_import
+from __future__ import (print_function, division,
+                        unicode_literals, absolute_import)
 
 import re
 from os import curdir, pardir
@@ -24,8 +25,8 @@ from warnings import warn
 
 from .py23compat import u_format, py23_str, py23_zip
 
-__doc__ = u_format(__doc__) # Make sure the doctest works for either
-                            # python2 or python3
+__doc__ = u_format(__doc__)  # Make sure the doctest works for either
+                             # python2 or python3
 
 # The regex that locates floats
 float_sign_exp_re = re.compile(r'([-+]?\d*\.?\d+(?:[eE][-+]?\d+)?)')
@@ -37,18 +38,18 @@ int_nosign_re = re.compile(r'(\d+)')
 int_sign_re = re.compile(r'([-+]?\d+)')
 # This dict will help select the correct regex and number conversion function.
 regex_and_num_function_chooser = {
-    (float, True,  True)  : (float_sign_exp_re,     float),
-    (float, True,  False) : (float_sign_noexp_re,   float),
-    (float, False, True)  : (float_nosign_exp_re,   float),
-    (float, False, False) : (float_nosign_noexp_re, float),
-    (int,   True,  True)  : (int_sign_re,   int),
-    (int,   True,  False) : (int_sign_re,   int),
-    (int,   False, True)  : (int_nosign_re, int),
-    (int,   False, False) : (int_nosign_re, int),
-    (None,  True,  True)  : (int_nosign_re, int),
-    (None,  True,  False) : (int_nosign_re, int),
-    (None,  False, True)  : (int_nosign_re, int),
-    (None,  False, False) : (int_nosign_re, int),
+    (float, True,  True):  (float_sign_exp_re,     float),
+    (float, True,  False): (float_sign_noexp_re,   float),
+    (float, False, True):  (float_nosign_exp_re,   float),
+    (float, False, False): (float_nosign_noexp_re, float),
+    (int,   True,  True):  (int_sign_re,   int),
+    (int,   True,  False): (int_sign_re,   int),
+    (int,   False, True):  (int_nosign_re, int),
+    (int,   False, False): (int_nosign_re, int),
+    (None,  True,  True):  (int_nosign_re, int),
+    (None,  True,  False): (int_nosign_re, int),
+    (None,  False, True):  (int_nosign_re, int),
+    (None,  False, False): (int_nosign_re, int),
 }
 
 # Number types.  I have to use set([...]) and not {...}
@@ -83,7 +84,7 @@ def _number_finder(s, regex, numconv, py3_safe):
     # using isinstance. This was chosen at the expense of the less
     # common case of a number being at the front of the list.
     try:
-        s[0][0] # str supports indexing, but not numbers
+        s[0][0]  # str supports indexing, but not numbers
     except TypeError:
         s = [''] + s
 
@@ -91,7 +92,7 @@ def _number_finder(s, regex, numconv, py3_safe):
     # and is used to get around "unorderable types" in complex cases.
     # It is a separate function that needs to be requested specifically
     # because it is expensive to call.
-    return  _py3_safe(s) if py3_safe else s
+    return _py3_safe(s) if py3_safe else s
 
 
 def _path_splitter(s):
@@ -107,7 +108,8 @@ def _path_splitter(s):
         if path_location == parent_path:
             break
         p_append(child_path)
-    # This last append is the base path. Only append if the string is non-empty.
+    # This last append is the base path.
+    # Only append if the string is non-empty.
     if path_location:
         p_append(path_location)
     # We created this list in reversed order, so we now correct the order.
@@ -123,7 +125,8 @@ def _path_splitter(s):
         front = base
         base, ext = splitext(front)
         if d_match(ext) or not ext:
-            base = front # Reset base to before the split if the split is invalid.
+            # Reset base to before the split if the split is invalid.
+            base = front
             break
         b_append(ext)
     b_append(base)
@@ -134,13 +137,14 @@ def _path_splitter(s):
 
 def _py3_safe(parsed_list):
     """Insert '' between two numbers."""
-    if len(parsed_list) < 2:
+    length = len(parsed_list)
+    if length < 2:
         return parsed_list
     else:
         new_list = [parsed_list[0]]
         nl_append = new_list.append
         ntypes = number_types
-        for before, after in py23_zip(islice(parsed_list, 0, len(parsed_list)-1),
+        for before, after in py23_zip(islice(parsed_list, 0, length-1),
                                       islice(parsed_list, 1, None)):
             # I realize that isinstance is favored over type, but
             # in this case type is SO MUCH FASTER than isinstance!!
@@ -151,7 +155,7 @@ def _py3_safe(parsed_list):
 
 
 def _natsort_key(val, key=None, number_type=float, signed=True, exp=True,
-                      as_path=False, py3_safe=False):
+                 as_path=False, py3_safe=False):
     """\
     Key to sort strings and numbers naturally.
 
@@ -175,7 +179,7 @@ def _natsort_key(val, key=None, number_type=float, signed=True, exp=True,
         The modified value with numbers extracted.
 
     """
-    
+
     # Convert the arguments to the proper input tuple
     inp_options = (number_type, signed, exp)
     try:
@@ -183,20 +187,21 @@ def _natsort_key(val, key=None, number_type=float, signed=True, exp=True,
     except KeyError:
         # Report errors properly
         if number_type not in (float, int) and number_type is not None:
-            raise ValueError("_natsort_key: 'number_type' "
-                             "parameter '{0}' invalid".format(py23_str(number_type)))
+            raise ValueError("_natsort_key: 'number_type' parameter "
+                             "'{0}' invalid".format(py23_str(number_type)))
         elif signed not in (True, False):
-            raise ValueError("_natsort_key: 'signed' "
-                             "parameter '{0}' invalid".format(py23_str(signed)))
+            raise ValueError("_natsort_key: 'signed' parameter "
+                             "'{0}' invalid".format(py23_str(signed)))
         elif exp not in (True, False):
-            raise ValueError("_natsort_key: 'exp' "
-                             "parameter '{0}' invalid".format(py23_str(exp)))
+            raise ValueError("_natsort_key: 'exp' parameter "
+                             "'{0}' invalid".format(py23_str(exp)))
     else:
         # Apply key if needed.
         if key is not None:
             val = key(val)
 
-        # If this is a path, convert it. An AttrubuteError is raised if not a string.
+        # If this is a path, convert it.
+        # An AttrubuteError is raised if not a string.
         split_as_path = False
         if as_path:
             try:
@@ -217,8 +222,8 @@ def _natsort_key(val, key=None, number_type=float, signed=True, exp=True,
             # If this string was split as a path, set as_path to False.
             try:
                 return tuple([_natsort_key(x, None, number_type, signed,
-                                              exp, as_path and not split_as_path,
-                                              py3_safe) for x in val])
+                                           exp, as_path and not split_as_path,
+                                           py3_safe) for x in val])
             # If there is still an error, it must be a number.
             # Return as-is, with a leading empty string.
             # Waiting for two raised errors instead of calling
@@ -232,7 +237,7 @@ def _natsort_key(val, key=None, number_type=float, signed=True, exp=True,
 
 @u_format
 def natsort_key(val, key=None, number_type=float, signed=True, exp=True,
-                     as_path=False, py3_safe=False):
+                as_path=False, py3_safe=False):
     """\
     Key to sort strings and numbers naturally.
 
@@ -437,23 +442,25 @@ def natsort_keygen(key=None, number_type=float, signed=True, exp=True,
 
         >>> a = ['num5.10', 'num-3', 'num5.3', 'num2']
         >>> b = a[:]
-        >>> a.sort(key=lambda x: natsort_key(x, key=lambda y: y.upper(), signed=False))
+        >>> a.sort(key=lambda x: natsort_key(x, key=lambda y: y.upper(),
+        ...        signed=False))
         >>> b.sort(key=natsort_keygen(key=lambda x: x.upper(), signed=False))
         >>> a == b
         True
 
     """
-    return partial(_natsort_key, key=key,
-                                 number_type=number_type,
-                                 signed=signed,
-                                 exp=exp,
-                                 as_path=as_path,
-                                 py3_safe=py3_safe)
+    return partial(_natsort_key,
+                   key=key,
+                   number_type=number_type,
+                   signed=signed,
+                   exp=exp,
+                   as_path=as_path,
+                   py3_safe=py3_safe)
 
 
 @u_format
 def natsorted(seq, key=None, number_type=float, signed=True, exp=True,
-                   reverse=False, as_path=False):
+              reverse=False, as_path=False):
     """\
     Sorts a sequence naturally.
 
@@ -594,7 +601,7 @@ def versorted(seq, key=None, reverse=False, as_path=False):
 
 @u_format
 def index_natsorted(seq, key=None, number_type=float, signed=True, exp=True,
-                         reverse=False, as_path=False):
+                    reverse=False, as_path=False):
     """\
     Return the list of the indexes used to sort the input sequence.
 
@@ -677,7 +684,7 @@ def index_natsorted(seq, key=None, number_type=float, signed=True, exp=True,
     if key is None:
         newkey = itemgetter(1)
     else:
-        newkey = lambda x : key(itemgetter(1)(x))
+        newkey = lambda x: key(itemgetter(1)(x))
     # Pair the index and sequence together, then sort by element
     index_seq_pair = [[x, y] for x, y in enumerate(seq)]
     try:
@@ -760,29 +767,29 @@ def index_versorted(seq, key=None, reverse=False, as_path=False):
 def order_by_index(seq, index, iter=False):
     """\
     Order a given sequence by an index sequence.
-    
+
     The output of `index_natsorted` and `index_versorted` is a
     sequence of integers (index) that correspond to how its input
     sequence **would** be sorted. The idea is that this index can
     be used to reorder multiple sequences by the sorted order of the
     first sequence. This function is a convenient wrapper to
     apply this ordering to a sequence.
-    
+
     Parameters
     ----------
     seq : iterable
         The sequence to order.
-        
+
     index : iterable
         The sequence that indicates how to order `seq`.
         It should be the same length as `seq` and consist
         of integers only.
-        
+
     iter : {{True, False}}, optional
         If `True`, the ordered sequence is returned as a
         generator expression; otherwise it is returned as a
         list. The default is `False`.
-        
+
     Returns
     -------
     out : {{list, generator}}
@@ -793,7 +800,7 @@ def order_by_index(seq, index, iter=False):
     --------
     index_natsorted
     index_versorted
-    
+
     Examples
     --------
 
@@ -813,4 +820,3 @@ def order_by_index(seq, index, iter=False):
 
     """
     return (seq[i] for i in index) if iter else [seq[i] for i in index]
-

@@ -72,7 +72,8 @@ num-6
 num-2
 """
 
-    # Exclude the number 1 and 6.  Both are present because we use digits/versions.
+    # Exclude the number 1 and 6.
+    # Both are present because we use digits/versions.
     sys.argv[1:] = ['-t', 'ver', '-e', '1', '-e', '6',
                     'num-2', 'num-6', 'num-1']
     main()
@@ -109,7 +110,8 @@ a1.0e3
 """
 
     # Include two ranges.
-    sys.argv[1:] = ['-f', '1', '10', '-f', '400', '500', 'a1.0e3', 'a5.3', 'a453.6']
+    sys.argv[1:] = ['-f', '1', '10', '-f', '400', '500',
+                    'a1.0e3', 'a5.3', 'a453.6']
     main()
     out, __ = capsys.readouterr()
     assert out == """\
@@ -135,7 +137,7 @@ a453.6
 /Folder (1)/
 /Folder (10)/
 /Folder/
-""" 
+"""
     sys.argv[1:] = ['--paths', '/Folder (1)/', '/Folder/', '/Folder (10)/']
     main()
     out, __ = capsys.readouterr()
@@ -147,14 +149,14 @@ a453.6
 
 
 def test_range_check():
-    
+
     # Floats are always returned
     assert range_check(10, 11) == (10.0, 11.0)
     assert range_check(6.4, 30) == (6.4, 30.0)
 
     # Invalid ranges give a ValueErro
     with raises(ValueError) as err:
-       range_check(7, 2)
+        range_check(7, 2)
     assert str(err.value) == 'low >= high'
 
 
@@ -192,7 +194,7 @@ def test_exclude_entry():
 
 
 def test_sort_and_print_entries(capsys):
-    
+
     class Args:
         """A dummy class to simulate the argparse Namespace object"""
         def __init__(self, filter, reverse_filter, exclude, as_path, reverse):
@@ -207,8 +209,8 @@ def test_sort_and_print_entries(capsys):
 
     entries = ['tmp/a57/path2',
                'tmp/a23/path1',
-               'tmp/a1/path1', 
-               'tmp/a1 (1)/path1', 
+               'tmp/a1/path1',
+               'tmp/a1 (1)/path1',
                'tmp/a130/path1',
                'tmp/a64/path1',
                'tmp/a64/path2']
@@ -226,7 +228,8 @@ tmp/a64/path2
 tmp/a130/path1
 """
 
-    # You would use --paths to make them sort as paths when the OS makes duplicates
+    # You would use --paths to make them sort
+    # as paths when the OS makes duplicates
     sort_and_print_entries(entries, Args(None, None, False, True, False))
     out, __ = capsys.readouterr()
     assert out == """\
@@ -240,7 +243,8 @@ tmp/a130/path1
 """
 
     # Sort the paths with numbers between 20-100
-    sort_and_print_entries(entries, Args([(20, 100)], None, False, False, False))
+    sort_and_print_entries(entries, Args([(20, 100)], None, False,
+                                         False, False))
     out, __ = capsys.readouterr()
     assert out == """\
 tmp/a23/path1
@@ -250,7 +254,8 @@ tmp/a64/path2
 """
 
     # Sort the paths without numbers between 20-100
-    sort_and_print_entries(entries, Args(None, [(20, 100)], False, True, False))
+    sort_and_print_entries(entries, Args(None, [(20, 100)], False,
+                                         True, False))
     out, __ = capsys.readouterr()
     assert out == """\
 tmp/a1/path1

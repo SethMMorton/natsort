@@ -6,12 +6,12 @@ python:
 - 3.3
 - 3.4
 install:
-- pip install pytest-cov
+- pip install pytest-cov pytest-flakes pytest-pep8
 - pip install coveralls
 - pip install wheel
 - if [[ $TRAVIS_PYTHON_VERSION == '2.6' ]]; then pip install argparse; fi
 script:
-- python -m pytest --cov natsort
+- python -m pytest --cov natsort --flakes --pep8
 - python -m pytest --doctest-modules natsort
 - python -m pytest README.rst
 - python -m pytest test_natsort/stress_natsort.py

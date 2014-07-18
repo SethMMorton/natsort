@@ -15,10 +15,11 @@ from natsort.py23compat import py23_range
 
 # Sample lists to sort
 nums = random.sample(py23_range(10000), 1000)
-nstr = list(map(str,random.sample(py23_range(10000), 1000)))
-astr = ['a'+x+'num' for x in map(str,random.sample(py23_range(10000), 1000))]
-tstr = [['a'+x, 'a-'+x] for x in map(str,random.sample(py23_range(10000), 1000))]
-cstr = ['a'+x+'-'+x for x in map(str,random.sample(py23_range(10000), 1000))]
+nstr = list(map(str, random.sample(py23_range(10000), 1000)))
+astr = ['a'+x+'num' for x in map(str, random.sample(py23_range(10000), 1000))]
+tstr = [['a'+x, 'a-'+x]
+        for x in map(str, random.sample(py23_range(10000), 1000))]
+cstr = ['a'+x+'-'+x for x in map(str, random.sample(py23_range(10000), 1000))]
 
 
 def prof_nums(a):
@@ -110,4 +111,3 @@ def prof_str_unorderable(a):
     for _ in py23_range(1000):
         natsorted(a)
 cProfile.run('prof_str_unorderable(cstr)', sort='time')
-

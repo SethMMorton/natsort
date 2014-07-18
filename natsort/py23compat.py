@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
-from __future__ import print_function, division, unicode_literals, absolute_import
+from __future__ import (print_function, division,
+                        unicode_literals, absolute_import)
 
 import functools
 import sys
@@ -36,9 +37,9 @@ def _modify_str_or_docstring(str_change_func):
         else:
             func = func_or_str
             doc = func.__doc__
-        
+
         doc = str_change_func(doc)
-        
+
         if func:
             func.__doc__ = doc
             return func
@@ -52,7 +53,7 @@ if sys.version[0] == '3':
     @_modify_str_or_docstring
     def u_format(s):
         """"{u}'abc'" --> "'abc'" (Python 3)
-        
+
         Accepts a string or a function, so it can be used as a decorator."""
         return s.format(u='')
 else:
@@ -60,7 +61,6 @@ else:
     @_modify_str_or_docstring
     def u_format(s):
         """"{u}'abc'" --> "u'abc'" (Python 2)
-        
+
         Accepts a string or a function, so it can be used as a decorator."""
         return s.format(u='u')
-

@@ -55,21 +55,21 @@ REQUIRES = 'argparse' if sys.version[:3] in ('2.6', '3.0', '3.1') else ''
 
 
 # The setup parameters
-setup(name='natsort',
-      version=VERSION,
-      author='Seth M. Morton',
-      author_email='drtuba78@gmail.com',
-      url='https://github.com/SethMMorton/natsort',
-      license='MIT',
-      install_requires=REQUIRES,
-      packages=['natsort'],
-      entry_points={'console_scripts': ['natsort = natsort.__main__:main']},
-      tests_require=['pytest'],
-      cmdclass = {'test': PyTest},
-      description=DESCRIPTION,
-      long_description=LONG_DESCRIPTION,
-      classifiers=(
-        #'Development Status :: 4 - Beta',
+setup(
+    name='natsort',
+    version=VERSION,
+    author='Seth M. Morton',
+    author_email='drtuba78@gmail.com',
+    url='https://github.com/SethMMorton/natsort',
+    license='MIT',
+    install_requires=REQUIRES,
+    packages=['natsort'],
+    entry_points={'console_scripts': ['natsort = natsort.__main__:main']},
+    tests_require=['pytest'],
+    cmdclass={'test': PyTest},
+    description=DESCRIPTION,
+    long_description=LONG_DESCRIPTION,
+    classifiers=(
         'Development Status :: 5 - Production/Stable',
         'Intended Audience :: Developers',
         'Intended Audience :: Science/Research',
@@ -83,5 +83,5 @@ setup(name='natsort',
         'Programming Language :: Python :: 3',
         'Topic :: Scientific/Engineering :: Information Analysis',
         'Topic :: Utilities',
-      )
-     )
+    )
+)
