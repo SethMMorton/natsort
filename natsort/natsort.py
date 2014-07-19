@@ -245,7 +245,7 @@ def natsort_key(val, key=None, number_type=float, signed=True, exp=True,
     It is designed for use in passing to the 'sorted' builtin or
     'sort' attribute of lists.
 
-    .. note:: Depreciation Notice (3.4.0)
+    .. note:: Depreciated since version 3.4.0.
               This function remains in the publicly exposed API for
               backwards-compatibility reasons, but future development
               should use the newer `natsort_keygen` function. It is
@@ -267,7 +267,7 @@ def natsort_key(val, key=None, number_type=float, signed=True, exp=True,
 
     number_type : {{None, float, int}}, optional
         The types of number to sort on: `float` searches for floating
-        point numbers, `int` searches for integers, and `None `searches
+        point numbers, `int` searches for integers, and `None` searches
         for digits (like integers but does not take into account
         negative sign). `None` is a shortcut for `number_type = int`
         and `signed = False`.
@@ -288,7 +288,7 @@ def natsort_key(val, key=None, number_type=float, signed=True, exp=True,
     as_path : {{True, False}}, optional
         This option will force strings to be interpreted as filesystem
         paths, so they will be split according to the filesystem separator
-        (i.e. '/' on UNIX, '\\' on Windows), as well as splitting on the
+        (i.e. '/' on UNIX, '\\\\' on Windows), as well as splitting on the
         file extension, if any. Without this, lists of file paths like
         ``['Folder', 'Folder (1)', 'Folder (10)']`` will not be sorted
         properly; ``'Folder'`` will be placed at the end, not at the front.
@@ -383,7 +383,7 @@ def natsort_keygen(key=None, number_type=float, signed=True, exp=True,
 
     number_type : {{None, float, int}}, optional
         The types of number to sort on: `float` searches for floating
-        point numbers, `int` searches for integers, and `None `searches
+        point numbers, `int` searches for integers, and `None` searches
         for digits (like integers but does not take into account
         negative sign). `None` is a shortcut for `number_type = int`
         and `signed = False`.
@@ -404,7 +404,7 @@ def natsort_keygen(key=None, number_type=float, signed=True, exp=True,
     as_path : {{True, False}}, optional
         This option will force strings to be interpreted as filesystem
         paths, so they will be split according to the filesystem separator
-        (i.e. '/' on UNIX, '\\' on Windows), as well as splitting on the
+        (i.e. `/` on UNIX, `\\\\` on Windows), as well as splitting on the
         file extension, if any. Without this, lists with file paths like
         ``['Folder/', 'Folder (1)/', 'Folder (10)/']`` will not be sorted
         properly; ``'Folder'`` will be placed at the end, not at the front.
@@ -480,7 +480,7 @@ def natsorted(seq, key=None, number_type=float, signed=True, exp=True,
 
     number_type : {{None, float, int}}, optional
         The types of number to sort on: `float` searches for floating
-        point numbers, `int` searches for integers, and `None `searches
+        point numbers, `int` searches for integers, and `None` searches
         for digits (like integers but does not take into account
         negative sign). `None` is a shortcut for `number_type = int`
         and `signed = False`.
@@ -505,7 +505,7 @@ def natsorted(seq, key=None, number_type=float, signed=True, exp=True,
     as_path : {{True, False}}, optional
         This option will force strings to be interpreted as filesystem
         paths, so they will be split according to the filesystem separator
-        (i.e. '/' on UNIX, '\\' on Windows), as well as splitting on the
+        (i.e. '/' on UNIX, '\\\\' on Windows), as well as splitting on the
         file extension, if any. Without this, lists of file paths like
         ``['Folder', 'Folder (1)', 'Folder (10)']`` will not be sorted
         properly; ``'Folder'`` will be placed at the end, not at the front.
@@ -518,6 +518,7 @@ def natsorted(seq, key=None, number_type=float, signed=True, exp=True,
 
     See Also
     --------
+    natsort_keygen : Generates the key that makes natural sorting possible.
     versorted : A wrapper for ``natsorted(seq, number_type=None)``.
     index_natsorted : Returns the sorted indexes from `natsorted`.
 
@@ -572,7 +573,7 @@ def versorted(seq, key=None, reverse=False, as_path=False):
     as_path : {{True, False}}, optional
         This option will force strings to be interpreted as filesystem
         paths, so they will be split according to the filesystem separator
-        (i.e. '/' on UNIX, '\\' on Windows), as well as splitting on the
+        (i.e. '/' on UNIX, '\\\\' on Windows), as well as splitting on the
         file extension, if any. Without this, lists of file paths like
         ``['Folder', 'Folder (1)', 'Folder (10)']`` will not be sorted
         properly; ``'Folder'`` will be placed at the end, not at the front.
@@ -622,7 +623,7 @@ def index_natsorted(seq, key=None, number_type=float, signed=True, exp=True,
 
     number_type : {{None, float, int}}, optional
         The types of number to sort on: `float` searches for floating
-        point numbers, `int` searches for integers, and `None `searches
+        point numbers, `int` searches for integers, and `None` searches
         for digits (like integers but does not take into account
         negative sign). `None` is a shortcut for `number_type = int`
         and `signed = False`.
@@ -647,7 +648,7 @@ def index_natsorted(seq, key=None, number_type=float, signed=True, exp=True,
     as_path : {{True, False}}, optional
         This option will force strings to be interpreted as filesystem
         paths, so they will be split according to the filesystem separator
-        (i.e. '/' on UNIX, '\\' on Windows), as well as splitting on the
+        (i.e. '/' on UNIX, '\\\\' on Windows), as well as splitting on the
         file extension, if any. Without this, lists of file paths like
         ``['Folder', 'Folder (1)', 'Folder (10)']`` will not be sorted
         properly; ``'Folder'`` will be placed at the end, not at the front.
@@ -735,7 +736,7 @@ def index_versorted(seq, key=None, reverse=False, as_path=False):
     as_path : {{True, False}}, optional
         This option will force strings to be interpreted as filesystem
         paths, so they will be split according to the filesystem separator
-        (i.e. '/' on UNIX, '\\' on Windows), as well as splitting on the
+        (i.e. '/' on UNIX, '\\\\' on Windows), as well as splitting on the
         file extension, if any. Without this, lists of file paths like
         ``['Folder', 'Folder (1)', 'Folder (10)']`` will not be sorted
         properly; ``'Folder'`` will be placed at the end, not at the front.

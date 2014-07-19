@@ -9,14 +9,17 @@ install:
 - pip install pytest-cov pytest-flakes pytest-pep8
 - pip install coveralls
 - pip install wheel
+- pip install Sphinx numpydoc
 - if [[ $TRAVIS_PYTHON_VERSION == '2.6' ]]; then pip install argparse; fi
 script:
 - python -m pytest --cov natsort --flakes --pep8
 - python -m pytest --doctest-modules natsort
-- python -m pytest README.rst
+- python -m pytest README.rst docs/source/intro.rst docs/source/examples.rst
 - python -m pytest test_natsort/stress_natsort.py
 after_success:
   coveralls
+before_deploy:
+- python setup.py build_sphinx
 deploy:
   provider: pypi
   user: SethMMorton
@@ -26,3 +29,4 @@ deploy:
     tags: true
     repo: SethMMorton/natsort
   distributions: "sdist bdist_wheel"
+  docs_dir: build/sphinx/html

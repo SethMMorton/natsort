@@ -23,7 +23,9 @@ class PyTest(TestCommand):
         import pytest
         err1 = pytest.main(['--cov', 'natsort', '--flakes', '--pep8'])
         err2 = pytest.main(['--doctest-modules', 'natsort'])
-        err3 = pytest.main(['README.rst'])
+        err3 = pytest.main(['README.rst',
+                            'docs/source/intro.rst',
+                            'docs/source/examples.rst'])
         return err1 | err2 | err3
 
 
