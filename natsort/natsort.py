@@ -25,8 +25,8 @@ from warnings import warn
 
 from .py23compat import u_format, py23_str, py23_zip
 
-__doc__ = u_format(__doc__)  # Make sure the doctest works for either
-                             # python2 or python3
+# Make sure the doctest works for either python2 or python3
+__doc__ = u_format(__doc__)
 
 # The regex that locates floats
 float_sign_exp_re = re.compile(r'([-+]?\d*\.?\d+(?:[eE][-+]?\d+)?)')

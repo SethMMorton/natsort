@@ -19,7 +19,7 @@ class PyTest(TestCommand):
         self.test_suite = True
 
     def run_tests(self):
-        #import here, cause outside the eggs aren't loaded
+        # import here, cause outside the eggs aren't loaded
         import pytest
         err1 = pytest.main(['--cov', 'natsort', '--flakes', '--pep8'])
         err2 = pytest.main(['--doctest-modules', 'natsort'])

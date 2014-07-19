@@ -8,8 +8,6 @@ python:
 install:
 - pip install pytest-cov pytest-flakes pytest-pep8
 - pip install coveralls
-- pip install wheel
-- pip install Sphinx numpydoc
 - if [[ $TRAVIS_PYTHON_VERSION == '2.6' ]]; then pip install argparse; fi
 script:
 - python -m pytest --cov natsort --flakes --pep8
@@ -19,6 +17,7 @@ script:
 after_success:
   coveralls
 before_deploy:
+- pip install Sphinx numpydoc # Only needed to install for deploying
 - python setup.py build_sphinx
 deploy:
   provider: pypi
