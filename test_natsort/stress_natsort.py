@@ -11,10 +11,10 @@ from natsort.py23compat import py23_range
 
 
 def test_random():
-    """Try to sort 1,000,000 randomly generated strings without exception."""
+    """Try to sort 100,000 randomly generated strings without exception."""
 
-    # Repeat test 1,000,000 times
-    for _ in py23_range(1000000):
+    # Repeat test 100,000 times
+    for _ in py23_range(100000):
         # Made a list of five randomly generated strings
         lst = [''.join(sample(printable, randint(7, 30)))
                for __ in py23_range(5)]
@@ -28,12 +28,12 @@ def test_random():
 
 
 def test_similar():
-    """Try to sort 1,000,000 randomly generated
+    """Try to sort 100,000 randomly generated
     similar strings without exception.
     """
 
-    # Repeat test 1,000,000 times
-    for _ in py23_range(1000000):
+    # Repeat test 100,000 times
+    for _ in py23_range(100000):
         # Create a randomly generated string
         base = sample(printable, randint(7, 30))
         # Make a list of strings based on this string,

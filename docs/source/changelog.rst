@@ -3,7 +3,7 @@
 Changelog
 ---------
 
-XX-XX-2014 v. 3.4.0
+07-19-2014 v. 3.4.0
 '''''''''''''''''''
 
     - Fixed a bug that caused user's options to the 'natsort_key' to not be

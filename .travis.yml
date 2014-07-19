@@ -17,7 +17,7 @@ script:
 after_success:
   coveralls
 before_deploy:
-- pip install Sphinx numpydoc # Only needed to install for deploying
+- pip install Sphinx numpydoc
 - python setup.py build_sphinx
 deploy:
   provider: pypi
@@ -26,6 +26,8 @@ deploy:
     secure: OaYQtVh4mGT0ozN7Ar2lSm2IEVMKIyvOESGPGLwVyVxPqp6oC101MovJ7041bZdjMzirMs54EJwtEGQpKFmDBGcKgbjPiYId5Nqb/yDhLC/ojgarbLoFJvUKV6dWJePyY7EOycrqcMdiDabdG80Bw4zziQExbmIOdUiscsAVVmA=
   on:
     tags: true
+    all_branches: true
     repo: SethMMorton/natsort
+    python: 3.3
   distributions: "sdist bdist_wheel"
   docs_dir: build/sphinx/html
