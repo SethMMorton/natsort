@@ -37,7 +37,7 @@ Using ``natsorted`` is simple::
 ``natsorted`` identifies real numbers anywhere in a string and sorts them
 naturally.
 
-Sorting version numbers is just as easy::
+Sorting version numbers is just as easy with the ``versorted`` function::
 
     >>> from natsort import versorted
     >>> a = ['version-1.9', 'version-2.0', 'version-1.11', 'version-1.10']
@@ -60,7 +60,7 @@ The natsort algorithm does other fancy things like
  - recursively descend into lists of lists
  - sort file paths correctly
  - allow custom sorting keys
- - allow exposed a natsort_key generator to pass to list.sort
+ - exposes a natsort_key generator to pass to list.sort
 
 Please see the package documentation for more details, including additional examples
 and recipes.
