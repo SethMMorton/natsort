@@ -9,6 +9,7 @@ install:
 - pip install pytest-cov pytest-flakes pytest-pep8
 - pip install coveralls
 - if [[ $TRAVIS_PYTHON_VERSION == '2.6' ]]; then pip install argparse; fi
+- pip install wheel
 script:
 - python -m pytest --cov natsort --flakes --pep8
 - python -m pytest --doctest-modules natsort
