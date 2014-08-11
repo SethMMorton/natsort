@@ -4,13 +4,16 @@
 The :mod:`natsort` module
 =========================
 
-Natural sorting for python.  Check out the source code at
-https://github.com/SethMMorton/natsort.
+Natural sorting for python. 
+
+    - Source Code: https://github.com/SethMMorton/natsort
+    - Downloads: https://pypi.python.org/pypi/natsort
+    - Documentation: http://pythonhosted.org//natsort/
 
 :mod:`natsort` was initially created for sorting scientific output filenames that
 contained floating point numbers in the names. There was a serious lack of
 algorithms out there that could perform a natural sort on `floats` but
-plenty for ints; check out
+plenty for `ints`; check out
 `this StackOverflow question <http://stackoverflow.com/q/4836710/1399279>`_
 and its answers and links therein,
 `this ActiveState forum <http://code.activestate.com/recipes/285264-natural-string-sorting/>`_,

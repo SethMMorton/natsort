@@ -7,8 +7,11 @@ natsort
 .. image:: https://coveralls.io/repos/SethMMorton/natsort/badge.png?branch=develop
     :target: https://coveralls.io/r/SethMMorton/natsort?branch=develop
 
-Natural sorting for python.  Check out the source code at
-https://github.com/SethMMorton/natsort.
+Natural sorting for python. 
+
+    - Source Code: https://github.com/SethMMorton/natsort
+    - Downloads: https://pypi.python.org/pypi/natsort
+    - Documentation: http://pythonhosted.org//natsort/
 
 Quick Description
 -----------------
@@ -62,8 +65,8 @@ The natsort algorithm does other fancy things like
  - allow custom sorting keys
  - exposes a natsort_key generator to pass to list.sort
 
-Please see the package documentation for more details, including additional examples
-and recipes.
+Please see the package documentation for more details, including 
+`examples and recipes <http://pythonhosted.org//natsort/examples.html>`_.
 
 Shell script
 ------------
