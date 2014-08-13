@@ -112,6 +112,13 @@ If you want to build this documentation, enter::
 (this includes python 3.x). To run version 2.6, 3.0, or 3.1 the 
 `argparse <https://pypi.python.org/pypi/argparse>`_ module is required.
 
+The most efficient sorting can occur if you install the 
+`fastnumbers <https://pypi.python.org/pypi/fastnumbers>`_ package (it helps
+with the string to number conversions.)  ``natsort`` will still run (efficiently)
+without the package, but if you need to squeeze out that extra juice it is
+recommended you include this as a dependency.  ``natsort`` will not require (or
+check) that `fastnumbers <https://pypi.python.org/pypi/fastnumbers>`_ is installed.
+
 :mod:`natsort` comes with a shell script called :mod:`natsort`, or can also be called
 from the command line with ``python -m natsort``.  The command line script is
 only installed onto your ``PATH`` if you don't install via a wheel.  There is

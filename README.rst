@@ -84,6 +84,16 @@ Requirements
 (this includes python 3.x). To run version 2.6, 3.0, or 3.1 the 
 `argparse <https://pypi.python.org/pypi/argparse>`_ module is required.
 
+Optional Dependency
+-------------------
+
+The most efficient sorting can occur if you install the 
+`fastnumbers <https://pypi.python.org/pypi/fastnumbers>`_ package (it helps
+with the string to number conversions.)  ``natsort`` will still run (efficiently)
+without the package, but if you need to squeeze out that extra juice it is
+recommended you include this as a dependency.  ``natsort`` will not require (or
+check) that `fastnumbers <https://pypi.python.org/pypi/fastnumbers>`_ is installed.
+
 Depreciation Notices
 --------------------
 
@@ -106,7 +116,16 @@ History
 -------
 
 These are the last three entries of the changelog.  See the package documentation
-for the complete changelog.
+for the complete `changelog <http://pythonhosted.org//natsort/changelog.html>`_.
+
+08-12-2014 v. 3.4.1
+'''''''''''''''''''
+
+    - 'natsort' will now use the 'fastnumbers' module if it is installed. This
+      gives up to an extra 30% boost in speed over the previous performance
+      enhancements.
+    - Made documentation point to more 'natsort' resources, and also added a
+      new example in the examples section.
 
 07-19-2014 v. 3.4.0
 '''''''''''''''''''
@@ -151,9 +170,3 @@ for the complete changelog.
 
     - Made docstrings for public functions mirror the README API.
     - Connected natsort development to Travis-CI to help ensure quality releases.
-
-06-20-2014 v. 3.2.1
-'''''''''''''''''''
-
-    - Re-"Fixed" unorderable types issue on Python 3.x - this workaround
-      is for when the problem occurs in the middle of the string.
