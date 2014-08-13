@@ -11,25 +11,30 @@ from natsort.natsort import _number_finder, _py3_safe, _natsort_key
 from natsort.natsort import float_sign_exp_re, float_nosign_exp_re, float_sign_noexp_re
 from natsort.natsort import float_nosign_noexp_re, int_nosign_re, int_sign_re
 
+try:
+    from fastnumbers import fast_float, fast_int
+except ImportError:
+    from natsort.fake_fastnumbers import fast_float, fast_int
+
 
 def test_number_finder():
 
-    assert _number_finder('a5+5.034e-1', float_sign_exp_re,     float, False) == ['a', 5.0, 0.5034]
-    assert _number_finder('a5+5.034e-1', float_nosign_exp_re,   float, False) == ['a', 5.0, '+', 0.5034]
-    assert _number_finder('a5+5.034e-1', float_sign_noexp_re,   float, False) == ['a', 5.0, 5.034, 'e', -1.0]
-    assert _number_finder('a5+5.034e-1', float_nosign_noexp_re, float, False) == ['a', 5.0, '+', 5.034, 'e-', 1.0]
-    assert _number_finder('a5+5.034e-1', int_nosign_re,         int,   False) == ['a', 5, '+', 5, '.', 34, 'e-', 1]
-    assert _number_finder('a5+5.034e-1', int_sign_re,           int,   False) == ['a', 5, 5, '.', 34, 'e', -1]
+    assert _number_finder('a5+5.034e-1', float_sign_exp_re,     fast_float, False) == ['a', 5.0, 0.5034]
+    assert _number_finder('a5+5.034e-1', float_nosign_exp_re,   fast_float, False) == ['a', 5.0, '+', 0.5034]
+    assert _number_finder('a5+5.034e-1', float_sign_noexp_re,   fast_float, False) == ['a', 5.0, 5.034, 'e', -1.0]
+    assert _number_finder('a5+5.034e-1', float_nosign_noexp_re, fast_float, False) == ['a', 5.0, '+', 5.034, 'e-', 1.0]
+    assert _number_finder('a5+5.034e-1', int_nosign_re,         fast_int,   False) == ['a', 5, '+', 5, '.', 34, 'e-', 1]
+    assert _number_finder('a5+5.034e-1', int_sign_re,           fast_int,   False) == ['a', 5, 5, '.', 34, 'e', -1]
 
-    assert _number_finder('a5+5.034e-1', float_sign_exp_re,     float, True) == ['a', 5.0, '', 0.5034]
-    assert _number_finder('a5+5.034e-1', float_nosign_exp_re,   float, True) == ['a', 5.0, '+', 0.5034]
-    assert _number_finder('a5+5.034e-1', float_sign_noexp_re,   float, True) == ['a', 5.0, '', 5.034, 'e', -1.0]
-    assert _number_finder('a5+5.034e-1', float_nosign_noexp_re, float, True) == ['a', 5.0, '+', 5.034, 'e-', 1.0]
-    assert _number_finder('a5+5.034e-1', int_nosign_re,         int,   True) == ['a', 5, '+', 5, '.', 34, 'e-', 1]
-    assert _number_finder('a5+5.034e-1', int_sign_re,           int,   True) == ['a', 5, '', 5, '.', 34, 'e', -1]
+    assert _number_finder('a5+5.034e-1', float_sign_exp_re,     fast_float, True) == ['a', 5.0, '', 0.5034]
+    assert _number_finder('a5+5.034e-1', float_nosign_exp_re,   fast_float, True) == ['a', 5.0, '+', 0.5034]
+    assert _number_finder('a5+5.034e-1', float_sign_noexp_re,   fast_float, True) == ['a', 5.0, '', 5.034, 'e', -1.0]
+    assert _number_finder('a5+5.034e-1', float_nosign_noexp_re, fast_float, True) == ['a', 5.0, '+', 5.034, 'e-', 1.0]
+    assert _number_finder('a5+5.034e-1', int_nosign_re,         fast_int,   True) == ['a', 5, '+', 5, '.', 34, 'e-', 1]
+    assert _number_finder('a5+5.034e-1', int_sign_re,           fast_int,   True) == ['a', 5, '', 5, '.', 34, 'e', -1]
 
-    assert _number_finder('6a5+5.034e-1', float_sign_exp_re,    float, False) == ['', 6.0, 'a', 5.0, 0.5034]
-    assert _number_finder('6a5+5.034e-1', float_sign_exp_re,    float, True)  == ['', 6.0, 'a', 5.0, '', 0.5034]
+    assert _number_finder('6a5+5.034e-1', float_sign_exp_re,    fast_float, False) == ['', 6.0, 'a', 5.0, 0.5034]
+    assert _number_finder('6a5+5.034e-1', float_sign_exp_re,    fast_float, True)  == ['', 6.0, 'a', 5.0, '', 0.5034]
 
 
 def test_py3_safe():
@@ -47,21 +52,21 @@ def test_natsort_key_private():
     assert a == ['num2', 'num3', 'num5']
 
     # The below illustrates how the key works, and how the different options affect sorting.
-    assert _natsort_key('a-5.034e1')                                             == ('a', -50.34)
-    assert _natsort_key('a-5.034e1', number_type=float, signed=True,  exp=True)  == ('a', -50.34)
-    assert _natsort_key('a-5.034e1', number_type=float, signed=True,  exp=False) == ('a', -5.034, 'e', 1.0)
-    assert _natsort_key('a-5.034e1', number_type=float, signed=False, exp=True)  == ('a-', 50.34)
-    assert _natsort_key('a-5.034e1', number_type=float, signed=False, exp=False) == ('a-', 5.034, 'e', 1.0)
-    assert _natsort_key('a-5.034e1', number_type=int)                            == ('a', -5, '.', 34, 'e', 1)
-    assert _natsort_key('a-5.034e1', number_type=int, signed=False)              == ('a-', 5, '.', 34, 'e', 1)
-    assert _natsort_key('a-5.034e1', number_type=None) == _natsort_key('a-5.034e1', number_type=int, signed=False)
-    assert _natsort_key('a-5.034e1', key=lambda x: x.upper()) == ('A', -50.34)
+    assert _natsort_key('a-5.034e2')                                             == ('a', -503.4)
+    assert _natsort_key('a-5.034e2', number_type=float, signed=True,  exp=True)  == ('a', -503.4)
+    assert _natsort_key('a-5.034e2', number_type=float, signed=True,  exp=False) == ('a', -5.034, 'e', 2.0)
+    assert _natsort_key('a-5.034e2', number_type=float, signed=False, exp=True)  == ('a-', 503.4)
+    assert _natsort_key('a-5.034e2', number_type=float, signed=False, exp=False) == ('a-', 5.034, 'e', 2.0)
+    assert _natsort_key('a-5.034e2', number_type=int)                            == ('a', -5, '.', 34, 'e', 2)
+    assert _natsort_key('a-5.034e2', number_type=int, signed=False)              == ('a-', 5, '.', 34, 'e', 2)
+    assert _natsort_key('a-5.034e2', number_type=None) == _natsort_key('a-5.034e2', number_type=int, signed=False)
+    assert _natsort_key('a-5.034e2', key=lambda x: x.upper()) == ('A', -503.4)
 
     # Iterables are parsed recursively so you can sort lists of lists.
-    assert _natsort_key(('a1', 'a-5.034e1')) == (('a', 1.0), ('a', -50.34))
-    assert _natsort_key(('a1', 'a-5.034e1'), number_type=None) == (('a', 1), ('a-', 5, '.', 34, 'e', 1))
+    assert _natsort_key(('a1', 'a-5.034e2')) == (('a', 1.0), ('a', -503.4))
+    assert _natsort_key(('a1', 'a-5.034e2'), number_type=None) == (('a', 1), ('a-', 5, '.', 34, 'e', 2))
     # A key is applied before recursion, but not in the recursive calls.
-    assert _natsort_key(('a1', 'a-5.034e1'), key=itemgetter(1)) == ('a', -50.34)
+    assert _natsort_key(('a1', 'a-5.034e2'), key=itemgetter(1)) == ('a', -503.4)
 
     # Strings that lead with a number get an empty string at the front of the tuple.
     # This is designed to get around the "unorderable types" issue.
@@ -100,10 +105,10 @@ def test_natsort_key_public():
     # But it raises a depreciation warning
     with warnings.catch_warnings(record=True) as w:
         warnings.simplefilter("always")
-        assert natsort_key('a-5.034e1') == _natsort_key('a-5.034e1')
+        assert natsort_key('a-5.034e2') == _natsort_key('a-5.034e2')
         assert len(w) == 1
         assert "natsort_key is depreciated as of 3.4.0, please use natsort_keygen" in str(w[-1].message)
-        assert natsort_key('a-5.034e1', number_type=float, signed=False, exp=False) == _natsort_key('a-5.034e1', number_type=float, signed=False, exp=False)
+        assert natsort_key('a-5.034e2', number_type=float, signed=False, exp=False) == _natsort_key('a-5.034e2', number_type=float, signed=False, exp=False)
 
     # It is called for each element in a list when sorting
     with warnings.catch_warnings(record=True) as w:
