@@ -5,11 +5,14 @@ python:
 - 3.2
 - 3.3
 - 3.4
+env:
+- WITH_FASTNUMBERS=true
+- WITH_FASTNUMBERS=false
 install:
 - pip install pytest-cov pytest-flakes pytest-pep8
 - pip install coveralls
+- if [[ $WITH_FASTNUMBERS == true ]]; then pip install fastnumbers; fi
 - if [[ $TRAVIS_PYTHON_VERSION == '2.6' ]]; then pip install argparse; fi
-- pip install wheel
 script:
 - python -m pytest --cov natsort --flakes --pep8
 - python -m pytest --doctest-modules natsort
@@ -17,18 +20,18 @@ script:
 - python -m pytest test_natsort/stress_natsort.py
 after_success:
   coveralls
-before_deploy:
-- pip install Sphinx numpydoc
-- python setup.py build_sphinx
-deploy:
-  provider: pypi
-  user: SethMMorton
-  password:
-    secure: OaYQtVh4mGT0ozN7Ar2lSm2IEVMKIyvOESGPGLwVyVxPqp6oC101MovJ7041bZdjMzirMs54EJwtEGQpKFmDBGcKgbjPiYId5Nqb/yDhLC/ojgarbLoFJvUKV6dWJePyY7EOycrqcMdiDabdG80Bw4zziQExbmIOdUiscsAVVmA=
-  on:
-    tags: true
-    all_branches: true
-    repo: SethMMorton/natsort
-    python: 2.7
-  distributions: "sdist bdist_wheel"
-  docs_dir: build/sphinx/html
+# before_deploy:
+# - pip install Sphinx numpydoc
+# - python setup.py build_sphinx
+# deploy:
+#   provider: pypi
+#   user: SethMMorton
+#   password:
+#     secure: OaYQtVh4mGT0ozN7Ar2lSm2IEVMKIyvOESGPGLwVyVxPqp6oC101MovJ7041bZdjMzirMs54EJwtEGQpKFmDBGcKgbjPiYId5Nqb/yDhLC/ojgarbLoFJvUKV6dWJePyY7EOycrqcMdiDabdG80Bw4zziQExbmIOdUiscsAVVmA=
+#   on:
+#     tags: true
+#     all_branches: true
+#     repo: SethMMorton/natsort
+#     python: 2.7
+#   distributions: "sdist bdist_wheel"
+#   docs_dir: build/sphinx/html
