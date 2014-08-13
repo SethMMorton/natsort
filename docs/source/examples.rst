@@ -62,6 +62,25 @@ and ``signed=False``, and the :func:`~versorted` is a shortcut for
 ``natsorted(number_type=None)``.  The recommend manner to sort version
 numbers is to use :func:`~versorted`.
 
+Sorting with Alpha, Beta, and Release Candidates
+++++++++++++++++++++++++++++++++++++++++++++++++
+
+By default, if you wish to sort versions with a non-strict versioning
+scheme, you may not get the results you expect::
+
+    >>> a = ['1.2', '1.2rc1', '1.2beta2', '1.2beta', '1.2alpha', '1.2.1', '1.1', '1.3']
+    >>> versorted(a)
+    ['1.1', '1.2', '1.2.1', '1.2alpha', '1.2beta', '1.2beta2', '1.2rc1', '1.3']
+
+To make the '1.2' pre-releases come before '1.2.1', you need to use the following
+recipe::
+
+    >>> versorted(a, key=lambda x: x.replace('.', '~'))
+    ['1.1', '1.2', '1.2alpha', '1.2beta', '1.2beta2', '1.2rc1', '1.2.1', '1.3']
+
+Please see `this issue <https://github.com/SethMMorton/natsort/issues/13>`_ to
+see why this works.
+
 Sort OS-Generated Paths
 -----------------------
 

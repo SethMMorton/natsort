@@ -7,8 +7,11 @@ natsort
 .. image:: https://coveralls.io/repos/SethMMorton/natsort/badge.png?branch=master
     :target: https://coveralls.io/r/SethMMorton/natsort?branch=master
 
-Natural sorting for python.  Check out the source code at
-https://github.com/SethMMorton/natsort.
+Natural sorting for python. 
+
+    - Source Code: https://github.com/SethMMorton/natsort
+    - Downloads: https://pypi.python.org/pypi/natsort
+    - Documentation: http://pythonhosted.org//natsort/
 
 Quick Description
 -----------------
@@ -37,7 +40,7 @@ Using ``natsorted`` is simple::
 ``natsorted`` identifies real numbers anywhere in a string and sorts them
 naturally.
 
-Sorting version numbers is just as easy::
+Sorting version numbers is just as easy with the ``versorted`` function::
 
     >>> from natsort import versorted
     >>> a = ['version-1.9', 'version-2.0', 'version-1.11', 'version-1.10']
@@ -60,10 +63,10 @@ The natsort algorithm does other fancy things like
  - recursively descend into lists of lists
  - sort file paths correctly
  - allow custom sorting keys
- - allow exposed a natsort_key generator to pass to list.sort
+ - exposes a natsort_key generator to pass to list.sort
 
-Please see the package documentation for more details, including additional examples
-and recipes.
+Please see the package documentation for more details, including 
+`examples and recipes <http://pythonhosted.org//natsort/examples.html>`_.
 
 Shell script
 ------------
@@ -80,6 +83,16 @@ Requirements
 ``natsort`` requires python version 2.6 or greater
 (this includes python 3.x). To run version 2.6, 3.0, or 3.1 the 
 `argparse <https://pypi.python.org/pypi/argparse>`_ module is required.
+
+Optional Dependency
+-------------------
+
+The most efficient sorting can occur if you install the 
+`fastnumbers <https://pypi.python.org/pypi/fastnumbers>`_ package (it helps
+with the string to number conversions.)  ``natsort`` will still run (efficiently)
+without the package, but if you need to squeeze out that extra juice it is
+recommended you include this as a dependency.  ``natsort`` will not require (or
+check) that `fastnumbers <https://pypi.python.org/pypi/fastnumbers>`_ is installed.
 
 Depreciation Notices
 --------------------
@@ -103,7 +116,16 @@ History
 -------
 
 These are the last three entries of the changelog.  See the package documentation
-for the complete changelog.
+for the complete `changelog <http://pythonhosted.org//natsort/changelog.html>`_.
+
+08-12-2014 v. 3.4.1
+'''''''''''''''''''
+
+    - 'natsort' will now use the 'fastnumbers' module if it is installed. This
+      gives up to an extra 30% boost in speed over the previous performance
+      enhancements.
+    - Made documentation point to more 'natsort' resources, and also added a
+      new example in the examples section.
 
 07-19-2014 v. 3.4.0
 '''''''''''''''''''
@@ -148,9 +170,3 @@ for the complete changelog.
 
     - Made docstrings for public functions mirror the README API.
     - Connected natsort development to Travis-CI to help ensure quality releases.
-
-06-20-2014 v. 3.2.1
-'''''''''''''''''''
-
-    - Re-"Fixed" unorderable types issue on Python 3.x - this workaround
-      is for when the problem occurs in the middle of the string.

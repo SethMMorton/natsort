@@ -3,6 +3,15 @@
 Changelog
 ---------
 
+08-12-2014 v. 3.4.1
+'''''''''''''''''''
+
+    - 'natsort' will now use the 'fastnumbers' module if it is installed. This
+      gives up to an extra 30% boost in speed over the previous performance
+      enhancements.
+    - Made documentation point to more 'natsort' resources, and also added a
+      new example in the examples section.
+
 07-19-2014 v. 3.4.0
 '''''''''''''''''''
 

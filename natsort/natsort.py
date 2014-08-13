@@ -23,6 +23,13 @@ from functools import partial
 from itertools import islice
 from warnings import warn
 
+# If the user has fastnumbers installed, they will get great speed
+# benefits.  If not, we simulate the functions here.
+try:
+    from fastnumbers import fast_float, fast_int, isreal
+except ImportError:
+    from .fake_fastnumbers import fast_float, fast_int, isreal
+
 from .py23compat import u_format, py23_str, py23_zip
 
 # Make sure the doctest works for either python2 or python3
@@ -38,54 +45,37 @@ int_nosign_re = re.compile(r'(\d+)')
 int_sign_re = re.compile(r'([-+]?\d+)')
 # This dict will help select the correct regex and number conversion function.
 regex_and_num_function_chooser = {
-    (float, True,  True):  (float_sign_exp_re,     float),
-    (float, True,  False): (float_sign_noexp_re,   float),
-    (float, False, True):  (float_nosign_exp_re,   float),
-    (float, False, False): (float_nosign_noexp_re, float),
-    (int,   True,  True):  (int_sign_re,   int),
-    (int,   True,  False): (int_sign_re,   int),
-    (int,   False, True):  (int_nosign_re, int),
-    (int,   False, False): (int_nosign_re, int),
-    (None,  True,  True):  (int_nosign_re, int),
-    (None,  True,  False): (int_nosign_re, int),
-    (None,  False, True):  (int_nosign_re, int),
-    (None,  False, False): (int_nosign_re, int),
+    (float, True,  True):  (float_sign_exp_re,     fast_float),
+    (float, True,  False): (float_sign_noexp_re,   fast_float),
+    (float, False, True):  (float_nosign_exp_re,   fast_float),
+    (float, False, False): (float_nosign_noexp_re, fast_float),
+    (int,   True,  True):  (int_sign_re,   fast_int),
+    (int,   True,  False): (int_sign_re,   fast_int),
+    (int,   False, True):  (int_nosign_re, fast_int),
+    (int,   False, False): (int_nosign_re, fast_int),
+    (None,  True,  True):  (int_nosign_re, fast_int),
+    (None,  True,  False): (int_nosign_re, fast_int),
+    (None,  False, True):  (int_nosign_re, fast_int),
+    (None,  False, False): (int_nosign_re, fast_int),
 }
-
-# Number types.  I have to use set([...]) and not {...}
-# because I am supporting Python 2.6.
-number_types = set([float, int])
-
-# This regex is to make sure we don't mistake a number for a file extension
-decimal = re.compile(r'\.\d')
 
 
 def _number_finder(s, regex, numconv, py3_safe):
     """Helper to split numbers"""
 
-    # Split the input string by numbers.
-    # If there are no splits, return now.
-    # If the input is not a string, ValueError is raised.
+    # Split the input string by numbers. If there are no splits, return now.
+    # If the input is not a string, TypeError is raised.
     s = regex.split(s)
     if len(s) == 1:
         return tuple(s)
 
     # Now convert the numbers to numbers, and leave strings as strings.
     # Remove empty strings from the list.
-    # Profiling showed that using regex here is much faster than
-    # try/except with the numconv function.
-    r = regex.match
-    s = [numconv(x) if r(x) else x for x in s if x]
+    s = [numconv(x) for x in s if x]
 
     # If the list begins with a number, lead with an empty string.
     # This is used to get around the "unorderable types" issue.
-    # The most common case will be a string at the front of the
-    # list, and in that case the try/except method is faster than
-    # using isinstance. This was chosen at the expense of the less
-    # common case of a number being at the front of the list.
-    try:
-        s[0][0]  # str supports indexing, but not numbers
-    except TypeError:
+    if isreal(s[0]):
         s = [''] + s
 
     # The _py3_safe function inserts "" between numbers in the list,
@@ -95,11 +85,12 @@ def _number_finder(s, regex, numconv, py3_safe):
     return _py3_safe(s) if py3_safe else s
 
 
-def _path_splitter(s):
+def _path_splitter(s, _d_match=re.compile(r'\.\d').match):
     """Split a string into its path components. Assumes a string is a path."""
     path_parts = []
     p_append = path_parts.append
     path_location = s
+
     # Continue splitting the path from the back until we have reached
     # '..' or '.', or until there is nothing left to split.
     while path_location != curdir and path_location != pardir:
@@ -108,29 +99,32 @@ def _path_splitter(s):
         if path_location == parent_path:
             break
         p_append(child_path)
+
     # This last append is the base path.
     # Only append if the string is non-empty.
     if path_location:
         p_append(path_location)
+
     # We created this list in reversed order, so we now correct the order.
     path_parts.reverse()
+
     # Now, split off the file extensions using a similar method to above.
     # Continue splitting off file extensions until we reach a decimal number
     # or there are no more extensions.
     base = path_parts.pop()
     base_parts = []
     b_append = base_parts.append
-    d_match = decimal.match
     while True:
         front = base
         base, ext = splitext(front)
-        if d_match(ext) or not ext:
+        if _d_match(ext) or not ext:
             # Reset base to before the split if the split is invalid.
             base = front
             break
         b_append(ext)
     b_append(base)
     base_parts.reverse()
+
     # Return the split parent paths and then the split basename.
     return path_parts + base_parts
 
@@ -143,12 +137,9 @@ def _py3_safe(parsed_list):
     else:
         new_list = [parsed_list[0]]
         nl_append = new_list.append
-        ntypes = number_types
         for before, after in py23_zip(islice(parsed_list, 0, length-1),
                                       islice(parsed_list, 1, None)):
-            # I realize that isinstance is favored over type, but
-            # in this case type is SO MUCH FASTER than isinstance!!
-            if type(before) in ntypes and type(after) in ntypes:
+            if isreal(before) and isreal(after):
                 nl_append("")
             nl_append(after)
         return new_list
