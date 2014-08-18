@@ -4,7 +4,7 @@ from __future__ import (print_function, division,
 
 import sys
 
-from .natsort import natsorted, regex_and_num_function_chooser
+from .natsort import natsorted, _regex_and_num_function_chooser, ns
 from ._version import __version__
 from .py23compat import py23_str
 
@@ -150,8 +150,13 @@ def sort_and_print_entries(entries, args):
     # as for sorting.
     do_filter = args.filter is not None or args.reverse_filter is not None
     if do_filter or args.exclude:
-        inp_options = (kwargs['number_type'], args.signed, args.exp)
-        regex, num_function = regex_and_num_function_chooser[inp_options]
+        unsigned = not args.signed or kwargs['number_type'] is None
+        inp_options = (ns.INT * int(kwargs['number_type'] in (int, None)) |
+                       ns.UNSIGNED * unsigned |
+                       ns.NOEXP * (not args.exp),
+                       '.'
+                       )
+        regex, num_function = _regex_and_num_function_chooser[inp_options]
         if args.filter is not None:
             lows, highs = ([f[0] for f in args.filter],
                            [f[1] for f in args.filter])

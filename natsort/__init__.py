@@ -4,7 +4,7 @@ from __future__ import (print_function, division,
 
 from .natsort import (natsort_key, natsort_keygen, natsorted,
                       index_natsorted, versorted, index_versorted,
-                      order_by_index)
+                      order_by_index, ns)
 from ._version import __version__
 
 __all__ = [
@@ -15,4 +15,5 @@ __all__ = [
     'index_natsorted',
     'index_versorted',
     'order_by_index',
+    'ns',
 ]
