@@ -28,15 +28,16 @@ Customizing Float Definition
 By default :func:`~natsorted` searches for any float that would be
 a valid Python float literal, such as 5, 0.4, -4.78, +4.2E-34, etc.
 Perhaps you don't want to search for signed numbers, or you don't
-want to search for exponential notation, and the ``signed`` and
-``exp`` options allow you to do this::
+want to search for exponential notation, the ``ns.UNSIGNED`` and
+``ns.NOEXP`` options allow you to do this::
 
     >>> a = ['a50', 'a51.', 'a+50.4', 'a5.034e1', 'a+50.300']
     >>> natsorted(a)
     ['a50', 'a+50.300', 'a5.034e1', 'a+50.4', 'a51.']
-    >>> natsorted(a, signed=False)
+    >>> from natsort import ns
+    >>> natsorted(a, alg=ns.UNSIGNED)
     ['a50', 'a5.034e1', 'a51.', 'a+50.300', 'a+50.4']
-    >>> natsorted(a, exp=False)
+    >>> natsorted(a, alg=ns.NOEXP)
     ['a5.034e1', 'a50', 'a+50.300', 'a+50.4', 'a51.']
 
 Sort Version Numbers
@@ -49,17 +50,17 @@ literals, not floats.  This can be achieved in three ways, as shown below::
     >>> a = ['ver-2.9.9a', 'ver-1.11', 'ver-2.9.9b', 'ver-1.11.4', 'ver-1.10.1']
     >>> natsorted(a)  # This gives incorrect results
     ['ver-2.9.9a', 'ver-2.9.9b', 'ver-1.11', 'ver-1.11.4', 'ver-1.10.1']
-    >>> natsorted(a, number_type=int, signed=False)
+    >>> natsorted(a, alg=ns.INT | ns.UNSIGNED)
     ['ver-1.10.1', 'ver-1.11', 'ver-1.11.4', 'ver-2.9.9a', 'ver-2.9.9b']
-    >>> natsorted(a, number_type=None)
+    >>> natsorted(a, alg=ns.VERSION)
     ['ver-1.10.1', 'ver-1.11', 'ver-1.11.4', 'ver-2.9.9a', 'ver-2.9.9b']
     >>> from natsort import versorted
     >>> versorted(a)
     ['ver-1.10.1', 'ver-1.11', 'ver-1.11.4', 'ver-2.9.9a', 'ver-2.9.9b']
 
-You can see that ``number_type=None`` is a shortcut for ``number_type=int``
-and ``signed=False``, and the :func:`~versorted` is a shortcut for
-``natsorted(number_type=None)``.  The recommend manner to sort version
+You can see that ``alg=ns.VERSION`` is a shortcut for 
+``alg=ns.INT | ns.UNSIGNED``, and the :func:`~versorted` is a shortcut for
+``natsorted(alg=ns.VERSION)``.  The recommend manner to sort version
 numbers is to use :func:`~versorted`.
 
 Sorting with Alpha, Beta, and Release Candidates
@@ -68,15 +69,21 @@ Sorting with Alpha, Beta, and Release Candidates
 By default, if you wish to sort versions with a non-strict versioning
 scheme, you may not get the results you expect::
 
-    >>> a = ['1.2', '1.2rc1', '1.2beta2', '1.2beta', '1.2alpha', '1.2.1', '1.1', '1.3']
+    >>> a = ['1.2', '1.2rc1', '1.2beta2', '1.2beta1', '1.2alpha', '1.2.1', '1.1', '1.3']
     >>> versorted(a)
-    ['1.1', '1.2', '1.2.1', '1.2alpha', '1.2beta', '1.2beta2', '1.2rc1', '1.3']
+    ['1.1', '1.2', '1.2.1', '1.2alpha', '1.2beta1', '1.2beta2', '1.2rc1', '1.3']
 
 To make the '1.2' pre-releases come before '1.2.1', you need to use the following
 recipe::
 
     >>> versorted(a, key=lambda x: x.replace('.', '~'))
-    ['1.1', '1.2', '1.2alpha', '1.2beta', '1.2beta2', '1.2rc1', '1.2.1', '1.3']
+    ['1.1', '1.2', '1.2alpha', '1.2beta1', '1.2beta2', '1.2rc1', '1.2.1', '1.3']
+
+If you also want '1.2' after all the alpha, beta, and rc candidates, you can
+modify the above recipe::
+
+    >>> versorted(a, key=lambda x: x.replace('.', '~')+'z')
+    ['1.1', '1.2alpha', '1.2beta1', '1.2beta2', '1.2rc1', '1.2', '1.2.1', '1.3']
 
 Please see `this issue <https://github.com/SethMMorton/natsort/issues/13>`_ to
 see why this works.
@@ -86,7 +93,7 @@ Sort OS-Generated Paths
 
 In some cases when sorting file paths with OS-Generated names, the default
 :mod:`~natsorted` algorithm may not be sufficient.  In cases like these,
-you may need to use the ``as_path`` option::
+you may need to use the ``ns.PATH`` option::
 
     >>> a = ['./folder/file (1).txt',
     ...      './folder/file.txt',
@@ -94,7 +101,7 @@ you may need to use the ``as_path`` option::
     ...      './folder (10)/file.txt']
     >>> natsorted(a)
     ['./folder (1)/file.txt', './folder (10)/file.txt', './folder/file (1).txt', './folder/file.txt']
-    >>> natsorted(a, as_path=True)
+    >>> natsorted(a, alg=ns.PATH)
     ['./folder/file.txt', './folder/file (1).txt', './folder (1)/file.txt', './folder (10)/file.txt']
 
 Using a Custom Sorting Key
@@ -129,13 +136,14 @@ need to pass a key to the :meth:`list.sort` method. The function
     >>> a.sort(key=natsort_key)
     >>> a
     ['a50', 'a50.300', 'a5.034e1', 'a50.4', 'a51.']
-    >>> versort_key = natsort_keygen(number_type=None)
+    >>> versort_key = natsort_keygen(alg=ns.VERSION)
     >>> a = ['ver-2.9.9a', 'ver-1.11', 'ver-2.9.9b', 'ver-1.11.4', 'ver-1.10.1']
     >>> a.sort(key=versort_key)
     >>> a
     ['ver-1.10.1', 'ver-1.11', 'ver-1.11.4', 'ver-2.9.9a', 'ver-2.9.9b']
 
-:func:`~natsort_keygen` has the same API as :func:`~natsorted`.
+:func:`~natsort_keygen` has the same API as :func:`~natsorted` (minus the
+`reverse` option).
 
 Sorting Multiple Lists According to a Single List
 -------------------------------------------------

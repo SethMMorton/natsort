@@ -43,6 +43,7 @@ def current_version():
 # ones.
 extensions = [
     'sphinx.ext.autodoc',
+    'sphinx.ext.autosummary',
     'sphinx.ext.intersphinx',
     'numpydoc',
 ]

@@ -61,6 +61,8 @@ when you sort::
 The natsort algorithm does other fancy things like 
 
  - recursively descend into lists of lists
+ - control the case-sensitivity
+ - use local-aware sorting
  - sort file paths correctly
  - allow custom sorting keys
  - exposes a natsort_key generator to pass to list.sort
@@ -97,6 +99,9 @@ check) that `fastnumbers <https://pypi.python.org/pypi/fastnumbers>`_ is install
 Depreciation Notices
 --------------------
 
+ - In ``natsort`` version 4.0.0, the ``number_type``, ``signed``, ``exp``,
+   ``as_path``, and ``py3_safe`` options will be removed from the API, in
+   favor of the ``alg`` option and ``ns`` enum.
  - In ``natsort`` version 4.0.0, the ``natsort_key`` function will be removed
    from the public API.  All future development should use ``natsort_keygen``
    in preparation for this.

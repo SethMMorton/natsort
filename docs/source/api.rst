@@ -16,3 +16,4 @@ natsort API
    index_natsorted.rst
    index_versorted.rst
    order_by_index.rst
+   ns_class.rst
