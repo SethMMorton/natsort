@@ -127,14 +127,14 @@ would expect to be "natural" sorting::
     >>> natsorted(a, alg=ns.G | ns.LF)
     ['apple', 'Apple', 'banana', 'Banana', 'corn', 'Corn']
 
-Locale-Aware Sorting
---------------------
+Locale-Aware Sorting (Human Sorting)
+------------------------------------
 
 You can instruct :mod:`natsort` to use locale-aware sorting with the
 ``ns.LOCALE`` option. In addition to making this understand non-ASCII
 characters, it will also properly interpret non-'.' decimal separators
 and also properly order case (so ``ns.GROUPLETTERS`` and
-``ns.LOWERCASEFIRST``) are not needed::
+``ns.LOWERCASEFIRST`` are not needed)::
 
     >>> import locale
     >>> locale.setlocale(locale.LC_ALL, 'en_US.UTF-8')
@@ -151,6 +151,19 @@ and also properly order case (so ``ns.GROUPLETTERS`` and
     'de_DE.UTF-8'
     >>> natsorted(b, alg=ns.LOCALE) == [u'a5,50', u'a5,6', u'ä', u'b', u'c']
     True
+
+In general, ``ns.LOCALE`` should be preferred over using ``ns.GROUPLETTERS``
+or ``ns.LOWERCASEFIRST`` to ensure that the sorting results are as
+natural as possible.
+
+A Note For Bugs With Locale-Aware Sorting
++++++++++++++++++++++++++++++++++++++++++
+
+If you find that ``ns.LOCALE`` does not give the results you expect, before
+filing a bug report please try to first install
+`PyICU <https://pypi.python.org/pypi/PyICU>`_.  There are some known bugs
+with the `locale` module from the standard library that are solved when
+using `PyICU <https://pypi.python.org/pypi/PyICU>`_.
 
 Customizing Float Definition
 ---------------------------- 
