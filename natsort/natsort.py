@@ -80,7 +80,9 @@ class ns(object):
     LOCALE, L
         Tell `natsort` to be locale-aware when sorting strings (everything
         that was not converted to a number).  Your sorting results will vary
-        depending on your current locale.
+        depending on your current locale. Generally, the `GROUPLETTERS`
+        option is needed with `LOCALE` because the `locale` library
+        groups the letters in the same manner.
     IGNORECASE, IC
         Tell `natsort` to ignore case when sorting.  For example,
         ``['Banana', 'apple', 'banana', 'Apple']`` would be sorted as
@@ -99,7 +101,9 @@ class ns(object):
         ``['Banana', 'apple', 'banana', 'Apple']`` would be sorted as
         ``['Apple', 'apple', 'Banana', 'banana']``.
         Useless when used with `IGNORECASE`; use with `LOWERCASEFIRST`
-        to reverse the order of upper and lower case.
+        to reverse the order of upper and lower case. Generally,
+        this is not needed with `LOCALE` because the `locale` library
+        groups the letters in the same manner.
     TYPESAFE, T
         Try hard to avoid "unorderable types" error on Python 3. It
         is the same as setting the old `py3_safe` option to `True`.
@@ -202,11 +206,9 @@ def _args_to_enum(number_type, signed, exp, as_path, py3_safe):
 def _input_parser(s, regex, numconv, py3_safe, use_locale, group_letters):
     """Helper to parse the string input into numbers and strings."""
 
-    # Split the input string by numbers. If there are no splits, return now.
+    # Split the input string by numbers.
     # If the input is not a string, TypeError is raised.
     s = regex.split(s)
-    if len(s) == 1:
-        return tuple(s)
 
     # Now convert the numbers to numbers, and leave strings as strings.
     # Take into account locale if needed, and group letters if needed.
@@ -220,7 +222,9 @@ def _input_parser(s, regex, numconv, py3_safe, use_locale, group_letters):
 
     # If the list begins with a number, lead with an empty string.
     # This is used to get around the "unorderable types" issue.
-    if isreal(s[0]):
+    if not s:  # Return empty tuple for empty results.
+        return ()
+    elif isreal(s[0]):
         s = [''] + s
 
     # The _py3_safe function inserts "" between numbers in the list,

@@ -18,27 +18,9 @@ it as you would :func:`sorted`::
     >>> a = ['a50', 'a51.', 'a50.4', 'a5.034e1', 'a50.300']
     >>> sorted(a)
     ['a5.034e1', 'a50', 'a50.300', 'a50.4', 'a51.']
-    >>> from natsort import natsorted
+    >>> from natsort import natsorted, ns
     >>> natsorted(a)
     ['a50', 'a50.300', 'a5.034e1', 'a50.4', 'a51.']
-
-Customizing Float Definition
----------------------------- 
-
-By default :func:`~natsorted` searches for any float that would be
-a valid Python float literal, such as 5, 0.4, -4.78, +4.2E-34, etc.
-Perhaps you don't want to search for signed numbers, or you don't
-want to search for exponential notation, the ``ns.UNSIGNED`` and
-``ns.NOEXP`` options allow you to do this::
-
-    >>> a = ['a50', 'a51.', 'a+50.4', 'a5.034e1', 'a+50.300']
-    >>> natsorted(a)
-    ['a50', 'a+50.300', 'a5.034e1', 'a+50.4', 'a51.']
-    >>> from natsort import ns
-    >>> natsorted(a, alg=ns.UNSIGNED)
-    ['a50', 'a5.034e1', 'a51.', 'a+50.300', 'a+50.4']
-    >>> natsorted(a, alg=ns.NOEXP)
-    ['a5.034e1', 'a50', 'a+50.300', 'a+50.4', 'a51.']
 
 Sort Version Numbers
 --------------------
@@ -103,6 +85,89 @@ you may need to use the ``ns.PATH`` option::
     ['./folder (1)/file.txt', './folder (10)/file.txt', './folder/file (1).txt', './folder/file.txt']
     >>> natsorted(a, alg=ns.PATH)
     ['./folder/file.txt', './folder/file (1).txt', './folder (1)/file.txt', './folder (10)/file.txt']
+
+Controlling Case When Sorting
+-----------------------------
+
+For non-numbers, by default :mod:`natsort` used ordinal sorting (i.e.
+it sorts by the character's value in the ASCII table).  For example::
+
+    >>> a = ['Apple', 'corn', 'Corn', 'Banana', 'apple', 'banana']
+    >>> natsorted(a)
+    ['Apple', 'Banana', 'Corn', 'apple', 'banana', 'corn']
+
+There are times when you wish to ignore the case when sorting,
+you can easily do this with the ``ns.IGNORECASE`` option::
+
+    >>> natsorted(a, alg=ns.IGNORECASE)
+    ['Apple', 'apple', 'Banana', 'banana', 'corn', 'Corn']
+
+Note thats since Python's sorting is stable, the order of equivalent
+elements after lowering the case is the same order they appear in the
+original list.
+
+Upper-case letters appear first in the ASCII table, but many natural
+sorting methods place lower-case first.  To do this, use
+``ns.LOWERCASEFIRST``::
+
+    >>> natsorted(a, alg=ns.LOWERCASEFIRST)
+    ['apple', 'banana', 'corn', 'Apple', 'Banana', 'Corn']
+
+It may be undesirable to have the upper-case letters grouped together
+and the lower-case letters grouped together; most would expect all
+"a"s to bet together regardless of case, and all "b"s, and so on. To
+achieve this, use ``ns.GROUPLETTERS``::
+
+    >>> natsorted(a, alg=ns.GROUPLETTERS)
+    ['Apple', 'apple', 'Banana', 'banana', 'Corn', 'corn']
+
+You might combine this with ``ns.LOWERCASEFIRST`` to get what most
+would expect to be "natural" sorting::
+
+    >>> natsorted(a, alg=ns.G | ns.LF)
+    ['apple', 'Apple', 'banana', 'Banana', 'corn', 'Corn']
+
+Locale-Aware Sorting
+--------------------
+
+You can instruct :mod:`natsort` to use locale-aware sorting with the
+``ns.LOCALE`` option. In addition to making this understand non-ASCII
+characters, it will also properly interpret non-'.' decimal separators
+and also properly order case (so ``ns.GROUPLETTERS`` and
+``ns.LOWERCASEFIRST``) are not needed::
+
+    >>> import locale
+    >>> locale.setlocale(locale.LC_ALL, 'en_US.UTF-8')
+    'en_US.UTF-8'
+    >>> a = ['Apple', 'corn', 'Corn', 'Banana', 'apple', 'banana']
+    >>> natsorted(a, alg=ns.LOCALE)
+    ['apple', 'Apple', 'banana', 'Banana', 'corn', 'Corn']
+    >>> b = [u'c', u'ä', u'b', u'a5,6', u'a5,50']
+    >>> natsorted(b) == [u'a5,6', u'a5,50', u'b', u'c', u'ä']
+    True
+    >>> natsorted(b, alg=ns.LOCALE) == [u'a5,6', u'a5,50', u'ä', u'b', u'c']
+    True
+    >>> locale.setlocale(locale.LC_ALL, 'de_DE.UTF-8')
+    'de_DE.UTF-8'
+    >>> natsorted(b, alg=ns.LOCALE) == [u'a5,50', u'a5,6', u'ä', u'b', u'c']
+    True
+
+Customizing Float Definition
+---------------------------- 
+
+By default :func:`~natsorted` searches for any float that would be
+a valid Python float literal, such as 5, 0.4, -4.78, +4.2E-34, etc.
+Perhaps you don't want to search for signed numbers, or you don't
+want to search for exponential notation, the ``ns.UNSIGNED`` and
+``ns.NOEXP`` options allow you to do this::
+
+    >>> a = ['a50', 'a51.', 'a+50.4', 'a5.034e1', 'a+50.300']
+    >>> natsorted(a)
+    ['a50', 'a+50.300', 'a5.034e1', 'a+50.4', 'a51.']
+    >>> natsorted(a, alg=ns.UNSIGNED)
+    ['a50', 'a5.034e1', 'a51.', 'a+50.300', 'a+50.4']
+    >>> natsorted(a, alg=ns.NOEXP)
+    ['a5.034e1', 'a50', 'a+50.300', 'a+50.4', 'a51.']
 
 Using a Custom Sorting Key
 --------------------------

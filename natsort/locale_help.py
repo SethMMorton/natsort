@@ -50,11 +50,30 @@ elif sys.version[:3] == '2.6':
         return K
 
 # Make the strxfrm function from strcoll on Python2
-if sys.version[0] == '2':
-    from locale import strcoll
-    strxfrm = cmp_to_key(strcoll)
-else:
-    from locale import strxfrm
+# It can be buggy, so prefer PyICU if available.
+try:
+    import PyICU
+    from locale import getlocale
+
+    # If using PyICU, get the locale from the current global locale,
+    # then create a sort key from that
+    def get_pyicu_transform(l, _d={}):
+        if l not in _d:
+            if l == (None, None):
+                c = PyICU.Collator.createInstance(PyICU.Locale())
+            else:
+                loc = '.'.join(l)
+                c = PyICU.Collator.createInstance(PyICU.Locale(loc))
+            _d[l] = c.getSortKey
+        return _d[l]
+    use_pyicu = True
+except ImportError:
+    if sys.version[0] == '2':
+        from locale import strcoll
+        strxfrm = cmp_to_key(strcoll)
+    else:
+        from locale import strxfrm
+    use_pyicu = False
 
 # Convenience functions.
 lowercase = lambda x: x.lower()
@@ -97,6 +116,14 @@ def locale_convert(val, func, group):
     # may have had characters modified from the above 'replace' call,
     # so we return the input.
     if group:
-        return strxfrm(groupletters(val)) if s is t else t
+        if use_pyicu:
+            xfrm = get_pyicu_transform(getlocale())
+            return xfrm(groupletters(val)) if s is t else t
+        else:
+            return strxfrm(groupletters(val)) if s is t else t
     else:
-        return strxfrm(val) if s is t else t
+        if use_pyicu:
+            xfrm = get_pyicu_transform(getlocale())
+            return xfrm(val) if s is t else t
+        else:
+            return strxfrm(val) if s is t else t
