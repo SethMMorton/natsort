@@ -13,11 +13,6 @@ from natsort.natsort import _float_sign_exp_re, _float_nosign_exp_re, _float_sig
 from natsort.natsort import _float_nosign_noexp_re, _int_nosign_re, _int_sign_re
 from natsort.natsort import ns
 from natsort.locale_help import use_pyicu
-if use_pyicu:
-    from natsort.locale_help import get_pyicu_transform
-    from locale import getlocale
-else:
-    from natsort.locale_help import strxfrm
 
 try:
     from fastnumbers import fast_float, fast_int
@@ -78,7 +73,11 @@ def test_input_parser():
 
     locale.setlocale(locale.LC_NUMERIC, 'en_US.UTF-8')
     if use_pyicu:
+        from natsort.locale_help import get_pyicu_transform
+        from locale import getlocale
         strxfrm = get_pyicu_transform(getlocale())
+    else:
+        from natsort.locale_help import strxfrm
     assert _input_parser('A5+5.034E-1', _int_nosign_re,         *ittf) == [strxfrm('A'), 5, strxfrm('+'), 5, strxfrm('.'), 34, strxfrm('E-'), 1]
     assert _input_parser('A5+5.034E-1', _int_nosign_re,         *ittt) == [strxfrm('aA'), 5, strxfrm('++'), 5, strxfrm('..'), 34, strxfrm('eE--'), 1]
     locale.setlocale(locale.LC_NUMERIC, '')
@@ -148,7 +147,11 @@ def test_natsort_key_private():
     # Locale aware sorting
     locale.setlocale(locale.LC_NUMERIC, 'en_US.UTF-8')
     if use_pyicu:
+        from natsort.locale_help import get_pyicu_transform
+        from locale import getlocale
         strxfrm = get_pyicu_transform(getlocale())
+    else:
+        from natsort.locale_help import strxfrm
     assert _natsort_key('Apple56.5', key=None, alg=ns.LOCALE) == (strxfrm('Apple'), 56.5)
     assert _natsort_key('Apple56,5', key=None, alg=ns.LOCALE) == (strxfrm('Apple'), 56.0, strxfrm(','), 5.0)
 
