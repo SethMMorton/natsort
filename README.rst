@@ -49,6 +49,21 @@ Sorting version numbers is just as easy with the ``versorted`` function::
     >>> natsorted(a)  # natsorted tries to sort as signed floats, so it won't work
     ['version-2.0', 'version-1.9', 'version-1.11', 'version-1.10']
 
+You can also perform locale-aware sorting (or "human sorting"), where the
+non-numeric characters are ordered based on their meaning, not on their
+ordinal value; this can be achieved with the ``humansorted`` function::
+
+    >>> a = ['Apple', 'Banana', 'apple', 'banana']
+    >>> natsorted(a)
+    ['Apple', 'Banana', 'apple', 'banana']
+    >>> from natsort import humansorted
+    >>> humansorted(a)
+    ['apple', 'Apple', 'banana', 'Banana']
+
+Please see the `following caveat <http://pythonhosted.org//natsort/examples.html#bug-note>`_
+and the "Optional Dependencies" section
+below before using the ``humansorted`` function.
+
 You can mix and match ``int``, ``float``, and ``str`` (or ``unicode``) types
 when you sort::
 
@@ -62,7 +77,6 @@ The natsort algorithm does other fancy things like
 
  - recursively descend into lists of lists
  - control the case-sensitivity
- - use local-aware sorting (please see "Optional Dependencies" below)
  - sort file paths correctly
  - allow custom sorting keys
  - exposes a natsort_key generator to pass to list.sort

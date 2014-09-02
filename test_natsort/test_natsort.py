@@ -7,7 +7,9 @@ import warnings
 import locale
 from operator import itemgetter
 from pytest import raises
-from natsort import natsorted, index_natsorted, natsort_key, versorted, index_versorted, natsort_keygen, order_by_index
+import uprefix
+from natsort import natsorted, index_natsorted, natsort_key, versorted, index_versorted
+from natsort import humansorted, index_humansorted, natsort_keygen, order_by_index
 from natsort.natsort import _input_parser, _py3_safe, _natsort_key, _args_to_enum
 from natsort.natsort import _float_sign_exp_re, _float_nosign_exp_re, _float_sign_noexp_re
 from natsort.natsort import _float_nosign_noexp_re, _int_nosign_re, _int_sign_re
@@ -321,6 +323,13 @@ def test_versorted():
                                          '/p/Folder (10)/file1.1.0.tar.gz']
 
 
+def test_humansorted():
+
+    a = ['Apple', 'corn', 'Corn', 'Banana', 'apple', 'banana']
+    assert humansorted(a) == natsorted(a, alg=ns.LOCALE)
+    assert humansorted(a, reverse=True) == humansorted(a)[::-1]
+
+
 def test_index_natsorted():
 
     # Return the indexes of how the iterable would be sorted.
@@ -366,6 +375,13 @@ def test_index_versorted():
          '/p/Folder (1)/file1.1.0 (1).tar.gz',
          '/p/Folder (1)/file1.1.0.tar.gz']
     assert index_versorted(a, alg=ns.PATH) == [1, 3, 2, 0]
+
+
+def test_index_humansorted():
+
+    a = ['Apple', 'corn', 'Corn', 'Banana', 'apple', 'banana']
+    assert index_humansorted(a) == index_natsorted(a, alg=ns.LOCALE)
+    assert index_humansorted(a, reverse=True) == index_humansorted(a)[::-1]
 
 
 def test_order_by_index():

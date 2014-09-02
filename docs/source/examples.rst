@@ -86,6 +86,50 @@ you may need to use the ``ns.PATH`` option::
     >>> natsorted(a, alg=ns.PATH)
     ['./folder/file.txt', './folder/file (1).txt', './folder (1)/file.txt', './folder (10)/file.txt']
 
+Locale-Aware Sorting (Human Sorting)
+------------------------------------
+
+You can instruct :mod:`natsort` to use locale-aware sorting with the
+``ns.LOCALE`` option. In addition to making this understand non-ASCII
+characters, it will also properly interpret non-'.' decimal separators
+and also properly order case.  It may be more convenient to just use
+the :func:`humansorted` function::
+
+    >>> from natsort import humansorted
+    >>> import locale
+    >>> import uprefix  # strips 'u' prefix in Python3
+    >>> uprefix.register_hook()
+    >>> locale.setlocale(locale.LC_ALL, 'en_US.UTF-8')
+    'en_US.UTF-8'
+    >>> a = ['Apple', 'corn', 'Corn', 'Banana', 'apple', 'banana']
+    >>> natsorted(a, alg=ns.LOCALE)
+    ['apple', 'Apple', 'banana', 'Banana', 'corn', 'Corn']
+    >>> humansorted(a)
+    ['apple', 'Apple', 'banana', 'Banana', 'corn', 'Corn']
+    >>> b = [u'c', u'ä', u'b', u'a5,6', u'a5,50']
+    >>> natsorted(b) == [u'a5,6', u'a5,50', u'b', u'c', u'ä']
+    True
+    >>> natsorted(b, alg=ns.LOCALE) == [u'a5,6', u'a5,50', u'ä', u'b', u'c']
+    True
+    >>> humansorted(b) == natsorted(b, alg=ns.LOCALE)
+    True
+    >>> locale.setlocale(locale.LC_ALL, 'de_DE.UTF-8')
+    'de_DE.UTF-8'
+    >>> humansorted(b) == [u'a5,50', u'a5,6', u'ä', u'b', u'c']
+    True
+    >>> uprefix.unregister_hook()
+
+.. _bug_note:
+
+A Note For Bugs With Locale-Aware Sorting
++++++++++++++++++++++++++++++++++++++++++
+
+If you find that ``ns.LOCALE`` (or :func:`~humansorted`) does not give
+the results you expect, before filing a bug report please try to first install
+`PyICU <https://pypi.python.org/pypi/PyICU>`_.  There are some known bugs
+with the `locale` module from the standard library that are solved when
+using `PyICU <https://pypi.python.org/pypi/PyICU>`_.
+
 Controlling Case When Sorting
 -----------------------------
 
@@ -127,49 +171,8 @@ would expect to be "natural" sorting::
     >>> natsorted(a, alg=ns.G | ns.LF)
     ['apple', 'Apple', 'banana', 'Banana', 'corn', 'Corn']
 
-Locale-Aware Sorting (Human Sorting)
-------------------------------------
-
-You can instruct :mod:`natsort` to use locale-aware sorting with the
-``ns.LOCALE`` option. In addition to making this understand non-ASCII
-characters, it will also properly interpret non-'.' decimal separators
-and also properly order case (so ``ns.GROUPLETTERS`` and
-``ns.LOWERCASEFIRST`` are not needed)::
-
-    >>> import locale
-    >>> import uprefix  # strips 'u' prefix in Python3
-    >>> uprefix.register_hook()
-    >>> locale.setlocale(locale.LC_ALL, 'en_US.UTF-8')
-    'en_US.UTF-8'
-    >>> a = ['Apple', 'corn', 'Corn', 'Banana', 'apple', 'banana']
-    >>> natsorted(a, alg=ns.LOCALE)
-    ['apple', 'Apple', 'banana', 'Banana', 'corn', 'Corn']
-    >>> b = [u'c', u'ä', u'b', u'a5,6', u'a5,50']
-    >>> natsorted(b) == [u'a5,6', u'a5,50', u'b', u'c', u'ä']
-    True
-    >>> natsorted(b, alg=ns.LOCALE) == [u'a5,6', u'a5,50', u'ä', u'b', u'c']
-    True
-    >>> locale.setlocale(locale.LC_ALL, 'de_DE.UTF-8')
-    'de_DE.UTF-8'
-    >>> natsorted(b, alg=ns.LOCALE) == [u'a5,50', u'a5,6', u'ä', u'b', u'c']
-    True
-    >>> uprefix.unregister_hook()
-
-In general, ``ns.LOCALE`` should be preferred over using ``ns.GROUPLETTERS``
-or ``ns.LOWERCASEFIRST`` to ensure that the sorting results are as
-natural as possible.
-
-A Note For Bugs With Locale-Aware Sorting
-+++++++++++++++++++++++++++++++++++++++++
-
-If you find that ``ns.LOCALE`` does not give the results you expect, before
-filing a bug report please try to first install
-`PyICU <https://pypi.python.org/pypi/PyICU>`_.  There are some known bugs
-with the `locale` module from the standard library that are solved when
-using `PyICU <https://pypi.python.org/pypi/PyICU>`_.
-
 Customizing Float Definition
----------------------------- 
+----------------------------
 
 By default :func:`~natsorted` searches for any float that would be
 a valid Python float literal, such as 5, 0.4, -4.78, +4.2E-34, etc.

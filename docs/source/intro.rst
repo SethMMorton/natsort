@@ -59,6 +59,20 @@ Sorting version numbers is just as easy with :func:`~versorted`::
     >>> natsorted(a)  # natsorted tries to sort as signed floats, so it won't work
     ['version-2.0', 'version-1.9', 'version-1.11', 'version-1.10']
 
+You can also perform locale-aware sorting (or "human sorting"), where the
+non-numeric characters are ordered based on their meaning, not on their
+ordinal value; this can be achieved with the ``humansorted`` function::
+
+    >>> a = ['Apple', 'Banana', 'apple', 'banana']
+    >>> natsorted(a)
+    ['Apple', 'Banana', 'apple', 'banana']
+    >>> from natsort import humansorted
+    >>> humansorted(a)
+    ['apple', 'Apple', 'banana', 'Banana']
+
+Please see :ref:`bug_note` and the Installation section 
+below before using the ``humansorted`` function.
+
 You can mix and match ``int``, ``float``, and ``str`` (or ``unicode``) types
 when you sort::
 
@@ -71,9 +85,10 @@ when you sort::
 The natsort algorithm does other fancy things like 
 
  - recursively descend into lists of lists
+ - control the case-sensitivity
  - sort file paths correctly
  - allow custom sorting keys
- - allow exposed a natsort_key generator to pass to list.sort
+ - exposes a natsort_key generator to pass to list.sort
 
 Please see the :ref:`examples` for a quick start guide, or the :ref:`api`
 for more details.
@@ -118,6 +133,13 @@ with the string to number conversions.)  ``natsort`` will still run (efficiently
 without the package, but if you need to squeeze out that extra juice it is
 recommended you include this as a dependency.  ``natsort`` will not require (or
 check) that `fastnumbers <https://pypi.python.org/pypi/fastnumbers>`_ is installed.
+
+On some systems, Python's ``locale`` library can be buggy (I have found this to be
+the case on Mac OS X), so ``natsort`` will use
+`PyICU <https://pypi.python.org/pypi/PyICU>`_ under the hood if it is installed
+on your computer; this will give more reliable results. ``natsort`` will not
+require (or check) that `PyICU <https://pypi.python.org/pypi/PyICU>`_ is installed
+at installation.
 
 :mod:`natsort` comes with a shell script called :mod:`natsort`, or can also be called
 from the command line with ``python -m natsort``.  The command line script is

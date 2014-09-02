@@ -48,6 +48,17 @@ class ns(object):
 
     Each option has a shortened 1- or 2-letter form.
 
+    .. warning:: On some systems, the underlying C library that
+                 Python's locale module uses is broken. On these
+                 systems it is recommended that you install
+                 `PyICU <https://pypi.python.org/pypi/PyICU>`_
+                 if you wish to use `LOCALE`.
+                 Please validate that `LOCALE` works as
+                 expected on your target system, and if not you
+                 should add
+                 `PyICU <https://pypi.python.org/pypi/PyICU>`_
+                 as a dependency.
+
     Attributes
     ----------
     FLOAT, F
@@ -82,7 +93,8 @@ class ns(object):
         that was not converted to a number).  Your sorting results will vary
         depending on your current locale. Generally, the `GROUPLETTERS`
         option is needed with `LOCALE` because the `locale` library
-        groups the letters in the same manner.
+        groups the letters in the same manner (although you may still
+        need `GROUPLETTERS` if there are numbers in your strings).
     IGNORECASE, IC
         Tell `natsort` to ignore case when sorting.  For example,
         ``['Banana', 'apple', 'banana', 'Apple']`` would be sorted as
@@ -101,9 +113,7 @@ class ns(object):
         ``['Banana', 'apple', 'banana', 'Apple']`` would be sorted as
         ``['Apple', 'apple', 'Banana', 'banana']``.
         Useless when used with `IGNORECASE`; use with `LOWERCASEFIRST`
-        to reverse the order of upper and lower case. Generally,
-        this is not needed with `LOCALE` because the `locale` library
-        groups the letters in the same manner.
+        to reverse the order of upper and lower case.
     TYPESAFE, T
         Try hard to avoid "unorderable types" error on Python 3. It
         is the same as setting the old `py3_safe` option to `True`.
@@ -724,6 +734,67 @@ def versorted(seq, key=None, reverse=False, as_path=None, alg=ns.VERSION):
 
 
 @u_format
+def humansorted(seq, key=None, reverse=False, alg=0):
+    """\
+    Convenience function to properly sort non-numeric characters.
+
+    Convenience function to properly sort non-numeric characters
+    in a locale-aware fashion (a.k.a "human sorting"). This is a
+    wrapper around ``natsorted(seq, alg=ns.LOCALE)``.
+
+    .. warning:: On some systems, the underlying C library that
+                 Python's locale module uses is broken. On these
+                 systems it is recommended that you install
+                 `PyICU <https://pypi.python.org/pypi/PyICU>`_.
+                 Please validate that this function works as
+                 expected on your target system, and if not you
+                 should add
+                 `PyICU <https://pypi.python.org/pypi/PyICU>`_
+                 as a dependency.
+
+    Parameters
+    ----------
+    seq : iterable
+        The sequence to sort.
+
+    key : callable, optional
+        A key used to determine how to sort each element of the sequence.
+        It is **not** applied recursively.
+        It should accept a single argument and return a single value.
+
+    reverse : {{True, False}}, optional
+        Return the list in reversed sorted order. The default is
+        `False`.
+
+    alg : ns enum, optional
+        This option is used to control which algorithm `natsort`
+        uses when sorting. For details into these options, please see
+        the :class:`ns` class documentation. The default is `ns.FLOAT`.
+
+    Returns
+    -------
+    out : list
+        The sorted sequence.
+
+    See Also
+    --------
+    index_humansorted : Returns the sorted indexes from `humansorted`.
+
+    Examples
+    --------
+    Use `humansorted` just like the builtin `sorted`::
+
+        >>> a = ['Apple', 'Banana', 'apple', 'banana']
+        >>> natsorted(a)
+        [{u}'Apple', {u}'Banana', {u}'apple', {u}'banana']
+        >>> humansorted(a)
+        [{u}'apple', {u}'Apple', {u}'banana', {u}'Banana']
+
+    """
+    return natsorted(seq, key, reverse=reverse, alg=alg | ns.LOCALE)
+
+
+@u_format
 def index_natsorted(seq, key=None, number_type=float, signed=None, exp=None,
                     reverse=False, as_path=None, alg=ns.FLOAT):
     """\
@@ -878,6 +949,60 @@ def index_versorted(seq, key=None, reverse=False, as_path=None,
     """
     alg = _args_to_enum(float, None, None, as_path, None) | alg
     return index_natsorted(seq, key, reverse=reverse, alg=alg | ns.VERSION)
+
+
+@u_format
+def index_humansorted(seq, key=None, reverse=False, alg=0):
+    """\
+    Return the list of the indexes used to sort the input sequence
+    in a locale-aware manner.
+
+    Sorts a sequence in a locale-aware manner, but returns a list
+    of sorted the indexes and not the sorted list. This list of
+    indexes can be used to sort multiple lists by the sorted order
+    of the given sequence.
+
+    This is a wrapper around ``index_natsorted(seq, alg=ns.LOCALE)``.
+
+    Parameters
+    ----------
+    seq: iterable
+        The sequence to sort.
+
+    key: callable, optional
+        A key used to determine how to sort each element of the sequence.
+        It is **not** applied recursively.
+        It should accept a single argument and return a single value.
+
+    reverse : {{True, False}}, optional
+        Return the list in reversed sorted order. The default is
+        `False`.
+
+    alg : ns enum, optional
+        This option is used to control which algorithm `natsort`
+        uses when sorting. For details into these options, please see
+        the :class:`ns` class documentation. The default is `ns.FLOAT`.
+
+    Returns
+    -------
+    out : tuple
+        The ordered indexes of the sequence.
+
+    See Also
+    --------
+    humansorted
+    order_by_index
+
+    Examples
+    --------
+    Use `index_humansorted` just like the builtin `sorted`::
+
+        >>> a = ['Apple', 'Banana', 'apple', 'banana']
+        >>> index_humansorted(a)
+        [2, 0, 3, 1]
+
+    """
+    return index_natsorted(seq, key, reverse=reverse, alg=alg | ns.LOCALE)
 
 
 @u_format
