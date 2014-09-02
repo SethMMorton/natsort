@@ -206,6 +206,7 @@ def test_sort_and_print_entries(capsys):
             self.signed = True
             self.exp = True
             self.paths = as_path
+            self.locale = 0
 
     entries = ['tmp/a57/path2',
                'tmp/a23/path1',
