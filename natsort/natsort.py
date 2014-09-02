@@ -392,7 +392,7 @@ def _natsort_key(val, key, alg):
 
 @u_format
 def natsort_key(val, key=None, number_type=float, signed=None, exp=None,
-                as_path=None, py3_safe=None, alg=ns.FLOAT):
+                as_path=None, py3_safe=None, alg=0):
     """\
     Key to sort strings and numbers naturally.
 
@@ -449,6 +449,11 @@ def natsort_key(val, key=None, number_type=float, signed=None, exp=None,
         keyword-only argument in 4.0.0. Please use the `alg` argument
         for all future development. See :class:`ns` class documentation for
         details.
+
+    alg : ns enum, optional
+        This option is used to control which algorithm `natsort`
+        uses when sorting. For details into these options, please see
+        the :class:`ns` class documentation. The default is `ns.FLOAT`.
 
     Returns
     -------
@@ -513,7 +518,7 @@ def natsort_key(val, key=None, number_type=float, signed=None, exp=None,
 
 @u_format
 def natsort_keygen(key=None, number_type=float, signed=None, exp=None,
-                   as_path=None, py3_safe=None, alg=ns.FLOAT):
+                   as_path=None, py3_safe=None, alg=0):
     """\
     Generate a key to sort strings and numbers naturally.
 
@@ -562,6 +567,11 @@ def natsort_keygen(key=None, number_type=float, signed=None, exp=None,
         for all future development. See :class:`ns` class documentation for
         details.
 
+    alg : ns enum, optional
+        This option is used to control which algorithm `natsort`
+        uses when sorting. For details into these options, please see
+        the :class:`ns` class documentation. The default is `ns.FLOAT`.
+
     Returns
     -------
     out : function
@@ -601,7 +611,7 @@ def natsort_keygen(key=None, number_type=float, signed=None, exp=None,
 
 @u_format
 def natsorted(seq, key=None, number_type=float, signed=None, exp=None,
-              reverse=False, as_path=None, alg=ns.FLOAT):
+              reverse=False, as_path=None, alg=0):
     """\
     Sorts a sequence naturally.
 
@@ -647,6 +657,11 @@ def natsorted(seq, key=None, number_type=float, signed=None, exp=None,
         for all future development. See :class:`ns` class documentation for
         details.
 
+    alg : ns enum, optional
+        This option is used to control which algorithm `natsort`
+        uses when sorting. For details into these options, please see
+        the :class:`ns` class documentation. The default is `ns.FLOAT`.
+
     Returns
     -------
     out: list
@@ -684,12 +699,12 @@ def natsorted(seq, key=None, number_type=float, signed=None, exp=None,
 
 
 @u_format
-def versorted(seq, key=None, reverse=False, as_path=None, alg=ns.VERSION):
+def versorted(seq, key=None, reverse=False, as_path=None, alg=0):
     """\
     Convenience function to sort version numbers.
 
     Convenience function to sort version numbers. This is a wrapper
-    around ``natsorted(seq, number_type=None)``.
+    around ``natsorted(seq, alg=ns.VERSION)``.
 
     Parameters
     ----------
@@ -710,6 +725,11 @@ def versorted(seq, key=None, reverse=False, as_path=None, alg=ns.VERSION):
         keyword-only argument in 4.0.0. Please use the `alg` argument
         for all future development. See :class:`ns` class documentation for
         details.
+
+    alg : ns enum, optional
+        This option is used to control which algorithm `natsort`
+        uses when sorting. For details into these options, please see
+        the :class:`ns` class documentation. The default is `ns.FLOAT`.
 
     Returns
     -------
@@ -796,7 +816,7 @@ def humansorted(seq, key=None, reverse=False, alg=0):
 
 @u_format
 def index_natsorted(seq, key=None, number_type=float, signed=None, exp=None,
-                    reverse=False, as_path=None, alg=ns.FLOAT):
+                    reverse=False, as_path=None, alg=0):
     """\
     Return the list of the indexes used to sort the input sequence.
 
@@ -842,6 +862,11 @@ def index_natsorted(seq, key=None, number_type=float, signed=None, exp=None,
         keyword-only argument in 4.0.0. Please use the `alg` argument
         for all future development. See :class:`ns` class documentation for
         details.
+
+    alg : ns enum, optional
+        This option is used to control which algorithm `natsort`
+        uses when sorting. For details into these options, please see
+        the :class:`ns` class documentation. The default is `ns.FLOAT`.
 
     Returns
     -------
@@ -895,13 +920,12 @@ def index_natsorted(seq, key=None, number_type=float, signed=None, exp=None,
 
 
 @u_format
-def index_versorted(seq, key=None, reverse=False, as_path=None,
-                    alg=ns.VERSION):
+def index_versorted(seq, key=None, reverse=False, as_path=None, alg=0):
     """\
     Return the list of the indexes used to sort the input sequence
     of version numbers.
 
-    Sorts a sequence naturally, but returns a list of sorted the
+    Sorts a sequence of version, but returns a list of sorted the
     indexes and not the sorted list. This list of indexes can be
     used to sort multiple lists by the sorted order of the given
     sequence.
@@ -927,6 +951,11 @@ def index_versorted(seq, key=None, reverse=False, as_path=None,
         keyword-only argument in 4.0.0. Please use the `alg` argument
         for all future development. See :class:`ns` class documentation for
         details.
+
+    alg : ns enum, optional
+        This option is used to control which algorithm `natsort`
+        uses when sorting. For details into these options, please see
+        the :class:`ns` class documentation. The default is `ns.FLOAT`.
 
     Returns
     -------
