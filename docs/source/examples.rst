@@ -137,6 +137,8 @@ and also properly order case (so ``ns.GROUPLETTERS`` and
 ``ns.LOWERCASEFIRST`` are not needed)::
 
     >>> import locale
+    >>> import uprefix  # strips 'u' prefix in Python3
+    >>> uprefix.register_hook()
     >>> locale.setlocale(locale.LC_ALL, 'en_US.UTF-8')
     'en_US.UTF-8'
     >>> a = ['Apple', 'corn', 'Corn', 'Banana', 'apple', 'banana']
@@ -151,6 +153,7 @@ and also properly order case (so ``ns.GROUPLETTERS`` and
     'de_DE.UTF-8'
     >>> natsorted(b, alg=ns.LOCALE) == [u'a5,50', u'a5,6', u'ä', u'b', u'c']
     True
+    >>> uprefix.unregister_hook()
 
 In general, ``ns.LOCALE`` should be preferred over using ``ns.GROUPLETTERS``
 or ``ns.LOWERCASEFIRST`` to ensure that the sorting results are as

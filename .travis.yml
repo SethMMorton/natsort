@@ -18,6 +18,7 @@ install:
 - if [[ $TRAVIS_PYTHON_VERSION == '2.6' ]]; then pip install argparse; fi
 - pip install pytest-cov pytest-flakes pytest-pep8
 - pip install coveralls
+- pip install uprefix
 script:
 - python -m pytest --cov natsort --flakes --pep8
 - python -m pytest --doctest-modules natsort
