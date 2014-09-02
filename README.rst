@@ -128,8 +128,9 @@ Depreciation Notices
 --------------------
 
  - In ``natsort`` version 4.0.0, the ``number_type``, ``signed``, ``exp``,
-   ``as_path``, and ``py3_safe`` options will be removed from the API, in
-   favor of the ``alg`` option and ``ns`` enum.
+   ``as_path``, and ``py3_safe`` options will be removed from the (documented)
+   API, in favor of the ``alg`` option and ``ns`` enum.  They will remain as
+   keyword-only arguments after that (for the foreseeable future).
  - In ``natsort`` version 4.0.0, the ``natsort_key`` function will be removed
    from the public API.  All future development should use ``natsort_keygen``
    in preparation for this.
@@ -150,6 +151,24 @@ History
 
 These are the last three entries of the changelog.  See the package documentation
 for the complete `changelog <http://pythonhosted.org//natsort/changelog.html>`_.
+
+09-02-2014 v. 3.5.0
+'''''''''''''''''''
+
+    - Added the 'alg' argument to the 'natsort' functions.  This argument
+      accepts an enum that is used to indicate the options the user wishes
+      to use.  The 'number_type', 'signed', 'exp', 'as_path', and 'py3_safe'
+      options are being depreciated and will become (undocumented)
+      keyword-only options in natsort version 4.0.0.
+    - The user can now modify how 'natsort' handles the case of non-numeric
+      characters.
+    - The user can now instruct 'natsort' to use locale-aware sorting, which
+      allows 'natsort' to perform true "human sorting".
+
+      - The `humansorted` convenience function has been included to make this
+        easier.
+
+    - Updated shell script with locale functionality.
 
 08-12-2014 v. 3.4.1
 '''''''''''''''''''
@@ -188,18 +207,3 @@ for the complete `changelog <http://pythonhosted.org//natsort/changelog.html>`_.
     - Reworked the documentation, moving most of it to PyPI's hosting platform.
     - Added support for coveralls.io.
     - Entire codebase is now PyFlakes and PEP8 compliant.
-
-06-28-2014 v. 3.3.0
-'''''''''''''''''''
-
-    - Added a 'versorted' method for more convenient sorting of versions.
-    - Updated command-line tool --number_type option with 'version' and 'ver'
-      to make it more clear how to sort version numbers.
-    - Moved unit-testing mechanism from being docstring-based to actual unit tests
-      in actual functions.
-
-      - This has provided the ability determine the coverage of the unit tests (99%).
-      - This also makes the pydoc documentation a bit more clear.
-
-    - Made docstrings for public functions mirror the README API.
-    - Connected natsort development to Travis-CI to help ensure quality releases.

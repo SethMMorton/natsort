@@ -288,6 +288,7 @@ def test_natsorted():
     assert natsorted(a, alg=ns.G | ns.LF) == ['apple', 'Apple', 'banana', 'Banana', 'corn', 'Corn']
 
     # You can also do locale-aware sorting
+    uprefix.register_hook()
     locale.setlocale(locale.LC_ALL, 'en_US.UTF-8')
     assert natsorted(a, alg=ns.LOCALE) == ['apple', 'Apple', 'banana', 'Banana', 'corn', 'Corn']
     a = [u'c', u'ä', u'b', u'a5,6', u'a5,50']
@@ -296,6 +297,7 @@ def test_natsorted():
     locale.setlocale(locale.LC_ALL, 'de_DE.UTF-8')
     assert natsorted(a, alg=ns.LOCALE) == [u'a5,50', u'a5,6', u'ä', u'b', u'c']
     locale.setlocale(locale.LC_ALL, '')
+    uprefix.unregister_hook()
 
 
 def test_versorted():
