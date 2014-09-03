@@ -128,7 +128,7 @@ class ns(object):
 
         >>> import locale
         >>> # The 'str' call is only to get around a bug on Python 2.x
-        >>> # where 'setlocale' does not except unicode strings (ironic,
+        >>> # where 'setlocale' does not expect unicode strings (ironic,
         >>> # right?)
         >>> locale.setlocale(locale.LC_ALL, str('en_US.UTF-8'))
         'en_US.UTF-8'
@@ -829,7 +829,7 @@ def humansorted(seq, key=None, reverse=False, alg=0):
 
         >>> import locale
         >>> # The 'str' call is only to get around a bug on Python 2.x
-        >>> # where 'setlocale' does not except unicode strings (ironic,
+        >>> # where 'setlocale' does not expect unicode strings (ironic,
         >>> # right?)
         >>> locale.setlocale(locale.LC_ALL, str('en_US.UTF-8'))
         'en_US.UTF-8'
@@ -1070,7 +1070,7 @@ def index_humansorted(seq, key=None, reverse=False, alg=0):
 
         >>> import locale
         >>> # The 'str' call is only to get around a bug on Python 2.x
-        >>> # where 'setlocale' does not except unicode strings (ironic,
+        >>> # where 'setlocale' does not expect unicode strings (ironic,
         >>> # right?)
         >>> locale.setlocale(locale.LC_ALL, str('en_US.UTF-8'))
         'en_US.UTF-8'
