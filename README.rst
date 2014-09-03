@@ -56,10 +56,15 @@ ordinal value; this can be achieved with the ``humansorted`` function::
     >>> a = ['Apple', 'Banana', 'apple', 'banana']
     >>> natsorted(a)
     ['Apple', 'Banana', 'apple', 'banana']
+    >>> import locale
+    >>> locale.setlocale(locale.LC_ALL, 'en_US.UTF-8')
+    'en_US.UTF-8'
     >>> from natsort import humansorted
     >>> humansorted(a)
     ['apple', 'Apple', 'banana', 'Banana']
 
+You may find you need to explicitly set the locale to get this to work
+(as shown in the example).
 Please see the `following caveat <http://pythonhosted.org//natsort/examples.html#bug-note>`_
 and the "Optional Dependencies" section
 below before using the ``humansorted`` function.

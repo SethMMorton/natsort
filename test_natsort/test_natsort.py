@@ -3,11 +3,11 @@
 Here are a collection of examples of how this module can be used.
 See the README or the natsort homepage for more details.
 """
+from __future__ import unicode_literals
 import warnings
 import locale
 from operator import itemgetter
 from pytest import raises
-import uprefix
 from natsort import natsorted, index_natsorted, natsort_key, versorted, index_versorted
 from natsort import humansorted, index_humansorted, natsort_keygen, order_by_index
 from natsort.natsort import _input_parser, _py3_safe, _natsort_key, _args_to_enum
@@ -73,7 +73,7 @@ def test_input_parser():
     assert _input_parser('A5+5.034E-1', _float_sign_exp_re,     *ftft) == ['aA', 5.0, '', 0.5034]
     assert _input_parser('A5+5.034E-1', _int_nosign_re,         *itft) == ['aA', 5, '++', 5, '..', 34, 'eE--', 1]
 
-    locale.setlocale(locale.LC_NUMERIC, 'en_US.UTF-8')
+    locale.setlocale(locale.LC_NUMERIC, str('en_US.UTF-8'))
     if use_pyicu:
         from natsort.locale_help import get_pyicu_transform
         from locale import getlocale
@@ -82,7 +82,7 @@ def test_input_parser():
         from natsort.locale_help import strxfrm
     assert _input_parser('A5+5.034E-1', _int_nosign_re,         *ittf) == [strxfrm('A'), 5, strxfrm('+'), 5, strxfrm('.'), 34, strxfrm('E-'), 1]
     assert _input_parser('A5+5.034E-1', _int_nosign_re,         *ittt) == [strxfrm('aA'), 5, strxfrm('++'), 5, strxfrm('..'), 34, strxfrm('eE--'), 1]
-    locale.setlocale(locale.LC_NUMERIC, '')
+    locale.setlocale(locale.LC_NUMERIC, str(''))
 
 
 def test_py3_safe():
@@ -147,7 +147,7 @@ def test_natsort_key_private():
     assert _natsort_key('Apple56', key=None, alg=ns.G | ns.LF) == ('aapPpPlLeE', 56.0)
 
     # Locale aware sorting
-    locale.setlocale(locale.LC_NUMERIC, 'en_US.UTF-8')
+    locale.setlocale(locale.LC_NUMERIC, str('en_US.UTF-8'))
     if use_pyicu:
         from natsort.locale_help import get_pyicu_transform
         from locale import getlocale
@@ -157,12 +157,12 @@ def test_natsort_key_private():
     assert _natsort_key('Apple56.5', key=None, alg=ns.LOCALE) == (strxfrm('Apple'), 56.5)
     assert _natsort_key('Apple56,5', key=None, alg=ns.LOCALE) == (strxfrm('Apple'), 56.0, strxfrm(','), 5.0)
 
-    locale.setlocale(locale.LC_NUMERIC, 'de_DE.UTF-8')
+    locale.setlocale(locale.LC_NUMERIC, str('de_DE.UTF-8'))
     if use_pyicu:
         strxfrm = get_pyicu_transform(getlocale())
     assert _natsort_key('Apple56.5', key=None, alg=ns.LOCALE) == (strxfrm('Apple'), 56.5)
     assert _natsort_key('Apple56,5', key=None, alg=ns.LOCALE) == (strxfrm('Apple'), 56.5)
-    locale.setlocale(locale.LC_NUMERIC, '')
+    locale.setlocale(locale.LC_NUMERIC, str(''))
 
 
 def test_natsort_key_public():
@@ -288,16 +288,14 @@ def test_natsorted():
     assert natsorted(a, alg=ns.G | ns.LF) == ['apple', 'Apple', 'banana', 'Banana', 'corn', 'Corn']
 
     # You can also do locale-aware sorting
-    uprefix.register_hook()
-    locale.setlocale(locale.LC_ALL, 'en_US.UTF-8')
+    locale.setlocale(locale.LC_ALL, str('en_US.UTF-8'))
     assert natsorted(a, alg=ns.LOCALE) == ['apple', 'Apple', 'banana', 'Banana', 'corn', 'Corn']
-    a = [u'c', u'ä', u'b', u'a5,6', u'a5,50']
-    assert natsorted(a, alg=ns.LOCALE) == [u'a5,6', u'a5,50', u'ä', u'b', u'c']
+    a = ['c', 'ä', 'b', 'a5,6', 'a5,50']
+    assert natsorted(a, alg=ns.LOCALE) == ['a5,6', 'a5,50', 'ä', 'b', 'c']
 
-    locale.setlocale(locale.LC_ALL, 'de_DE.UTF-8')
-    assert natsorted(a, alg=ns.LOCALE) == [u'a5,50', u'a5,6', u'ä', u'b', u'c']
-    locale.setlocale(locale.LC_ALL, '')
-    uprefix.unregister_hook()
+    locale.setlocale(locale.LC_ALL, str('de_DE.UTF-8'))
+    assert natsorted(a, alg=ns.LOCALE) == ['a5,50', 'a5,6', 'ä', 'b', 'c']
+    locale.setlocale(locale.LC_ALL, str(''))
 
 
 def test_versorted():
@@ -328,6 +326,7 @@ def test_versorted():
 def test_humansorted():
 
     a = ['Apple', 'corn', 'Corn', 'Banana', 'apple', 'banana']
+    assert humansorted(a) == ['apple', 'Apple', 'banana', 'Banana', 'corn', 'Corn']
     assert humansorted(a) == natsorted(a, alg=ns.LOCALE)
     assert humansorted(a, reverse=True) == humansorted(a)[::-1]
 
@@ -382,6 +381,7 @@ def test_index_versorted():
 def test_index_humansorted():
 
     a = ['Apple', 'corn', 'Corn', 'Banana', 'apple', 'banana']
+    assert index_humansorted(a) == [4, 0, 5, 3, 1, 2]
     assert index_humansorted(a) == index_natsorted(a, alg=ns.LOCALE)
     assert index_humansorted(a, reverse=True) == index_humansorted(a)[::-1]
 

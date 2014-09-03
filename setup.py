@@ -68,7 +68,7 @@ setup(
     packages=['natsort'],
     entry_points={'console_scripts': ['natsort = natsort.__main__:main']},
     tests_require=['pytest', 'pytest-pep8',
-                   'pytest-flakes', 'pytest-cov', 'uprefix'],
+                   'pytest-flakes', 'pytest-cov'],
     cmdclass={'test': PyTest},
     description=DESCRIPTION,
     long_description=LONG_DESCRIPTION,

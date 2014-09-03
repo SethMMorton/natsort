@@ -118,6 +118,25 @@ class ns(object):
         Try hard to avoid "unorderable types" error on Python 3. It
         is the same as setting the old `py3_safe` option to `True`.
 
+    Notes
+    -----
+    If using `LOCALE`, you may find that if you do not explicitly set
+    the locale your results may not be as you expect... I have found that
+    it depends on the system you are on. To do this is straightforward
+    (in the below example I use 'en_US.UTF-8', but you should use your
+    locale)::
+
+        >>> import locale
+        >>> # The 'str' call is only to get around a bug on Python 2.x
+        >>> # where 'setlocale' does not except unicode strings (ironic,
+        >>> # right?)
+        >>> locale.setlocale(locale.LC_ALL, str('en_US.UTF-8'))
+        'en_US.UTF-8'
+
+    It is preferred that you do this before importing `natsort`.
+    If you use `PyICU <https://pypi.python.org/pypi/PyICU>`_ (see warning
+    above) then you should not need to do this.
+
     """
     pass
 
@@ -337,7 +356,7 @@ def _natsort_key(val, key, alg):
     # Get the proper regex and conversion function.
     try:
         regex, num_function = _regex_and_num_function_chooser[inp_options]
-    except KeyError:
+    except KeyError:  # pragma: no cover
         if inp_options[1] not in ('.', ','):  # pragma: no cover
             raise ValueError("_natsort_key: currently natsort only supports "
                              "the decimal separators '.' and ','. "
@@ -686,7 +705,7 @@ def natsorted(seq, key=None, number_type=float, signed=None, exp=None,
     try:
         return sorted(seq, reverse=reverse,
                       key=natsort_keygen(key, alg=alg))
-    except TypeError as e:
+    except TypeError as e:  # pragma: no cover
         # In the event of an unresolved "unorderable types" error
         # attempt to sort again, being careful to prevent this error.
         if 'unorderable types' in str(e):
@@ -800,6 +819,25 @@ def humansorted(seq, key=None, reverse=False, alg=0):
     --------
     index_humansorted : Returns the sorted indexes from `humansorted`.
 
+    Notes
+    -----
+    You may find that if you do not explicitly set
+    the locale your results may not be as you expect... I have found that
+    it depends on the system you are on. To do this is straightforward
+    (in the below example I use 'en_US.UTF-8', but you should use your
+    locale)::
+
+        >>> import locale
+        >>> # The 'str' call is only to get around a bug on Python 2.x
+        >>> # where 'setlocale' does not except unicode strings (ironic,
+        >>> # right?)
+        >>> locale.setlocale(locale.LC_ALL, str('en_US.UTF-8'))
+        'en_US.UTF-8'
+
+    It is preferred that you do this before importing `natsort`.
+    If you use `PyICU <https://pypi.python.org/pypi/PyICU>`_ (see warning
+    above) then you should not need to do this.
+
     Examples
     --------
     Use `humansorted` just like the builtin `sorted`::
@@ -906,7 +944,7 @@ def index_natsorted(seq, key=None, number_type=float, signed=None, exp=None,
     try:
         index_seq_pair.sort(reverse=reverse,
                             key=natsort_keygen(newkey, alg=alg))
-    except TypeError as e:
+    except TypeError as e:  # pragma: no cover
         # In the event of an unresolved "unorderable types" error
         # attempt to sort again, being careful to prevent this error.
         if 'unorderable types' in str(e):
@@ -1021,6 +1059,25 @@ def index_humansorted(seq, key=None, reverse=False, alg=0):
     --------
     humansorted
     order_by_index
+
+    Notes
+    -----
+    You may find that if you do not explicitly set
+    the locale your results may not be as you expect... I have found that
+    it depends on the system you are on. To do this is straightforward
+    (in the below example I use 'en_US.UTF-8', but you should use your
+    locale)::
+
+        >>> import locale
+        >>> # The 'str' call is only to get around a bug on Python 2.x
+        >>> # where 'setlocale' does not except unicode strings (ironic,
+        >>> # right?)
+        >>> locale.setlocale(locale.LC_ALL, str('en_US.UTF-8'))
+        'en_US.UTF-8'
+
+    It is preferred that you do this before importing `natsort`.
+    If you use `PyICU <https://pypi.python.org/pypi/PyICU>`_ (see warning
+    above) then you should not need to do this.
 
     Examples
     --------

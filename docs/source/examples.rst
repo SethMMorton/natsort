@@ -97,8 +97,6 @@ the :func:`humansorted` function::
 
     >>> from natsort import humansorted
     >>> import locale
-    >>> import uprefix  # strips 'u' prefix in Python3
-    >>> uprefix.register_hook()
     >>> locale.setlocale(locale.LC_ALL, 'en_US.UTF-8')
     'en_US.UTF-8'
     >>> a = ['Apple', 'corn', 'Corn', 'Banana', 'apple', 'banana']
@@ -106,18 +104,11 @@ the :func:`humansorted` function::
     ['apple', 'Apple', 'banana', 'Banana', 'corn', 'Corn']
     >>> humansorted(a)
     ['apple', 'Apple', 'banana', 'Banana', 'corn', 'Corn']
-    >>> b = [u'c', u'ä', u'b', u'a5,6', u'a5,50']
-    >>> natsorted(b) == [u'a5,6', u'a5,50', u'b', u'c', u'ä']
-    True
-    >>> natsorted(b, alg=ns.LOCALE) == [u'a5,6', u'a5,50', u'ä', u'b', u'c']
-    True
-    >>> humansorted(b) == natsorted(b, alg=ns.LOCALE)
-    True
-    >>> locale.setlocale(locale.LC_ALL, 'de_DE.UTF-8')
-    'de_DE.UTF-8'
-    >>> humansorted(b) == [u'a5,50', u'a5,6', u'ä', u'b', u'c']
-    True
-    >>> uprefix.unregister_hook()
+
+You may find that if you do not explicitly set the locale your results may not
+be as you expect... I have found that it depends on the system you are on.
+If you use `PyICU <https://pypi.python.org/pypi/PyICU>`_ (see below) then
+you should not need to do this.
 
 .. _bug_note:
 
