@@ -6,13 +6,18 @@ python:
 - 3.3
 - 3.4
 env:
-- WITH_FASTNUMBERS=true
-- WITH_FASTNUMBERS=false
+- WITH_OPTIONS=true
+- WITH_OPTIONS=false
+before_install:
+- sudo apt-get update
+- sudo locale-gen de_DE.UTF-8
 install:
+- if [[ $WITH_OPTIONS == true ]]; then sudo apt-get install libicu-dev; fi
+- if [[ $WITH_OPTIONS == true ]]; then pip install fastnumbers; fi
+- if [[ $WITH_OPTIONS == true ]]; then pip install PyICU; fi
+- if [[ $TRAVIS_PYTHON_VERSION == '2.6' ]]; then pip install argparse; fi
 - pip install pytest-cov pytest-flakes pytest-pep8
 - pip install coveralls
-- if [[ $WITH_FASTNUMBERS == true ]]; then pip install fastnumbers; fi
-- if [[ $TRAVIS_PYTHON_VERSION == '2.6' ]]; then pip install argparse; fi
 script:
 - python -m pytest --cov natsort --flakes --pep8
 - python -m pytest --doctest-modules natsort

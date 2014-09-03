@@ -4,7 +4,7 @@ from __future__ import (print_function, division,
 
 import sys
 
-from .natsort import natsorted, regex_and_num_function_chooser
+from .natsort import natsorted, _regex_and_num_function_chooser, ns
 from ._version import __version__
 from .py23compat import py23_str
 
@@ -62,6 +62,11 @@ def main():
         help='Do not consider an exponential as part of a number, i.e. 1e4, '
              'would be considered as 1, "e", and 4, not as 10000.  This only '
              'effects the --number-type=float.')
+    parser.add_argument(
+        '--locale', '-l', action='store_true', default=False,
+        help='Causes natsort to use locale-aware sorting. On some systems, '
+             'the underlying C library is broken, so if you get results that '
+             'you do not expect please install PyICU and try again.')
     parser.add_argument(
         'entries', nargs='*', default=sys.stdin,
         help='The entries to sort. Taken from stdin if nothing is given on '
@@ -135,23 +140,29 @@ def sort_and_print_entries(entries, args):
     """Sort the entries, applying the filters first if necessary."""
 
     # Extract the proper number type.
-    kwargs = {'number_type': {'digit': None,
-                              'version': None,
-                              'ver': None,
-                              'int': int,
-                              'float': float}[args.number_type],
-              'signed': args.signed,
-              'exp': args.exp,
-              'as_path': args.paths,
-              'reverse': args.reverse, }
+    num_type = {'digit': None,
+                'version': None,
+                'ver': None,
+                'int': int,
+                'float': float}[args.number_type]
+    unsigned = not args.signed or num_type is None
+    alg = (ns.INT * int(num_type in (int, None)) |
+           ns.UNSIGNED * unsigned |
+           ns.NOEXP * (not args.exp) |
+           ns.PATH * args.paths |
+           ns.LOCALE * args.locale)
 
     # Pre-remove entries that don't pass the filtering criteria
     # Make sure we use the same searching algorithm for filtering
     # as for sorting.
     do_filter = args.filter is not None or args.reverse_filter is not None
     if do_filter or args.exclude:
-        inp_options = (kwargs['number_type'], args.signed, args.exp)
-        regex, num_function = regex_and_num_function_chooser[inp_options]
+        inp_options = (ns.INT * int(num_type in (int, None)) |
+                       ns.UNSIGNED * unsigned |
+                       ns.NOEXP * (not args.exp),
+                       '.'
+                       )
+        regex, num_function = _regex_and_num_function_chooser[inp_options]
         if args.filter is not None:
             lows, highs = ([f[0] for f in args.filter],
                            [f[1] for f in args.filter])
@@ -171,7 +182,7 @@ def sort_and_print_entries(entries, args):
                                         num_function, regex)]
 
     # Print off the sorted results
-    for entry in natsorted(entries, **kwargs):
+    for entry in natsorted(entries, reverse=args.reverse, alg=alg):
         print(entry)
 
 

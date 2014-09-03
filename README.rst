@@ -49,6 +49,26 @@ Sorting version numbers is just as easy with the ``versorted`` function::
     >>> natsorted(a)  # natsorted tries to sort as signed floats, so it won't work
     ['version-2.0', 'version-1.9', 'version-1.11', 'version-1.10']
 
+You can also perform locale-aware sorting (or "human sorting"), where the
+non-numeric characters are ordered based on their meaning, not on their
+ordinal value; this can be achieved with the ``humansorted`` function::
+
+    >>> a = ['Apple', 'Banana', 'apple', 'banana']
+    >>> natsorted(a)
+    ['Apple', 'Banana', 'apple', 'banana']
+    >>> import locale
+    >>> locale.setlocale(locale.LC_ALL, 'en_US.UTF-8')
+    'en_US.UTF-8'
+    >>> from natsort import humansorted
+    >>> humansorted(a)
+    ['apple', 'Apple', 'banana', 'Banana']
+
+You may find you need to explicitly set the locale to get this to work
+(as shown in the example).
+Please see the `following caveat <http://pythonhosted.org//natsort/examples.html#bug-note>`_
+and the "Optional Dependencies" section
+below before using the ``humansorted`` function.
+
 You can mix and match ``int``, ``float``, and ``str`` (or ``unicode``) types
 when you sort::
 
@@ -61,6 +81,7 @@ when you sort::
 The natsort algorithm does other fancy things like 
 
  - recursively descend into lists of lists
+ - control the case-sensitivity
  - sort file paths correctly
  - allow custom sorting keys
  - exposes a natsort_key generator to pass to list.sort
@@ -84,19 +105,37 @@ Requirements
 (this includes python 3.x). To run version 2.6, 3.0, or 3.1 the 
 `argparse <https://pypi.python.org/pypi/argparse>`_ module is required.
 
-Optional Dependency
--------------------
+Optional Dependencies
+---------------------
+
+fastnumbers
+'''''''''''
 
 The most efficient sorting can occur if you install the 
 `fastnumbers <https://pypi.python.org/pypi/fastnumbers>`_ package (it helps
 with the string to number conversions.)  ``natsort`` will still run (efficiently)
 without the package, but if you need to squeeze out that extra juice it is
 recommended you include this as a dependency.  ``natsort`` will not require (or
-check) that `fastnumbers <https://pypi.python.org/pypi/fastnumbers>`_ is installed.
+check) that `fastnumbers <https://pypi.python.org/pypi/fastnumbers>`_ is installed
+at installation.
+
+PyICU
+'''''
+
+On some systems, Python's ``locale`` library can be buggy (I have found this to be
+the case on Mac OS X), so ``natsort`` will use
+`PyICU <https://pypi.python.org/pypi/PyICU>`_ under the hood if it is installed
+on your computer; this will give more reliable results. ``natsort`` will not
+require (or check) that `PyICU <https://pypi.python.org/pypi/PyICU>`_ is installed
+at installation.
 
 Depreciation Notices
 --------------------
 
+ - In ``natsort`` version 4.0.0, the ``number_type``, ``signed``, ``exp``,
+   ``as_path``, and ``py3_safe`` options will be removed from the (documented)
+   API, in favor of the ``alg`` option and ``ns`` enum.  They will remain as
+   keyword-only arguments after that (for the foreseeable future).
  - In ``natsort`` version 4.0.0, the ``natsort_key`` function will be removed
    from the public API.  All future development should use ``natsort_keygen``
    in preparation for this.
@@ -117,6 +156,24 @@ History
 
 These are the last three entries of the changelog.  See the package documentation
 for the complete `changelog <http://pythonhosted.org//natsort/changelog.html>`_.
+
+09-02-2014 v. 3.5.0
+'''''''''''''''''''
+
+    - Added the 'alg' argument to the 'natsort' functions.  This argument
+      accepts an enum that is used to indicate the options the user wishes
+      to use.  The 'number_type', 'signed', 'exp', 'as_path', and 'py3_safe'
+      options are being depreciated and will become (undocumented)
+      keyword-only options in natsort version 4.0.0.
+    - The user can now modify how 'natsort' handles the case of non-numeric
+      characters.
+    - The user can now instruct 'natsort' to use locale-aware sorting, which
+      allows 'natsort' to perform true "human sorting".
+
+      - The `humansorted` convenience function has been included to make this
+        easier.
+
+    - Updated shell script with locale functionality.
 
 08-12-2014 v. 3.4.1
 '''''''''''''''''''
@@ -155,18 +212,3 @@ for the complete `changelog <http://pythonhosted.org//natsort/changelog.html>`_.
     - Reworked the documentation, moving most of it to PyPI's hosting platform.
     - Added support for coveralls.io.
     - Entire codebase is now PyFlakes and PEP8 compliant.
-
-06-28-2014 v. 3.3.0
-'''''''''''''''''''
-
-    - Added a 'versorted' method for more convenient sorting of versions.
-    - Updated command-line tool --number_type option with 'version' and 'ver'
-      to make it more clear how to sort version numbers.
-    - Moved unit-testing mechanism from being docstring-based to actual unit tests
-      in actual functions.
-
-      - This has provided the ability determine the coverage of the unit tests (99%).
-      - This also makes the pydoc documentation a bit more clear.
-
-    - Made docstrings for public functions mirror the README API.
-    - Connected natsort development to Travis-CI to help ensure quality releases.
