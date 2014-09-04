@@ -20,7 +20,7 @@ if sys.version[:3] == '2.7':
 elif sys.version[:3] == '2.6':
     def cmp_to_key(mycmp):
         """Convert a cmp= function into a key= function"""
-        class K(object):
+        class K(object):  # pragma: no cover
             __slots__ = ['obj']
 
             def __init__(self, obj):
