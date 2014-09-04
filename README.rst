@@ -94,9 +94,7 @@ Shell script
 
 ``natsort`` comes with a shell script called ``natsort``, or can also be called
 from the command line with ``python -m natsort``.  The command line script is
-only installed onto your ``PATH`` if you don't install via a wheel.  There is
-apparently a known bug with the wheel installation process that will not create
-entry points.
+only installed onto your ``PATH`` if you don't install via a wheel. 
 
 Requirements
 ------------

@@ -689,7 +689,8 @@ def natsorted(seq, key=None, number_type=float, signed=None, exp=None,
     See Also
     --------
     natsort_keygen : Generates the key that makes natural sorting possible.
-    versorted : A wrapper for ``natsorted(seq, number_type=None)``.
+    versorted : A wrapper for ``natsorted(seq, alg=ns.VERSION)``.
+    humansorted : A wrapper for ``natsorted(seq, alg=ns.LOCALE)``.
     index_natsorted : Returns the sorted indexes from `natsorted`.
 
     Examples
@@ -1128,6 +1129,7 @@ def order_by_index(seq, index, iter=False):
     --------
     index_natsorted
     index_versorted
+    index_humansorted
 
     Examples
     --------

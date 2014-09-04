@@ -7,8 +7,7 @@ Shell Script
 ============
 
 The ``natsort`` shell script is automatically installed when you install
-:mod:`natsort` from "zip" or "tar.gz" via ``pip`` or ``easy_install`` 
-(there is a known bug with wheels that will not install the shell script).
+:mod:`natsort` with pip.
 
 Below is the usage and some usage examples for the ``natsort`` shell script.
 
@@ -17,9 +16,9 @@ Usage
 
 ::
 
-    usage: natsort [-h] [--version] [-p] [-f LOW HIGH] [-F LOW HIGH]
-                   [-e EXCLUDE] [-r] [-t {digit,int,float,version,ver}]
-                   [--nosign] [--noexp]
+    usage: natsort [-h] [--version] [-p] [-f LOW HIGH] [-F LOW HIGH] [-e EXCLUDE]
+                   [-r] [-t {digit,int,float,version,ver}] [--nosign] [--noexp]
+                   [--locale]
                    [entries [entries ...]]
 
     Performs a natural sort on entries given on the command-line.
@@ -59,7 +58,10 @@ Usage
       --noexp               Do not consider an exponential as part of a number,
                             i.e. 1e4, would be considered as 1, "e", and 4, not as
                             10000. This only effects the --number-type=float.
-
+      --locale, -l          Causes natsort to use locale-aware sorting. On some
+                            systems, the underlying C library is broken, so if you
+                            get results that you do not expect please install
+                            PyICU and try again.
 Description
 -----------
 
