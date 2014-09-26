@@ -30,7 +30,7 @@ try:
     from fastnumbers import fast_float, fast_int, isreal
 except ImportError:
     from .fake_fastnumbers import fast_float, fast_int, isreal
-from .locale_help import locale_convert, grouper, lowercase, swapcase
+from .locale_help import locale_convert, grouper
 from .py23compat import u_format, py23_str, py23_zip
 
 # Make sure the doctest works for either python2 or python3
@@ -385,16 +385,16 @@ def _natsort_key(val, key, alg):
         # Apply the string modification if needed.
         try:
             if alg & _nsdict['LOWERCASEFIRST']:
-                val = swapcase(val)
+                val = val.swapcase()
             if alg & _nsdict['IGNORECASE']:
-                val = lowercase(val)
+                val = val.lower()
             return tuple(_input_parser(val,
                                        regex,
                                        num_function,
                                        alg & _nsdict['TYPESAFE'],
                                        use_locale,
                                        alg & _nsdict['GROUPLETTERS']))
-        except TypeError:
+        except (TypeError, AttributeError):
             # If not strings, assume it is an iterable that must
             # be parsed recursively. Do not apply the key recursively.
             # If this string was split as a path, turn off 'PATH'.

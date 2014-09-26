@@ -287,6 +287,11 @@ def test_natsorted():
     assert natsorted(a, alg=ns.GROUPLETTERS) == ['Apple', 'apple', 'Banana', 'banana', 'Corn', 'corn']
     assert natsorted(a, alg=ns.G | ns.LF) == ['apple', 'Apple', 'banana', 'Banana', 'corn', 'Corn']
 
+    b = [('A5', 'a6'), ('a3', 'a1')]
+    assert natsorted(b) == [('A5', 'a6'), ('a3', 'a1')]
+    assert natsorted(b, alg=ns.LOWERCASEFIRST) == [('a3', 'a1'), ('A5', 'a6')]
+    assert natsorted(b, alg=ns.IGNORECASE) == [('a3', 'a1'), ('A5', 'a6')]
+
     # You can also do locale-aware sorting
     locale.setlocale(locale.LC_ALL, str('en_US.UTF-8'))
     assert natsorted(a, alg=ns.LOCALE) == ['apple', 'Apple', 'banana', 'Banana', 'corn', 'Corn']

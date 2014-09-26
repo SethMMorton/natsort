@@ -75,12 +75,8 @@ except ImportError:
         from locale import strxfrm
     use_pyicu = False
 
-# Convenience functions.
-lowercase = lambda x: x.lower()
-swapcase = lambda x: x.swapcase()
-
 # This little lambda doubles all characters, making letters lowercase.
-groupletters = lambda x: ''.join(chain(*py23_zip(lowercase(x), x)))
+groupletters = lambda x: ''.join(chain(*py23_zip(x.lower(), x)))
 
 
 def grouper(val, func):
