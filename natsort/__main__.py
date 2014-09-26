@@ -4,7 +4,8 @@ from __future__ import (print_function, division,
 
 import sys
 
-from .natsort import natsorted, _regex_and_num_function_chooser, ns
+from .natsort import natsorted, ns
+from .utils import _regex_and_num_function_chooser
 from ._version import __version__
 from .py23compat import py23_str
 

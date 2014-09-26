@@ -9,11 +9,10 @@ import locale
 from operator import itemgetter
 from pytest import raises
 from natsort import natsorted, index_natsorted, natsort_key, versorted, index_versorted
-from natsort import humansorted, index_humansorted, natsort_keygen, order_by_index
-from natsort.natsort import _input_parser, _py3_safe, _natsort_key, _args_to_enum
-from natsort.natsort import _float_sign_exp_re, _float_nosign_exp_re, _float_sign_noexp_re
-from natsort.natsort import _float_nosign_noexp_re, _int_nosign_re, _int_sign_re
-from natsort.natsort import ns
+from natsort import humansorted, index_humansorted, natsort_keygen, order_by_index, ns
+from natsort.utils import _input_parser, _py3_safe, _natsort_key, _args_to_enum
+from natsort.utils import _float_sign_exp_re, _float_nosign_exp_re, _float_sign_noexp_re
+from natsort.utils import _float_nosign_noexp_re, _int_nosign_re, _int_sign_re
 from natsort.locale_help import use_pyicu
 
 try:
