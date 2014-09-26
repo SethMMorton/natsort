@@ -7,6 +7,7 @@ installed.
 from __future__ import (print_function, division,
                         unicode_literals, absolute_import)
 
+# Std. lib imports.
 import re
 
 float_re = re.compile(r'[-+]?\d*\.?\d+(?:[eE][-+]?\d+)?$')

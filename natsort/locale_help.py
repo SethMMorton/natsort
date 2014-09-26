@@ -7,11 +7,13 @@ and Python3 differences.
 from __future__ import (print_function, division,
                         unicode_literals, absolute_import)
 
+# Std. lib imports.
 import sys
 from itertools import chain
 from locale import localeconv
 
-from .py23compat import py23_zip
+# Local imports.
+from natsort.py23compat import py23_zip
 
 # We need cmp_to_key for Python2 because strxfrm is broken for unicode.
 if sys.version[:3] == '2.7':

@@ -17,16 +17,16 @@ from itertools import islice
 from locale import localeconv
 
 # Local imports.
-from .locale_help import locale_convert, grouper
-from .py23compat import py23_str, py23_zip
-from .ns_enum import ns, _nsdict
+from natsort.locale_help import locale_convert, grouper
+from natsort.py23compat import py23_str, py23_zip
+from natsort.ns_enum import ns, _nsdict
 
 # If the user has fastnumbers installed, they will get great speed
 # benefits. If not, we simulate the functions here.
 try:
     from fastnumbers import fast_float, fast_int, isreal
 except ImportError:
-    from .fake_fastnumbers import fast_float, fast_int, isreal
+    from natsort.fake_fastnumbers import fast_float, fast_int, isreal
 
 # Group algorithm types for easy extraction
 _NUMBER_ALGORITHMS = ns.FLOAT | ns.INT | ns.UNSIGNED | ns.NOEXP

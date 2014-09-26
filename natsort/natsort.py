@@ -15,13 +15,15 @@ See the README or the natsort homepage for more details.
 from __future__ import (print_function, division,
                         unicode_literals, absolute_import)
 
+# Std lib. imports.
 from operator import itemgetter
 from functools import partial
 from warnings import warn
 
-from .utils import _natsort_key, _args_to_enum
-from .ns_enum import ns
-from .py23compat import u_format
+# Local imports.
+from natsort.utils import _natsort_key, _args_to_enum
+from natsort.ns_enum import ns
+from natsort.py23compat import u_format
 
 # Make sure the doctest works for either python2 or python3
 __doc__ = u_format(__doc__)
