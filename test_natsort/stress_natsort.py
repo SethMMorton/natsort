@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 """\
-This file contains functions to stress-test natsort.
+This file contains functions to stress-test natsort, looking
+for cases that raise an unknown exception.
 """
 from random import randint, sample, choice
 from string import printable

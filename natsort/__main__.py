@@ -2,11 +2,14 @@
 from __future__ import (print_function, division,
                         unicode_literals, absolute_import)
 
+# Std. lib imports.
 import sys
 
-from .natsort import natsorted, _regex_and_num_function_chooser, ns
-from ._version import __version__
-from .py23compat import py23_str
+# Local imports.
+from natsort.natsort import natsorted, ns
+from natsort.utils import _regex_and_num_function_chooser
+from natsort._version import __version__
+from natsort.py23compat import py23_str
 
 
 def main():

@@ -94,9 +94,7 @@ Shell script
 
 ``natsort`` comes with a shell script called ``natsort``, or can also be called
 from the command line with ``python -m natsort``.  The command line script is
-only installed onto your ``PATH`` if you don't install via a wheel.  There is
-apparently a known bug with the wheel installation process that will not create
-entry points.
+only installed onto your ``PATH`` if you don't install via a wheel. 
 
 Requirements
 ------------
@@ -157,6 +155,15 @@ History
 These are the last three entries of the changelog.  See the package documentation
 for the complete `changelog <http://pythonhosted.org//natsort/changelog.html>`_.
 
+09-25-2014 v. 3.5.1
+'''''''''''''''''''
+
+    - Fixed bug that caused list/tuples to fail when using 'ns.LOWECASEFIRST'
+      or 'ns.IGNORECASE'.
+    - Refactored modules so that only the public API was in natsort.py and
+      ns_enum.py.
+    - Refactored all import statements to be absolute, not relative.
+
 09-02-2014 v. 3.5.0
 '''''''''''''''''''
 
@@ -183,32 +190,3 @@ for the complete `changelog <http://pythonhosted.org//natsort/changelog.html>`_.
       enhancements.
     - Made documentation point to more 'natsort' resources, and also added a
       new example in the examples section.
-
-07-19-2014 v. 3.4.0
-'''''''''''''''''''
-
-    - Fixed a bug that caused user's options to the 'natsort_key' to not be
-      passed on to recursive calls of 'natsort_key'.
-    - Added a 'natsort_keygen' function that will generate a wrapped version
-      of 'natsort_key' that is easier to call.  'natsort_key' is now set to
-      depreciate at natsort version 4.0.0.
-    - Added an 'as_path' option to 'natsorted' & co. that will try to treat
-      input strings as filepaths. This will help yield correct results for
-      OS-generated inputs like
-      ``['/p/q/o.x', '/p/q (1)/o.x', '/p/q (10)/o.x', '/p/q/o (1).x']``.
-    - Massive performance enhancements for string input (1.8x-2.0x), at the expense
-      of reduction in speed for numeric input (~2.0x).
-
-      - This is a good compromise because the most common input will be strings,
-        not numbers, and sorting numbers still only takes 0.6x the time of sorting
-        strings.  If you are sorting only numbers, you would use 'sorted' anyway.
-
-    - Added the 'order_by_index' function to help in using the output of
-      'index_natsorted' and 'index_versorted'.
-    - Added the 'reverse' option to 'natsorted' & co. to make it's API more
-      similar to the builtin 'sorted'.
-    - Added more unit tests.
-    - Added auxiliary test code that helps in profiling and stress-testing.
-    - Reworked the documentation, moving most of it to PyPI's hosting platform.
-    - Added support for coveralls.io.
-    - Entire codebase is now PyFlakes and PEP8 compliant.
