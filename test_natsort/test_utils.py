@@ -15,6 +15,13 @@ try:
 except ImportError:
     from natsort.fake_fastnumbers import fast_float, fast_int
 
+try:
+    import pathlib
+except ImportError:
+    has_pathlib = False
+else:
+    has_pathlib = True
+
 
 def test_args_to_enum():
 
@@ -118,6 +125,9 @@ def test_natsort_key_private():
     assert _natsort_key('/p/Folder (10)/file34.5nm (2).tar.gz', key=None, alg=ns.PATH) == (('/',), ('p', ), ('Folder (', 10.0, ')',), ('file', 34.5, 'nm (', 2.0, ')'), ('.tar',), ('.gz',))
     assert _natsort_key('../Folder (10)/file (2).tar.gz', key=None, alg=ns.PATH) == (('..', ), ('Folder (', 10.0, ')',), ('file (', 2.0, ')'), ('.tar',), ('.gz',))
     assert _natsort_key('Folder (10)/file.f34.5nm (2).tar.gz', key=None, alg=ns.PATH) == (('Folder (', 10.0, ')',), ('file.f', 34.5, 'nm (', 2.0, ')'), ('.tar',), ('.gz',))
+    # Converts pathlib PurePath (and subclass) objects to string before sorting
+    if has_pathlib:
+        assert _natsort_key(pathlib.Path('../Folder (10)/file (2).tar.gz'), key=None, alg=ns.PATH) == (('..', ), ('Folder (', 10.0, ')',), ('file (', 2.0, ')'), ('.tar',), ('.gz',))
 
     # It gracefully handles as_path for numeric input by putting an extra tuple around it
     # so it will sort against the other as_path results.
