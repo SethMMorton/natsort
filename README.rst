@@ -155,6 +155,12 @@ History
 These are the last three entries of the changelog.  See the package documentation
 for the complete `changelog <http://pythonhosted.org//natsort/changelog.html>`_.
 
+01-13-2015 v. 3.5.2
+'''''''''''''''''''
+
+    - Enhancement that will convert a 'pathlib.Path' object to a 'str' if
+      'ns.PATH' is enabled.
+
 09-25-2014 v. 3.5.1
 '''''''''''''''''''
 
@@ -181,12 +187,3 @@ for the complete `changelog <http://pythonhosted.org//natsort/changelog.html>`_.
         easier.
 
     - Updated shell script with locale functionality.
-
-08-12-2014 v. 3.4.1
-'''''''''''''''''''
-
-    - 'natsort' will now use the 'fastnumbers' module if it is installed. This
-      gives up to an extra 30% boost in speed over the previous performance
-      enhancements.
-    - Made documentation point to more 'natsort' resources, and also added a
-      new example in the examples section.
