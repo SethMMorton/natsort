@@ -62,6 +62,7 @@ Usage
                             systems, the underlying C library is broken, so if you
                             get results that you do not expect please install
                             PyICU and try again.
+
 Description
 -----------
 

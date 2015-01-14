@@ -60,7 +60,7 @@ class ns(object):
         Tell `natsort` to be locale-aware when sorting strings (everything
         that was not converted to a number).  Your sorting results will vary
         depending on your current locale. Generally, the `GROUPLETTERS`
-        option is needed with `LOCALE` because the `locale` library
+        option is not needed with `LOCALE` because the `locale` library
         groups the letters in the same manner (although you may still
         need `GROUPLETTERS` if there are numbers in your strings).
     IGNORECASE, IC

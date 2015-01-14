@@ -28,6 +28,16 @@ try:
 except ImportError:
     from natsort.fake_fastnumbers import fast_float, fast_int, isreal
 
+# If the user has pathlib installed, the ns.PATH option will convert
+# Path objects to str before sorting.
+try:
+    from pathlib import PurePath  # PurePath is the base object for Paths.
+except ImportError:
+    PurePath = object  # To avoid NameErrors.
+    has_pathlib = False
+else:
+    has_pathlib = True
+
 # Group algorithm types for easy extraction
 _NUMBER_ALGORITHMS = ns.FLOAT | ns.INT | ns.UNSIGNED | ns.NOEXP
 _ALL_BUT_PATH = (ns.F | ns.I | ns.U | ns.N | ns.L |
@@ -135,7 +145,11 @@ def _path_splitter(s, _d_match=re.compile(r'\.\d').match):
     """Split a string into its path components. Assumes a string is a path."""
     path_parts = []
     p_append = path_parts.append
-    path_location = s
+    # Convert a pathlib PurePath object to a string.
+    if has_pathlib and isinstance(s, PurePath):
+        path_location = str(s)
+    else:
+        path_location = s
 
     # Continue splitting the path from the back until we have reached
     # '..' or '.', or until there is nothing left to split.

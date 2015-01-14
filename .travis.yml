@@ -11,10 +11,12 @@ env:
 before_install:
 - sudo apt-get update
 - sudo locale-gen de_DE.UTF-8
+- sudo apt-get install bc
 install:
 - if [[ $WITH_OPTIONS == true ]]; then sudo apt-get install libicu-dev; fi
 - if [[ $WITH_OPTIONS == true ]]; then pip install fastnumbers; fi
 - if [[ $WITH_OPTIONS == true ]]; then pip install PyICU; fi
+- if [[ $WITH_OPTIONS == true && 1 -eq $(echo "$TRAVIS_PYTHON_VERSION < 3.4" | bc) ]]; then pip install pathlib; fi
 - if [[ $TRAVIS_PYTHON_VERSION == '2.6' ]]; then pip install argparse; fi
 - pip install pytest-cov pytest-flakes pytest-pep8
 - pip install coveralls

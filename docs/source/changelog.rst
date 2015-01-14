@@ -3,6 +3,12 @@
 Changelog
 ---------
 
+01-13-2015 v. 3.5.2
+'''''''''''''''''''
+
+    - Enhancement that will convert a 'pathlib.Path' object to a 'str' if
+      'ns.PATH' is enabled.
+
 09-25-2014 v. 3.5.1
 '''''''''''''''''''
 
