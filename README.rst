@@ -18,7 +18,9 @@ Quick Description
 
 When you try to sort a list of strings that contain numbers, the normal python
 sort algorithm sorts lexicographically, so you might not get the results that you
-expect::
+expect:
+
+.. code-block:: python
 
     >>> a = ['a2', 'a9', 'a1', 'a4', 'a10']
     >>> sorted(a)
@@ -30,7 +32,9 @@ letters (i.e. 'b', 'ba', 'c').
 
 ``natsort`` provides a function ``natsorted`` that helps sort lists "naturally",
 either as real numbers (i.e. signed/unsigned floats or ints), or as versions.
-Using ``natsorted`` is simple::
+Using ``natsorted`` is simple:
+
+.. code-block:: python
 
     >>> from natsort import natsorted
     >>> a = ['a2', 'a9', 'a1', 'a4', 'a10']
@@ -40,7 +44,9 @@ Using ``natsorted`` is simple::
 ``natsorted`` identifies real numbers anywhere in a string and sorts them
 naturally.
 
-Sorting version numbers is just as easy with the ``versorted`` function::
+Sorting version numbers is just as easy with the ``versorted`` function:
+
+.. code-block:: python
 
     >>> from natsort import versorted
     >>> a = ['version-1.9', 'version-2.0', 'version-1.11', 'version-1.10']
@@ -51,7 +57,9 @@ Sorting version numbers is just as easy with the ``versorted`` function::
 
 You can also perform locale-aware sorting (or "human sorting"), where the
 non-numeric characters are ordered based on their meaning, not on their
-ordinal value; this can be achieved with the ``humansorted`` function::
+ordinal value; this can be achieved with the ``humansorted`` function:
+
+.. code-block:: python
 
     >>> a = ['Apple', 'Banana', 'apple', 'banana']
     >>> natsorted(a)
@@ -70,7 +78,9 @@ and the "Optional Dependencies" section
 below before using the ``humansorted`` function.
 
 You can mix and match ``int``, ``float``, and ``str`` (or ``unicode``) types
-when you sort::
+when you sort:
+
+.. code-block:: python
 
     >>> a = ['4.5', 6, 2.0, '5', 'a']
     >>> natsorted(a)
