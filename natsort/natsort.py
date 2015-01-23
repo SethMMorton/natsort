@@ -39,7 +39,7 @@ def natsort_key(val, key=None, number_type=float, signed=None, exp=None,
     It is designed for use in passing to the 'sorted' builtin or
     'sort' attribute of lists.
 
-    .. note:: Depreciated since version 3.4.0.
+    .. note:: Deprecated since version 3.4.0.
               This function remains in the publicly exposed API for
               backwards-compatibility reasons, but future development
               should use the newer `natsort_keygen` function. It is
@@ -60,31 +60,31 @@ def natsort_key(val, key=None, number_type=float, signed=None, exp=None,
         It should accept a single argument and return a single value.
 
     number_type : {{None, float, int}}, optional
-        Depreciated as of version 3.5.0 and will become an undocumented
+        Deprecated as of version 3.5.0 and will become an undocumented
         keyword-only argument in 4.0.0. Please use the `alg` argument
         for all future development. See :class:`ns` class documentation for
         details.
 
     signed : {{True, False}}, optional
-        Depreciated as of version 3.5.0 and will become an undocumented
+        Deprecated as of version 3.5.0 and will become an undocumented
         keyword-only argument in 4.0.0. Please use the `alg` argument
         for all future development. See :class:`ns` class documentation for
         details.
 
     exp : {{True, False}}, optional
-        Depreciated as of version 3.5.0 and will become an undocumented
+        Deprecated as of version 3.5.0 and will become an undocumented
         keyword-only argument in 4.0.0. Please use the `alg` argument
         for all future development. See :class:`ns` class documentation for
         details.
 
     as_path : {{True, False}}, optional
-        Depreciated as of version 3.5.0 and will become an undocumented
+        Deprecated as of version 3.5.0 and will become an undocumented
         keyword-only argument in 4.0.0. Please use the `alg` argument
         for all future development. See :class:`ns` class documentation for
         details.
 
     py3_safe : {{True, False}}, optional
-        Depreciated as of version 3.5.0 and will become an undocumented
+        Deprecated as of version 3.5.0 and will become an undocumented
         keyword-only argument in 4.0.0. Please use the `alg` argument
         for all future development. See :class:`ns` class documentation for
         details.
@@ -149,7 +149,7 @@ def natsort_key(val, key=None, number_type=float, signed=None, exp=None,
         ({u}'', 43.0, {u}'h', 7.0, {u}'', 3.0)
 
     """
-    msg = "natsort_key is depreciated as of 3.4.0, please use natsort_keygen"
+    msg = "natsort_key is deprecated as of 3.4.0, please use natsort_keygen"
     warn(msg, DeprecationWarning)
     alg = _args_to_enum(number_type, signed, exp, as_path, py3_safe) | alg
     return _natsort_key(val, key, alg)
@@ -177,31 +177,31 @@ def natsort_keygen(key=None, number_type=float, signed=None, exp=None,
         It should accept a single argument and return a single value.
 
     number_type : {{None, float, int}}, optional
-        Depreciated as of version 3.5.0 and will become an undocumented
+        Deprecated as of version 3.5.0 and will become an undocumented
         keyword-only argument in 4.0.0. Please use the `alg` argument
         for all future development. See :class:`ns` class documentation for
         details.
 
     signed : {{True, False}}, optional
-        Depreciated as of version 3.5.0 and will become an undocumented
+        Deprecated as of version 3.5.0 and will become an undocumented
         keyword-only argument in 4.0.0. Please use the `alg` argument
         for all future development. See :class:`ns` class documentation for
         details.
 
     exp : {{True, False}}, optional
-        Depreciated as of version 3.5.0 and will become an undocumented
+        Deprecated as of version 3.5.0 and will become an undocumented
         keyword-only argument in 4.0.0. Please use the `alg` argument
         for all future development. See :class:`ns` class documentation for
         details.
 
     as_path : {{True, False}}, optional
-        Depreciated as of version 3.5.0 and will become an undocumented
+        Deprecated as of version 3.5.0 and will become an undocumented
         keyword-only argument in 4.0.0. Please use the `alg` argument
         for all future development. See :class:`ns` class documentation for
         details.
 
     py3_safe : {{True, False}}, optional
-        Depreciated as of version 3.5.0 and will become an undocumented
+        Deprecated as of version 3.5.0 and will become an undocumented
         keyword-only argument in 4.0.0. Please use the `alg` argument
         for all future development. See :class:`ns` class documentation for
         details.
@@ -269,19 +269,19 @@ def natsorted(seq, key=None, number_type=float, signed=None, exp=None,
         It should accept a single argument and return a single value.
 
     number_type : {{None, float, int}}, optional
-        Depreciated as of version 3.5.0 and will become an undocumented
+        Deprecated as of version 3.5.0 and will become an undocumented
         keyword-only argument in 4.0.0. Please use the `alg` argument
         for all future development. See :class:`ns` class documentation for
         details.
 
     signed : {{True, False}}, optional
-        Depreciated as of version 3.5.0 and will become an undocumented
+        Deprecated as of version 3.5.0 and will become an undocumented
         keyword-only argument in 4.0.0. Please use the `alg` argument
         for all future development. See :class:`ns` class documentation for
         details.
 
     exp : {{True, False}}, optional
-        Depreciated as of version 3.5.0 and will become an undocumented
+        Deprecated as of version 3.5.0 and will become an undocumented
         keyword-only argument in 4.0.0. Please use the `alg` argument
         for all future development. See :class:`ns` class documentation for
         details.
@@ -291,7 +291,7 @@ def natsorted(seq, key=None, number_type=float, signed=None, exp=None,
         `False`.
 
     as_path : {{True, False}}, optional
-        Depreciated as of version 3.5.0 and will become an undocumented
+        Deprecated as of version 3.5.0 and will become an undocumented
         keyword-only argument in 4.0.0. Please use the `alg` argument
         for all future development. See :class:`ns` class documentation for
         details.
@@ -361,7 +361,7 @@ def versorted(seq, key=None, reverse=False, as_path=None, alg=0):
         `False`.
 
     as_path : {{True, False}}, optional
-        Depreciated as of version 3.5.0 and will become an undocumented
+        Deprecated as of version 3.5.0 and will become an undocumented
         keyword-only argument in 4.0.0. Please use the `alg` argument
         for all future development. See :class:`ns` class documentation for
         details.
@@ -495,19 +495,19 @@ def index_natsorted(seq, key=None, number_type=float, signed=None, exp=None,
         It should accept a single argument and return a single value.
 
     number_type : {{None, float, int}}, optional
-        Depreciated as of version 3.5.0 and will become an undocumented
+        Deprecated as of version 3.5.0 and will become an undocumented
         keyword-only argument in 4.0.0. Please use the `alg` argument
         for all future development. See :class:`ns` class documentation for
         details.
 
     signed : {{True, False}}, optional
-        Depreciated as of version 3.5.0 and will become an undocumented
+        Deprecated as of version 3.5.0 and will become an undocumented
         keyword-only argument in 4.0.0. Please use the `alg` argument
         for all future development. See :class:`ns` class documentation for
         details.
 
     exp : {{True, False}}, optional
-        Depreciated as of version 3.5.0 and will become an undocumented
+        Deprecated as of version 3.5.0 and will become an undocumented
         keyword-only argument in 4.0.0. Please use the `alg` argument
         for all future development. See :class:`ns` class documentation for
         details.
@@ -517,7 +517,7 @@ def index_natsorted(seq, key=None, number_type=float, signed=None, exp=None,
         `False`.
 
     as_path : {{True, False}}, optional
-        Depreciated as of version 3.5.0 and will become an undocumented
+        Deprecated as of version 3.5.0 and will become an undocumented
         keyword-only argument in 4.0.0. Please use the `alg` argument
         for all future development. See :class:`ns` class documentation for
         details.
@@ -606,7 +606,7 @@ def index_versorted(seq, key=None, reverse=False, as_path=None, alg=0):
         `False`.
 
     as_path : {{True, False}}, optional
-        Depreciated as of version 3.5.0 and will become an undocumented
+        Deprecated as of version 3.5.0 and will become an undocumented
         keyword-only argument in 4.0.0. Please use the `alg` argument
         for all future development. See :class:`ns` class documentation for
         details.

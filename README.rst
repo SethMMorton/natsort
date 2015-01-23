@@ -137,8 +137,8 @@ on your computer; this will give more reliable results. ``natsort`` will not
 require (or check) that `PyICU <https://pypi.python.org/pypi/PyICU>`_ is installed
 at installation.
 
-Depreciation Notices
---------------------
+Deprecation Notices
+-------------------
 
  - In ``natsort`` version 4.0.0, the ``number_type``, ``signed``, ``exp``,
    ``as_path``, and ``py3_safe`` options will be removed from the (documented)
@@ -186,7 +186,7 @@ for the complete `changelog <http://pythonhosted.org//natsort/changelog.html>`_.
     - Added the 'alg' argument to the 'natsort' functions.  This argument
       accepts an enum that is used to indicate the options the user wishes
       to use.  The 'number_type', 'signed', 'exp', 'as_path', and 'py3_safe'
-      options are being depreciated and will become (undocumented)
+      options are being deprecated and will become (undocumented)
       keyword-only options in natsort version 4.0.0.
     - The user can now modify how 'natsort' handles the case of non-numeric
       characters.
