@@ -25,7 +25,7 @@ Changelog
     - Added the 'alg' argument to the 'natsort' functions.  This argument
       accepts an enum that is used to indicate the options the user wishes
       to use.  The 'number_type', 'signed', 'exp', 'as_path', and 'py3_safe'
-      options are being depreciated and will become (undocumented)
+      options are being deprecated and will become (undocumented)
       keyword-only options in natsort version 4.0.0.
     - The user can now modify how 'natsort' handles the case of non-numeric
       characters.
@@ -53,7 +53,7 @@ Changelog
       passed on to recursive calls of 'natsort_key'.
     - Added a 'natsort_keygen' function that will generate a wrapped version
       of 'natsort_key' that is easier to call.  'natsort_key' is now set to
-      depreciate at natsort version 4.0.0.
+      deprecate at natsort version 4.0.0.
     - Added an 'as_path' option to 'natsorted' & co. that will try to treat
       input strings as filepaths. This will help yield correct results for
       OS-generated inputs like

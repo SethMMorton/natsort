@@ -82,28 +82,28 @@ def _args_to_enum(number_type, signed, exp, as_path, py3_safe):
     """A function to convert input booleans to an enum-type argument."""
     alg = 0
     if number_type is not float:
-        msg = "The 'number_type' argument is depreciated as of 3.5.0, "
+        msg = "The 'number_type' argument is deprecated as of 3.5.0, "
         msg += "please use 'alg=ns.FLOAT', 'alg=ns.INT', or 'alg=ns.VERSION'"
         warn(msg, DeprecationWarning)
         alg |= (_nsdict['INT'] * bool(number_type in (int, None)))
         alg |= (_nsdict['UNSIGNED'] * (number_type is None))
     if signed is not None:
-        msg = "The 'signed' argument is depreciated as of 3.5.0, "
+        msg = "The 'signed' argument is deprecated as of 3.5.0, "
         msg += "please use 'alg=ns.UNSIGNED'."
         warn(msg, DeprecationWarning)
         alg |= (_nsdict['UNSIGNED'] * (not signed))
     if exp is not None:
-        msg = "The 'exp' argument is depreciated as of 3.5.0, "
+        msg = "The 'exp' argument is deprecated as of 3.5.0, "
         msg += "please use 'alg=ns.NOEXP'."
         warn(msg, DeprecationWarning)
         alg |= (_nsdict['NOEXP'] * (not exp))
     if as_path is not None:
-        msg = "The 'as_path' argument is depreciated as of 3.5.0, "
+        msg = "The 'as_path' argument is deprecated as of 3.5.0, "
         msg += "please use 'alg=ns.PATH'."
         warn(msg, DeprecationWarning)
         alg |= (_nsdict['PATH'] * as_path)
     if py3_safe is not None:
-        msg = "The 'py3_safe' argument is depreciated as of 3.5.0, "
+        msg = "The 'py3_safe' argument is deprecated as of 3.5.0, "
         msg += "please use 'alg=ns.TYPESAFE'."
         warn(msg, DeprecationWarning)
         alg |= (_nsdict['TYPESAFE'] * py3_safe)

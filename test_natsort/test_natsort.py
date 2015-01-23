@@ -16,12 +16,12 @@ from natsort.utils import _natsort_key
 def test_natsort_key_public():
 
     # Identical to _natsort_key
-    # But it raises a depreciation warning
+    # But it raises a deprecation warning
     with warnings.catch_warnings(record=True) as w:
         warnings.simplefilter("always")
         assert natsort_key('a-5.034e2') == _natsort_key('a-5.034e2', key=None, alg=ns.F)
         assert len(w) == 1
-        assert "natsort_key is depreciated as of 3.4.0, please use natsort_keygen" in str(w[-1].message)
+        assert "natsort_key is deprecated as of 3.4.0, please use natsort_keygen" in str(w[-1].message)
         assert natsort_key('a-5.034e2', number_type=float, signed=False, exp=False) == _natsort_key('a-5.034e2', key=None, alg=ns.F | ns.U | ns.N)
         assert natsort_key('a-5.034e2', alg=ns.F | ns.U | ns.N) == _natsort_key('a-5.034e2', key=None, alg=ns.F | ns.U | ns.N)
 
