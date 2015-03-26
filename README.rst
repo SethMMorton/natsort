@@ -75,7 +75,8 @@ You may find you need to explicitly set the locale to get this to work
 (as shown in the example).
 Please see the `following caveat <http://pythonhosted.org//natsort/examples.html#bug-note>`_
 and the "Optional Dependencies" section
-below before using the ``humansorted`` function.
+below before using the ``humansorted`` function, *especially* if you are on a
+BSD-based system (like Mac OS X).
 
 You can mix and match ``int``, ``float``, and ``str`` (or ``unicode``) types
 when you sort:
@@ -130,12 +131,15 @@ at installation.
 PyICU
 '''''
 
-On some systems, Python's ``locale`` library can be buggy (I have found this to be
-the case on Mac OS X), so ``natsort`` will use
+On BSD-based systems (this includes Mac OS X), the underlying ``locale`` library
+can be buggy (please see http://bugs.python.org/issue23195), so ``natsort`` will use
 `PyICU <https://pypi.python.org/pypi/PyICU>`_ under the hood if it is installed
-on your computer; this will give more reliable results. ``natsort`` will not
-require (or check) that `PyICU <https://pypi.python.org/pypi/PyICU>`_ is installed
-at installation.
+on your computer; this will give more reliable cross-platform results.
+``natsort`` will not require (or check) that
+`PyICU <https://pypi.python.org/pypi/PyICU>`_ is installed at installation
+since in Linux-based systems and Windows systems ``locale`` should work just fine.
+Please visit https://github.com/SethMMorton/natsort/issues/21 for more details and
+how to install on Mac OS X.
 
 Deprecation Notices
 -------------------

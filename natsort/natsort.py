@@ -220,7 +220,7 @@ def natsort_keygen(key=None, number_type=float, signed=None, exp=None,
 
     Examples
     --------
-    `natsort_keygen` is a convenient waynto create a custom key
+    `natsort_keygen` is a convenient way to create a custom key
     to sort lists in-place (for example). Calling with no objects
     will return a plain `natsort_key` instance::
 
@@ -402,15 +402,14 @@ def humansorted(seq, key=None, reverse=False, alg=0):
     in a locale-aware fashion (a.k.a "human sorting"). This is a
     wrapper around ``natsorted(seq, alg=ns.LOCALE)``.
 
-    .. warning:: On some systems, the underlying C library that
-                 Python's locale module uses is broken. On these
-                 systems it is recommended that you install
-                 `PyICU <https://pypi.python.org/pypi/PyICU>`_.
-                 Please validate that this function works as
-                 expected on your target system, and if not you
-                 should add
+    .. warning:: On BSD-based systems (like Mac OS X), the underlying
+                 C library that Python's locale module uses is broken.
+                 On these systems it is recommended that you install
                  `PyICU <https://pypi.python.org/pypi/PyICU>`_
-                 as a dependency.
+                 if you wish to use ``humansorted``.  If you are on
+                 one of systems and get unexpected results, please try
+                 using `PyICU <https://pypi.python.org/pypi/PyICU>`_
+                 before filing a bug report to ``natsort``.
 
     Parameters
     ----------
@@ -754,7 +753,7 @@ def order_by_index(seq, index, iter=False):
     Examples
     --------
 
-    `order_by_index` is a comvenience function that helps you apply
+    `order_by_index` is a convenience function that helps you apply
     the result of `index_natsorted` or `index_versorted`::
 
         >>> a = ['num3', 'num5', 'num2']

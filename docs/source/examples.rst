@@ -117,9 +117,11 @@ A Note For Bugs With Locale-Aware Sorting
 
 If you find that ``ns.LOCALE`` (or :func:`~humansorted`) does not give
 the results you expect, before filing a bug report please try to first install
-`PyICU <https://pypi.python.org/pypi/PyICU>`_.  There are some known bugs
-with the `locale` module from the standard library that are solved when
-using `PyICU <https://pypi.python.org/pypi/PyICU>`_.
+`PyICU <https://pypi.python.org/pypi/PyICU>`_; this *especially* applies
+to users on BSD-based systems (like Mac OS X).  There are some known bugs
+with the ``locale`` module from the standard library that are solved when
+using `PyICU <https://pypi.python.org/pypi/PyICU>`_; you can read about
+them here: http://bugs.python.org/issue23195.
 
 Controlling Case When Sorting
 -----------------------------

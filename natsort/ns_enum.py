@@ -16,16 +16,14 @@ class ns(object):
 
     Each option has a shortened 1- or 2-letter form.
 
-    .. warning:: On some systems, the underlying C library that
-                 Python's locale module uses is broken. On these
-                 systems it is recommended that you install
+    .. warning:: On BSD-based systems (like Mac OS X), the underlying
+                 C library that Python's locale module uses is broken.
+                 On these systems it is recommended that you install
                  `PyICU <https://pypi.python.org/pypi/PyICU>`_
-                 if you wish to use `LOCALE`.
-                 Please validate that `LOCALE` works as
-                 expected on your target system, and if not you
-                 should add
-                 `PyICU <https://pypi.python.org/pypi/PyICU>`_
-                 as a dependency.
+                 if you wish to use ``LOCALE``.  If you are on one of
+                 systems and get unexpected results, please try using
+                 `PyICU <https://pypi.python.org/pypi/PyICU>`_ before
+                 filing a bug report to ``natsort``.
 
     Attributes
     ----------
