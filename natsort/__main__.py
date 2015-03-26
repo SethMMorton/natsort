@@ -78,6 +78,7 @@ def main():
 
     # Make sure the filter range is given properly. Does nothing if no filter
     args.filter = check_filter(args.filter)
+    args.reverse_filter = check_filter(args.reverse_filter)
 
     # Remove trailing whitespace from all the entries
     entries = [e.strip() for e in args.entries]
