@@ -110,8 +110,8 @@ def _args_to_enum(number_type, signed, exp, as_path, py3_safe):
     return alg
 
 
-def _input_parser(s, regex, numconv, py3_safe, use_locale, group_letters):
-    """Helper to parse the string input into numbers and strings."""
+def _number_extracter(s, regex, numconv, py3_safe, use_locale, group_letters):
+    """Helper to separate the string input into numbers and strings."""
 
     # Split the input string by numbers.
     # If the input is not a string, TypeError is raised.
@@ -270,12 +270,12 @@ def _natsort_key(val, key, alg):
                 val = val.swapcase()
             if alg & _nsdict['IGNORECASE']:
                 val = val.lower()
-            return tuple(_input_parser(val,
-                                       regex,
-                                       num_function,
-                                       alg & _nsdict['TYPESAFE'],
-                                       use_locale,
-                                       alg & _nsdict['GROUPLETTERS']))
+            return tuple(_number_extracter(val,
+                                           regex,
+                                           num_function,
+                                           alg & _nsdict['TYPESAFE'],
+                                           use_locale,
+                                           alg & _nsdict['GROUPLETTERS']))
         except (TypeError, AttributeError):
             # If not strings, assume it is an iterable that must
             # be parsed recursively. Do not apply the key recursively.
