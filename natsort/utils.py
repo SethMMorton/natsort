@@ -19,7 +19,7 @@ from locale import localeconv
 # Local imports.
 from natsort.locale_help import locale_convert, grouper
 from natsort.py23compat import py23_str, py23_zip
-from natsort.ns_enum import ns, _nsdict
+from natsort.ns_enum import ns, _ns
 
 # If the user has fastnumbers installed, they will get great speed
 # benefits. If not, we simulate the functions here.
@@ -85,28 +85,28 @@ def _args_to_enum(number_type, signed, exp, as_path, py3_safe):
         msg = "The 'number_type' argument is deprecated as of 3.5.0, "
         msg += "please use 'alg=ns.FLOAT', 'alg=ns.INT', or 'alg=ns.VERSION'"
         warn(msg, DeprecationWarning)
-        alg |= (_nsdict['INT'] * bool(number_type in (int, None)))
-        alg |= (_nsdict['UNSIGNED'] * (number_type is None))
+        alg |= (_ns['INT'] * bool(number_type in (int, None)))
+        alg |= (_ns['UNSIGNED'] * (number_type is None))
     if signed is not None:
         msg = "The 'signed' argument is deprecated as of 3.5.0, "
         msg += "please use 'alg=ns.UNSIGNED'."
         warn(msg, DeprecationWarning)
-        alg |= (_nsdict['UNSIGNED'] * (not signed))
+        alg |= (_ns['UNSIGNED'] * (not signed))
     if exp is not None:
         msg = "The 'exp' argument is deprecated as of 3.5.0, "
         msg += "please use 'alg=ns.NOEXP'."
         warn(msg, DeprecationWarning)
-        alg |= (_nsdict['NOEXP'] * (not exp))
+        alg |= (_ns['NOEXP'] * (not exp))
     if as_path is not None:
         msg = "The 'as_path' argument is deprecated as of 3.5.0, "
         msg += "please use 'alg=ns.PATH'."
         warn(msg, DeprecationWarning)
-        alg |= (_nsdict['PATH'] * as_path)
+        alg |= (_ns['PATH'] * as_path)
     if py3_safe is not None:
         msg = "The 'py3_safe' argument is deprecated as of 3.5.0, "
         msg += "please use 'alg=ns.TYPESAFE'."
         warn(msg, DeprecationWarning)
-        alg |= (_nsdict['TYPESAFE'] * py3_safe)
+        alg |= (_ns['TYPESAFE'] * py3_safe)
     return alg
 
 
@@ -228,7 +228,7 @@ def _natsort_key(val, key, alg):
 
     # Convert the arguments to the proper input tuple
     try:
-        use_locale = alg & _nsdict['LOCALE']
+        use_locale = alg & _ns['LOCALE']
         inp_options = (alg & _NUMBER_ALGORITHMS,
                        localeconv()['decimal_point'] if use_locale else '.')
     except TypeError:
@@ -253,7 +253,7 @@ def _natsort_key(val, key, alg):
         # If this is a path, convert it.
         # An AttrubuteError is raised if not a string.
         split_as_path = False
-        if alg & _nsdict['PATH']:
+        if alg & _ns['PATH']:
             try:
                 val = _path_splitter(val)
             except AttributeError:
@@ -266,26 +266,26 @@ def _natsort_key(val, key, alg):
         # Assume the input are strings, which is the most common case.
         # Apply the string modification if needed.
         try:
-            if alg & _nsdict['LOWERCASEFIRST']:
+            if alg & _ns['LOWERCASEFIRST']:
                 val = val.swapcase()
-            if alg & _nsdict['IGNORECASE']:
+            if alg & _ns['IGNORECASE']:
                 val = val.lower()
             return tuple(_number_extracter(val,
                                            regex,
                                            num_function,
-                                           alg & _nsdict['TYPESAFE'],
+                                           alg & _ns['TYPESAFE'],
                                            use_locale,
-                                           alg & _nsdict['GROUPLETTERS']))
+                                           alg & _ns['GROUPLETTERS']))
         except (TypeError, AttributeError):
             # If not strings, assume it is an iterable that must
             # be parsed recursively. Do not apply the key recursively.
             # If this string was split as a path, turn off 'PATH'.
             try:
-                was_path = alg & _nsdict['PATH']
+                was_path = alg & _ns['PATH']
                 newalg = alg & _ALL_BUT_PATH
                 newalg |= (was_path * (not split_as_path))
                 return tuple([_natsort_key(x, None, newalg) for x in val])
             # If there is still an error, it must be a number.
             # Return as-is, with a leading empty string.
             except TypeError:
-                return (('', val,),) if alg & _nsdict['PATH'] else ('', val,)
+                return (('', val,),) if alg & _ns['PATH'] else ('', val,)
