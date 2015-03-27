@@ -196,7 +196,9 @@ def test_natsorted_with_IGNORECASE_sorts_without_regard_to_case_for_nested_input
 
 def test_natsorted_with_LOCALE_returns_results_sorted_by_lowercase_first_and_grouped_letters():
     a = ['Apple', 'corn', 'Corn', 'Banana', 'apple', 'banana']
+    locale.setlocale(locale.LC_ALL, str('en_US.UTF-8'))
     assert natsorted(a, alg=ns.LOCALE) == ['apple', 'Apple', 'banana', 'Banana', 'corn', 'Corn']
+    locale.setlocale(locale.LC_ALL, str(''))
 
 
 def test_natsorted_with_LOCALE_and_en_setting_returns_results_sorted_by_en_language():
