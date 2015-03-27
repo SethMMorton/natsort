@@ -176,6 +176,15 @@ History
 These are the last three entries of the changelog.  See the package documentation
 for the complete `changelog <http://pythonhosted.org//natsort/changelog.html>`_.
 
+03-26-2015 v. 3.5.3
+'''''''''''''''''''
+
+    - Fixed bug where ``--reverse-filter`` option in shell script was not
+      getting checked for correctness.
+    - Documentation updates to better describe locale bug, and illustrate
+      upcoming default behavior change.
+    - Internal improvements, including making test suite more granular.
+
 01-13-2015 v. 3.5.2
 '''''''''''''''''''
 
@@ -190,21 +199,3 @@ for the complete `changelog <http://pythonhosted.org//natsort/changelog.html>`_.
     - Refactored modules so that only the public API was in natsort.py and
       ns_enum.py.
     - Refactored all import statements to be absolute, not relative.
-
-09-02-2014 v. 3.5.0
-'''''''''''''''''''
-
-    - Added the 'alg' argument to the 'natsort' functions.  This argument
-      accepts an enum that is used to indicate the options the user wishes
-      to use.  The 'number_type', 'signed', 'exp', 'as_path', and 'py3_safe'
-      options are being deprecated and will become (undocumented)
-      keyword-only options in natsort version 4.0.0.
-    - The user can now modify how 'natsort' handles the case of non-numeric
-      characters.
-    - The user can now instruct 'natsort' to use locale-aware sorting, which
-      allows 'natsort' to perform true "human sorting".
-
-      - The `humansorted` convenience function has been included to make this
-        easier.
-
-    - Updated shell script with locale functionality.
