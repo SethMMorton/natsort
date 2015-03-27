@@ -112,8 +112,8 @@ you should not need to do this.
 
 .. _bug_note:
 
-A Note For Bugs With Locale-Aware Sorting
-+++++++++++++++++++++++++++++++++++++++++
+Known Bugs When Using Locale-Aware Sorting On BSD-Based OSs (Including Mac OS X)
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 If you find that ``ns.LOCALE`` (or :func:`~humansorted`) does not give
 the results you expect, before filing a bug report please try to first install
