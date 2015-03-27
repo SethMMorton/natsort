@@ -16,29 +16,14 @@ install:
 - if [[ $WITH_OPTIONS == true ]]; then sudo apt-get install libicu-dev; fi
 - if [[ $WITH_OPTIONS == true ]]; then pip install fastnumbers; fi
 - if [[ $WITH_OPTIONS == true ]]; then pip install PyICU; fi
-- if [[ $WITH_OPTIONS == true && 1 -eq $(echo "$TRAVIS_PYTHON_VERSION < 3.4" | bc) ]]; then pip install pathlib; fi
+- if [[ $WITH_OPTIONS == true && 1 -eq $(echo "$TRAVIS_PYTHON_VERSION < 3.4" | bc -l) ]]; then pip install pathlib; fi
 - if [[ $TRAVIS_PYTHON_VERSION == '2.6' ]]; then pip install argparse; fi
+- if [[ $(echo "$TRAVIS_PYTHON_VERSION < 3.3" | bc -l) ]]; then pip install mock; fi
 - pip install pytest-cov pytest-flakes pytest-pep8
 - pip install coveralls
 script:
 - python -m pytest --cov natsort --flakes --pep8
 - python -m pytest --doctest-modules natsort
 - python -m pytest README.rst docs/source/intro.rst docs/source/examples.rst
-- python -m pytest test_natsort/stress_natsort.py
 after_success:
   coveralls
-# before_deploy:
-# - pip install Sphinx numpydoc
-# - python setup.py build_sphinx
-# deploy:
-#   provider: pypi
-#   user: SethMMorton
-#   password:
-#     secure: OaYQtVh4mGT0ozN7Ar2lSm2IEVMKIyvOESGPGLwVyVxPqp6oC101MovJ7041bZdjMzirMs54EJwtEGQpKFmDBGcKgbjPiYId5Nqb/yDhLC/ojgarbLoFJvUKV6dWJePyY7EOycrqcMdiDabdG80Bw4zziQExbmIOdUiscsAVVmA=
-#   on:
-#     tags: true
-#     all_branches: true
-#     repo: SethMMorton/natsort
-#     python: 2.7
-#   distributions: "sdist bdist_wheel"
-#   docs_dir: build/sphinx/html

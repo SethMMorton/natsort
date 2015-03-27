@@ -16,16 +16,14 @@ class ns(object):
 
     Each option has a shortened 1- or 2-letter form.
 
-    .. warning:: On some systems, the underlying C library that
-                 Python's locale module uses is broken. On these
-                 systems it is recommended that you install
+    .. warning:: On BSD-based systems (like Mac OS X), the underlying
+                 C library that Python's locale module uses is broken.
+                 On these systems it is recommended that you install
                  `PyICU <https://pypi.python.org/pypi/PyICU>`_
-                 if you wish to use `LOCALE`.
-                 Please validate that `LOCALE` works as
-                 expected on your target system, and if not you
-                 should add
-                 `PyICU <https://pypi.python.org/pypi/PyICU>`_
-                 as a dependency.
+                 if you wish to use ``LOCALE``.  If you are on one of
+                 systems and get unexpected results, please try using
+                 `PyICU <https://pypi.python.org/pypi/PyICU>`_ before
+                 filing a bug report to ``natsort``.
 
     Attributes
     ----------
@@ -110,19 +108,19 @@ class ns(object):
 
 
 # Sort algorithm "enum" values.
-_nsdict = {'FLOAT': 0,           'F': 0,
-           'INT': 1,             'I': 1,
-           'UNSIGNED': 2,        'U': 2,
-           'VERSION': 3,         'V': 3,  # Shortcut for INT | UNSIGNED
-           'DIGIT': 3,           'D': 3,  # Shortcut for INT | UNSIGNED
-           'NOEXP': 4,           'N': 4,
-           'PATH': 8,            'P': 8,
-           'LOCALE': 16,         'L': 16,
-           'IGNORECASE': 32,     'IC': 32,
-           'LOWERCASEFIRST': 64, 'LF': 64,
-           'GROUPLETTERS': 128,  'G': 128,
-           'TYPESAFE': 1024,     'T': 1024,
-           }
-# Populate the ns class with the _nsdict values.
-for x, y in _nsdict.items():
+_ns = {'FLOAT': 0,           'F': 0,
+       'INT': 1,             'I': 1,
+       'UNSIGNED': 2,        'U': 2,
+       'VERSION': 3,         'V': 3,  # Shortcut for INT | UNSIGNED
+       'DIGIT': 3,           'D': 3,  # Shortcut for INT | UNSIGNED
+       'NOEXP': 4,           'N': 4,
+       'PATH': 8,            'P': 8,
+       'LOCALE': 16,         'L': 16,
+       'IGNORECASE': 32,     'IC': 32,
+       'LOWERCASEFIRST': 64, 'LF': 64,
+       'GROUPLETTERS': 128,  'G': 128,
+       'TYPESAFE': 1024,     'T': 1024,
+       }
+# Populate the ns class with the _ns values.
+for x, y in _ns.items():
     setattr(ns, x, y)

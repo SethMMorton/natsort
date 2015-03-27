@@ -67,9 +67,8 @@ def main():
              'effects the --number-type=float.')
     parser.add_argument(
         '--locale', '-l', action='store_true', default=False,
-        help='Causes natsort to use locale-aware sorting. On some systems, '
-             'the underlying C library is broken, so if you get results that '
-             'you do not expect please install PyICU and try again.')
+        help='Causes natsort to use locale-aware sorting. You will get the '
+             'best results if you install PyICU.')
     parser.add_argument(
         'entries', nargs='*', default=sys.stdin,
         help='The entries to sort. Taken from stdin if nothing is given on '
@@ -78,6 +77,7 @@ def main():
 
     # Make sure the filter range is given properly. Does nothing if no filter
     args.filter = check_filter(args.filter)
+    args.reverse_filter = check_filter(args.reverse_filter)
 
     # Remove trailing whitespace from all the entries
     entries = [e.strip() for e in args.entries]

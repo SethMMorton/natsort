@@ -52,7 +52,8 @@ elif sys.version[:3] == '2.6':
         return K
 
 # Make the strxfrm function from strcoll on Python2
-# It can be buggy, so prefer PyICU if available.
+# It can be buggy (especially on BSD-based systems),
+# so prefer PyICU if available.
 try:
     import PyICU
     from locale import getlocale
@@ -77,8 +78,10 @@ except ImportError:
         from locale import strxfrm
     use_pyicu = False
 
-# This little lambda doubles all characters, making letters lowercase.
-groupletters = lambda x: ''.join(chain(*py23_zip(x.lower(), x)))
+
+def groupletters(x):
+    """Double all characters, making doubled letters lowercase."""
+    return ''.join(chain(*py23_zip(x.lower(), x)))
 
 
 def grouper(val, func):
@@ -97,8 +100,8 @@ def locale_convert(val, func, group):
     """\
     Attempt to convert a string to a number, first converting
     the decimal place character if needed. Then, if the conversion
-    was not possible, run it through strxfrm to make the sorting
-    as requested, possibly grouping first.
+    was not possible (i.e. it is not a number), run it through
+    strxfrm to make the work sorting as requested, possibly grouping first.
     """
 
     # Format the number so that the conversion function can interpret it.
