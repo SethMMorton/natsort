@@ -122,135 +122,15 @@ def as_utf8(s):
     return _do_decoding(s, 'utf-8')
 
 
-@u_format
-def natsort_key(val, key=None, number_type=float, signed=None, exp=None,
-                as_path=None, py3_safe=None, alg=0):
-    """\
-    Key to sort strings and numbers naturally.
-
-    Key to sort strings and numbers naturally, not lexicographically.
-    It is designed for use in passing to the 'sorted' builtin or
-    'sort' attribute of lists.
-
-    .. note:: Deprecated since version 3.4.0.
-              This function remains in the publicly exposed API for
-              backwards-compatibility reasons, but future development
-              should use the newer `natsort_keygen` function. It is
-              planned to remove this from the public API in natsort
-              version 4.0.0.  A DeprecationWarning will be raised
-              via the warnings module; set warnings.simplefilter("always")
-              to raise them to see if your code will work in version
-              4.0.0.
-
-    Parameters
-    ----------
-    val : {{str, unicode}}
-        The value used by the sorting algorithm
-
-    key : callable, optional
-        A key used to manipulate the input value before parsing for
-        numbers. It is **not** applied recursively.
-        It should accept a single argument and return a single value.
-
-    number_type : {{None, float, int}}, optional
-        Deprecated as of version 3.5.0 and will become an undocumented
-        keyword-only argument in 4.0.0. Please use the `alg` argument
-        for all future development. See :class:`ns` class documentation for
-        details.
-
-    signed : {{True, False}}, optional
-        Deprecated as of version 3.5.0 and will become an undocumented
-        keyword-only argument in 4.0.0. Please use the `alg` argument
-        for all future development. See :class:`ns` class documentation for
-        details.
-
-    exp : {{True, False}}, optional
-        Deprecated as of version 3.5.0 and will become an undocumented
-        keyword-only argument in 4.0.0. Please use the `alg` argument
-        for all future development. See :class:`ns` class documentation for
-        details.
-
-    as_path : {{True, False}}, optional
-        Deprecated as of version 3.5.0 and will become an undocumented
-        keyword-only argument in 4.0.0. Please use the `alg` argument
-        for all future development. See :class:`ns` class documentation for
-        details.
-
-    py3_safe : {{True, False}}, optional
-        Deprecated as of version 3.5.0 and will become an undocumented
-        keyword-only argument in 4.0.0. Please use the `alg` argument
-        for all future development. See :class:`ns` class documentation for
-        details.
-
-    alg : ns enum, optional
-        This option is used to control which algorithm `natsort`
-        uses when sorting. For details into these options, please see
-        the :class:`ns` class documentation. The default is `ns.FLOAT`.
-
-    Returns
-    -------
-    out : tuple
-        The modified value with numbers extracted.
-
-    See Also
-    --------
-    natsort_keygen : Generates a properly wrapped `natsort_key`.
-
-    Examples
-    --------
-    Using natsort_key is just like any other sorting key in python::
-
-        >>> a = ['num3', 'num5', 'num2']
-        >>> a.sort(key=natsort_key)
-        >>> a
-        [{u}'num2', {u}'num3', {u}'num5']
-
-    It works by separating out the numbers from the strings::
-
-        >>> natsort_key('num2')
-        ({u}'num', 2.0)
-
-    If you need to call natsort_key with the number_type argument, or get a
-    special attribute or item of each element of the sequence, please use
-    the `natsort_keygen` function.  Actually, please just use the
-    `natsort_keygen` function.
-
-    Notes
-    -----
-    Iterables are parsed recursively so you can sort lists of lists::
-
-        >>> natsort_key(('a1', 'a10'))
-        (({u}'a', 1.0), ({u}'a', 10.0))
-
-    Strings that lead with a number get an empty string at the front of the
-    tuple. This is designed to get around the "unorderable types" issue of
-    Python3::
-
-        >>> natsort_key('15a')
-        ({u}'', 15.0, {u}'a')
-
-    You can give bare numbers, too::
-
-        >>> natsort_key(10)
-        ({u}'', 10)
-
-    If you have a case where one of your string has two numbers in a row,
-    you can turn on the "py3_safe" option to try to add a "" between sets
-    of two numbers::
-
-        >>> natsort_key('43h7+3', py3_safe=True)
-        ({u}'', 43.0, {u}'h', 7.0, {u}'', 3.0)
-
-    """
+def natsort_key(val, key=None, alg=0, **_kwargs):
+    """Undocumented, kept for backwards-compatibility."""
     msg = "natsort_key is deprecated as of 3.4.0, please use natsort_keygen"
     warn(msg, DeprecationWarning)
-    alg = _args_to_enum(number_type, signed, exp, as_path, py3_safe) | alg
-    return _natsort_key(val, key, alg)
+    return _natsort_key(val, key, _args_to_enum(**_kwargs) | alg)
 
 
 @u_format
-def natsort_keygen(key=None, number_type=float, signed=None, exp=None,
-                   as_path=None, py3_safe=None, alg=0):
+def natsort_keygen(key=None, alg=0, **_kwargs):
     """\
     Generate a key to sort strings and numbers naturally.
 
@@ -269,36 +149,6 @@ def natsort_keygen(key=None, number_type=float, signed=None, exp=None,
         numbers. It is **not** applied recursively.
         It should accept a single argument and return a single value.
 
-    number_type : {{None, float, int}}, optional
-        Deprecated as of version 3.5.0 and will become an undocumented
-        keyword-only argument in 4.0.0. Please use the `alg` argument
-        for all future development. See :class:`ns` class documentation for
-        details.
-
-    signed : {{True, False}}, optional
-        Deprecated as of version 3.5.0 and will become an undocumented
-        keyword-only argument in 4.0.0. Please use the `alg` argument
-        for all future development. See :class:`ns` class documentation for
-        details.
-
-    exp : {{True, False}}, optional
-        Deprecated as of version 3.5.0 and will become an undocumented
-        keyword-only argument in 4.0.0. Please use the `alg` argument
-        for all future development. See :class:`ns` class documentation for
-        details.
-
-    as_path : {{True, False}}, optional
-        Deprecated as of version 3.5.0 and will become an undocumented
-        keyword-only argument in 4.0.0. Please use the `alg` argument
-        for all future development. See :class:`ns` class documentation for
-        details.
-
-    py3_safe : {{True, False}}, optional
-        Deprecated as of version 3.5.0 and will become an undocumented
-        keyword-only argument in 4.0.0. Please use the `alg` argument
-        for all future development. See :class:`ns` class documentation for
-        details.
-
     alg : ns enum, optional
         This option is used to control which algorithm `natsort`
         uses when sorting. For details into these options, please see
@@ -311,6 +161,10 @@ def natsort_keygen(key=None, number_type=float, signed=None, exp=None,
         suitable for passing as the `key` argument to functions
         such as `sorted`.
 
+    See Also
+    --------
+    natsorted
+
     Examples
     --------
     `natsort_keygen` is a convenient way to create a custom key
@@ -318,32 +172,16 @@ def natsort_keygen(key=None, number_type=float, signed=None, exp=None,
     will return a plain `natsort_key` instance::
 
         >>> a = ['num5.10', 'num-3', 'num5.3', 'num2']
-        >>> b = a[:]
-        >>> a.sort(key=natsort_key)
-        >>> b.sort(key=natsort_keygen())
-        >>> a == b
-        True
-
-    The power of `natsort_keygen` is when you want to want to pass
-    arguments to the `natsort_key`.  Consider the following
-    equivalent examples; which is more clear? ::
-
-        >>> a = ['num5.10', 'num-3', 'num5.3', 'num2']
-        >>> b = a[:]
-        >>> a.sort(key=lambda x: natsort_key(x, key=lambda y: y.upper(),
-        ...        signed=False))
-        >>> b.sort(key=natsort_keygen(key=lambda x: x.upper(), signed=False))
-        >>> a == b
-        True
+        >>> a.sort(key=natsort_keygen())
+        >>> a
+        [{u}'num-3', {u}'num2', {u}'num5.10', {u}'num5.3']
 
     """
-    alg = _args_to_enum(number_type, signed, exp, as_path, py3_safe) | alg
-    return partial(_natsort_key, key=key, alg=alg)
+    return partial(_natsort_key, key=key, alg=_args_to_enum(**_kwargs) | alg)
 
 
 @u_format
-def natsorted(seq, key=None, number_type=float, signed=None, exp=None,
-              reverse=False, as_path=None, alg=0):
+def natsorted(seq, key=None, reverse=False, alg=0, **_kwargs):
     """\
     Sorts a sequence naturally.
 
@@ -361,33 +199,9 @@ def natsorted(seq, key=None, number_type=float, signed=None, exp=None,
         It is **not** applied recursively.
         It should accept a single argument and return a single value.
 
-    number_type : {{None, float, int}}, optional
-        Deprecated as of version 3.5.0 and will become an undocumented
-        keyword-only argument in 4.0.0. Please use the `alg` argument
-        for all future development. See :class:`ns` class documentation for
-        details.
-
-    signed : {{True, False}}, optional
-        Deprecated as of version 3.5.0 and will become an undocumented
-        keyword-only argument in 4.0.0. Please use the `alg` argument
-        for all future development. See :class:`ns` class documentation for
-        details.
-
-    exp : {{True, False}}, optional
-        Deprecated as of version 3.5.0 and will become an undocumented
-        keyword-only argument in 4.0.0. Please use the `alg` argument
-        for all future development. See :class:`ns` class documentation for
-        details.
-
     reverse : {{True, False}}, optional
         Return the list in reversed sorted order. The default is
         `False`.
-
-    as_path : {{True, False}}, optional
-        Deprecated as of version 3.5.0 and will become an undocumented
-        keyword-only argument in 4.0.0. Please use the `alg` argument
-        for all future development. See :class:`ns` class documentation for
-        details.
 
     alg : ns enum, optional
         This option is used to control which algorithm `natsort`
@@ -416,10 +230,9 @@ def natsorted(seq, key=None, number_type=float, signed=None, exp=None,
         [{u}'num2', {u}'num3', {u}'num5']
 
     """
-    alg = _args_to_enum(number_type, signed, exp, as_path, None) | alg
+    alg = _args_to_enum(**_kwargs) | alg
     try:
-        return sorted(seq, reverse=reverse,
-                      key=natsort_keygen(key, alg=alg))
+        return sorted(seq, reverse=reverse, key=natsort_keygen(key, alg=alg))
     except TypeError as e:  # pragma: no cover
         # In the event of an unresolved "unorderable types" error
         # for string to number type comparisons (not str/bytes),
@@ -435,7 +248,7 @@ def natsorted(seq, key=None, number_type=float, signed=None, exp=None,
 
 
 @u_format
-def versorted(seq, key=None, reverse=False, as_path=None, alg=0):
+def versorted(seq, key=None, reverse=False, alg=0, **_kwargs):
     """\
     Convenience function to sort version numbers.
 
@@ -455,12 +268,6 @@ def versorted(seq, key=None, reverse=False, as_path=None, alg=0):
     reverse : {{True, False}}, optional
         Return the list in reversed sorted order. The default is
         `False`.
-
-    as_path : {{True, False}}, optional
-        Deprecated as of version 3.5.0 and will become an undocumented
-        keyword-only argument in 4.0.0. Please use the `alg` argument
-        for all future development. See :class:`ns` class documentation for
-        details.
 
     alg : ns enum, optional
         This option is used to control which algorithm `natsort`
@@ -485,7 +292,7 @@ def versorted(seq, key=None, reverse=False, as_path=None, alg=0):
         [{u}'num3.4.1', {u}'num3.4.2', {u}'num4.0.2']
 
     """
-    alg = _args_to_enum(float, None, None, as_path, None) | alg
+    alg = _args_to_enum(**_kwargs) | alg
     return natsorted(seq, key, reverse=reverse, alg=alg | ns.VERSION)
 
 
@@ -621,8 +428,7 @@ def realsorted(seq, key=None, reverse=False, alg=0):
 
 
 @u_format
-def index_natsorted(seq, key=None, number_type=float, signed=None, exp=None,
-                    reverse=False, as_path=None, alg=0):
+def index_natsorted(seq, key=None, reverse=False, alg=0, **_kwargs):
     """\
     Return the list of the indexes used to sort the input sequence.
 
@@ -641,33 +447,9 @@ def index_natsorted(seq, key=None, number_type=float, signed=None, exp=None,
         It is **not** applied recursively.
         It should accept a single argument and return a single value.
 
-    number_type : {{None, float, int}}, optional
-        Deprecated as of version 3.5.0 and will become an undocumented
-        keyword-only argument in 4.0.0. Please use the `alg` argument
-        for all future development. See :class:`ns` class documentation for
-        details.
-
-    signed : {{True, False}}, optional
-        Deprecated as of version 3.5.0 and will become an undocumented
-        keyword-only argument in 4.0.0. Please use the `alg` argument
-        for all future development. See :class:`ns` class documentation for
-        details.
-
-    exp : {{True, False}}, optional
-        Deprecated as of version 3.5.0 and will become an undocumented
-        keyword-only argument in 4.0.0. Please use the `alg` argument
-        for all future development. See :class:`ns` class documentation for
-        details.
-
     reverse : {{True, False}}, optional
         Return the list in reversed sorted order. The default is
         `False`.
-
-    as_path : {{True, False}}, optional
-        Deprecated as of version 3.5.0 and will become an undocumented
-        keyword-only argument in 4.0.0. Please use the `alg` argument
-        for all future development. See :class:`ns` class documentation for
-        details.
 
     alg : ns enum, optional
         This option is used to control which algorithm `natsort`
@@ -702,7 +484,7 @@ def index_natsorted(seq, key=None, number_type=float, signed=None, exp=None,
         [{u}'baz', {u}'foo', {u}'bar']
 
     """
-    alg = _args_to_enum(number_type, signed, exp, as_path, None) | alg
+    alg = _args_to_enum(**_kwargs) | alg
     if key is None:
         newkey = itemgetter(1)
     else:
@@ -727,7 +509,7 @@ def index_natsorted(seq, key=None, number_type=float, signed=None, exp=None,
 
 
 @u_format
-def index_versorted(seq, key=None, reverse=False, as_path=None, alg=0):
+def index_versorted(seq, key=None, reverse=False, alg=0, **_kwargs):
     """\
     Return the list of the indexes used to sort the input sequence
     of version numbers.
@@ -737,7 +519,7 @@ def index_versorted(seq, key=None, reverse=False, as_path=None, alg=0):
     used to sort multiple lists by the sorted order of the given
     sequence.
 
-    This is a wrapper around ``index_natsorted(seq, number_type=None)``.
+    This is a wrapper around ``index_natsorted(seq, alg=ns.VERSION)``.
 
     Parameters
     ----------
@@ -752,12 +534,6 @@ def index_versorted(seq, key=None, reverse=False, as_path=None, alg=0):
     reverse : {{True, False}}, optional
         Return the list in reversed sorted order. The default is
         `False`.
-
-    as_path : {{True, False}}, optional
-        Deprecated as of version 3.5.0 and will become an undocumented
-        keyword-only argument in 4.0.0. Please use the `alg` argument
-        for all future development. See :class:`ns` class documentation for
-        details.
 
     alg : ns enum, optional
         This option is used to control which algorithm `natsort`
@@ -783,7 +559,7 @@ def index_versorted(seq, key=None, reverse=False, as_path=None, alg=0):
         [1, 2, 0]
 
     """
-    alg = _args_to_enum(float, None, None, as_path, None) | alg
+    alg = _args_to_enum(**_kwargs) | alg
     return index_natsorted(seq, key, reverse=reverse, alg=alg | ns.VERSION)
 
 

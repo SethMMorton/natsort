@@ -88,35 +88,35 @@ def _do_decoding(s, encoding):
         return s
 
 
-def _args_to_enum(number_type, signed, exp, as_path, py3_safe):
+def _args_to_enum(**kwargs):
     """A function to convert input booleans to an enum-type argument."""
     alg = 0
-    if number_type is not float:
+    if 'number_type' in kwargs and kwargs['number_type'] is not float:
         msg = "The 'number_type' argument is deprecated as of 3.5.0, "
         msg += "please use 'alg=ns.FLOAT', 'alg=ns.INT', or 'alg=ns.VERSION'"
         warn(msg, DeprecationWarning)
-        alg |= (_ns['INT'] * bool(number_type in (int, None)))
-        alg |= (_ns['UNSIGNED'] * (number_type is None))
-    if signed is not None:
+        alg |= (_ns['INT'] * bool(kwargs['number_type'] in (int, None)))
+        alg |= (_ns['UNSIGNED'] * (kwargs['number_type'] is None))
+    if 'signed' in kwargs and kwargs['signed'] is not None:
         msg = "The 'signed' argument is deprecated as of 3.5.0, "
         msg += "please use 'alg=ns.UNSIGNED'."
         warn(msg, DeprecationWarning)
-        alg |= (_ns['UNSIGNED'] * (not signed))
-    if exp is not None:
+        alg |= (_ns['UNSIGNED'] * (not kwargs['signed']))
+    if 'exp' in kwargs and kwargs['exp'] is not None:
         msg = "The 'exp' argument is deprecated as of 3.5.0, "
         msg += "please use 'alg=ns.NOEXP'."
         warn(msg, DeprecationWarning)
-        alg |= (_ns['NOEXP'] * (not exp))
-    if as_path is not None:
+        alg |= (_ns['NOEXP'] * (not kwargs['exp']))
+    if 'as_path' in kwargs and kwargs['as_path'] is not None:
         msg = "The 'as_path' argument is deprecated as of 3.5.0, "
         msg += "please use 'alg=ns.PATH'."
         warn(msg, DeprecationWarning)
-        alg |= (_ns['PATH'] * as_path)
-    if py3_safe is not None:
+        alg |= (_ns['PATH'] * kwargs['as_path'])
+    if 'py3_safe' in kwargs and kwargs['py3_safe'] is not None:
         msg = "The 'py3_safe' argument is deprecated as of 3.5.0, "
         msg += "please use 'alg=ns.TYPESAFE'."
         warn(msg, DeprecationWarning)
-        alg |= (_ns['TYPESAFE'] * py3_safe)
+        alg |= (_ns['TYPESAFE'] * kwargs['py3_safe'])
     return alg
 
 

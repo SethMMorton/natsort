@@ -34,42 +34,56 @@ def test_do_decoding_decodes_bytes_string_to_unicode():
 
 def test_args_to_enum_converts_signed_exp_float_to_ns_F():
     # number_type, signed, exp, as_path, py3_safe
-    assert _args_to_enum(float, True, True, False, False) == ns.F
+    assert _args_to_enum(**{'number_type': float,
+                            'signed': True,
+                            'exp': True}) == ns.F
 
 
 def test_args_to_enum_converts_signed_noexp_float_to_ns_FN():
     # number_type, signed, exp, as_path, py3_safe
-    assert _args_to_enum(float, True, False, False, False) == ns.F | ns.N
+    assert _args_to_enum(**{'number_type': float,
+                            'signed': True,
+                            'exp': False}) == ns.F | ns.N
 
 
 def test_args_to_enum_converts_unsigned_exp_float_to_ns_FU():
     # number_type, signed, exp, as_path, py3_safe
-    assert _args_to_enum(float, False, True, False, False) == ns.F | ns.U
+    assert _args_to_enum(**{'number_type': float,
+                            'signed': False,
+                            'exp': True}) == ns.F | ns.U
 
 
 def test_args_to_enum_converts_unsigned_unexp_float_to_ns_FNU():
     # number_type, signed, exp, as_path, py3_safe
-    assert _args_to_enum(float, False, False, False, False) == ns.F | ns.U | ns.N
+    assert _args_to_enum(**{'number_type': float,
+                            'signed': False,
+                            'exp': False}) == ns.F | ns.U | ns.N
 
 
 def test_args_to_enum_converts_signed_exp_float_and_path_and_py3safe_to_ns_FPT():
     # number_type, signed, exp, as_path, py3_safe
-    assert _args_to_enum(float, True, True, True, True) == ns.F | ns.P | ns.T
+    assert _args_to_enum(**{'number_type': float,
+                            'as_path': True,
+                            'py3_safe': True}) == ns.F | ns.P | ns.T
 
 
 def test_args_to_enum_converts_singed_int_and_path_to_ns_IP():
     # number_type, signed, exp, as_path, py3_safe
-    assert _args_to_enum(int, True, True, True, False) == ns.I | ns.P
+    assert _args_to_enum(**{'number_type': int, 'as_path': True}) == ns.I | ns.P
 
 
 def test_args_to_enum_converts_unsigned_int_and_py3safe_to_ns_IUT():
     # number_type, signed, exp, as_path, py3_safe
-    assert _args_to_enum(int, False, True, False, True) == ns.I | ns.U | ns.T
+    assert _args_to_enum(**{'number_type': int,
+                            'signed': False,
+                            'py3_safe': True}) == ns.I | ns.U | ns.T
 
 
 def test_args_to_enum_converts_None_to_ns_IU():
     # number_type, signed, exp, as_path, py3_safe
-    assert _args_to_enum(None, True, True, False, False) == ns.I | ns.U
+    assert _args_to_enum(**{'number_type': None,
+                            'signed': True,
+                            'exp': True}) == ns.I | ns.U
 
 # fttt = (fast_float, True, True, True)
 # fttf = (fast_float, True, True, False)
