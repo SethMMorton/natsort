@@ -67,9 +67,8 @@ def main():
              'effects the --number-type=float.')
     parser.add_argument(
         '--locale', '-l', action='store_true', default=False,
-        help='Causes natsort to use locale-aware sorting. On some systems, '
-             'the underlying C library is broken, so if you get results that '
-             'you do not expect please install PyICU and try again.')
+        help='Causes natsort to use locale-aware sorting. You will get the '
+             'best results if you install PyICU.')
     parser.add_argument(
         'entries', nargs='*', default=sys.stdin,
         help='The entries to sort. Taken from stdin if nothing is given on '
