@@ -13,6 +13,9 @@ Natural sorting for python.
     - Downloads: https://pypi.python.org/pypi/natsort
     - Documentation: http://pythonhosted.org//natsort/
 
+Please see `Deprecation Notices`_ for an `important` backwards incompatibility notice
+for ``natsort`` version 4.0.0.
+
 Quick Description
 -----------------
 
@@ -74,7 +77,7 @@ ordinal value; this can be achieved with the ``humansorted`` function:
 You may find you need to explicitly set the locale to get this to work
 (as shown in the example).
 Please see the `following caveat <http://pythonhosted.org//natsort/examples.html#bug-note>`_
-and the "Optional Dependencies" section
+and the `Optional Dependencies`_ section
 below before using the ``humansorted`` function, *especially* if you are on a
 BSD-based system (like Mac OS X).
 
@@ -95,7 +98,7 @@ The natsort algorithm does other fancy things like
  - control the case-sensitivity
  - sort file paths correctly
  - allow custom sorting keys
- - exposes a natsort_key generator to pass to list.sort
+ - exposes a natsort_key generator to pass to ``list.sort``
 
 Please see the package documentation for more details, including 
 `examples and recipes <http://pythonhosted.org//natsort/examples.html>`_.
@@ -104,8 +107,7 @@ Shell script
 ------------
 
 ``natsort`` comes with a shell script called ``natsort``, or can also be called
-from the command line with ``python -m natsort``.  The command line script is
-only installed onto your ``PATH`` if you don't install via a wheel. 
+from the command line with ``python -m natsort``. 
 
 Requirements
 ------------
@@ -113,6 +115,8 @@ Requirements
 ``natsort`` requires python version 2.6 or greater
 (this includes python 3.x). To run version 2.6, 3.0, or 3.1 the 
 `argparse <https://pypi.python.org/pypi/argparse>`_ module is required.
+
+.. _optional:
 
 Optional Dependencies
 ---------------------
@@ -141,9 +145,18 @@ since in Linux-based systems and Windows systems ``locale`` should work just fin
 Please visit https://github.com/SethMMorton/natsort/issues/21 for more details and
 how to install on Mac OS X.
 
+.. _deprecate:
+
 Deprecation Notices
 -------------------
 
+ - The default sorting algorithm for ``natsort`` will change in version 4.0.0
+   from signed floats (with exponents) to unsigned integers. The motivation
+   for this change is that it will cause ``natsort`` to return results that
+   pass the "least astonishment" test for the most common use case, which is
+   sorting version numbers. If you currently rely on the default behavior
+   to be signed floats, it is recommend that you add ``alg=ns.F`` to your
+   ``natsort`` calls.
  - In ``natsort`` version 4.0.0, the ``number_type``, ``signed``, ``exp``,
    ``as_path``, and ``py3_safe`` options will be removed from the (documented)
    API, in favor of the ``alg`` option and ``ns`` enum.  They will remain as
@@ -151,12 +164,6 @@ Deprecation Notices
  - In ``natsort`` version 4.0.0, the ``natsort_key`` function will be removed
    from the public API.  All future development should use ``natsort_keygen``
    in preparation for this.
- - In ``natsort`` version 3.1.0, the shell script changed how it interpreted
-   input; previously, all input was assumed to be a filepath, but as of 3.1.0
-   input is just treated as a string.  For most cases the results are the same.
- 
-   - As of ``natsort`` version 3.4.0, a ``--path`` option has been added to
-     force the shell script to interpret the input as filepaths. 
 
 Author
 ------
