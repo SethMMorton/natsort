@@ -78,8 +78,10 @@ except ImportError:
         from locale import strxfrm
     use_pyicu = False
 
-# This little lambda doubles all characters, making letters lowercase.
-groupletters = lambda x: ''.join(chain(*py23_zip(x.lower(), x)))
+
+def groupletters(x):
+    """Double all characters, making doubled letters lowercase."""
+    return ''.join(chain(*py23_zip(x.lower(), x)))
 
 
 def grouper(val, func):

@@ -558,7 +558,8 @@ def index_natsorted(seq, key=None, number_type=float, signed=None, exp=None,
     if key is None:
         newkey = itemgetter(1)
     else:
-        newkey = lambda x: key(itemgetter(1)(x))
+        def newkey(x):
+            return key(itemgetter(1)(x))
     # Pair the index and sequence together, then sort by element
     index_seq_pair = [[x, y] for x, y in enumerate(seq)]
     try:

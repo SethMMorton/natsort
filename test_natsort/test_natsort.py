@@ -38,7 +38,9 @@ def test_natsort_keygen_returns_natsort_key_with_alg_option():
 def test_natsort_keygen_with_key_returns_same_result_as_nested_lambda_with_bare_natsort_key():
     a = 'a-5.034e1'
     f1 = natsort_keygen(key=lambda x: x.upper())
-    f2 = lambda x: _natsort_key(x, lambda y: y.upper(), ns.F)
+
+    def f2(x):
+        return _natsort_key(x, lambda y: y.upper(), ns.F)
     assert f1(a) == f2(a)
 
 

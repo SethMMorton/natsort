@@ -122,9 +122,11 @@ entries = ['tmp/a57/path2',
            'tmp/a64/path1',
            'tmp/a64/path2']
 
+mock_print = '__builtin__.print' if sys.version[0] == '2' else 'builtins.print'
+
 
 def test_sort_and_print_entries_uses_default_algorithm_with_all_options_false():
-    with patch('__builtin__.print') as p:
+    with patch(mock_print) as p:
         # tmp/a1 (1)/path1
         # tmp/a1/path1
         # tmp/a23/path1
@@ -138,7 +140,7 @@ def test_sort_and_print_entries_uses_default_algorithm_with_all_options_false():
 
 
 def test_sort_and_print_entries_uses_PATH_algorithm_with_path_option_true_to_properly_sort_OS_generated_path_names():
-    with patch('__builtin__.print') as p:
+    with patch(mock_print) as p:
         # tmp/a1/path1
         # tmp/a1 (1)/path1
         # tmp/a23/path1
@@ -152,7 +154,7 @@ def test_sort_and_print_entries_uses_PATH_algorithm_with_path_option_true_to_pro
 
 
 def test_sort_and_print_entries_keeps_only_paths_between_of_20_to_100_with_filter_option():
-    with patch('__builtin__.print') as p:
+    with patch(mock_print) as p:
         # tmp/a23/path1
         # tmp/a57/path2
         # tmp/a64/path1
@@ -163,7 +165,7 @@ def test_sort_and_print_entries_keeps_only_paths_between_of_20_to_100_with_filte
 
 
 def test_sort_and_print_entries_excludes_paths_between_of_20_to_100_with_reverse_filter_option():
-    with patch('__builtin__.print') as p:
+    with patch(mock_print) as p:
         # tmp/a1/path1
         # tmp/a1 (1)/path1
         # tmp/a130/path1
@@ -173,7 +175,7 @@ def test_sort_and_print_entries_excludes_paths_between_of_20_to_100_with_reverse
 
 
 def test_sort_and_print_entries_excludes_paths_23_or_130_with_exclude_option_list():
-    with patch('__builtin__.print') as p:
+    with patch(mock_print) as p:
         # tmp/a1/path1
         # tmp/a1 (1)/path1
         # tmp/a57/path2
@@ -185,7 +187,7 @@ def test_sort_and_print_entries_excludes_paths_23_or_130_with_exclude_option_lis
 
 
 def test_sort_and_print_entries_reverses_order_with_reverse_option():
-    with patch('__builtin__.print') as p:
+    with patch(mock_print) as p:
         # tmp/a130/path1
         # tmp/a64/path2
         # tmp/a64/path1
