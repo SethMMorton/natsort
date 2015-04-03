@@ -15,35 +15,19 @@ Basic Usage
 In the most basic use case, simply import :func:`~natsorted` and use
 it as you would :func:`sorted`::
 
-    >>> a = ['a50', 'a51.', 'a50.4', 'a5.034e1', 'a50.300']
+    >>> a = ['a2', 'a9', 'a1', 'a4', 'a10']
     >>> sorted(a)
-    ['a5.034e1', 'a50', 'a50.300', 'a50.4', 'a51.']
+    ['a1', 'a10', 'a2', 'a4', 'a9']
     >>> from natsort import natsorted, ns
     >>> natsorted(a)
-    ['a50', 'a50.300', 'a5.034e1', 'a50.4', 'a51.']
+    ['a1', 'a2', 'a4', 'a9', 'a10']
 
 Sort Version Numbers
 --------------------
 
-With default options, :func:`~natsorted` will not sort version numbers
-well. Version numbers are best sorted by searching for valid unsigned int
-literals, not floats.  This can be achieved in three ways, as shown below::
-
-    >>> a = ['ver-2.9.9a', 'ver-1.11', 'ver-2.9.9b', 'ver-1.11.4', 'ver-1.10.1']
-    >>> natsorted(a)  # This gives incorrect results
-    ['ver-2.9.9a', 'ver-2.9.9b', 'ver-1.11', 'ver-1.11.4', 'ver-1.10.1']
-    >>> natsorted(a, alg=ns.INT | ns.UNSIGNED)
-    ['ver-1.10.1', 'ver-1.11', 'ver-1.11.4', 'ver-2.9.9a', 'ver-2.9.9b']
-    >>> natsorted(a, alg=ns.VERSION)
-    ['ver-1.10.1', 'ver-1.11', 'ver-1.11.4', 'ver-2.9.9a', 'ver-2.9.9b']
-    >>> from natsort import versorted
-    >>> versorted(a)
-    ['ver-1.10.1', 'ver-1.11', 'ver-1.11.4', 'ver-2.9.9a', 'ver-2.9.9b']
-
-You can see that ``alg=ns.VERSION`` is a shortcut for 
-``alg=ns.INT | ns.UNSIGNED``, and the :func:`~versorted` is a shortcut for
-``natsorted(alg=ns.VERSION)``.  The recommend manner to sort version
-numbers is to use :func:`~versorted`.
+As of :mod:`natsort` version >= 4.0.0, :func:`~natsorted` will now properly
+sort version numbers. The old function :func:`~versorted` exists for
+backwards compatibility but new development should use :func:`~natsorted`.
 
 Sorting with Alpha, Beta, and Release Candidates
 ++++++++++++++++++++++++++++++++++++++++++++++++
@@ -52,19 +36,19 @@ By default, if you wish to sort versions with a non-strict versioning
 scheme, you may not get the results you expect::
 
     >>> a = ['1.2', '1.2rc1', '1.2beta2', '1.2beta1', '1.2alpha', '1.2.1', '1.1', '1.3']
-    >>> versorted(a)
+    >>> natsorted(a)
     ['1.1', '1.2', '1.2.1', '1.2alpha', '1.2beta1', '1.2beta2', '1.2rc1', '1.3']
 
 To make the '1.2' pre-releases come before '1.2.1', you need to use the following
 recipe::
 
-    >>> versorted(a, key=lambda x: x.replace('.', '~'))
+    >>> natsorted(a, key=lambda x: x.replace('.', '~'))
     ['1.1', '1.2', '1.2alpha', '1.2beta1', '1.2beta2', '1.2rc1', '1.2.1', '1.3']
 
 If you also want '1.2' after all the alpha, beta, and rc candidates, you can
 modify the above recipe::
 
-    >>> versorted(a, key=lambda x: x.replace('.', '~')+'z')
+    >>> natsorted(a, key=lambda x: x.replace('.', '~')+'z')
     ['1.1', '1.2alpha', '1.2beta1', '1.2beta2', '1.2rc1', '1.2', '1.2.1', '1.3']
 
 Please see `this issue <https://github.com/SethMMorton/natsort/issues/13>`_ to
@@ -167,19 +151,31 @@ would expect to be "natural" sorting::
 Customizing Float Definition
 ----------------------------
 
-By default :func:`~natsorted` searches for any float that would be
+You can make :func:`~natsorted` search for any float that would be
 a valid Python float literal, such as 5, 0.4, -4.78, +4.2E-34, etc.
-Perhaps you don't want to search for signed numbers, or you don't
-want to search for exponential notation, the ``ns.UNSIGNED`` and
-``ns.NOEXP`` options allow you to do this::
+using the ``ns.FLOAT`` key. You can disable the exponential component
+of the number with ``ns.NOEXP``. ::
 
     >>> a = ['a50', 'a51.', 'a+50.4', 'a5.034e1', 'a+50.300']
-    >>> natsorted(a)
-    ['a50', 'a+50.300', 'a5.034e1', 'a+50.4', 'a51.']
-    >>> natsorted(a, alg=ns.UNSIGNED)
+    >>> natsorted(a, alg=ns.FLOAT)
     ['a50', 'a5.034e1', 'a51.', 'a+50.300', 'a+50.4']
-    >>> natsorted(a, alg=ns.NOEXP)
+    >>> natsorted(a, alg=ns.FLOAT | ns.SIGNED)
+    ['a50', 'a+50.300', 'a5.034e1', 'a+50.4', 'a51.']
+    >>> natsorted(a, alg=ns.FLOAT | ns.SIGNED | ns.NOEXP)
     ['a5.034e1', 'a50', 'a+50.300', 'a+50.4', 'a51.']
+
+For convenience, the ``ns.REAL`` option is provided which is a shortcut
+for ``ns.FLOAT | ns.SIGNED`` and can be used to sort on real numbers.
+This can be easily accessed with the :func:`~realsorted` convenience
+function. Please note that the behavior of the :func:`~realsorted` function
+was the default behavior of :func:`~natsorted` for :mod:`natsort`
+version < 4.0.0::
+
+    >>> natsorted(a, alg=ns.REAL)
+    ['a50', 'a+50.300', 'a5.034e1', 'a+50.4', 'a51.']
+    >>> from natsort import realsorted
+    >>> realsorted(a)
+    ['a50', 'a+50.300', 'a5.034e1', 'a+50.4', 'a51.']
 
 Using a Custom Sorting Key
 --------------------------
@@ -209,15 +205,10 @@ need to pass a key to the :meth:`list.sort` method. The function
 
     >>> from natsort import natsort_keygen
     >>> a = ['a50', 'a51.', 'a50.4', 'a5.034e1', 'a50.300']
-    >>> natsort_key = natsort_keygen()
+    >>> natsort_key = natsort_keygen(alg=ns.FLOAT)
     >>> a.sort(key=natsort_key)
     >>> a
     ['a50', 'a50.300', 'a5.034e1', 'a50.4', 'a51.']
-    >>> versort_key = natsort_keygen(alg=ns.VERSION)
-    >>> a = ['ver-2.9.9a', 'ver-1.11', 'ver-2.9.9b', 'ver-1.11.4', 'ver-1.10.1']
-    >>> a.sort(key=versort_key)
-    >>> a
-    ['ver-1.10.1', 'ver-1.11', 'ver-1.11.4', 'ver-2.9.9a', 'ver-2.9.9b']
 
 :func:`~natsort_keygen` has the same API as :func:`~natsorted` (minus the
 `reverse` option).
@@ -227,8 +218,8 @@ Sorting Multiple Lists According to a Single List
 
 Sometimes you have multiple lists, and you want to sort one of those
 lists and reorder the other lists according to how the first was sorted.
-To achieve this you would use the :func:`~index_natsorted` or
-:func:`~index_versorted` in combination with the convenience function
+To achieve this you could use the :func:`~index_natsorted` in combination
+with the convenience function
 :func:`~order_by_index`::
 
     >>> from natsort import index_natsorted, order_by_index

@@ -47,16 +47,13 @@ Using ``natsorted`` is simple:
 ``natsorted`` identifies real numbers anywhere in a string and sorts them
 naturally.
 
-Sorting version numbers is just as easy with the ``versorted`` function:
+Sorting is handled properly by default (as of ``natsort`` version >= 4.0.0):
 
 .. code-block:: python
 
-    >>> from natsort import versorted
     >>> a = ['version-1.9', 'version-2.0', 'version-1.11', 'version-1.10']
-    >>> versorted(a)
+    >>> natsorted(a)
     ['version-1.9', 'version-1.10', 'version-1.11', 'version-2.0']
-    >>> natsorted(a)  # natsorted tries to sort as signed floats, so it won't work
-    ['version-2.0', 'version-1.9', 'version-1.11', 'version-1.10']
 
 You can also perform locale-aware sorting (or "human sorting"), where the
 non-numeric characters are ordered based on their meaning, not on their
@@ -80,6 +77,19 @@ Please see the `following caveat <http://pythonhosted.org//natsort/examples.html
 and the `Optional Dependencies`_ section
 below before using the ``humansorted`` function, *especially* if you are on a
 BSD-based system (like Mac OS X).
+
+You can sort signed floats (i.e. real numbers) using the ``realsorted``; this is
+useful in scientific data analysis. This was the default behavior of ``natsorted``
+for ``natsort`` version < 4.0.0. ::
+
+.. code-block:: python
+
+    >>> from natsort import realsorted
+    >>> a = ['num5.10', 'num-3', 'num5.3', 'num2']
+    >>> natsorted(a)
+    ['num2', 'num5.3', 'num5.10', 'num-3']
+    >>> realsorted(a)
+    ['num-3', 'num2', 'num5.10', 'num5.3']
 
 You can mix and match ``int``, ``float``, and ``str`` (or ``unicode``) types
 when you sort:
@@ -175,6 +185,7 @@ Deprecation Notices
    to be signed floats, it is recommend that you add ``alg=ns.F`` to your
    ``natsort`` calls or switch to the new ``realsorted`` function which
    behaves identically to the current ``natsorted`` with default values.
+   This will also affect the default behavior of the ``natsort`` shell script.
  - In ``natsort`` version 4.0.0, the ``number_type``, ``signed``, ``exp``,
    ``as_path``, and ``py3_safe`` options will be removed from the (documented)
    API, in favor of the ``alg`` option and ``ns`` enum.  They will remain as

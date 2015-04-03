@@ -27,14 +27,14 @@ class ns(object):
 
     Attributes
     ----------
-    INT, I
+    INT, I (default)
         The default - parse numbers as integers.
     FLOAT, F
         Tell `natsort` to parse numbers as floats.
-    UNSIGNED, U
-        Tell `natsort` to ignore any sign (i.e. "-" or "+") to the
-        immediate left of a number.  It is the same as setting the
-        old `signed` option to `False`. This is the default.
+    UNSIGNED, U (default)
+        Tell `natsort` to ignore any sign (i.e. "-" or "+") to the immediate
+        left of a number.  It is the same as setting the old `signed` option
+        to `False`. This is the default.
     SIGNED, S
         Tell `natsort` to take into account any sign (i.e. "-" or "+")
         to the immediate left of a number.  It is the same as setting
@@ -43,7 +43,8 @@ class ns(object):
         This is a shortcut for ``ns.INT | ns.UNSIGNED``, which is useful
         when attempting to sort version numbers.  It is the same as
         setting the old `number_type` option to `None`.  Since
-        ``ns.INT | ns.UNSIGNED`` is default, this is is unnecessary.
+        ``ns.INT | ns.UNSIGNED`` is default, this is is
+        unnecessary.
     DIGIT, D
         Same as `VERSION` above.
     REAL, R
