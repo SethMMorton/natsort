@@ -11,7 +11,7 @@ class ns(object):
 
     This class acts like an enum to control the `natsort` algorithm. The
     user may select several options simultaneously by or'ing the options
-    together.  For example, to choose ``ns.INT``, `ns.PATH``, and
+    together.  For example, to choose ``ns.INT``, ``ns.PATH``, and
     ``ns.LOCALE``, you could do ``ns.INT | ns.LOCALE | ns.PATH``.
 
     Each option has a shortened 1- or 2-letter form.
