@@ -41,7 +41,7 @@ def test_natsort_key_public_raises_DeprecationWarning_when_called():
     # But it raises a deprecation warning
     with warnings.catch_warnings(record=True) as w:
         warnings.simplefilter("always")
-        assert natsort_key('a-5.034e2') == _natsort_key('a-5.034e2', key=None, alg=ns.F)
+        assert natsort_key('a-5.034e2') == _natsort_key('a-5.034e2', key=None, alg=ns.I)
         assert len(w) == 1
         assert "natsort_key is deprecated as of 3.4.0, please use natsort_keygen" in str(w[-1].message)
     # It is called for each element in a list when sorting
@@ -54,8 +54,8 @@ def test_natsort_key_public_raises_DeprecationWarning_when_called():
 
 def test_natsort_keygen_returns_natsort_key_with_alg_option():
     a = 'a-5.034e1'
-    assert natsort_keygen()(a) == _natsort_key(a, None, ns.F)
-    assert natsort_keygen(alg=ns.I | ns.U)(a) == _natsort_key(a, None, ns.I | ns.U)
+    assert natsort_keygen()(a) == _natsort_key(a, None, ns.I)
+    assert natsort_keygen(alg=ns.F | ns.S)(a) == _natsort_key(a, None, ns.F | ns.S)
 
 
 def test_natsort_keygen_with_key_returns_same_result_as_nested_lambda_with_bare_natsort_key():
@@ -63,15 +63,15 @@ def test_natsort_keygen_with_key_returns_same_result_as_nested_lambda_with_bare_
     f1 = natsort_keygen(key=lambda x: x.upper())
 
     def f2(x):
-        return _natsort_key(x, lambda y: y.upper(), ns.F)
+        return _natsort_key(x, lambda y: y.upper(), ns.I)
     assert f1(a) == f2(a)
 
 
 def test_natsort_keygen_returns_key_that_can_be_used_to_sort_list_in_place_with_same_result_as_natsorted():
     a = ['a50', 'a51.', 'a50.31', 'a50.4', 'a5.034e1', 'a50.300']
     b = a[:]
-    a.sort(key=natsort_keygen(alg=ns.I))
-    assert a == natsorted(b, alg=ns.I)
+    a.sort(key=natsort_keygen(alg=ns.F))
+    assert a == natsorted(b, alg=ns.F)
 
 
 def test_natsorted_returns_strings_with_numbers_in_ascending_order():
@@ -80,42 +80,48 @@ def test_natsorted_returns_strings_with_numbers_in_ascending_order():
 
 
 def test_natsorted_returns_list_of_numbers_sorted_as_signed_floats_with_exponents():
-    a = ['a50', 'a51.', 'a50.31', 'a50.4', 'a5.034e1', 'a50.300']
-    assert natsorted(a) == ['a50', 'a50.300', 'a50.31', 'a5.034e1', 'a50.4', 'a51.']
+    a = ['a50', 'a51.', 'a50.31', 'a-50', 'a50.4', 'a5.034e1', 'a50.300']
+    assert natsorted(a, alg=ns.REAL) == ['a-50', 'a50', 'a50.300', 'a50.31', 'a5.034e1', 'a50.4', 'a51.']
 
 
-def test_natsorted_returns_list_of_numbers_sorted_as_signed_floats_without_exponents_with_NOEXP_option():
-    a = ['a50', 'a51.', 'a50.31', 'a50.4', 'a5.034e1', 'a50.300']
-    assert natsorted(a, alg=ns.NOEXP | ns.FLOAT) == ['a5.034e1', 'a50', 'a50.300', 'a50.31', 'a50.4', 'a51.']
+def test_natsorted_returns_list_of_numbers_sorted_as_unsigned_floats_without_exponents_with_NOEXP_option():
+    a = ['a50', 'a51.', 'a50.31', 'a-50', 'a50.4', 'a5.034e1', 'a50.300']
+    assert natsorted(a, alg=ns.N | ns.F | ns.U) == ['a5.034e1', 'a50', 'a50.300', 'a50.31', 'a50.4', 'a51.', 'a-50']
+    # UNSIGNED is default
+    assert natsorted(a, alg=ns.NOEXP | ns.FLOAT) == ['a5.034e1', 'a50', 'a50.300', 'a50.31', 'a50.4', 'a51.', 'a-50']
 
 
-def test_natsorted_returns_list_of_numbers_sorted_as_signed_ints_with_INT_option():
-    a = ['a50', 'a51.', 'a50.31', 'a50.4', 'a5.034e1', 'a50.300']
-    assert natsorted(a, alg=ns.INT) == ['a5.034e1', 'a50', 'a50.4', 'a50.31', 'a50.300', 'a51.']
+def test_natsorted_returns_list_of_numbers_sorted_as_unsigned_ints_with_INT_option():
+    a = ['a50', 'a51.', 'a50.31', 'a-50', 'a50.4', 'a5.034e1', 'a50.300']
+    assert natsorted(a, alg=ns.INT) == ['a5.034e1', 'a50', 'a50.4', 'a50.31', 'a50.300', 'a51.', 'a-50']
+    # INT is default
+    assert natsorted(a) == ['a5.034e1', 'a50', 'a50.4', 'a50.31', 'a50.300', 'a51.', 'a-50']
 
 
-def test_natsorted_returns_list_of_numbers_sorted_as_unsigned_ints_with_DIGIT_option():
-    a = ['a50', 'a51.', 'a50.31', 'a50.4', 'a5.034e1', 'a50.300']
-    assert natsorted(a, alg=ns.DIGIT) == ['a5.034e1', 'a50', 'a50.4', 'a50.31', 'a50.300', 'a51.']
+def test_natsorted_returns_list_of_numbers_sorted_as_unsigned_ints_with_DIGIT_and_VERSION_option():
+    a = ['a50', 'a51.', 'a50.31', 'a-50', 'a50.4', 'a5.034e1', 'a50.300']
+    assert natsorted(a, alg=ns.DIGIT) == ['a5.034e1', 'a50', 'a50.4', 'a50.31', 'a50.300', 'a51.', 'a-50']
+    assert natsorted(a, alg=ns.VERSION) == ['a5.034e1', 'a50', 'a50.4', 'a50.31', 'a50.300', 'a51.', 'a-50']
 
 
-def test_natsorted_returns_list_of_numbers_sorted_without_accounting_for_sign_with_UNSIGNED_option():
+def test_natsorted_returns_list_of_numbers_sorted_as_signed_ints_with_SIGNED_option():
+    a = ['a50', 'a51.', 'a50.31', 'a-50', 'a50.4', 'a5.034e1', 'a50.300']
+    assert natsorted(a, alg=ns.SIGNED) == ['a-50', 'a5.034e1', 'a50', 'a50.4', 'a50.31', 'a50.300', 'a51.']
+
+
+def test_natsorted_returns_list_of_numbers_sorted_accounting_for_sign_with_SIGNED_option():
     a = ['a-5', 'a7', 'a+2']
-    assert natsorted(a, alg=ns.UNSIGNED) == ['a7', 'a+2', 'a-5']
+    assert natsorted(a, alg=ns.SIGNED) == ['a-5', 'a+2', 'a7']
 
 
-def test_natsorted_returns_list_of_numbers_sorted_accounting_for_sign_without_UNSIGNED_option():
+def test_natsorted_returns_list_of_numbers_sorted_not_accounting_for_sign_without_SIGNED_option():
     a = ['a-5', 'a7', 'a+2']
-    assert natsorted(a) == ['a-5', 'a+2', 'a7']
+    assert natsorted(a) == ['a7', 'a+2', 'a-5']
 
 
-def test_natsorted_returns_list_of_version_numbers_improperly_sorted_without_VERSION_option():
+def test_natsorted_returns_sorted_list_of_version_numbers_by_default_or_with_VERSION_option():
     a = ['1.9.9a', '1.11', '1.9.9b', '1.11.4', '1.10.1']
-    assert natsorted(a) == ['1.10.1', '1.11', '1.11.4', '1.9.9a', '1.9.9b']
-
-
-def test_natsorted_returns_sorted_list_of_version_numbers_with_VERSION_option():
-    a = ['1.9.9a', '1.11', '1.9.9b', '1.11.4', '1.10.1']
+    assert natsorted(a) == ['1.9.9a', '1.9.9b', '1.10.1', '1.11', '1.11.4']
     assert natsorted(a, alg=ns.VERSION) == ['1.9.9a', '1.9.9b', '1.10.1', '1.11', '1.11.4']
 
 
@@ -262,14 +268,14 @@ def test_natsorted_with_LOCALE_and_CAPITALFIRST_and_LOWERCASE_returns_results_so
 def test_natsorted_with_LOCALE_and_en_setting_returns_results_sorted_by_en_language():
     locale.setlocale(locale.LC_ALL, str('en_US.UTF-8'))
     a = ['c', 'ä', 'b', 'a5,6', 'a5,50']
-    assert natsorted(a, alg=ns.LOCALE) == ['a5,6', 'a5,50', 'ä', 'b', 'c']
+    assert natsorted(a, alg=ns.LOCALE | ns.F) == ['a5,6', 'a5,50', 'ä', 'b', 'c']
     locale.setlocale(locale.LC_ALL, str(''))
 
 
 def test_natsorted_with_LOCALE_and_de_setting_returns_results_sorted_by_de_language():
     locale.setlocale(locale.LC_ALL, str('de_DE.UTF-8'))
     a = ['c', 'ä', 'b', 'a5,6', 'a5,50']
-    assert natsorted(a, alg=ns.LOCALE) == ['a5,50', 'a5,6', 'ä', 'b', 'c']
+    assert natsorted(a, alg=ns.LOCALE | ns.F) == ['a5,50', 'a5,6', 'ä', 'b', 'c']
     locale.setlocale(locale.LC_ALL, str(''))
 
 
@@ -282,19 +288,20 @@ def test_natsorted_with_LOCALE_and_mixed_input_returns_sorted_results_without_er
     locale.setlocale(locale.LC_ALL, str(''))
 
 
-def test_versorted_returns_results_identical_to_natsorted_with_VERSION():
+def test_versorted_returns_results_identical_to_natsorted():
     a = ['1.9.9a', '1.11', '1.9.9b', '1.11.4', '1.10.1']
-    assert versorted(a) == natsorted(a, alg=ns.VERSION)
+    # versorted is retained for backwards compatibility
+    assert versorted(a) == natsorted(a)
+
+
+def test_realsorted_returns_results_identical_to_natsorted_with_REAL():
+    a = ['a50', 'a51.', 'a50.31', 'a-50', 'a50.4', 'a5.034e1', 'a50.300']
+    assert realsorted(a) == natsorted(a, alg=ns.REAL)
 
 
 def test_humansorted_returns_results_identical_to_natsorted_with_LOCALE():
     a = ['Apple', 'corn', 'Corn', 'Banana', 'apple', 'banana']
     assert humansorted(a) == natsorted(a, alg=ns.LOCALE)
-
-
-def test_realsorted_returns_results_identical_to_natsorted():
-    a = ['a50', 'a51.', 'a50.31', 'a50.4', 'a5.034e1', 'a50.300']
-    assert realsorted(a) == natsorted(a)
 
 
 def test_index_natsorted_returns_integer_list_of_sort_order_for_input_list():
@@ -333,19 +340,20 @@ def test_index_natsorted_returns_integer_list_in_proper_order_for_input_paths_wi
     assert index_natsorted(a, alg=ns.PATH) == [1, 2, 0]
 
 
-def test_index_versorted_returns_results_identical_to_index_natsorted_with_VERSION():
+def test_index_versorted_returns_results_identical_to_index_natsorted():
     a = ['1.9.9a', '1.11', '1.9.9b', '1.11.4', '1.10.1']
-    assert index_versorted(a) == index_natsorted(a, alg=ns.VERSION)
+    # index_versorted is retained for backwards compatibility
+    assert index_versorted(a) == index_natsorted(a)
+
+
+def test_index_realsorted_returns_results_identical_to_index_natsorted_with_REAL():
+    a = ['a50', 'a51.', 'a50.31', 'a-50', 'a50.4', 'a5.034e1', 'a50.300']
+    assert index_realsorted(a) == index_natsorted(a, alg=ns.REAL)
 
 
 def test_index_humansorted_returns_results_identical_to_index_natsorted_with_LOCALE():
     a = ['Apple', 'corn', 'Corn', 'Banana', 'apple', 'banana']
     assert index_humansorted(a) == index_natsorted(a, alg=ns.LOCALE)
-
-
-def test_index_realsorted_returns_results_identical_to_index_natsorted():
-    a = ['a50', 'a51.', 'a50.31', 'a50.4', 'a5.034e1', 'a50.300']
-    assert index_realsorted(a) == index_natsorted(a)
 
 
 def test_order_by_index_sorts_list_according_to_order_of_integer_list():

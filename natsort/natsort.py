@@ -172,7 +172,7 @@ def natsort_keygen(key=None, alg=0, **_kwargs):
     will return a plain `natsort_key` instance::
 
         >>> a = ['num5.10', 'num-3', 'num5.3', 'num2']
-        >>> a.sort(key=natsort_keygen())
+        >>> a.sort(key=natsort_keygen(alg=ns.REAL))
         >>> a
         [{u}'num-3', {u}'num2', {u}'num5.10', {u}'num5.3']
 
@@ -216,8 +216,7 @@ def natsorted(seq, key=None, reverse=False, alg=0, **_kwargs):
     See Also
     --------
     natsort_keygen : Generates the key that makes natural sorting possible.
-    versorted : A wrapper for ``natsorted(seq, alg=ns.VERSION)``.
-    realsorted : Identical to ``natsorted(seq)``; for forwards-compatibility.
+    realsorted : A wrapper for ``natsorted(seq, alg=ns.REAL)``.
     humansorted : A wrapper for ``natsorted(seq, alg=ns.LOCALE)``.
     index_natsorted : Returns the sorted indexes from `natsorted`.
 
@@ -250,50 +249,19 @@ def natsorted(seq, key=None, reverse=False, alg=0, **_kwargs):
 @u_format
 def versorted(seq, key=None, reverse=False, alg=0, **_kwargs):
     """\
-    Convenience function to sort version numbers.
+    Identical to :func:`natsorted`.
 
-    Convenience function to sort version numbers. This is a wrapper
-    around ``natsorted(seq, alg=ns.VERSION)``.
+    This function exists for backwards compatibility with `natsort`
+    version < 4.0.0. Future development should use :func:`natsorted`.
 
-    Parameters
-    ----------
-    seq : iterable
-        The sequence to sort.
-
-    key : callable, optional
-        A key used to determine how to sort each element of the sequence.
-        It is **not** applied recursively.
-        It should accept a single argument and return a single value.
-
-    reverse : {{True, False}}, optional
-        Return the list in reversed sorted order. The default is
-        `False`.
-
-    alg : ns enum, optional
-        This option is used to control which algorithm `natsort`
-        uses when sorting. For details into these options, please see
-        the :class:`ns` class documentation. The default is `ns.VERSION`.
-
-    Returns
-    -------
-    out : list
-        The sorted sequence.
+    Please see the :func:`natsorted` documentation for use.
 
     See Also
     --------
-    index_versorted : Returns the sorted indexes from `versorted`.
-
-    Examples
-    --------
-    Use `versorted` just like the builtin `sorted`::
-
-        >>> a = ['num4.0.2', 'num3.4.1', 'num3.4.2']
-        >>> versorted(a)
-        [{u}'num3.4.1', {u}'num3.4.2', {u}'num4.0.2']
+    natsorted
 
     """
-    alg = _args_to_enum(**_kwargs) | alg
-    return natsorted(seq, key, reverse=reverse, alg=alg | ns.VERSION)
+    return natsorted(seq, key, reverse, alg, **_kwargs)
 
 
 @u_format
@@ -372,20 +340,21 @@ def humansorted(seq, key=None, reverse=False, alg=0):
         [{u}'apple', {u}'Apple', {u}'banana', {u}'Banana']
 
     """
-    return natsorted(seq, key, reverse=reverse, alg=alg | ns.LOCALE)
+    return natsorted(seq, key, reverse, alg | ns.LOCALE)
 
 
 @u_format
 def realsorted(seq, key=None, reverse=False, alg=0):
     """\
-    Identical to :func:`natsorted`.
+    Convenience function to properly sort signed floats.
 
-    This is provided for forward-compatibility with :mod:`natsort`
-    version >= 4.0.0.  If you are relying on the default sorting
-    behavior of :func:`natsorted` to sort by signed floats,
-    you should consider using this function as the default sorting
-    behavior of :func:`natsorted` will changed to unsigned
-    integers in :mod:`natsort` version >= 4.0.0.
+    Convenience function to properly sort signed floats within
+    strings (i.e. "a-5.7"). This is a wrapper around
+    ``natsorted(seq, alg=ns.REAL)``.
+
+    The behavior of :func:`realsorted` for `natsort` version >= 4.0.0
+    was the default behavior of :func:`natsorted` for `natsort`
+    version < 4.0.0.
 
     Parameters
     ----------
@@ -404,7 +373,7 @@ def realsorted(seq, key=None, reverse=False, alg=0):
     alg : ns enum, optional
         This option is used to control which algorithm `natsort`
         uses when sorting. For details into these options, please see
-        the :class:`ns` class documentation. The default is `ns.FLOAT`.
+        the :class:`ns` class documentation. The default is `ns.REAL`.
 
     Returns
     -------
@@ -420,11 +389,13 @@ def realsorted(seq, key=None, reverse=False, alg=0):
     Use `realsorted` just like the builtin `sorted`::
 
         >>> a = ['num5.10', 'num-3', 'num5.3', 'num2']
+        >>> natsorted(a)
+        [{u}'num2', {u}'num5.3', {u}'num5.10', {u}'num-3']
         >>> realsorted(a)
         [{u}'num-3', {u}'num2', {u}'num5.10', {u}'num5.3']
 
     """
-    return natsorted(seq, key=key, reverse=reverse, alg=alg)
+    return natsorted(seq, key, reverse, alg | ns.REAL)
 
 
 @u_format
@@ -454,7 +425,7 @@ def index_natsorted(seq, key=None, reverse=False, alg=0, **_kwargs):
     alg : ns enum, optional
         This option is used to control which algorithm `natsort`
         uses when sorting. For details into these options, please see
-        the :class:`ns` class documentation. The default is `ns.FLOAT`.
+        the :class:`ns` class documentation. The default is `ns.INT`.
 
     Returns
     -------
@@ -511,56 +482,20 @@ def index_natsorted(seq, key=None, reverse=False, alg=0, **_kwargs):
 @u_format
 def index_versorted(seq, key=None, reverse=False, alg=0, **_kwargs):
     """\
-    Return the list of the indexes used to sort the input sequence
-    of version numbers.
+    Identical to :func:`index_natsorted`.
 
-    Sorts a sequence of version, but returns a list of sorted the
-    indexes and not the sorted list. This list of indexes can be
-    used to sort multiple lists by the sorted order of the given
-    sequence.
+    This function exists for backwards compatibility with
+    ``index_natsort`` version < 4.0.0. Future development should use
+    :func:`index_natsorted`.
 
-    This is a wrapper around ``index_natsorted(seq, alg=ns.VERSION)``.
-
-    Parameters
-    ----------
-    seq: iterable
-        The sequence to sort.
-
-    key: callable, optional
-        A key used to determine how to sort each element of the sequence.
-        It is **not** applied recursively.
-        It should accept a single argument and return a single value.
-
-    reverse : {{True, False}}, optional
-        Return the list in reversed sorted order. The default is
-        `False`.
-
-    alg : ns enum, optional
-        This option is used to control which algorithm `natsort`
-        uses when sorting. For details into these options, please see
-        the :class:`ns` class documentation. The default is `ns.VERSION`.
-
-    Returns
-    -------
-    out : tuple
-        The ordered indexes of the sequence.
+    Please see the :func:`index_natsorted` documentation for use.
 
     See Also
     --------
-    versorted
-    order_by_index
-
-    Examples
-    --------
-    Use `index_versorted` just like the builtin `sorted`::
-
-        >>> a = ['num4.0.2', 'num3.4.1', 'num3.4.2']
-        >>> index_versorted(a)
-        [1, 2, 0]
+    index_natsorted
 
     """
-    alg = _args_to_enum(**_kwargs) | alg
-    return index_natsorted(seq, key, reverse=reverse, alg=alg | ns.VERSION)
+    return index_natsorted(seq, key, reverse, alg, **_kwargs)
 
 
 @u_format
@@ -633,20 +568,25 @@ def index_humansorted(seq, key=None, reverse=False, alg=0):
         [2, 0, 3, 1]
 
     """
-    return index_natsorted(seq, key, reverse=reverse, alg=alg | ns.LOCALE)
+    return index_natsorted(seq, key, reverse, alg | ns.LOCALE)
 
 
 @u_format
 def index_realsorted(seq, key=None, reverse=False, alg=0):
     """\
-    Identical to :func:`index_natsorted`.
+    Return the list of the indexes used to sort the input sequence
+    in a locale-aware manner.
 
-    This is provided for forward-compatibility with :mod:`natsort`
-    version >= 4.0.0.  If you are relying on the default sorting
-    behavior of :func:`index_natsorted` to sort by signed floats,
-    you should consider using this function as the default sorting
-    behavior of :func:`index_natsorted` will changed to unsigned
-    integers in :mod:`natsort` version >= 4.0.0.
+    Sorts a sequence in a locale-aware manner, but returns a list
+    of sorted the indexes and not the sorted list. This list of
+    indexes can be used to sort multiple lists by the sorted order
+    of the given sequence.
+
+    This is a wrapper around ``index_natsorted(seq, alg=ns.REAL)``.
+
+    The behavior of :func:`index_realsorted` in `natsort` version >= 4.0.0
+    was the default behavior of :func:`index_natsorted` for `natsort`
+    version < 4.0.0.
 
     Parameters
     ----------
@@ -665,7 +605,7 @@ def index_realsorted(seq, key=None, reverse=False, alg=0):
     alg : ns enum, optional
         This option is used to control which algorithm `natsort`
         uses when sorting. For details into these options, please see
-        the :class:`ns` class documentation.
+        the :class:`ns` class documentation. The default is `ns.REAL`.
 
     Returns
     -------
@@ -686,7 +626,7 @@ def index_realsorted(seq, key=None, reverse=False, alg=0):
         [1, 3, 0, 2]
 
     """
-    return index_natsorted(seq, key=key, reverse=reverse, alg=alg)
+    return index_natsorted(seq, key, reverse, alg | ns.REAL)
 
 
 @u_format

@@ -39,8 +39,8 @@ else:
     has_pathlib = True
 
 # Group algorithm types for easy extraction
-_NUMBER_ALGORITHMS = ns.FLOAT | ns.INT | ns.UNSIGNED | ns.NOEXP
-_ALL_BUT_PATH = (ns.F | ns.I | ns.U | ns.N | ns.L |
+_NUMBER_ALGORITHMS = ns.FLOAT | ns.INT | ns.UNSIGNED | ns.SIGNED | ns.NOEXP
+_ALL_BUT_PATH = (ns.F | ns.I | ns.U | ns.S | ns.N | ns.L |
                  ns.IC | ns.LF | ns.G | ns.UG | ns.TYPESAFE)
 
 # The regex that locates floats
@@ -59,20 +59,20 @@ _int_sign_re = re.compile(r'([-+]?\d+)', re.U)
 
 # This dict will help select the correct regex and number conversion function.
 _regex_and_num_function_chooser = {
-    (ns.F, '.'):               (_float_sign_exp_re,     fast_float),
-    (ns.F | ns.N, '.'):        (_float_sign_noexp_re,   fast_float),
+    (ns.F | ns.S, '.'):        (_float_sign_exp_re,     fast_float),
+    (ns.F | ns.S | ns.N, '.'): (_float_sign_noexp_re,   fast_float),
     (ns.F | ns.U, '.'):        (_float_nosign_exp_re,   fast_float),
     (ns.F | ns.U | ns.N, '.'): (_float_nosign_noexp_re, fast_float),
-    (ns.I, '.'):               (_int_sign_re,   fast_int),
-    (ns.I | ns.N, '.'):        (_int_sign_re,   fast_int),
+    (ns.I | ns.S, '.'):        (_int_sign_re,   fast_int),
+    (ns.I | ns.S | ns.N, '.'): (_int_sign_re,   fast_int),
     (ns.I | ns.U, '.'):        (_int_nosign_re, fast_int),
     (ns.I | ns.U | ns.N, '.'): (_int_nosign_re, fast_int),
-    (ns.F, ','):               (_float_sign_exp_re_c,     fast_float),
-    (ns.F | ns.N, ','):        (_float_sign_noexp_re_c,   fast_float),
+    (ns.F | ns.S, ','):        (_float_sign_exp_re_c,     fast_float),
+    (ns.F | ns.S | ns.N, ','): (_float_sign_noexp_re_c,   fast_float),
     (ns.F | ns.U, ','):        (_float_nosign_exp_re_c,   fast_float),
     (ns.F | ns.U | ns.N, ','): (_float_nosign_noexp_re_c, fast_float),
-    (ns.I, ','):               (_int_sign_re,   fast_int),
-    (ns.I | ns.N, ','):        (_int_sign_re,   fast_int),
+    (ns.I | ns.S, ','):        (_int_sign_re,   fast_int),
+    (ns.I | ns.S | ns.N, ','): (_int_sign_re,   fast_int),
     (ns.I | ns.U, ','):        (_int_nosign_re, fast_int),
     (ns.I | ns.U | ns.N, ','): (_int_nosign_re, fast_int),
 }
@@ -91,17 +91,22 @@ def _do_decoding(s, encoding):
 def _args_to_enum(**kwargs):
     """A function to convert input booleans to an enum-type argument."""
     alg = 0
-    if 'number_type' in kwargs and kwargs['number_type'] is not float:
+    keys = ('number_type', 'signed', 'exp', 'as_path', 'py3_safe')
+    if any(x not in keys for x in kwargs):
+        x = set(kwargs) - set(keys)
+        raise TypeError('Invalid argument(s): ' + ', '.join(x))
+    if 'number_type' in kwargs and kwargs['number_type'] is not int:
         msg = "The 'number_type' argument is deprecated as of 3.5.0, "
         msg += "please use 'alg=ns.FLOAT', 'alg=ns.INT', or 'alg=ns.VERSION'"
         warn(msg, DeprecationWarning)
+        alg |= (_ns['FLOAT'] * bool(kwargs['number_type'] is float))
         alg |= (_ns['INT'] * bool(kwargs['number_type'] in (int, None)))
-        alg |= (_ns['UNSIGNED'] * (kwargs['number_type'] is None))
+        alg |= (_ns['SIGNED'] * (kwargs['number_type'] not in (float, None)))
     if 'signed' in kwargs and kwargs['signed'] is not None:
         msg = "The 'signed' argument is deprecated as of 3.5.0, "
-        msg += "please use 'alg=ns.UNSIGNED'."
+        msg += "please use 'alg=ns.SIGNED'."
         warn(msg, DeprecationWarning)
-        alg |= (_ns['UNSIGNED'] * (not kwargs['signed']))
+        alg |= (_ns['SIGNED'] * bool(kwargs['signed']))
     if 'exp' in kwargs and kwargs['exp'] is not None:
         msg = "The 'exp' argument is deprecated as of 3.5.0, "
         msg += "please use 'alg=ns.NOEXP'."
