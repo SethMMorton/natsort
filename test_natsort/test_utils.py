@@ -8,7 +8,7 @@ from natsort.ns_enum import ns
 from natsort.utils import _number_extracter, _py3_safe, _natsort_key, _args_to_enum
 from natsort.utils import _float_sign_exp_re, _float_nosign_exp_re, _float_sign_noexp_re
 from natsort.utils import _float_nosign_noexp_re, _int_nosign_re, _int_sign_re
-from natsort.locale_help import use_pyicu
+from natsort.locale_help import use_pyicu, null_string
 
 try:
     from fastnumbers import fast_float, fast_int
@@ -162,16 +162,20 @@ def test_number_extracter_extracts_numbers_and_strxfrms_letter_doubled_strings_w
 
 
 def test_py3_safe_does_nothing_if_no_numbers():
-    assert _py3_safe(['a', 'b', 'c']) == ['a', 'b', 'c']
-    assert _py3_safe(['a']) == ['a']
+    assert _py3_safe(['a', 'b', 'c'], False) == ['a', 'b', 'c']
+    assert _py3_safe(['a'], False) == ['a']
 
 
 def test_py3_safe_does_nothing_if_only_one_number():
-    assert _py3_safe(['a', 5]) == ['a', 5]
+    assert _py3_safe(['a', 5], False) == ['a', 5]
 
 
 def test_py3_safe_inserts_empty_string_between_two_numbers():
-    assert _py3_safe([5, 9]) == [5, '', 9]
+    assert _py3_safe([5, 9], False) == [5, '', 9]
+
+
+def test_py3_safe_with_use_locale_inserts_null_string_between_two_numbers():
+    assert _py3_safe([5, 9], True) == [5, null_string, 9]
 
 
 def test__natsort_key_with_float_splits_input_into_string_and_signed_float_with_exponent():

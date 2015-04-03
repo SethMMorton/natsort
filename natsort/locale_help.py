@@ -15,6 +15,13 @@ from locale import localeconv
 # Local imports.
 from natsort.py23compat import py23_zip
 
+# If the user has fastnumbers installed, they will get great speed
+# benefits. If not, we simulate the functions here.
+try:
+    from fastnumbers import isreal
+except ImportError:
+    from natsort.fake_fastnumbers import isreal
+
 # We need cmp_to_key for Python2 because strxfrm is broken for unicode.
 if sys.version[:3] == '2.7':
     from functools import cmp_to_key
@@ -70,12 +77,15 @@ try:
             _d[l] = c.getSortKey
         return _d[l]
     use_pyicu = True
+    null_string = b''
 except ImportError:
     if sys.version[0] == '2':
         from locale import strcoll
         strxfrm = cmp_to_key(strcoll)
+        null_string = strxfrm('')
     else:
         from locale import strxfrm
+        null_string = ''
     use_pyicu = False
 
 
@@ -119,12 +129,12 @@ def locale_convert(val, func, group):
     if group:
         if use_pyicu:
             xfrm = get_pyicu_transform(getlocale())
-            return xfrm(groupletters(val)) if s is t else t
+            return xfrm(groupletters(val)) if not isreal(t) else t
         else:
-            return strxfrm(groupletters(val)) if s is t else t
+            return strxfrm(groupletters(val)) if not isreal(t) else t
     else:
         if use_pyicu:
             xfrm = get_pyicu_transform(getlocale())
-            return xfrm(val) if s is t else t
+            return xfrm(val) if not isreal(t) else t
         else:
-            return strxfrm(val) if s is t else t
+            return strxfrm(val) if not isreal(t) else t

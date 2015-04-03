@@ -16,6 +16,7 @@ from __future__ import (print_function, division,
                         unicode_literals, absolute_import)
 
 # Std lib. imports.
+import re
 from operator import itemgetter
 from functools import partial
 from warnings import warn
@@ -328,8 +329,10 @@ def natsorted(seq, key=None, number_type=float, signed=None, exp=None,
                       key=natsort_keygen(key, alg=alg))
     except TypeError as e:  # pragma: no cover
         # In the event of an unresolved "unorderable types" error
+        # for string to number type comparisons (not str/bytes),
         # attempt to sort again, being careful to prevent this error.
-        if 'unorderable types' in str(e):
+        r = re.compile(r'(?:str|bytes)\(\) [<>] (?:str|bytes)\(\)')
+        if 'unorderable types' in str(e) and not r.search(str(e)):
             return sorted(seq, reverse=reverse,
                           key=natsort_keygen(key,
                                              alg=alg | ns.TYPESAFE))
