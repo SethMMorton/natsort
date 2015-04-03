@@ -92,6 +92,8 @@ when you sort:
     >>> # On Python 2, sorted(a) would return [2.0, 6, '4.5', '5', 'a']
     >>> # On Python 3, sorted(a) would raise an "unorderable types" TypeError
 
+You cannot mix and match ``str`` and ``bytes`` objects on Python 3.
+
 The natsort algorithm does other fancy things like 
 
  - recursively descend into lists of lists
