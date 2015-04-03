@@ -83,8 +83,11 @@ class ns(object):
     TYPESAFE, T
         Try hard to avoid "unorderable types" error on Python 3. It
         is the same as setting the old `py3_safe` option to `True`.
+        This is only needed if not using ``UNSIGNED`` or if
+        sorting by ``FLOAT``.
         You shouldn't need to use this unless you are using
-        ``natsort_keygen``.
+        ``natsort_keygen``. *NOTE:* It cannot resolve the ``TypeError``
+        from trying to compare `str` and `bytes`.
 
     Notes
     -----
