@@ -92,6 +92,8 @@ when you sort:
     >>> # On Python 2, sorted(a) would return [2.0, 6, '4.5', '5', 'a']
     >>> # On Python 3, sorted(a) would raise an "unorderable types" TypeError
 
+You cannot mix and match ``str`` and ``bytes`` objects on Python 3.
+
 The natsort algorithm does other fancy things like 
 
  - recursively descend into lists of lists
@@ -176,10 +178,16 @@ History
 These are the last three entries of the changelog.  See the package documentation
 for the complete `changelog <http://pythonhosted.org//natsort/changelog.html>`_.
 
+04-02-2015 v. 3.5.4
+'''''''''''''''''''
+
+    - Fixed bug where a 'TypeError' was raised if a string containing a leading
+      number was sorted with alpha-only strings when 'LOCALE' is used.
+
 03-26-2015 v. 3.5.3
 '''''''''''''''''''
 
-    - Fixed bug where ``--reverse-filter`` option in shell script was not
+    - Fixed bug where '--reverse-filter; option in shell script was not
       getting checked for correctness.
     - Documentation updates to better describe locale bug, and illustrate
       upcoming default behavior change.
@@ -190,12 +198,3 @@ for the complete `changelog <http://pythonhosted.org//natsort/changelog.html>`_.
 
     - Enhancement that will convert a 'pathlib.Path' object to a 'str' if
       'ns.PATH' is enabled.
-
-09-25-2014 v. 3.5.1
-'''''''''''''''''''
-
-    - Fixed bug that caused list/tuples to fail when using 'ns.LOWECASEFIRST'
-      or 'ns.IGNORECASE'.
-    - Refactored modules so that only the public API was in natsort.py and
-      ns_enum.py.
-    - Refactored all import statements to be absolute, not relative.

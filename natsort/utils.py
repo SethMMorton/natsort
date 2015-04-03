@@ -17,7 +17,7 @@ from itertools import islice
 from locale import localeconv
 
 # Local imports.
-from natsort.locale_help import locale_convert, grouper
+from natsort.locale_help import locale_convert, grouper, null_string
 from natsort.py23compat import py23_str, py23_zip
 from natsort.ns_enum import ns, _ns
 
@@ -132,13 +132,13 @@ def _number_extracter(s, regex, numconv, py3_safe, use_locale, group_letters):
     if not s:  # Return empty tuple for empty results.
         return ()
     elif isreal(s[0]):
-        s = [''] + s
+        s = [null_string if use_locale else ''] + s
 
     # The _py3_safe function inserts "" between numbers in the list,
     # and is used to get around "unorderable types" in complex cases.
     # It is a separate function that needs to be requested specifically
     # because it is expensive to call.
-    return _py3_safe(s) if py3_safe else s
+    return _py3_safe(s, use_locale) if py3_safe else s
 
 
 def _path_splitter(s, _d_match=re.compile(r'\.\d').match):
@@ -189,7 +189,7 @@ def _path_splitter(s, _d_match=re.compile(r'\.\d').match):
     return path_parts + base_parts
 
 
-def _py3_safe(parsed_list):
+def _py3_safe(parsed_list, use_locale):
     """Insert '' between two numbers."""
     length = len(parsed_list)
     if length < 2:
@@ -200,7 +200,7 @@ def _py3_safe(parsed_list):
         for before, after in py23_zip(islice(parsed_list, 0, length-1),
                                       islice(parsed_list, 1, None)):
             if isreal(before) and isreal(after):
-                nl_append("")
+                nl_append(null_string if use_locale else '')
             nl_append(after)
         return new_list
 
@@ -277,6 +277,10 @@ def _natsort_key(val, key, alg):
                                            use_locale,
                                            alg & _ns['GROUPLETTERS']))
         except (TypeError, AttributeError):
+            # Check if it is a bytes type, and if so return as a
+            # one element tuple.
+            if isinstance(val, bytes):
+                return (val,)
             # If not strings, assume it is an iterable that must
             # be parsed recursively. Do not apply the key recursively.
             # If this string was split as a path, turn off 'PATH'.
@@ -288,4 +292,5 @@ def _natsort_key(val, key, alg):
             # If there is still an error, it must be a number.
             # Return as-is, with a leading empty string.
             except TypeError:
-                return (('', val,),) if alg & _ns['PATH'] else ('', val,)
+                n = null_string if use_locale else ''
+                return ((n, val,),) if alg & _ns['PATH'] else (n, val,)

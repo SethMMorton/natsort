@@ -4,6 +4,7 @@ Here are a collection of examples of how this module can be used.
 See the README or the natsort homepage for more details.
 """
 from __future__ import unicode_literals, print_function
+import sys
 import warnings
 import locale
 from operator import itemgetter
@@ -103,6 +104,20 @@ def test_natsorted_returns_sorted_list_with_mixed_type_input_and_does_not_raise_
     assert natsorted(a) == ['2.5', 4.5, 6, '7', 'a']
     a = [46, '5a5b2', 'af5', '5a5-4']
     assert natsorted(a) == ['5a5-4', '5a5b2', 46, 'af5']
+
+
+def test_natsorted_with_mixed_input_returns_sorted_results_without_error():
+    a = ['2', 'ä', 'b', 1.5, 3]
+    assert natsorted(a) == [1.5, '2', 3, 'b', 'ä']
+
+
+def test_natsorted_with_mixed_input_raises_TypeError_if_bytes_type_is_involved_on_Python3():
+    if sys.version[0] == '3':
+        with raises(TypeError) as e:
+            assert natsorted(['ä', b'b'])
+        assert 'bytes' in str(e.value)
+    else:
+        assert True
 
 
 def test_natsorted_raises_ValueError_for_non_iterable_input():
@@ -212,6 +227,15 @@ def test_natsorted_with_LOCALE_and_de_setting_returns_results_sorted_by_de_langu
     locale.setlocale(locale.LC_ALL, str('de_DE.UTF-8'))
     a = ['c', 'ä', 'b', 'a5,6', 'a5,50']
     assert natsorted(a, alg=ns.LOCALE) == ['a5,50', 'a5,6', 'ä', 'b', 'c']
+    locale.setlocale(locale.LC_ALL, str(''))
+
+
+def test_natsorted_with_LOCALE_and_mixed_input_returns_sorted_results_without_error():
+    locale.setlocale(locale.LC_ALL, str('en_US.UTF-8'))
+    a = ['0', 'Á', '2', 'Z']
+    assert natsorted(a) == ['0', '2', 'Z', 'Á']
+    a = ['2', 'ä', 'b', 1.5, 3]
+    assert natsorted(a, alg=ns.LOCALE) == [1.5, '2', 3, 'ä', 'b']
     locale.setlocale(locale.LC_ALL, str(''))
 
 

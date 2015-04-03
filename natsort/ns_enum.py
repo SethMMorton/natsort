@@ -83,6 +83,8 @@ class ns(object):
     TYPESAFE, T
         Try hard to avoid "unorderable types" error on Python 3. It
         is the same as setting the old `py3_safe` option to `True`.
+        You shouldn't need to use this unless you are using
+        ``natsort_keygen``.
 
     Notes
     -----

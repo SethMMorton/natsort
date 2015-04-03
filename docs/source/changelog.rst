@@ -3,10 +3,16 @@
 Changelog
 ---------
 
+04-02-2015 v. 3.5.4
+'''''''''''''''''''
+
+    - Fixed bug where a 'TypeError' was raised if a string containing a leading
+      number was sorted with alpha-only strings when 'LOCALE' is used.
+
 03-26-2015 v. 3.5.3
 '''''''''''''''''''
 
-    - Fixed bug where ``--reverse-filter`` option in shell script was not
+    - Fixed bug where '--reverse-filter' option in shell script was not
       getting checked for correctness.
     - Documentation updates to better describe locale bug, and illustrate
       upcoming default behavior change.
