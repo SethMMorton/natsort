@@ -311,6 +311,7 @@ def natsorted(seq, key=None, number_type=float, signed=None, exp=None,
     --------
     natsort_keygen : Generates the key that makes natural sorting possible.
     versorted : A wrapper for ``natsorted(seq, alg=ns.VERSION)``.
+    realsorted : Identical to ``natsorted(seq)``; for forwards-compatibility.
     humansorted : A wrapper for ``natsorted(seq, alg=ns.LOCALE)``.
     index_natsorted : Returns the sorted indexes from `natsorted`.
 
@@ -372,7 +373,7 @@ def versorted(seq, key=None, reverse=False, as_path=None, alg=0):
     alg : ns enum, optional
         This option is used to control which algorithm `natsort`
         uses when sorting. For details into these options, please see
-        the :class:`ns` class documentation. The default is `ns.FLOAT`.
+        the :class:`ns` class documentation. The default is `ns.VERSION`.
 
     Returns
     -------
@@ -412,7 +413,7 @@ def humansorted(seq, key=None, reverse=False, alg=0):
                  if you wish to use ``humansorted``.  If you are on
                  one of systems and get unexpected results, please try
                  using `PyICU <https://pypi.python.org/pypi/PyICU>`_
-                 before filing a bug report to ``natsort``.
+                 before filing a bug report to `natsort`.
 
     Parameters
     ----------
@@ -431,7 +432,7 @@ def humansorted(seq, key=None, reverse=False, alg=0):
     alg : ns enum, optional
         This option is used to control which algorithm `natsort`
         uses when sorting. For details into these options, please see
-        the :class:`ns` class documentation. The default is `ns.FLOAT`.
+        the :class:`ns` class documentation. The default is `ns.LOCALE`.
 
     Returns
     -------
@@ -473,6 +474,58 @@ def humansorted(seq, key=None, reverse=False, alg=0):
 
     """
     return natsorted(seq, key, reverse=reverse, alg=alg | ns.LOCALE)
+
+
+@u_format
+def realsorted(seq, key=None, reverse=False, alg=0):
+    """\
+    Identical to :func:`natsorted`.
+
+    This is provided for forward-compatibility with :mod:`natsort`
+    version >= 4.0.0.  If you are relying on the default sorting
+    behavior of :func:`natsorted` to sort by signed floats,
+    you should consider using this function as the default sorting
+    behavior of :func:`natsorted` will changed to unsigned
+    integers in :mod:`natsort` version >= 4.0.0.
+
+    Parameters
+    ----------
+    seq : iterable
+        The sequence to sort.
+
+    key : callable, optional
+        A key used to determine how to sort each element of the sequence.
+        It is **not** applied recursively.
+        It should accept a single argument and return a single value.
+
+    reverse : {{True, False}}, optional
+        Return the list in reversed sorted order. The default is
+        `False`.
+
+    alg : ns enum, optional
+        This option is used to control which algorithm `natsort`
+        uses when sorting. For details into these options, please see
+        the :class:`ns` class documentation. The default is `ns.FLOAT`.
+
+    Returns
+    -------
+    out : list
+        The sorted sequence.
+
+    See Also
+    --------
+    index_realsorted : Returns the sorted indexes from `realsorted`.
+
+    Examples
+    --------
+    Use `realsorted` just like the builtin `sorted`::
+
+        >>> a = ['num5.10', 'num-3', 'num5.3', 'num2']
+        >>> realsorted(a)
+        [{u}'num-3', {u}'num2', {u}'num5.10', {u}'num5.3']
+
+    """
+    return natsorted(seq, key=key, reverse=reverse, alg=alg)
 
 
 @u_format
@@ -617,7 +670,7 @@ def index_versorted(seq, key=None, reverse=False, as_path=None, alg=0):
     alg : ns enum, optional
         This option is used to control which algorithm `natsort`
         uses when sorting. For details into these options, please see
-        the :class:`ns` class documentation. The default is `ns.FLOAT`.
+        the :class:`ns` class documentation. The default is `ns.VERSION`.
 
     Returns
     -------
@@ -672,7 +725,7 @@ def index_humansorted(seq, key=None, reverse=False, alg=0):
     alg : ns enum, optional
         This option is used to control which algorithm `natsort`
         uses when sorting. For details into these options, please see
-        the :class:`ns` class documentation. The default is `ns.FLOAT`.
+        the :class:`ns` class documentation. The default is `ns.LOCALE`.
 
     Returns
     -------
@@ -716,6 +769,59 @@ def index_humansorted(seq, key=None, reverse=False, alg=0):
 
 
 @u_format
+def index_realsorted(seq, key=None, reverse=False, alg=0):
+    """\
+    Identical to :func:`index_natsorted`.
+
+    This is provided for forward-compatibility with :mod:`natsort`
+    version >= 4.0.0.  If you are relying on the default sorting
+    behavior of :func:`index_natsorted` to sort by signed floats,
+    you should consider using this function as the default sorting
+    behavior of :func:`index_natsorted` will changed to unsigned
+    integers in :mod:`natsort` version >= 4.0.0.
+
+    Parameters
+    ----------
+    seq: iterable
+        The sequence to sort.
+
+    key: callable, optional
+        A key used to determine how to sort each element of the sequence.
+        It is **not** applied recursively.
+        It should accept a single argument and return a single value.
+
+    reverse : {{True, False}}, optional
+        Return the list in reversed sorted order. The default is
+        `False`.
+
+    alg : ns enum, optional
+        This option is used to control which algorithm `natsort`
+        uses when sorting. For details into these options, please see
+        the :class:`ns` class documentation.
+
+    Returns
+    -------
+    out : tuple
+        The ordered indexes of the sequence.
+
+    See Also
+    --------
+    realsorted
+    order_by_index
+
+    Examples
+    --------
+    Use `index_realsorted` just like the builtin `sorted`::
+
+        >>> a = ['num5.10', 'num-3', 'num5.3', 'num2']
+        >>> index_realsorted(a)
+        [1, 3, 0, 2]
+
+    """
+    return index_natsorted(seq, key=key, reverse=reverse, alg=alg)
+
+
+@u_format
 def order_by_index(seq, index, iter=False):
     """\
     Order a given sequence by an index sequence.
@@ -753,6 +859,7 @@ def order_by_index(seq, index, iter=False):
     index_natsorted
     index_versorted
     index_humansorted
+    index_realsorted
 
     Examples
     --------

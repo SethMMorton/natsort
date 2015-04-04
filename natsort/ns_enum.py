@@ -11,7 +11,7 @@ class ns(object):
 
     This class acts like an enum to control the `natsort` algorithm. The
     user may select several options simultaneously by or'ing the options
-    together.  For example, to choose ``ns.INT``, `ns.PATH``, and
+    together.  For example, to choose ``ns.INT``, ``ns.PATH``, and
     ``ns.LOCALE``, you could do ``ns.INT | ns.LOCALE | ns.PATH``.
 
     Each option has a shortened 1- or 2-letter form.
@@ -49,7 +49,7 @@ class ns(object):
     PATH, P
         Tell `natsort` to interpret strings as filesystem paths, so they
         will be split according to the filesystem separator
-        (i.e. ‘/’ on UNIX, ‘\’ on Windows), as well as splitting on the
+        (i.e. '/' on UNIX, '\\' on Windows), as well as splitting on the
         file extension, if any. Without this, lists of file paths like
         ``['Folder/', 'Folder (1)/', 'Folder (10)/']`` will not be sorted
         properly; 'Folder/' will be placed at the end, not at the front.
@@ -83,8 +83,11 @@ class ns(object):
     TYPESAFE, T
         Try hard to avoid "unorderable types" error on Python 3. It
         is the same as setting the old `py3_safe` option to `True`.
+        This is only needed if not using ``UNSIGNED`` or if
+        sorting by ``FLOAT``.
         You shouldn't need to use this unless you are using
-        ``natsort_keygen``.
+        ``natsort_keygen``. *NOTE:* It cannot resolve the ``TypeError``
+        from trying to compare `str` and `bytes`.
 
     Notes
     -----

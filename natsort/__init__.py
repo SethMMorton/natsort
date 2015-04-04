@@ -5,6 +5,7 @@ from __future__ import (print_function, division,
 # Local imports.
 from natsort.natsort import (natsort_key, natsort_keygen, ns,
                              natsorted, humansorted, versorted,
+                             realsorted, index_realsorted,
                              index_natsorted, index_versorted,
                              index_humansorted, order_by_index)
 from natsort._version import __version__
@@ -15,9 +16,11 @@ __all__ = [
     'natsorted',
     'versorted'
     'humansorted',
+    'realsorted',
     'index_natsorted',
     'index_versorted',
     'index_humansorted',
+    'index_realsorted',
     'order_by_index',
     'ns',
 ]

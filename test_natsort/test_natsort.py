@@ -11,6 +11,7 @@ from operator import itemgetter
 from pytest import raises
 from natsort import natsorted, index_natsorted, natsort_key, versorted, index_versorted
 from natsort import humansorted, index_humansorted, natsort_keygen, order_by_index, ns
+from natsort import realsorted, index_realsorted
 from natsort.utils import _natsort_key
 
 
@@ -249,6 +250,11 @@ def test_humansorted_returns_results_identical_to_natsorted_with_LOCALE():
     assert humansorted(a) == natsorted(a, alg=ns.LOCALE)
 
 
+def test_realsorted_returns_results_identical_to_natsorted():
+    a = ['a50', 'a51.', 'a50.31', 'a50.4', 'a5.034e1', 'a50.300']
+    assert realsorted(a) == natsorted(a)
+
+
 def test_index_natsorted_returns_integer_list_of_sort_order_for_input_list():
     a = ['num3', 'num5', 'num2']
     b = ['foo', 'bar', 'baz']
@@ -293,6 +299,11 @@ def test_index_versorted_returns_results_identical_to_index_natsorted_with_VERSI
 def test_index_humansorted_returns_results_identical_to_index_natsorted_with_LOCALE():
     a = ['Apple', 'corn', 'Corn', 'Banana', 'apple', 'banana']
     assert index_humansorted(a) == index_natsorted(a, alg=ns.LOCALE)
+
+
+def test_index_realsorted_returns_results_identical_to_index_natsorted():
+    a = ['a50', 'a51.', 'a50.31', 'a50.4', 'a5.034e1', 'a50.300']
+    assert index_realsorted(a) == index_natsorted(a)
 
 
 def test_order_by_index_sorts_list_according_to_order_of_integer_list():

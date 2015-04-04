@@ -11,7 +11,7 @@ Natural sorting for python.
 
     - Source Code: https://github.com/SethMMorton/natsort
     - Downloads: https://pypi.python.org/pypi/natsort
-    - Documentation: http://pythonhosted.org//natsort/
+    - Documentation: http://pythonhosted.org/natsort/
 
 Please see `Deprecation Notices`_ for an `important` backwards incompatibility notice
 for ``natsort`` version 4.0.0.
@@ -158,7 +158,8 @@ Deprecation Notices
    pass the "least astonishment" test for the most common use case, which is
    sorting version numbers. If you currently rely on the default behavior
    to be signed floats, it is recommend that you add ``alg=ns.F`` to your
-   ``natsort`` calls.
+   ``natsort`` calls or switch to the new ``realsorted`` function which
+   behaves identically to the current ``natsorted`` with default values.
  - In ``natsort`` version 4.0.0, the ``number_type``, ``signed``, ``exp``,
    ``as_path``, and ``py3_safe`` options will be removed from the (documented)
    API, in favor of the ``alg`` option and ``ns`` enum.  They will remain as
@@ -177,6 +178,13 @@ History
 
 These are the last three entries of the changelog.  See the package documentation
 for the complete `changelog <http://pythonhosted.org//natsort/changelog.html>`_.
+
+04-04-2015 v. 3.5.4
+'''''''''''''''''''
+
+    - Added 'realsorted' and 'index_realsorted' functions for
+      forward-compatibility with >= 4.0.0.
+    - Made explanation of when to use "TYPESAFE" more clear in the docs.
 
 04-02-2015 v. 3.5.4
 '''''''''''''''''''
