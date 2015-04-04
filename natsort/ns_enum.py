@@ -49,7 +49,7 @@ class ns(object):
     PATH, P
         Tell `natsort` to interpret strings as filesystem paths, so they
         will be split according to the filesystem separator
-        (i.e. ‘/’ on UNIX, ‘\’ on Windows), as well as splitting on the
+        (i.e. '/' on UNIX, '\\' on Windows), as well as splitting on the
         file extension, if any. Without this, lists of file paths like
         ``['Folder/', 'Folder (1)/', 'Folder (10)/']`` will not be sorted
         properly; 'Folder/' will be placed at the end, not at the front.

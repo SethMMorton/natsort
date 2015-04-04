@@ -27,9 +27,9 @@ if sys.version[:3] == '2.7':
     from functools import cmp_to_key
 # cmp_to_key was not created till 2.7.
 elif sys.version[:3] == '2.6':
-    def cmp_to_key(mycmp):
+    def cmp_to_key(mycmp):  # pragma: no cover
         """Convert a cmp= function into a key= function"""
-        class K(object):  # pragma: no cover
+        class K(object):
             __slots__ = ['obj']
 
             def __init__(self, obj):

@@ -3,6 +3,13 @@
 Changelog
 ---------
 
+04-04-2015 v. 3.5.4
+'''''''''''''''''''
+
+    - Added 'realsorted' and 'index_realsorted' functions for
+      forward-compatibility with >= 4.0.0.
+    - Made explanation of when to use "TYPESAFE" more clear in the docs.
+
 04-02-2015 v. 3.5.4
 '''''''''''''''''''
 
