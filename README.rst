@@ -179,7 +179,13 @@ History
 These are the last three entries of the changelog.  See the package documentation
 for the complete `changelog <http://pythonhosted.org//natsort/changelog.html>`_.
 
-04-04-2015 v. 3.5.4
+04-06-2015 v. 3.5.6
+'''''''''''''''''''
+
+    - Added 'UNGROUPLETTERS' algorithm to get the case-grouping behavior of
+      an ordinal sort when using 'LOCALE'.
+
+04-04-2015 v. 3.5.5
 '''''''''''''''''''
 
     - Added 'realsorted' and 'index_realsorted' functions for

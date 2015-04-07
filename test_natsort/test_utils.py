@@ -317,3 +317,26 @@ def test__natsort_key_with_LOCALE_transforms_floats_according_to_the_current_loc
     assert _natsort_key('Apple56.5', None, ns.LOCALE) == (strxfrm('Apple'), 56.5)
     assert _natsort_key('Apple56,5', None, ns.LOCALE) == (strxfrm('Apple'), 56.5)
     locale.setlocale(locale.LC_NUMERIC, str(''))
+
+
+def test__natsort_key_with_LOCALE_and_UNGROUPLETTERS_places_space_before_string_with_capital_first_letter():
+    # Locale aware sorting
+    locale.setlocale(locale.LC_NUMERIC, str('en_US.UTF-8'))
+    if use_pyicu:
+        from natsort.locale_help import get_pyicu_transform
+        from locale import getlocale
+        strxfrm = get_pyicu_transform(getlocale())
+    else:
+        from natsort.locale_help import strxfrm
+    assert _natsort_key('Apple56.5', None, ns.LOCALE | ns.UNGROUPLETTERS | ns.F) == (strxfrm(' Apple'), 56.5)
+    assert _natsort_key('apple56.5', None, ns.LOCALE | ns.UNGROUPLETTERS | ns.F) == (strxfrm('apple'), 56.5)
+    assert _natsort_key('12Apple56.5', None, ns.LOCALE | ns.UNGROUPLETTERS | ns.F) == (b'', 12.0, strxfrm('Apple'), 56.5)
+    # The below are all aliases for UNGROUPLETTERS
+    assert ns.UNGROUPLETTERS == ns.UG
+    assert ns.UNGROUPLETTERS == ns.CAPITALFIRST
+    assert ns.UNGROUPLETTERS == ns.C
+    locale.setlocale(locale.LC_NUMERIC, str(''))
+
+
+def test__natsort_key_with_UNGROUPLETTERS_does_nothing_without_LOCALE():
+    assert _natsort_key('Apple56.5', None, ns.UG) == _natsort_key('Apple56.5', None, ns.I)

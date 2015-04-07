@@ -80,6 +80,13 @@ class ns(object):
         ``['Apple', 'apple', 'Banana', 'banana']``.
         Useless when used with `IGNORECASE`; use with `LOWERCASEFIRST`
         to reverse the order of upper and lower case.
+    CAPITALFIRST, C
+        Only used when `LOCALE` is enabled. Tell `natsort` to put all
+        capitalized words before non-capitalized words. This is essentially
+        the inverse of `GROUPLETTERS`, and is the default Python sorting
+        behavior without `LOCALE`.
+    UNGROUPLETTERS, UG
+        An alias for `CAPITALFIRST`.
     TYPESAFE, T
         Try hard to avoid "unorderable types" error on Python 3. It
         is the same as setting the old `py3_safe` option to `True`.
@@ -113,18 +120,20 @@ class ns(object):
 
 
 # Sort algorithm "enum" values.
-_ns = {'FLOAT': 0,           'F': 0,
-       'INT': 1,             'I': 1,
-       'UNSIGNED': 2,        'U': 2,
-       'VERSION': 3,         'V': 3,  # Shortcut for INT | UNSIGNED
-       'DIGIT': 3,           'D': 3,  # Shortcut for INT | UNSIGNED
-       'NOEXP': 4,           'N': 4,
-       'PATH': 8,            'P': 8,
-       'LOCALE': 16,         'L': 16,
-       'IGNORECASE': 32,     'IC': 32,
-       'LOWERCASEFIRST': 64, 'LF': 64,
-       'GROUPLETTERS': 128,  'G': 128,
-       'TYPESAFE': 1024,     'T': 1024,
+_ns = {'FLOAT': 0,            'F': 0,
+       'INT': 1,              'I': 1,
+       'UNSIGNED': 2,         'U': 2,
+       'VERSION': 3,          'V': 3,  # Shortcut for INT | UNSIGNED
+       'DIGIT': 3,            'D': 3,  # Shortcut for INT | UNSIGNED
+       'NOEXP': 4,            'N': 4,
+       'PATH': 8,             'P': 8,
+       'LOCALE': 16,          'L': 16,
+       'IGNORECASE': 32,      'IC': 32,
+       'LOWERCASEFIRST': 64,  'LF': 64,
+       'GROUPLETTERS': 128,   'G': 128,
+       'UNGROUPLETTERS': 256, 'UG': 256,
+       'CAPITALFIRST': 256,   'C': 256,
+       'TYPESAFE': 1024,      'T': 1024,
        }
 # Populate the ns class with the _ns values.
 for x, y in _ns.items():
