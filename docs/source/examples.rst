@@ -252,3 +252,48 @@ Just like the :func:`sorted` built-in function, you can supply the
     >>> a = ['a2', 'a9', 'a1', 'a4', 'a10']
     >>> natsorted(a, reverse=True)
     ['a10', 'a9', 'a4', 'a2', 'a1']
+
+Sorting Bytes on Python 3
+-------------------------
+
+Python 3 is rather strict about comparing strings and bytes, and this
+can make it difficult to deal with collections of both. Because of the
+challenge of guessing which encoding should be used to decode a bytes
+array to a string, :mod:`natsort` does *not* try to guess and automatically
+convert for you; in fact, the official stance of :mod:`natsort` is to
+not support sorting bytes. Instead, some decoding convenience functions
+have been provided to you (see :ref:`bytes_help`) that allow you to
+provide a codec for decoding bytes through the ``key`` argument that
+will allow :mod:`natsort` to convert byte arrays to strings for sorting;
+these functions know not to raise an error if the input is not a byte
+array, so you can use the key on any arbitrary collection of data.
+
+::
+
+    >>> from natsort import as_ascii
+    >>> a = [b'a', 14.0, 'b']
+    >>> # On Python 2, natsorted(a) would would work as expected.
+    >>> # On Python 3, natsorted(a) would raise a TypeError (bytes() < str())
+    >>> natsorted(a, key=as_ascii) == [14.0, b'a', 'b']
+    True
+
+Additionally, regular expressions cannot be run on byte arrays, making it
+so that :mod:`natsort` cannot parse them for numbers. As a result, if you
+run :mod:`natsort` on a list of bytes, you will get results that are like
+Python's default sorting behavior. Of course, you can use the decoding
+functions to solve this::
+
+    >>> from natsort import as_utf8
+    >>> a = [b'a56', b'a5', b'a6', b'a40']
+    >>> natsorted(a)  # doctest: +SKIP
+    [b'a40', b'a5', b'a56', b'a6']
+    >>> natsorted(a, key=as_utf8) == [b'a5', b'a6', b'a40', b'a56']
+    True
+
+If you need a codec different from ASCII or UTF-8, you can use
+:func:`decoder` to generate a custom key::
+
+    >>> from natsort import decoder
+    >>> a = [b'a56', b'a5', b'a6', b'a40']
+    >>> natsorted(a, key=decoder('latin1')) == [b'a5', b'a6', b'a40', b'a56']
+    True

@@ -1,14 +1,17 @@
 # -*- coding: utf-8 -*-
 """These test the utils.py functions."""
+from __future__ import unicode_literals
 
+import sys
 import locale
 from operator import itemgetter
 from pytest import raises
 from natsort.ns_enum import ns
 from natsort.utils import _number_extracter, _py3_safe, _natsort_key, _args_to_enum
 from natsort.utils import _float_sign_exp_re, _float_nosign_exp_re, _float_sign_noexp_re
-from natsort.utils import _float_nosign_noexp_re, _int_nosign_re, _int_sign_re
+from natsort.utils import _float_nosign_noexp_re, _int_nosign_re, _int_sign_re, _do_decoding
 from natsort.locale_help import use_pyicu, null_string
+from natsort.py23compat import py23_str
 
 try:
     from fastnumbers import fast_float, fast_int
@@ -21,6 +24,12 @@ except ImportError:
     has_pathlib = False
 else:
     has_pathlib = True
+
+
+def test_do_decoding_decodes_bytes_string_to_unicode():
+    assert type(_do_decoding(b'bytes', 'ascii')) is py23_str
+    assert _do_decoding(b'bytes', 'ascii') == 'bytes'
+    assert _do_decoding(b'bytes', 'ascii') == b'bytes'.decode('ascii')
 
 
 def test_args_to_enum_converts_signed_exp_float_to_ns_F():
@@ -299,6 +308,16 @@ def test__natsort_key_with_GROUPLETTERS_and_LOWERCASEFIRST_inverts_text_first_th
     assert _natsort_key('Apple56', None, ns.G | ns.LF) == ('aapPpPlLeE', 56.0)
 
 
+def test__natsort_key_with_bytes_input_only_applies_LOWERCASEFIRST_or_IGNORECASE_and_returns_in_tuple():
+    if sys.version[0] == '3':
+        assert _natsort_key(b'Apple56', None, ns.I) == (b'Apple56',)
+        assert _natsort_key(b'Apple56', None, ns.LF) == (b'aPPLE56',)
+        assert _natsort_key(b'Apple56', None, ns.IC) == (b'apple56',)
+        assert _natsort_key(b'Apple56', None, ns.G) == (b'Apple56',)
+    else:
+        assert True
+
+
 def test__natsort_key_with_LOCALE_transforms_floats_according_to_the_current_locale_and_strxfrms_strings():
     # Locale aware sorting
     locale.setlocale(locale.LC_NUMERIC, str('en_US.UTF-8'))
@@ -317,3 +336,26 @@ def test__natsort_key_with_LOCALE_transforms_floats_according_to_the_current_loc
     assert _natsort_key('Apple56.5', None, ns.LOCALE) == (strxfrm('Apple'), 56.5)
     assert _natsort_key('Apple56,5', None, ns.LOCALE) == (strxfrm('Apple'), 56.5)
     locale.setlocale(locale.LC_NUMERIC, str(''))
+
+
+def test__natsort_key_with_LOCALE_and_UNGROUPLETTERS_places_space_before_string_with_capital_first_letter():
+    # Locale aware sorting
+    locale.setlocale(locale.LC_NUMERIC, str('en_US.UTF-8'))
+    if use_pyicu:
+        from natsort.locale_help import get_pyicu_transform
+        from locale import getlocale
+        strxfrm = get_pyicu_transform(getlocale())
+    else:
+        from natsort.locale_help import strxfrm
+    assert _natsort_key('Apple56.5', None, ns.LOCALE | ns.UNGROUPLETTERS | ns.F) == (strxfrm(' Apple'), 56.5)
+    assert _natsort_key('apple56.5', None, ns.LOCALE | ns.UNGROUPLETTERS | ns.F) == (strxfrm('apple'), 56.5)
+    assert _natsort_key('12Apple56.5', None, ns.LOCALE | ns.UNGROUPLETTERS | ns.F) == (null_string, 12.0, strxfrm('Apple'), 56.5)
+    # The below are all aliases for UNGROUPLETTERS
+    assert ns.UNGROUPLETTERS == ns.UG
+    assert ns.UNGROUPLETTERS == ns.CAPITALFIRST
+    assert ns.UNGROUPLETTERS == ns.C
+    locale.setlocale(locale.LC_NUMERIC, str(''))
+
+
+def test__natsort_key_with_UNGROUPLETTERS_does_nothing_without_LOCALE():
+    assert _natsort_key('Apple56.5', None, ns.UG | ns.I) == _natsort_key('Apple56.5', None, ns.I)

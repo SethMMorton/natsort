@@ -92,7 +92,22 @@ when you sort:
     >>> # On Python 2, sorted(a) would return [2.0, 6, '4.5', '5', 'a']
     >>> # On Python 3, sorted(a) would raise an "unorderable types" TypeError
 
-You cannot mix and match ``str`` and ``bytes`` objects on Python 3.
+``natsort`` does not officially support the ``bytes`` type on Python 3, but
+convenience functions are provided that help you decode to ``str`` first:
+
+.. code-block:: python
+
+    >>> from natsort import as_utf8
+    >>> a = [b'a', 14.0, 'b']
+    >>> # On Python 2, natsorted(a) would would work as expected.
+    >>> # On Python 3, natsorted(a) would raise a TypeError (bytes() < str())
+    >>> natsorted(a, key=as_utf8) == [14.0, b'a', 'b']
+    True
+    >>> a = [b'a56', b'a5', b'a6', b'a40']
+    >>> # On Python 2, natsorted(a) would would work as expected.
+    >>> # On Python 3, natsorted(a) would return the same results as sorted(a)
+    >>> natsorted(a, key=as_utf8) == [b'a5', b'a6', b'a40', b'a56']
+    True
 
 The natsort algorithm does other fancy things like 
 
@@ -179,7 +194,15 @@ History
 These are the last three entries of the changelog.  See the package documentation
 for the complete `changelog <http://pythonhosted.org//natsort/changelog.html>`_.
 
-04-04-2015 v. 3.5.4
+04-06-2015 v. 3.5.6
+'''''''''''''''''''
+
+    - Added 'UNGROUPLETTERS' algorithm to get the case-grouping behavior of
+      an ordinal sort when using 'LOCALE'.
+    - Added convenience functions 'decoder', 'as_ascii', and 'as_utf8' for
+      dealing with bytes types.
+
+04-04-2015 v. 3.5.5
 '''''''''''''''''''
 
     - Added 'realsorted' and 'index_realsorted' functions for
@@ -191,18 +214,3 @@ for the complete `changelog <http://pythonhosted.org//natsort/changelog.html>`_.
 
     - Fixed bug where a 'TypeError' was raised if a string containing a leading
       number was sorted with alpha-only strings when 'LOCALE' is used.
-
-03-26-2015 v. 3.5.3
-'''''''''''''''''''
-
-    - Fixed bug where '--reverse-filter; option in shell script was not
-      getting checked for correctness.
-    - Documentation updates to better describe locale bug, and illustrate
-      upcoming default behavior change.
-    - Internal improvements, including making test suite more granular.
-
-01-13-2015 v. 3.5.2
-'''''''''''''''''''
-
-    - Enhancement that will convert a 'pathlib.Path' object to a 'str' if
-      'ns.PATH' is enabled.

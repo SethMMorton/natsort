@@ -22,12 +22,104 @@ from functools import partial
 from warnings import warn
 
 # Local imports.
-from natsort.utils import _natsort_key, _args_to_enum
+from natsort.utils import _natsort_key, _args_to_enum, _do_decoding
 from natsort.ns_enum import ns
 from natsort.py23compat import u_format
 
 # Make sure the doctest works for either python2 or python3
 __doc__ = u_format(__doc__)
+
+
+@u_format
+def decoder(encoding):
+    """
+    Return a function that can be used to decode bytes to unicode.
+
+    Parameters
+    ----------
+    encoding: str
+        The codec to use for decoding. This must be a valid unicode codec.
+
+    Returns
+    -------
+    decode_function:
+        A function that takes a single argument and attempts to decode
+        it using the supplied codec. Any `UnicodeErrors` are raised.
+        If the argument was not of `bytes` type, it is simply returned
+        as-is.
+
+    See Also
+    --------
+    as_ascii
+    as_utf8
+
+    Examples
+    --------
+
+        >>> f = decoder('utf8')
+        >>> f(b'bytes') == 'bytes'
+        True
+        >>> f(12345) == 12345
+        True
+        >>> natsorted([b'a10', b'a2'], key=decoder('utf8')) == [b'a2', b'a10']
+        True
+        >>> # On Python 3, without decoder this would return [b'a10', b'a2']
+        >>> natsorted([b'a10', 'a2'], key=decoder('utf8')) == ['a2', b'a10']
+        True
+        >>> # On Python 3, without decoder this would raise a TypeError.
+
+    """
+    return partial(_do_decoding, encoding=encoding)
+
+
+@u_format
+def as_ascii(s):
+    """
+    Function to decode an input with the ASCII codec, or return as-is.
+
+    Parameters
+    ----------
+    s:
+        Any object.
+
+    Returns
+    -------
+    output:
+        If the input was of type `bytes`, the return value is a `str` decoded
+        with the ASCII codec. Otherwise, the return value is identically the
+        input.
+
+    See Also
+    --------
+    decoder
+
+    """
+    return _do_decoding(s, 'ascii')
+
+
+@u_format
+def as_utf8(s):
+    """
+    Function to decode an input with the UTF-8 codec, or return as-is.
+
+    Parameters
+    ----------
+    s:
+        Any object.
+
+    Returns
+    -------
+    output:
+        If the input was of type `bytes`, the return value is a `str` decoded
+        with the UTF-8 codec. Otherwise, the return value is identically the
+        input.
+
+    See Also
+    --------
+    decoder
+
+    """
+    return _do_decoding(s, 'utf-8')
 
 
 @u_format

@@ -41,7 +41,7 @@ else:
 # Group algorithm types for easy extraction
 _NUMBER_ALGORITHMS = ns.FLOAT | ns.INT | ns.UNSIGNED | ns.NOEXP
 _ALL_BUT_PATH = (ns.F | ns.I | ns.U | ns.N | ns.L |
-                 ns.IC | ns.LF | ns.G | ns.TYPESAFE)
+                 ns.IC | ns.LF | ns.G | ns.UG | ns.TYPESAFE)
 
 # The regex that locates floats
 _float_sign_exp_re = re.compile(r'([-+]?\d*\.?\d+(?:[eE][-+]?\d+)?)', re.U)
@@ -76,6 +76,16 @@ _regex_and_num_function_chooser = {
     (ns.I | ns.U, ','):        (_int_nosign_re, fast_int),
     (ns.I | ns.U | ns.N, ','): (_int_nosign_re, fast_int),
 }
+
+
+def _do_decoding(s, encoding):
+    """A function to decode a bytes string, or return the object as-is."""
+    try:
+        return s.decode(encoding)
+    except UnicodeError:
+        raise
+    except (AttributeError, TypeError):
+        return s
 
 
 def _args_to_enum(number_type, signed, exp, as_path, py3_safe):
@@ -270,6 +280,8 @@ def _natsort_key(val, key, alg):
                 val = val.swapcase()
             if alg & _ns['IGNORECASE']:
                 val = val.lower()
+            if use_locale and alg & _ns['UNGROUPLETTERS'] and val[0].isupper():
+                val = ' ' + val
             return tuple(_number_extracter(val,
                                            regex,
                                            num_function,
@@ -279,7 +291,7 @@ def _natsort_key(val, key, alg):
         except (TypeError, AttributeError):
             # Check if it is a bytes type, and if so return as a
             # one element tuple.
-            if isinstance(val, bytes):
+            if type(val) in (bytes,):
                 return (val,)
             # If not strings, assume it is an iterable that must
             # be parsed recursively. Do not apply the key recursively.
