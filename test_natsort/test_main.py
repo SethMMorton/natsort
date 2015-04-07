@@ -25,8 +25,8 @@ def test_main_passes_default_arguments_with_no_command_line_options():
         assert args.reverse_filter is None
         assert args.exclude is None
         assert not args.reverse
-        assert args.number_type == 'float'
-        assert args.signed
+        assert args.number_type == 'int'
+        assert not args.signed
         assert args.exp
         assert not args.locale
 
@@ -36,8 +36,7 @@ def test_main_passes_arguments_with_all_command_line_options():
         sys.argv[1:] = ['--paths', '--reverse', '--locale',
                         '--filter', '4', '10',
                         '--reverse-filter', '100', '110',
-                        '--number-type', 'int',
-                        '--nosign', '--noexp',
+                        '--number-type', 'float', '--noexp', '--sign',
                         '--exclude', '34', '--exclude', '35',
                         'num-2', 'num-6', 'num-1']
         main()
@@ -47,8 +46,8 @@ def test_main_passes_arguments_with_all_command_line_options():
         assert args.reverse_filter == [(100.0, 110.0)]
         assert args.exclude == [34, 35]
         assert args.reverse
-        assert args.number_type == 'int'
-        assert not args.signed
+        assert args.number_type == 'float'
+        assert args.signed
         assert not args.exp
         assert args.locale
 

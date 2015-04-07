@@ -48,20 +48,26 @@ Usage
                             Used to exclude an entry that contains a specific
                             number.
       -r, --reverse         Returns in reversed order.
-      -t {digit,int,float,version,ver}, --number-type {digit,int,float,version,ver}
+      -t {digit,int,float,version,ver,real,f,i,r,d},
+      --number-type {digit,int,float,version,ver,real,f,i,r,d},
+      --number_type {digit,int,float,version,ver,real,f,i,r,d}
                             Choose the type of number to search for. "float" will
                             search for floating-point numbers. "int" will only
                             search for integers. "digit", "version", and "ver" are
-                            shortcuts for "int" with --nosign.
+                            synonyms for "int"."real" is a shortcut for "float"
+                            with --sign. "i" and "d" are synonyms for "int", "f"
+                            is a synonym for "float", and "r" is a synonym for
+                            "real".The default is int.
       --nosign              Do not consider "+" or "-" as part of a number, i.e.
-                            do not take sign into consideration.
+                            do not take sign into consideration. This is the
+                            default.
+      -s, --sign            Consider "+" or "-" as part of a number, i.e. take
+                            sign into consideration. The default is unsigned.
       --noexp               Do not consider an exponential as part of a number,
                             i.e. 1e4, would be considered as 1, "e", and 4, not as
                             10000. This only effects the --number-type=float.
-      --locale, -l          Causes natsort to use locale-aware sorting. On some
-                            systems, the underlying C library is broken, so if you
-                            get results that you do not expect please install
-                            PyICU and try again.
+      -l, --locale          Causes natsort to use locale-aware sorting. You will
+                            get the best results if you install PyICU.
 
 Description
 -----------
@@ -84,18 +90,18 @@ to bad analysis.  To remedy this, use ``natsort``::
     mode943.54.out
     mode1000.35.out 
     mode1243.34.out
-    $ natsort *.out | xargs your_program
+    $ natsort -t r *.out | xargs your_program
 
-You can also place natsort in the middle of a pipe::
+``-t r`` is short for ``--number-type real``. You can also place natsort in
+the middle of a pipe::
 
-    $ find . -name "*.out" | natsort | xargs your_program
+    $ find . -name "*.out" | natsort -t r | xargs your_program
 
-To sort version numbers, use the ``--number-type version`` option
-(or ``-t ver`` for short)::
+To sort version numbers, use the default ``--number-type``::
 
     $ ls *
     prog-1.10.zip prog-1.9.zip prog-2.0.zip
-    $ natsort -t ver *
+    $ natsort *
     prog-1.9.zip
     prog-1.10.zip
     prog-2.0.zip
@@ -106,13 +112,13 @@ options.  These three options are used as follows::
 
     $ ls *.out
     mode1000.35.out mode1243.34.out mode744.43.out mode943.54.out
-    $ natsort *.out -f 900 1100 # Select only numbers between 900-1100
+    $ natsort -t r *.out -f 900 1100 # Select only numbers between 900-1100
     mode943.54.out
     mode1000.35.out 
-    $ natsort *.out -F 900 1100 # Select only numbers NOT between 900-1100
+    $ natsort -t r *.out -F 900 1100 # Select only numbers NOT between 900-1100
     mode744.43.out
     mode1243.34.out
-    $ natsort *.out -e 1000.35 # Exclude 1000.35 from search
+    $ natsort -t r *.out -e 1000.35 # Exclude 1000.35 from search
     mode744.43.out
     mode943.54.out
     mode1243.34.out

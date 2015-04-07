@@ -51,22 +51,31 @@ def main():
         help='Returns in reversed order.')
     parser.add_argument(
         '-t', '--number-type', '--number_type', dest='number_type',
-        choices=('digit', 'int', 'float', 'version', 'ver'), default='float',
+        choices=('digit', 'int', 'float', 'version', 'ver',
+                 'real', 'f', 'i', 'r', 'd'),
+        default='int',
         help='Choose the type of number to search for. "float" will search '
              'for floating-point numbers.  "int" will only search for '
-             'integers. "digit", "version", and "ver" are shortcuts for "int" '
-             'with --nosign.')
+             'integers. "digit", "version", and "ver" are synonyms for "int".'
+             '"real" is a shortcut for "float" with --sign. '
+             '"i" and "d" are synonyms for "int", "f" is a synonym for '
+             '"float", and "r" is a synonym for "real".'
+             'The default is %(default)s.')
     parser.add_argument(
-        '--nosign', default=True, action='store_false', dest='signed',
+        '--nosign', default=False, action='store_false', dest='signed',
         help='Do not consider "+" or "-" as part of a number, i.e. do not '
-             'take sign into consideration.')
+             'take sign into consideration. This is the default.')
+    parser.add_argument(
+        '-s', '--sign', default=False, action='store_true', dest='signed',
+        help='Consider "+" or "-" as part of a number, i.e. '
+             'take sign into consideration. The default is unsigned.')
     parser.add_argument(
         '--noexp', default=True, action='store_false', dest='exp',
         help='Do not consider an exponential as part of a number, i.e. 1e4, '
              'would be considered as 1, "e", and 4, not as 10000.  This only '
              'effects the --number-type=float.')
     parser.add_argument(
-        '--locale', '-l', action='store_true', default=False,
+        '-l', '--locale', action='store_true', default=False,
         help='Causes natsort to use locale-aware sorting. You will get the '
              'best results if you install PyICU.')
     parser.add_argument(
@@ -143,14 +152,10 @@ def sort_and_print_entries(entries, args):
     """Sort the entries, applying the filters first if necessary."""
 
     # Extract the proper number type.
-    num_type = {'digit': None,
-                'version': None,
-                'ver': None,
-                'int': int,
-                'float': float}[args.number_type]
-    unsigned = not args.signed or num_type is None
-    alg = (ns.INT * int(num_type in (int, None)) |
-           ns.UNSIGNED * unsigned |
+    is_float = args.number_type in ('float', 'real', 'f', 'r')
+    signed = args.signed or args.number_type in ('real', 'r')
+    alg = (ns.FLOAT * is_float |
+           ns.SIGNED * signed |
            ns.NOEXP * (not args.exp) |
            ns.PATH * args.paths |
            ns.LOCALE * args.locale)
@@ -160,8 +165,8 @@ def sort_and_print_entries(entries, args):
     # as for sorting.
     do_filter = args.filter is not None or args.reverse_filter is not None
     if do_filter or args.exclude:
-        inp_options = (ns.INT * int(num_type in (int, None)) |
-                       ns.UNSIGNED * unsigned |
+        inp_options = (ns.FLOAT * is_float |
+                       ns.SIGNED * signed |
                        ns.NOEXP * (not args.exp),
                        '.'
                        )
