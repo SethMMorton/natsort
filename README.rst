@@ -214,18 +214,3 @@ for the complete `changelog <http://pythonhosted.org//natsort/changelog.html>`_.
 
     - Fixed bug where a 'TypeError' was raised if a string containing a leading
       number was sorted with alpha-only strings when 'LOCALE' is used.
-
-03-26-2015 v. 3.5.3
-'''''''''''''''''''
-
-    - Fixed bug where '--reverse-filter; option in shell script was not
-      getting checked for correctness.
-    - Documentation updates to better describe locale bug, and illustrate
-      upcoming default behavior change.
-    - Internal improvements, including making test suite more granular.
-
-01-13-2015 v. 3.5.2
-'''''''''''''''''''
-
-    - Enhancement that will convert a 'pathlib.Path' object to a 'str' if
-      'ns.PATH' is enabled.

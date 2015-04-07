@@ -349,7 +349,7 @@ def test__natsort_key_with_LOCALE_and_UNGROUPLETTERS_places_space_before_string_
         from natsort.locale_help import strxfrm
     assert _natsort_key('Apple56.5', None, ns.LOCALE | ns.UNGROUPLETTERS | ns.F) == (strxfrm(' Apple'), 56.5)
     assert _natsort_key('apple56.5', None, ns.LOCALE | ns.UNGROUPLETTERS | ns.F) == (strxfrm('apple'), 56.5)
-    assert _natsort_key('12Apple56.5', None, ns.LOCALE | ns.UNGROUPLETTERS | ns.F) == (b'', 12.0, strxfrm('Apple'), 56.5)
+    assert _natsort_key('12Apple56.5', None, ns.LOCALE | ns.UNGROUPLETTERS | ns.F) == (null_string, 12.0, strxfrm('Apple'), 56.5)
     # The below are all aliases for UNGROUPLETTERS
     assert ns.UNGROUPLETTERS == ns.UG
     assert ns.UNGROUPLETTERS == ns.CAPITALFIRST
