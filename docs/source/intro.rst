@@ -87,7 +87,20 @@ when you sort::
     >>> # On Python 2, sorted(a) would return [2.0, 6, '4.5', '5', 'a']
     >>> # On Python 3, sorted(a) would raise an "unorderable types" TypeError
 
-You cannot mix and match ``str`` and ``bytes`` objects on Python 3.
+:mod:`natsort` does not officially support the `bytes` type on Python 3, but
+convenience functions are provided that help you decode to `str` first::
+
+    >>> from natsort import as_utf8
+    >>> a = [b'a', 14.0, 'b']
+    >>> # On Python 2, natsorted(a) would would work as expected.
+    >>> # On Python 3, natsorted(a) would raise a TypeError (bytes() < str())
+    >>> natsorted(a, key=as_utf8) == [14.0, b'a', 'b']
+    True
+    >>> a = [b'a56', b'a5', b'a6', b'a40']
+    >>> # On Python 2, natsorted(a) would would work as expected.
+    >>> # On Python 3, natsorted(a) would return the same results as sorted(a)
+    >>> natsorted(a, key=as_utf8) == [b'a5', b'a6', b'a40', b'a56']
+    True
 
 The natsort algorithm does other fancy things like 
 

@@ -8,6 +8,8 @@ Changelog
 
     - Added 'UNGROUPLETTERS' algorithm to get the case-grouping behavior of
       an ordinal sort when using 'LOCALE'.
+    - Added convenience functions 'decoder', 'as_ascii', and 'as_utf8' for
+      dealing with bytes types.
 
 04-04-2015 v. 3.5.5
 '''''''''''''''''''

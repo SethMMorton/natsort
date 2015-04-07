@@ -78,6 +78,16 @@ _regex_and_num_function_chooser = {
 }
 
 
+def _do_decoding(s, encoding):
+    """A function to decode a bytes string, or return the object as-is."""
+    try:
+        return s.decode(encoding)
+    except UnicodeError:
+        raise
+    except (AttributeError, TypeError):
+        return s
+
+
 def _args_to_enum(number_type, signed, exp, as_path, py3_safe):
     """A function to convert input booleans to an enum-type argument."""
     alg = 0

@@ -11,8 +11,29 @@ from operator import itemgetter
 from pytest import raises
 from natsort import natsorted, index_natsorted, natsort_key, versorted, index_versorted
 from natsort import humansorted, index_humansorted, natsort_keygen, order_by_index, ns
-from natsort import realsorted, index_realsorted
+from natsort import realsorted, index_realsorted, decoder, as_ascii, as_utf8
 from natsort.utils import _natsort_key
+
+
+def test_decoder_returns_function_that_can_decode_bytes_but_return_non_bytes_as_is():
+    f = decoder('latin1')
+    a = 'bytes'
+    b = 14
+    assert f(b'bytes') == a
+    assert f(b) is b  # returns as-is, same object ID
+    if sys.version[0] == '3':
+        assert f(a) is a  # same object returned on Python3 b/c only bytes has decode
+    else:
+        assert f(a) is not a
+        assert f(a) == a  # not same object on Python2 because str can decode
+
+
+def test_as_ascii_returns_bytes_as_ascii():
+    assert decoder('ascii')(b'bytes') == as_ascii(b'bytes')
+
+
+def test_as_utf8_returns_bytes_as_utf8():
+    assert decoder('utf8')(b'bytes') == as_utf8(b'bytes')
 
 
 def test_natsort_key_public_raises_DeprecationWarning_when_called():
