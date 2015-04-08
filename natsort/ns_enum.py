@@ -72,7 +72,11 @@ class ns(object):
         ``['apple', 'banana', 'Apple', 'Banana']`` (the default order
         would be ``['Apple', 'Banana', 'apple', 'banana']`` which is
         the order from a purely ordinal sort).
-        Useless when used with `IGNORECASE`.
+        Useless when used with `IGNORECASE`. Please note that if used
+        with ``LOCALE``, this actually has the reverse effect and will
+        put uppercase first (this is because ``LOCALE`` already puts
+        lowercase first); you may use this to your advantage if you
+        need to modify the order returned with ``LOCALE``.
     GROUPLETTERS, G
         Tell `natsort` to group lowercase and uppercase letters together
         when sorting.  For example,
