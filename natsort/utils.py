@@ -18,21 +18,26 @@ from locale import localeconv
 
 # Local imports.
 from natsort.locale_help import locale_convert, grouper, null_string
-from natsort.py23compat import py23_str, py23_zip
+from natsort.py23compat import py23_str, py23_zip, PY_VERSION
 from natsort.ns_enum import ns, _ns
+from natsort.unicode_numbers import digits, numeric
 
 # If the user has fastnumbers installed, they will get great speed
 # benefits. If not, we simulate the functions here.
 try:
-    from fastnumbers import fast_float, fast_int, isreal
+    from fastnumbers import fast_float, fast_int, isint, isfloat
+    import fastnumbers
+    v = list(map(int, fastnumbers.__version__.split('.')))
+    if not (v[0] >= 0 and v[1] >= 5):  # Require >= version 0.5.0.
+        raise ImportError
 except ImportError:
-    from natsort.fake_fastnumbers import fast_float, fast_int, isreal
+    from natsort.fake_fastnumbers import fast_float, fast_int, isint, isfloat
 
 # If the user has pathlib installed, the ns.PATH option will convert
 # Path objects to str before sorting.
 try:
     from pathlib import PurePath  # PurePath is the base object for Paths.
-except ImportError:
+except ImportError:  # pragma: no cover
     PurePath = object  # To avoid NameErrors.
     has_pathlib = False
 else:
@@ -43,19 +48,37 @@ _NUMBER_ALGORITHMS = ns.FLOAT | ns.INT | ns.UNSIGNED | ns.SIGNED | ns.NOEXP
 _ALL_BUT_PATH = (ns.F | ns.I | ns.U | ns.S | ns.N | ns.L |
                  ns.IC | ns.LF | ns.G | ns.UG | ns.TYPESAFE)
 
-# The regex that locates floats
-_float_sign_exp_re = re.compile(r'([-+]?\d*\.?\d+(?:[eE][-+]?\d+)?)', re.U)
-_float_nosign_exp_re = re.compile(r'(\d*\.?\d+(?:[eE][-+]?\d+)?)', re.U)
-_float_sign_noexp_re = re.compile(r'([-+]?\d*\.?\d+)', re.U)
-_float_nosign_noexp_re = re.compile(r'(\d*\.?\d+)', re.U)
-_float_sign_exp_re_c = re.compile(r'([-+]?\d*[.,]?\d+(?:[eE][-+]?\d+)?)', re.U)
-_float_nosign_exp_re_c = re.compile(r'(\d*[.,]?\d+(?:[eE][-+]?\d+)?)', re.U)
-_float_sign_noexp_re_c = re.compile(r'([-+]?\d*[.,]?\d+)', re.U)
-_float_nosign_noexp_re_c = re.compile(r'(\d*[.,]?\d+)', re.U)
+# The regex that locates floats - include Unicode numerals.
+_float_sign_exp_re = r'([-+]?[0-9]*\.?[0-9]+(?:[eE][-+]?[0-9]+)?|[{}])'
+_float_sign_exp_re = _float_sign_exp_re.format(numeric)
+_float_sign_exp_re = re.compile(_float_sign_exp_re, flags=re.U)
+_float_nosign_exp_re = r'([0-9]*\.?[0-9]+(?:[eE][-+]?[0-9]+)?|[{}])'
+_float_nosign_exp_re = _float_nosign_exp_re.format(numeric)
+_float_nosign_exp_re = re.compile(_float_nosign_exp_re, flags=re.U)
+_float_sign_noexp_re = r'([-+]?[0-9]*\.?[0-9]+|[{}])'
+_float_sign_noexp_re = _float_sign_noexp_re.format(numeric)
+_float_sign_noexp_re = re.compile(_float_sign_noexp_re, flags=re.U)
+_float_nosign_noexp_re = r'([0-9]*\.?[0-9]+|[{}])'
+_float_nosign_noexp_re = _float_nosign_noexp_re.format(numeric)
+_float_nosign_noexp_re = re.compile(_float_nosign_noexp_re, flags=re.U)
+_float_sign_exp_re_c = r'([-+]?[0-9]*[.,]?[0-9]+(?:[eE][-+]?[0-9]+)?)|[{}]'
+_float_sign_exp_re_c = _float_sign_exp_re_c.format(numeric)
+_float_sign_exp_re_c = re.compile(_float_sign_exp_re_c, flags=re.U)
+_float_nosign_exp_re_c = r'([0-9]*[.,]?[0-9]+(?:[eE][-+]?[0-9]+)?|[{}])'
+_float_nosign_exp_re_c = _float_nosign_exp_re_c.format(numeric)
+_float_nosign_exp_re_c = re.compile(_float_nosign_exp_re_c, flags=re.U)
+_float_sign_noexp_re_c = r'([-+]?[0-9]*[.,]?[0-9]+|[{}])'
+_float_sign_noexp_re_c = _float_sign_noexp_re_c.format(numeric)
+_float_sign_noexp_re_c = re.compile(_float_sign_noexp_re_c, flags=re.U)
+_float_nosign_noexp_re_c = r'([0-9]*[.,]?[0-9]+|[{}])'
+_float_nosign_noexp_re_c = _float_nosign_noexp_re_c.format(numeric)
+_float_nosign_noexp_re_c = re.compile(_float_nosign_noexp_re_c, flags=re.U)
 
-# Integer regexes
-_int_nosign_re = re.compile(r'(\d+)', re.U)
-_int_sign_re = re.compile(r'([-+]?\d+)', re.U)
+# Integer regexes - include Unicode digits.
+_int_nosign_re = r'([0-9]+|[{}])'.format(digits)
+_int_nosign_re = re.compile(_int_nosign_re, flags=re.U)
+_int_sign_re = r'([-+]?[0-9]+|[{}])'.format(digits)
+_int_sign_re = re.compile(_int_sign_re, flags=re.U)
 
 # This dict will help select the correct regex and number conversion function.
 _regex_and_num_function_chooser = {
@@ -76,6 +99,9 @@ _regex_and_num_function_chooser = {
     (ns.I | ns.U, ','):        (_int_nosign_re, fast_int),
     (ns.I | ns.U | ns.N, ','): (_int_nosign_re, fast_int),
 }
+
+# Dict to select checker function from converter function
+_conv_to_check = {fast_float: isfloat, fast_int: isint}
 
 
 def _do_decoding(s, encoding):
@@ -127,6 +153,7 @@ def _args_to_enum(**kwargs):
 
 def _number_extracter(s, regex, numconv, py3_safe, use_locale, group_letters):
     """Helper to separate the string input into numbers and strings."""
+    conv_check = (numconv, _conv_to_check[numconv])
 
     # Split the input string by numbers.
     # If the input is not a string, TypeError is raised.
@@ -136,24 +163,24 @@ def _number_extracter(s, regex, numconv, py3_safe, use_locale, group_letters):
     # Take into account locale if needed, and group letters if needed.
     # Remove empty strings from the list.
     if use_locale:
-        s = [locale_convert(x, numconv, group_letters) for x in s if x]
+        s = [locale_convert(x, conv_check, group_letters) for x in s if x]
     elif group_letters:
-        s = [grouper(x, numconv) for x in s if x]
+        s = [grouper(x, conv_check) for x in s if x]
     else:
         s = [numconv(x) for x in s if x]
 
     # If the list begins with a number, lead with an empty string.
     # This is used to get around the "unorderable types" issue.
-    if not s:  # Return empty tuple for empty results.
-        return ()
-    elif isreal(s[0]):
+    if not s:  # Return empty list for empty results.
+        return []
+    elif conv_check[1](s[0], num_only=True):
         s = [null_string if use_locale else ''] + s
 
     # The _py3_safe function inserts "" between numbers in the list,
     # and is used to get around "unorderable types" in complex cases.
     # It is a separate function that needs to be requested specifically
     # because it is expensive to call.
-    return _py3_safe(s, use_locale) if py3_safe else s
+    return _py3_safe(s, use_locale, conv_check[1]) if py3_safe else s
 
 
 def _path_splitter(s, _d_match=re.compile(r'\.\d').match):
@@ -163,7 +190,7 @@ def _path_splitter(s, _d_match=re.compile(r'\.\d').match):
     # Convert a pathlib PurePath object to a string.
     if has_pathlib and isinstance(s, PurePath):
         path_location = str(s)
-    else:
+    else:  # pragma: no cover
         path_location = s
 
     # Continue splitting the path from the back until we have reached
@@ -204,7 +231,7 @@ def _path_splitter(s, _d_match=re.compile(r'\.\d').match):
     return path_parts + base_parts
 
 
-def _py3_safe(parsed_list, use_locale):
+def _py3_safe(parsed_list, use_locale, check):
     """Insert '' between two numbers."""
     length = len(parsed_list)
     if length < 2:
@@ -214,7 +241,7 @@ def _py3_safe(parsed_list, use_locale):
         nl_append = new_list.append
         for before, after in py23_zip(islice(parsed_list, 0, length-1),
                                       islice(parsed_list, 1, None)):
-            if isreal(before) and isreal(after):
+            if check(before, num_only=True) and check(after, num_only=True):
                 nl_append(null_string if use_locale else '')
             nl_append(after)
         return new_list
@@ -284,8 +311,9 @@ def _natsort_key(val, key, alg):
             if alg & _ns['LOWERCASEFIRST']:
                 val = val.swapcase()
             if alg & _ns['IGNORECASE']:
-                val = val.lower()
-            if use_locale and alg & _ns['UNGROUPLETTERS'] and val[0].isupper():
+                val = val.casefold() if PY_VERSION >= 3.3 else val.lower()
+            if (use_locale and alg & _ns['UNGROUPLETTERS'] and
+                    val and val[0].isupper()):
                 val = ' ' + val
             return tuple(_number_extracter(val,
                                            regex,
@@ -297,7 +325,7 @@ def _natsort_key(val, key, alg):
             # Check if it is a bytes type, and if so return as a
             # one element tuple.
             if type(val) in (bytes,):
-                return (val,)
+                return (val.lower(),) if alg & _ns['IGNORECASE'] else (val,)
             # If not strings, assume it is an iterable that must
             # be parsed recursively. Do not apply the key recursively.
             # If this string was split as a path, turn off 'PATH'.

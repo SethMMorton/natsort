@@ -13,14 +13,7 @@ from itertools import chain
 from locale import localeconv
 
 # Local imports.
-from natsort.py23compat import py23_zip
-
-# If the user has fastnumbers installed, they will get great speed
-# benefits. If not, we simulate the functions here.
-try:
-    from fastnumbers import isreal
-except ImportError:
-    from natsort.fake_fastnumbers import isreal
+from natsort.py23compat import PY_VERSION
 
 # We need cmp_to_key for Python2 because strxfrm is broken for unicode.
 if sys.version[:3] == '2.7':
@@ -89,9 +82,17 @@ except ImportError:
     use_pyicu = False
 
 
+if PY_VERSION >= 3.3:
+    def _low(x):
+        return x.casefold()
+else:
+    def _low(x):
+        return x.lower()
+
+
 def groupletters(x):
     """Double all characters, making doubled letters lowercase."""
-    return ''.join(chain(*py23_zip(x.lower(), x)))
+    return ''.join(chain.from_iterable([_low(y), y] for y in x))
 
 
 def grouper(val, func):
@@ -102,8 +103,8 @@ def grouper(val, func):
     """
     # Return the number or transformed string.
     # If the input is identical to the output, then no conversion happened.
-    s = func(val)
-    return groupletters(s) if val is s else s
+    s = func[0](val)
+    return groupletters(s) if not func[1](s) else s
 
 
 def locale_convert(val, func, group):
@@ -119,7 +120,7 @@ def locale_convert(val, func, group):
     s = val.replace(radix, '.') if radix != '.' else val
 
     # Perform the conversion
-    t = func(s)
+    t = func[0](s)
 
     # Return the number or transformed string.
     # If the input is identical to the output, then no conversion happened.
@@ -129,12 +130,12 @@ def locale_convert(val, func, group):
     if group:
         if use_pyicu:
             xfrm = get_pyicu_transform(getlocale())
-            return xfrm(groupletters(val)) if not isreal(t) else t
+            return xfrm(groupletters(val)) if not func[1](t) else t
         else:
-            return strxfrm(groupletters(val)) if not isreal(t) else t
+            return strxfrm(groupletters(val)) if not func[1](t) else t
     else:
         if use_pyicu:
             xfrm = get_pyicu_transform(getlocale())
-            return xfrm(val) if not isreal(t) else t
+            return xfrm(val) if not func[1](t) else t
         else:
-            return strxfrm(val) if not isreal(t) else t
+            return strxfrm(val) if not func[1](t) else t
