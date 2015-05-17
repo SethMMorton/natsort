@@ -19,7 +19,7 @@ install:
 - if [[ 1 -eq $(echo "$TRAVIS_PYTHON_VERSION < 3.4" | bc -l) ]]; then pip install pathlib; fi
 - if [[ $TRAVIS_PYTHON_VERSION == '2.6' ]]; then pip install argparse; fi
 - if [[ $(echo "$TRAVIS_PYTHON_VERSION < 3.3" | bc -l) ]]; then pip install mock; fi
-- pip install pytest-cov pytest-flakes pytest-pep8
+- pip install pytest-cov pytest-flakes pytest-pep8 hypothesis
 - pip install coveralls
 script:
 - python -m pytest --cov natsort --flakes --pep8

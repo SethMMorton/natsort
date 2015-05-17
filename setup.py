@@ -59,7 +59,8 @@ except IOError:
 REQUIRES = 'argparse' if sys.version[:3] in ('2.6', '3.0', '3.1') else ''
 
 # Testing needs pytest, and mock if less than python 3.3
-TESTS_REQUIRE = ['pytest', 'pytest-pep8', 'pytest-flakes', 'pytest-cov']
+TESTS_REQUIRE = ['pytest', 'pytest-pep8', 'pytest-flakes',
+                 'pytest-cov', 'hypothesis']
 if sys.version[0] == 2 or (sys.version[3] == '3' and int(sys.version[2]) < 3):
     TESTS_REQUIRE.append('mock')
 if sys.version[0] == 2 or (sys.version[3] == '3' and int(sys.version[2]) < 4):
