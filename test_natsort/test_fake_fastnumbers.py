@@ -2,6 +2,9 @@
 """\
 Test the fake fastnumbers module.
 """
+from __future__ import unicode_literals
+
+import unicodedata
 from math import isnan
 from hypothesis import given, assume
 from natsort.fake_fastnumbers import fast_float, fast_int, isfloat, isint
@@ -12,7 +15,12 @@ def is_float(x):
     try:
         float(x)
     except ValueError:
-        return False
+        try:
+            unicodedata.numeric(x)
+        except (ValueError, TypeError):
+            return False
+        else:
+            return True
     else:
         return True
 
@@ -21,7 +29,12 @@ def is_int(x):
     try:
         int(x)
     except ValueError:
-        return False
+        try:
+            unicodedata.digit(x)
+        except (ValueError, TypeError):
+            return False
+        else:
+            return True
     else:
         return True
 

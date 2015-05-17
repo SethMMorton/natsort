@@ -167,7 +167,7 @@ def test_path_splitter_splits_path_string_by_separator_and_removes_extension_exa
 def test_path_splitter_splits_path_string_by_separator_and_removes_extension(x):
     assume(len(x) > 2)
     assume(all(x))
-    z = py23_str(pathlib.Path(*x[:-2])) + u'.' + x[-1]
+    z = py23_str(pathlib.Path(*x[:-2])) + '.' + x[-1]
     y = list(pathlib.Path(z).parts)
     assert _path_splitter(z) == y[:-1] + [pathlib.Path(z).stem] + [pathlib.Path(z).suffix]
 
@@ -191,8 +191,8 @@ def test_number_extracter_includes_plus_sign_and_exponent_in_float_definition_fo
 def test_number_extracter_includes_plus_sign_and_exponent_in_float_definition_for_signed_exp_floats(x):
     assume(len(x) <= 10)
     assume(not any(type(y) == float and isnan(y) for y in x))
-    s = u''.join(repr(y) if type(y) in (float, long, int) else y for y in x)
-    assert _number_extracter(s, _float_sign_exp_re, *float_nosafe_nolocale_nogroup) == float_splitter(s, True, True, False, u'')
+    s = ''.join(repr(y) if type(y) in (float, long, int) else y for y in x)
+    assert _number_extracter(s, _float_sign_exp_re, *float_nosafe_nolocale_nogroup) == float_splitter(s, True, True, False, '')
 
 
 def test_number_extracter_excludes_plus_sign_in_float_definition_but_includes_exponent_for_unsigned_exp_floats_example():
@@ -203,8 +203,8 @@ def test_number_extracter_excludes_plus_sign_in_float_definition_but_includes_ex
 def test_number_extracter_excludes_plus_sign_in_float_definition_but_includes_exponent_for_unsigned_exp_floats(x):
     assume(len(x) <= 10)
     assume(not any(type(y) == float and isnan(y) for y in x))
-    s = u''.join(repr(y) if type(y) in (float, long, int) else y for y in x)
-    assert _number_extracter(s, _float_nosign_exp_re, *float_nosafe_nolocale_nogroup) == float_splitter(s, False, True, False, u'')
+    s = ''.join(repr(y) if type(y) in (float, long, int) else y for y in x)
+    assert _number_extracter(s, _float_nosign_exp_re, *float_nosafe_nolocale_nogroup) == float_splitter(s, False, True, False, '')
 
 
 def test_number_extracter_includes_plus_and_minus_sign_in_float_definition_but_excludes_exponent_for_signed_noexp_floats_example():
@@ -215,8 +215,8 @@ def test_number_extracter_includes_plus_and_minus_sign_in_float_definition_but_e
 def test_number_extracter_includes_plus_and_minus_sign_in_float_definition_but_excludes_exponent_for_signed_noexp_floats(x):
     assume(len(x) <= 10)
     assume(not any(type(y) == float and isnan(y) for y in x))
-    s = u''.join(repr(y) if type(y) in (float, long, int) else y for y in x)
-    assert _number_extracter(s, _float_sign_noexp_re, *float_nosafe_nolocale_nogroup) == float_splitter(s, True, False, False, u'')
+    s = ''.join(repr(y) if type(y) in (float, long, int) else y for y in x)
+    assert _number_extracter(s, _float_sign_noexp_re, *float_nosafe_nolocale_nogroup) == float_splitter(s, True, False, False, '')
 
 
 def test_number_extracter_excludes_plus_sign_and_exponent_in_float_definition_for_unsigned_noexp_floats_example():
@@ -227,8 +227,8 @@ def test_number_extracter_excludes_plus_sign_and_exponent_in_float_definition_fo
 def test_number_extracter_excludes_plus_sign_and_exponent_in_float_definition_for_unsigned_noexp_floats(x):
     assume(len(x) <= 10)
     assume(not any(type(y) == float and isnan(y) for y in x))
-    s = u''.join(repr(y) if type(y) in (float, long, int) else y for y in x)
-    assert _number_extracter(s, _float_nosign_noexp_re, *float_nosafe_nolocale_nogroup) == float_splitter(s, False, False, False, u'')
+    s = ''.join(repr(y) if type(y) in (float, long, int) else y for y in x)
+    assert _number_extracter(s, _float_nosign_noexp_re, *float_nosafe_nolocale_nogroup) == float_splitter(s, False, False, False, '')
 
 
 def test_number_extracter_excludes_plus_and_minus_sign_in_int_definition_for_unsigned_ints_example():
@@ -238,8 +238,8 @@ def test_number_extracter_excludes_plus_and_minus_sign_in_int_definition_for_uns
 @given([float, py23_str, int])
 def test_number_extracter_excludes_plus_and_minus_sign_in_int_definition_for_unsigned_ints(x):
     assume(len(x) <= 10)
-    s = u''.join(repr(y) if type(y) in (float, long, int) else y for y in x)
-    assert _number_extracter(s, _int_nosign_re, *int_nosafe_nolocale_nogroup) == int_splitter(s, False, False, u'')
+    s = ''.join(repr(y) if type(y) in (float, long, int) else y for y in x)
+    assert _number_extracter(s, _int_nosign_re, *int_nosafe_nolocale_nogroup) == int_splitter(s, False, False, '')
 
 
 def test_number_extracter_includes_plus_and_minus_sign_in_int_definition_for_signed_ints_example():
@@ -249,8 +249,8 @@ def test_number_extracter_includes_plus_and_minus_sign_in_int_definition_for_sig
 @given([float, py23_str, int])
 def test_number_extracter_includes_plus_and_minus_sign_in_int_definition_for_signed_ints(x):
     assume(len(x) <= 10)
-    s = u''.join(repr(y) if type(y) in (float, long, int) else y for y in x)
-    assert _number_extracter(s, _int_sign_re, *int_nosafe_nolocale_nogroup) == int_splitter(s, True, False, u'')
+    s = ''.join(repr(y) if type(y) in (float, long, int) else y for y in x)
+    assert _number_extracter(s, _int_sign_re, *int_nosafe_nolocale_nogroup) == int_splitter(s, True, False, '')
 
 
 def test_number_extracter_inserts_empty_string_between_floats_for_py3safe_option_example():
@@ -261,8 +261,8 @@ def test_number_extracter_inserts_empty_string_between_floats_for_py3safe_option
 def test_number_extracter_inserts_empty_string_between_floats_for_py3safe_option(x):
     assume(len(x) <= 10)
     assume(not any(type(y) == float and isnan(y) for y in x))
-    s = u''.join(repr(y) if type(y) in (float, long, int) else y for y in x)
-    assert _number_extracter(s, _float_sign_exp_re, *float_safe_nolocale_nogroup) == float_splitter(s, True, True, True, u'')
+    s = ''.join(repr(y) if type(y) in (float, long, int) else y for y in x)
+    assert _number_extracter(s, _float_sign_exp_re, *float_safe_nolocale_nogroup) == float_splitter(s, True, True, True, '')
 
 
 def test_number_extracter_inserts_empty_string_between_ints_for_py3safe_option_example():
@@ -272,8 +272,8 @@ def test_number_extracter_inserts_empty_string_between_ints_for_py3safe_option_e
 @given([float, py23_str, int])
 def test_number_extracter_inserts_empty_string_between_ints_for_py3safe_option(x):
     assume(len(x) <= 10)
-    s = u''.join(repr(y) if type(y) in (float, long, int) else y for y in x)
-    assert _number_extracter(s, _int_sign_re, *int_safe_nolocale_nogroup) == int_splitter(s, True, True, u'')
+    s = ''.join(repr(y) if type(y) in (float, long, int) else y for y in x)
+    assert _number_extracter(s, _int_sign_re, *int_safe_nolocale_nogroup) == int_splitter(s, True, True, '')
 
 
 def test_number_extracter_inserts_no_empty_string_py3safe_option_because_no_numbers_are_adjascent_example():
@@ -296,9 +296,13 @@ def test_number_extracter_doubles_letters_with_lowercase_version_with_grouplette
 def test_number_extracter_doubles_letters_with_lowercase_version_with_groupletters_for_float(x):
     assume(len(x) <= 10)
     assume(not any(type(y) == float and isnan(y) for y in x))
-    s = u''.join(repr(y) if type(y) in (float, long, int) else y for y in x)
-    t = float_splitter(s, True, True, False, u'')
-    t = [u''.join([z.lower() + z for z in y]) if type(y) != float else y for y in t]
+    try:
+        low = py23_str.casefold
+    except AttributeError:
+        low = py23_str.lower
+    s = ''.join(repr(y) if type(y) in (float, long, int) else y for y in x)
+    t = float_splitter(s, True, True, False, '')
+    t = [''.join([low(z) + z for z in y]) if type(y) != float else y for y in t]
     assert _number_extracter(s, _float_sign_exp_re, *float_nosafe_nolocale_group) == t
 
 
@@ -309,9 +313,13 @@ def test_number_extracter_doubles_letters_with_lowercase_version_with_grouplette
 @given([float, py23_str, int])
 def test_number_extracter_doubles_letters_with_lowercase_version_with_groupletters_for_int(x):
     assume(len(x) <= 10)
-    s = u''.join(repr(y) if type(y) in (float, long, int) else y for y in x)
-    t = int_splitter(s, False, False, u'')
-    t = [u''.join([z.lower() + z for z in y]) if type(y) not in (int, long) else y for y in t]
+    try:
+        low = py23_str.casefold
+    except AttributeError:
+        low = py23_str.lower
+    s = ''.join(repr(y) if type(y) in (float, long, int) else y for y in x)
+    t = int_splitter(s, False, False, '')
+    t = [''.join([low(z) + z for z in y]) if type(y) not in (int, long) else y for y in t]
     assert _number_extracter(s, _int_nosign_re, *int_nosafe_nolocale_group) == t
 
 
@@ -331,7 +339,7 @@ def test_number_extracter_extracts_numbers_and_strxfrms_strings_with_use_locale_
 def test_number_extracter_extracts_numbers_and_strxfrms_strings_with_use_locale(x):
     assume(len(x) <= 10)
     locale.setlocale(locale.LC_NUMERIC, str('en_US.UTF-8'))
-    s = u''.join(repr(y) if type(y) in (float, long, int) else y for y in x)
+    s = ''.join(repr(y) if type(y) in (float, long, int) else y for y in x)
     t = int_splitter(s, False, False, null_string)
     t = [y if i == 0 and y == null_string else locale_convert(y, (fast_int, isint), False) for i, y in enumerate(t)]
     assert _number_extracter(s, _int_nosign_re, *int_nosafe_locale_nogroup) == t
@@ -354,7 +362,7 @@ def test_number_extracter_extracts_numbers_and_strxfrms_letter_doubled_strings_w
 def test_number_extracter_extracts_numbers_and_strxfrms_letter_doubled_strings_with_use_locale_and_groupletters(x):
     assume(len(x) <= 10)
     locale.setlocale(locale.LC_NUMERIC, str('en_US.UTF-8'))
-    s = u''.join(repr(y) if type(y) in (float, long, int) else y for y in x)
+    s = ''.join(repr(y) if type(y) in (float, long, int) else y for y in x)
     t = int_splitter(s, False, False, null_string)
     t = [y if i == 0 and y == null_string else locale_convert(y, (fast_int, isint), True) for i, y in enumerate(t)]
     assert _number_extracter(s, _int_nosign_re, *int_nosafe_locale_group) == t
@@ -369,7 +377,7 @@ def test_number_extracter_extracts_numbers_and_strxfrms_letter_doubled_strings_w
 def test__natsort_key_with_float_and_signed_splits_input_into_string_and_signed_float_with_exponent(x):
     assume(len(x) <= 10)
     assume(not any(type(y) == float and isnan(y) for y in x))
-    s = u''.join(repr(y) if type(y) in (float, long, int) else y for y in x)
+    s = ''.join(repr(y) if type(y) in (float, long, int) else y for y in x)
     assert ns.F == ns.FLOAT
     assert ns.S == ns.SIGNED
     assert _natsort_key(s, None, ns.F | ns.S) == tuple(_number_extracter(s, _float_sign_exp_re, *float_nosafe_nolocale_nogroup))
@@ -379,7 +387,7 @@ def test__natsort_key_with_float_and_signed_splits_input_into_string_and_signed_
 def test__natsort_key_with_real_splits_input_into_string_and_signed_float_with_exponent(x):
     assume(len(x) <= 10)
     assume(not any(type(y) == float and isnan(y) for y in x))
-    s = u''.join(repr(y) if type(y) in (float, long, int) else y for y in x)
+    s = ''.join(repr(y) if type(y) in (float, long, int) else y for y in x)
     assert ns.R == ns.F | ns.S
     assert _natsort_key(s, None, ns.R) == tuple(_number_extracter(s, _float_sign_exp_re, *float_nosafe_nolocale_nogroup))
 
@@ -388,7 +396,7 @@ def test__natsort_key_with_real_splits_input_into_string_and_signed_float_with_e
 def test__natsort_key_with_real_matches_signed_float(x):
     assume(len(x) <= 10)
     assume(not any(type(y) == float and isnan(y) for y in x))
-    s = u''.join(repr(y) if type(y) in (float, long, int) else y for y in x)
+    s = ''.join(repr(y) if type(y) in (float, long, int) else y for y in x)
     assert _natsort_key(s, None, ns.R) == _natsort_key(s, None, ns.F | ns.S)
 
 
@@ -396,7 +404,7 @@ def test__natsort_key_with_real_matches_signed_float(x):
 def test__natsort_key_with_float_and_signed_and_noexp_splits_input_into_string_and_signed_float_without_exponent(x):
     assume(len(x) <= 10)
     assume(not any(type(y) == float and isnan(y) for y in x))
-    s = u''.join(repr(y) if type(y) in (float, long, int) else y for y in x)
+    s = ''.join(repr(y) if type(y) in (float, long, int) else y for y in x)
     assert ns.N == ns.NOEXP
     assert _natsort_key(s, None, ns.F | ns.S | ns.N) == tuple(_number_extracter(s, _float_sign_noexp_re, *float_nosafe_nolocale_nogroup))
 
@@ -405,7 +413,7 @@ def test__natsort_key_with_float_and_signed_and_noexp_splits_input_into_string_a
 def test__natsort_key_with_float_and_unsigned_splits_input_into_string_and_unsigned_float(x):
     assume(len(x) <= 10)
     assume(not any(type(y) == float and isnan(y) for y in x))
-    s = u''.join(repr(y) if type(y) in (float, long, int) else y for y in x)
+    s = ''.join(repr(y) if type(y) in (float, long, int) else y for y in x)
     assert ns.U == ns.UNSIGNED
     assert _natsort_key(s, None, ns.F | ns.U) == tuple(_number_extracter(s, _float_nosign_exp_re, *float_nosafe_nolocale_nogroup))
     # Default is unsigned search
@@ -416,7 +424,7 @@ def test__natsort_key_with_float_and_unsigned_splits_input_into_string_and_unsig
 def test__natsort_key_with_float_and_noexp_splits_input_into_string_and_unsigned_float_without_exponent(x):
     assume(len(x) <= 10)
     assume(not any(type(y) == float and isnan(y) for y in x))
-    s = u''.join(repr(y) if type(y) in (float, long, int) else y for y in x)
+    s = ''.join(repr(y) if type(y) in (float, long, int) else y for y in x)
     assert _natsort_key(s, None, ns.F | ns.N) == tuple(_number_extracter(s, _float_nosign_noexp_re, *float_nosafe_nolocale_nogroup))
 
 
@@ -424,7 +432,7 @@ def test__natsort_key_with_float_and_noexp_splits_input_into_string_and_unsigned
 def test__natsort_key_with_int_splits_input_into_string_and_unsigned_int(x):
     assume(len(x) <= 10)
     assume(not any(type(y) == float and isnan(y) for y in x))
-    s = u''.join(repr(y) if type(y) in (float, long, int) else y for y in x)
+    s = ''.join(repr(y) if type(y) in (float, long, int) else y for y in x)
     assert ns.I == ns.INT
     assert _natsort_key(s, None, ns.INT) == tuple(_number_extracter(s, _int_nosign_re, *int_nosafe_nolocale_nogroup))
     # Default is int search
@@ -437,7 +445,7 @@ def test__natsort_key_with_int_splits_input_into_string_and_unsigned_int(x):
 def test__natsort_key_with_int_splits_and_signed_input_into_string_and_signed_int(x):
     assume(len(x) <= 10)
     assume(not any(type(y) == float and isnan(y) for y in x))
-    s = u''.join(repr(y) if type(y) in (float, long, int) else y for y in x)
+    s = ''.join(repr(y) if type(y) in (float, long, int) else y for y in x)
     assert _natsort_key(s, None, ns.INT | ns.SIGNED) == tuple(_number_extracter(s, _int_sign_re, *int_nosafe_nolocale_nogroup))
     assert _natsort_key(s, None, ns.SIGNED) == tuple(_number_extracter(s, _int_sign_re, *int_nosafe_nolocale_nogroup))
 
@@ -446,7 +454,7 @@ def test__natsort_key_with_int_splits_and_signed_input_into_string_and_signed_in
 def test__natsort_key_with_version_or_digit_matches_usigned_int(x):
     assume(len(x) <= 10)
     assume(not any(type(y) == float and isnan(y) for y in x))
-    s = u''.join(repr(y) if type(y) in (float, long, int) else y for y in x)
+    s = ''.join(repr(y) if type(y) in (float, long, int) else y for y in x)
     assert _natsort_key(s, None, ns.VERSION) == _natsort_key(s, None, ns.INT | ns.UNSIGNED)
     assert _natsort_key(s, None, ns.DIGIT) == _natsort_key(s, None, ns.VERSION)
 
@@ -455,7 +463,7 @@ def test__natsort_key_with_version_or_digit_matches_usigned_int(x):
 def test__natsort_key_with_key_applies_key_function_before_splitting(x):
     assume(len(x) <= 10)
     assume(not any(type(y) == float and isnan(y) for y in x))
-    s = u''.join(repr(y) if type(y) in (float, long, int) else y for y in x)
+    s = ''.join(repr(y) if type(y) in (float, long, int) else y for y in x)
     assert _natsort_key(s, lambda x: x.upper(), ns.I) == tuple(_number_extracter(s.upper(), _int_nosign_re, *int_nosafe_nolocale_nogroup))
 
 
@@ -464,7 +472,7 @@ def test__natsort_key_with_tuple_input_returns_nested_tuples(x):
     # Iterables are parsed recursively so you can sort lists of lists.
     assume(len(x) <= 10)
     assume(not any(type(y) == float and isnan(y) for y in x))
-    s = u''.join(repr(y) if type(y) in (float, long, int) else y for y in x)
+    s = ''.join(repr(y) if type(y) in (float, long, int) else y for y in x)
     t = tuple(_number_extracter(s, _int_nosign_re, *int_nosafe_nolocale_nogroup))
     assert _natsort_key((s, s), None, ns.I) == (t, t)
 
@@ -474,7 +482,7 @@ def test__natsort_key_with_tuple_input_but_itemgetter_key_returns_split_second_e
     # A key is applied before recursion, but not in the recursive calls.
     assume(len(x) <= 10)
     assume(not any(type(y) == float and isnan(y) for y in x))
-    s = u''.join(repr(y) if type(y) in (float, long, int) else y for y in x)
+    s = ''.join(repr(y) if type(y) in (float, long, int) else y for y in x)
     t = tuple(_number_extracter(s, _int_nosign_re, *int_nosafe_nolocale_nogroup))
     assert _natsort_key((s, s), itemgetter(1), ns.I) == t
 
@@ -492,7 +500,7 @@ def test__natsort_key_with_TYPESAFE_inserts_spaces_between_numbers(x):
     # Turn on TYPESAFE to put a '' between adjacent numbers
     assume(len(x) <= 10)
     assume(not any(type(y) == float and isnan(y) for y in x))
-    s = u''.join(repr(y) if type(y) in (float, long, int) else y for y in x)
+    s = ''.join(repr(y) if type(y) in (float, long, int) else y for y in x)
     assert _natsort_key(s, None, ns.TYPESAFE | ns.S) == tuple(_number_extracter(s, _int_sign_re, *int_safe_nolocale_nogroup))
 
 
@@ -507,7 +515,7 @@ def test__natsort_key_with_invalid_alg_input_raises_ValueError():
 def test__natsort_key_with_IGNORECASE_lowercases_text(x):
     assume(len(x) <= 10)
     assume(not any(type(y) == float and isnan(y) for y in x))
-    s = u''.join(repr(y) if type(y) in (float, long, int) else y for y in x)
+    s = ''.join(repr(y) if type(y) in (float, long, int) else y for y in x)
     try:
         assert _natsort_key(s, None, ns.IGNORECASE) == tuple(_number_extracter(s.casefold(), _int_nosign_re, *int_nosafe_nolocale_nogroup))
     except AttributeError:
@@ -518,7 +526,7 @@ def test__natsort_key_with_IGNORECASE_lowercases_text(x):
 def test__natsort_key_with_LOWERCASEFIRST_inverts_text_case(x):
     assume(len(x) <= 10)
     assume(not any(type(y) == float and isnan(y) for y in x))
-    s = u''.join(repr(y) if type(y) in (float, long, int) else y for y in x)
+    s = ''.join(repr(y) if type(y) in (float, long, int) else y for y in x)
     assert _natsort_key(s, None, ns.LOWERCASEFIRST) == tuple(_number_extracter(s.swapcase(), _int_nosign_re, *int_nosafe_nolocale_nogroup))
 
 
@@ -530,10 +538,10 @@ def test__natsort_key_with_GROUPLETTERS_doubles_text_with_lowercase_letter_first
         low = py23_str.lower
     assume(len(x) <= 10)
     assume(not any(type(y) == float and isnan(y) for y in x))
-    s = u''.join(ichain([repr(y)] if type(y) in (float, long, int) else [low(y), y] for y in x))
-    s = u''.join(repr(y) if type(y) in (float, long, int) else y for y in x)
+    s = ''.join(ichain([repr(y)] if type(y) in (float, long, int) else [low(y), y] for y in x))
+    s = ''.join(repr(y) if type(y) in (float, long, int) else y for y in x)
     t = _number_extracter(s, _int_nosign_re, *int_nosafe_nolocale_nogroup)
-    assert _natsort_key(s, None, ns.GROUPLETTERS) == tuple(u''.join(low(z) + z for z in y) if type(y) not in (float, long, int) else y for y in t)
+    assert _natsort_key(s, None, ns.GROUPLETTERS) == tuple(''.join(low(z) + z for z in y) if type(y) not in (float, long, int) else y for y in t)
 
 
 @given([float, py23_str, int])
@@ -544,10 +552,10 @@ def test__natsort_key_with_GROUPLETTERS_and_LOWERCASEFIRST_inverts_text_first_th
         low = py23_str.lower
     assume(len(x) <= 10)
     assume(not any(type(y) == float and isnan(y) for y in x))
-    s = u''.join(ichain([repr(y)] if type(y) in (float, long, int) else [low(y), y] for y in x))
-    s = u''.join(repr(y) if type(y) in (float, long, int) else y for y in x)
+    s = ''.join(ichain([repr(y)] if type(y) in (float, long, int) else [low(y), y] for y in x))
+    s = ''.join(repr(y) if type(y) in (float, long, int) else y for y in x)
     t = _number_extracter(s.swapcase(), _int_nosign_re, *int_nosafe_nolocale_nogroup)
-    assert _natsort_key(s, None, ns.G | ns.LF) == tuple(u''.join(low(z) + z for z in y) if type(y) not in (float, long, int) else y for y in t)
+    assert _natsort_key(s, None, ns.G | ns.LF) == tuple(''.join(low(z) + z for z in y) if type(y) not in (float, long, int) else y for y in t)
 
 
 def test__natsort_key_with_bytes_input_only_applies_LOWERCASEFIRST_or_IGNORECASE_and_returns_in_tuple():
@@ -565,7 +573,7 @@ def test__natsort_key_with_LOCALE_transforms_floats_according_to_the_current_loc
     # Locale aware sorting
     assume(len(x) <= 10)
     assume(not any(type(y) == float and isnan(y) for y in x))
-    s = u''.join(repr(y) if type(y) in (float, long, int) else y for y in x)
+    s = ''.join(repr(y) if type(y) in (float, long, int) else y for y in x)
     locale.setlocale(locale.LC_NUMERIC, str('en_US.UTF-8'))
     assert _natsort_key(s, None, ns.LOCALE | ns.F) == tuple(_number_extracter(s, _float_nosign_exp_re, *float_nosafe_locale_nogroup))
     locale.setlocale(locale.LC_NUMERIC, str(''))
@@ -576,9 +584,9 @@ def test__natsort_key_with_LOCALE_and_UNGROUPLETTERS_places_space_before_string_
     # Locale aware sorting
     assume(len(x) <= 10)
     assume(not any(type(y) == float and isnan(y) for y in x))
-    s = u''.join(repr(y) if type(y) in (float, long, int) else y for y in x)
+    s = ''.join(repr(y) if type(y) in (float, long, int) else y for y in x)
     if len(s) > 0 and s[0].isupper():
-        s = u' ' + s
+        s = ' ' + s
     locale.setlocale(locale.LC_NUMERIC, str('en_US.UTF-8'))
     assert _natsort_key(s, None, ns.LOCALE | ns.UNGROUPLETTERS | ns.F) == tuple(_number_extracter(s, _float_nosign_exp_re, *float_nosafe_locale_nogroup))
     # The below are all aliases for UNGROUPLETTERS
@@ -592,7 +600,7 @@ def test__natsort_key_with_LOCALE_and_UNGROUPLETTERS_places_space_before_string_
 def test__natsort_key_with_UNGROUPLETTERS_does_nothing_without_LOCALE(x):
     assume(len(x) <= 10)
     assume(not any(type(y) == float and isnan(y) for y in x))
-    s = u''.join(repr(y) if type(y) in (float, long, int) else y for y in x)
+    s = ''.join(repr(y) if type(y) in (float, long, int) else y for y in x)
     assert _natsort_key(s, None, ns.UG | ns.I) == _natsort_key(s, None, ns.I)
 
 
