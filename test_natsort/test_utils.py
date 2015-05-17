@@ -10,14 +10,14 @@ from math import isnan
 from operator import itemgetter
 from itertools import chain
 from pytest import raises
-from hypothesis import given, assume
+from hypothesis import given, assume, example
 from hypothesis.specifiers import sampled_from
 from natsort.ns_enum import ns
 from natsort.utils import _number_extracter, _py3_safe, _natsort_key, _args_to_enum
 from natsort.utils import _float_sign_exp_re, _float_nosign_exp_re, _float_sign_noexp_re
 from natsort.utils import _float_nosign_noexp_re, _int_nosign_re, _int_sign_re, _do_decoding
 from natsort.utils import _path_splitter
-from natsort.locale_help import use_pyicu, null_string, locale_convert
+from natsort.locale_help import use_pyicu, null_string, locale_convert, dumb_sort
 from natsort.py23compat import py23_str
 from slow_splitters import int_splitter, float_splitter, sep_inserter
 
@@ -34,6 +34,13 @@ if sys.version[0] == '3':
     long = int
 
 ichain = chain.from_iterable
+
+
+def load_locale(x):
+    try:
+        locale.setlocale(locale.LC_ALL, str('{}.ISO8859-1'.format(x)))
+    except:
+        locale.setlocale(locale.LC_ALL, str('{}.UTF-8'.format(x)))
 
 
 def test_do_decoding_decodes_bytes_string_to_unicode():
@@ -103,6 +110,7 @@ def test_args_to_enum_converts_None_to_ns_IU():
     assert _args_to_enum(**{'number_type': None,
                             'exp': True}) == ns.I | ns.U
 
+float_nosafe_locale_group = (fast_float, False, True, True)
 float_nosafe_locale_nogroup = (fast_float, False, True, False)
 float_safe_nolocale_nogroup = (fast_float, True, False, False)
 float_nosafe_nolocale_group = (fast_float, False, False, True)
@@ -236,6 +244,9 @@ def test_number_extracter_excludes_plus_and_minus_sign_in_int_definition_for_uns
 
 
 @given([float, py23_str, int])
+@example([10000000000000000000000000000000000000000000000000000000000000000000000000,
+          100000000000000000000000000000000000000000000000000000000000000000000000000,
+          100000000000000000000000000000000000000000000000000000000000000000000000000])
 def test_number_extracter_excludes_plus_and_minus_sign_in_int_definition_for_unsigned_ints(x):
     assume(len(x) <= 10)
     s = ''.join(repr(y) if type(y) in (float, long, int) else y for y in x)
@@ -324,7 +335,7 @@ def test_number_extracter_doubles_letters_with_lowercase_version_with_grouplette
 
 
 def test_number_extracter_extracts_numbers_and_strxfrms_strings_with_use_locale_example():
-    locale.setlocale(locale.LC_NUMERIC, str('en_US.UTF-8'))
+    load_locale('en_US')
     if use_pyicu:
         from natsort.locale_help import get_pyicu_transform
         from locale import getlocale
@@ -338,16 +349,16 @@ def test_number_extracter_extracts_numbers_and_strxfrms_strings_with_use_locale_
 @given([float, py23_str, int])
 def test_number_extracter_extracts_numbers_and_strxfrms_strings_with_use_locale(x):
     assume(len(x) <= 10)
-    locale.setlocale(locale.LC_NUMERIC, str('en_US.UTF-8'))
+    load_locale('en_US')
     s = ''.join(repr(y) if type(y) in (float, long, int) else y for y in x)
     t = int_splitter(s, False, False, null_string)
-    t = [y if i == 0 and y == null_string else locale_convert(y, (fast_int, isint), False) for i, y in enumerate(t)]
+    t = [y if i == 0 and y is null_string else locale_convert(y, (fast_int, isint), False) for i, y in enumerate(t)]
     assert _number_extracter(s, _int_nosign_re, *int_nosafe_locale_nogroup) == t
     locale.setlocale(locale.LC_NUMERIC, str(''))
 
 
 def test_number_extracter_extracts_numbers_and_strxfrms_letter_doubled_strings_with_use_locale_and_groupletters_example():
-    locale.setlocale(locale.LC_NUMERIC, str('en_US.UTF-8'))
+    load_locale('en_US')
     if use_pyicu:
         from natsort.locale_help import get_pyicu_transform
         from locale import getlocale
@@ -361,10 +372,10 @@ def test_number_extracter_extracts_numbers_and_strxfrms_letter_doubled_strings_w
 @given([float, py23_str, int])
 def test_number_extracter_extracts_numbers_and_strxfrms_letter_doubled_strings_with_use_locale_and_groupletters(x):
     assume(len(x) <= 10)
-    locale.setlocale(locale.LC_NUMERIC, str('en_US.UTF-8'))
+    load_locale('en_US')
     s = ''.join(repr(y) if type(y) in (float, long, int) else y for y in x)
     t = int_splitter(s, False, False, null_string)
-    t = [y if i == 0 and y == null_string else locale_convert(y, (fast_int, isint), True) for i, y in enumerate(t)]
+    t = [y if i == 0 and y is null_string else locale_convert(y, (fast_int, isint), True) for i, y in enumerate(t)]
     assert _number_extracter(s, _int_nosign_re, *int_nosafe_locale_group) == t
     locale.setlocale(locale.LC_NUMERIC, str(''))
 
@@ -574,8 +585,11 @@ def test__natsort_key_with_LOCALE_transforms_floats_according_to_the_current_loc
     assume(len(x) <= 10)
     assume(not any(type(y) == float and isnan(y) for y in x))
     s = ''.join(repr(y) if type(y) in (float, long, int) else y for y in x)
-    locale.setlocale(locale.LC_NUMERIC, str('en_US.UTF-8'))
-    assert _natsort_key(s, None, ns.LOCALE | ns.F) == tuple(_number_extracter(s, _float_nosign_exp_re, *float_nosafe_locale_nogroup))
+    load_locale('en_US')
+    if dumb_sort():
+        assert _natsort_key(s, None, ns.LOCALE | ns.F) == tuple(_number_extracter(s.swapcase(), _float_nosign_exp_re, *float_nosafe_locale_group))
+    else:
+        assert _natsort_key(s, None, ns.LOCALE | ns.F) == tuple(_number_extracter(s, _float_nosign_exp_re, *float_nosafe_locale_nogroup))
     locale.setlocale(locale.LC_NUMERIC, str(''))
 
 
@@ -585,10 +599,18 @@ def test__natsort_key_with_LOCALE_and_UNGROUPLETTERS_places_space_before_string_
     assume(len(x) <= 10)
     assume(not any(type(y) == float and isnan(y) for y in x))
     s = ''.join(repr(y) if type(y) in (float, long, int) else y for y in x)
-    if len(s) > 0 and s[0].isupper():
-        s = ' ' + s
-    locale.setlocale(locale.LC_NUMERIC, str('en_US.UTF-8'))
-    assert _natsort_key(s, None, ns.LOCALE | ns.UNGROUPLETTERS | ns.F) == tuple(_number_extracter(s, _float_nosign_exp_re, *float_nosafe_locale_nogroup))
+    load_locale('en_US')
+    if dumb_sort():
+        t = tuple(_number_extracter(s.swapcase(), _float_nosign_exp_re, *float_nosafe_locale_group))
+    else:
+        t = tuple(_number_extracter(s, _float_nosign_exp_re, *float_nosafe_locale_nogroup))
+    if not t:
+        r = (t, t)
+    elif t[0] is null_string:
+        r = ((b'' if use_pyicu else '',), t)
+    else:
+        r = ((s[0],), t)
+    assert _natsort_key(s, None, ns.LOCALE | ns.UNGROUPLETTERS | ns.F) == r
     # The below are all aliases for UNGROUPLETTERS
     assert ns.UNGROUPLETTERS == ns.UG
     assert ns.UNGROUPLETTERS == ns.CAPITALFIRST

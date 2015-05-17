@@ -225,7 +225,7 @@ def test_keep_entry_range_returns_True_if_any_portion_of_input_is_between_the_ra
 
 @given((py23_str, integers_in_range(1, 99), py23_str, integers_in_range(1, 99), py23_str))
 def test_keep_entry_range_returns_True_if_any_portion_of_input_is_between_the_range_bounds(x):
-    s = u''.join(map(py23_str, x))
+    s = ''.join(map(py23_str, x))
     assume(any(0 < int(i) < 100 for i in re.findall(r'\d+', s) if re.match(r'\d+$', i)))
     assert keep_entry_range(s, [0], [100], int, re.compile(r'\d+'))
 
@@ -236,7 +236,7 @@ def test_keep_entry_range_returns_True_if_any_portion_of_input_is_between_any_ra
 
 @given((py23_str, integers_in_range(2, 89), py23_str, integers_in_range(2, 89), py23_str))
 def test_keep_entry_range_returns_True_if_any_portion_of_input_is_between_any_range_bounds(x):
-    s = u''.join(map(py23_str, x))
+    s = ''.join(map(py23_str, x))
     assume(any((1 < int(i) < 20) or (88 < int(i) < 90) for i in re.findall(r'\d+', s) if re.match(r'\d+$', i)))
     assert keep_entry_range(s, [1, 88], [20, 90], int, re.compile(r'\d+'))
 
@@ -247,7 +247,7 @@ def test_keep_entry_range_returns_False_if_no_portion_of_input_is_between_the_ra
 
 @given((py23_str, integers_from(21), py23_str, integers_from(21), py23_str))
 def test_keep_entry_range_returns_False_if_no_portion_of_input_is_between_the_range_bounds(x):
-    s = u''.join(map(py23_str, x))
+    s = ''.join(map(py23_str, x))
     assume(all(not (1 <= int(i) <= 20) for i in re.findall(r'\d+', s) if re.match(r'\d+$', i)))
     assert not keep_entry_range(s, [1], [20], int, re.compile(r'\d+'))
 
@@ -258,7 +258,7 @@ def test_exclude_entry_returns_True_if_exlcude_parameters_are_not_in_input_examp
 
 @given((py23_str, integers_from(0), py23_str, integers_from(0), py23_str))
 def test_exclude_entry_returns_True_if_exlcude_parameters_are_not_in_input(x):
-    s = u''.join(map(py23_str, x))
+    s = ''.join(map(py23_str, x))
     assume(not any(int(i) in (23, 45, 87) for i in re.findall(r'\d+', s) if re.match(r'\d+$', i)))
     assert exclude_entry(s, [23, 45, 87], int, re.compile(r'\d+'))
 
@@ -269,6 +269,6 @@ def test_exclude_entry_returns_False_if_exlcude_parameters_are_in_input_example(
 
 @given((py23_str, sampled_from([23, 45, 87]), py23_str, sampled_from([23, 45, 87]), py23_str))
 def test_exclude_entry_returns_False_if_exlcude_parameters_are_in_input(x):
-    s = u''.join(map(py23_str, x))
+    s = ''.join(map(py23_str, x))
     assume(any(int(i) in (23, 45, 87) for i in re.findall(r'\d+', s) if re.match(r'\d+$', i)))
     assert not exclude_entry(s, [23, 45, 87], int, re.compile(r'\d+'))

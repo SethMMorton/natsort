@@ -1,7 +1,6 @@
 language: python
 python:
 - 2.7
-- 3.2
 - 3.3
 - 3.4
 env:
@@ -12,6 +11,7 @@ before_install:
 - sudo locale-gen de_DE.UTF-8
 - sudo apt-get install bc
 install:
+- pip install -U pip
 - if [[ $WITH_OPTIONS == true ]]; then sudo apt-get install libicu-dev; fi
 - if [[ $WITH_OPTIONS == true ]]; then pip install fastnumbers; fi
 - if [[ $WITH_OPTIONS == true ]]; then pip install PyICU; fi

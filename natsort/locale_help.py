@@ -16,11 +16,11 @@ from locale import localeconv
 from natsort.py23compat import PY_VERSION
 
 # We need cmp_to_key for Python2 because strxfrm is broken for unicode.
-if sys.version[:3] == '2.7':
+try:
     from functools import cmp_to_key
 # cmp_to_key was not created till 2.7.
-elif sys.version[:3] == '2.6':
-    def cmp_to_key(mycmp):  # pragma: no cover
+except ImportError:  # pragma: no cover
+    def cmp_to_key(mycmp):
         """Convert a cmp= function into a key= function"""
         class K(object):
             __slots__ = ['obj']
@@ -71,6 +71,9 @@ try:
         return _d[l]
     use_pyicu = True
     null_string = b''
+
+    def dumb_sort():
+        return False
 except ImportError:
     if sys.version[0] == '2':
         from locale import strcoll
@@ -80,6 +83,11 @@ except ImportError:
         from locale import strxfrm
         null_string = ''
     use_pyicu = False
+
+    # On some systems, locale is broken and does not sort in the expected
+    # order. We will try to detect this and compensate.
+    def dumb_sort():
+        return strxfrm('A') < strxfrm('a')
 
 
 if PY_VERSION >= 3.3:

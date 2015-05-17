@@ -17,7 +17,8 @@ from itertools import islice
 from locale import localeconv
 
 # Local imports.
-from natsort.locale_help import locale_convert, grouper, null_string
+from natsort.locale_help import (locale_convert, grouper,
+                                 null_string, use_pyicu, dumb_sort)
 from natsort.py23compat import py23_str, py23_zip, PY_VERSION
 from natsort.ns_enum import ns, _ns
 from natsort.unicode_numbers import digits, numeric
@@ -307,20 +308,40 @@ def _natsort_key(val, key, alg):
 
         # Assume the input are strings, which is the most common case.
         # Apply the string modification if needed.
+        orig_val = val
         try:
-            if alg & _ns['LOWERCASEFIRST']:
+            lowfirst = alg & _ns['LOWERCASEFIRST']
+            dumb = dumb_sort()
+            if use_locale and dumb and not lowfirst:
+                val = val.swapcase()  # Compensate for bad locale lib.
+            elif lowfirst and not (use_locale and dumb):
                 val = val.swapcase()
             if alg & _ns['IGNORECASE']:
                 val = val.casefold() if PY_VERSION >= 3.3 else val.lower()
-            if (use_locale and alg & _ns['UNGROUPLETTERS'] and
-                    val and val[0].isupper()):
-                val = ' ' + val
-            return tuple(_number_extracter(val,
-                                           regex,
-                                           num_function,
-                                           alg & _ns['TYPESAFE'],
-                                           use_locale,
-                                           alg & _ns['GROUPLETTERS']))
+            gl = alg & _ns['GROUPLETTERS']
+            ret = tuple(_number_extracter(val,
+                                          regex,
+                                          num_function,
+                                          alg & _ns['TYPESAFE'],
+                                          use_locale,
+                                          gl or (use_locale and dumb)))
+            # For UNGROUPLETTERS, so the high level grouping can occur
+            # based on the first letter of the string.
+            # Do no locale transformation of the characters.
+            if use_locale and alg & _ns['UNGROUPLETTERS']:
+                if not ret:
+                    return (ret, ret)
+                elif ret[0] == null_string:
+                    return ((b'' if use_pyicu else '',), ret)
+                elif dumb:
+                    if lowfirst:
+                        return ((orig_val[0].swapcase(),), ret)
+                    else:
+                        return ((orig_val[0],), ret)
+                else:
+                    return ((val[0],), ret)
+            else:
+                return ret
         except (TypeError, AttributeError):
             # Check if it is a bytes type, and if so return as a
             # one element tuple.

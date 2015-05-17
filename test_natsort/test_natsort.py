@@ -15,6 +15,13 @@ from natsort import realsorted, index_realsorted, decoder, as_ascii, as_utf8
 from natsort.utils import _natsort_key
 
 
+def load_locale(x):
+    try:
+        locale.setlocale(locale.LC_ALL, str('{}.ISO8859-1'.format(x)))
+    except:
+        locale.setlocale(locale.LC_ALL, str('{}.UTF-8'.format(x)))
+
+
 def test_decoder_returns_function_that_can_decode_bytes_but_return_non_bytes_as_is():
     f = decoder('latin1')
     a = 'bytes'
@@ -239,48 +246,48 @@ def test_natsorted_with_IGNORECASE_sorts_without_regard_to_case_for_nested_input
 
 def test_natsorted_with_LOCALE_returns_results_sorted_by_lowercase_first_and_grouped_letters():
     a = ['Apple', 'corn', 'Corn', 'Banana', 'apple', 'banana']
-    locale.setlocale(locale.LC_ALL, str('en_US.UTF-8'))
+    load_locale('en_US')
     assert natsorted(a, alg=ns.LOCALE) == ['apple', 'Apple', 'banana', 'Banana', 'corn', 'Corn']
     locale.setlocale(locale.LC_ALL, str(''))
 
 
 def test_natsorted_with_LOCALE_and_CAPITALFIRST_returns_results_sorted_by_capital_first_and_ungrouped():
     a = ['Apple', 'corn', 'Corn', 'Banana', 'apple', 'banana']
-    locale.setlocale(locale.LC_ALL, str('en_US.UTF-8'))
+    load_locale('en_US')
     assert natsorted(a, alg=ns.LOCALE | ns.CAPITALFIRST) == ['Apple', 'Banana', 'Corn', 'apple', 'banana', 'corn']
     locale.setlocale(locale.LC_ALL, str(''))
 
 
 def test_natsorted_with_LOCALE_and_LOWERCASEFIRST_returns_results_sorted_by_uppercase_first_and_grouped_letters():
     a = ['Apple', 'corn', 'Corn', 'Banana', 'apple', 'banana']
-    locale.setlocale(locale.LC_ALL, str('en_US.UTF-8'))
+    load_locale('en_US')
     assert natsorted(a, alg=ns.LOCALE | ns.LOWERCASEFIRST) == ['Apple', 'apple', 'Banana', 'banana', 'Corn', 'corn']
     locale.setlocale(locale.LC_ALL, str(''))
 
 
 def test_natsorted_with_LOCALE_and_CAPITALFIRST_and_LOWERCASE_returns_results_sorted_by_capital_last_and_ungrouped():
     a = ['Apple', 'corn', 'Corn', 'Banana', 'apple', 'banana']
-    locale.setlocale(locale.LC_ALL, str('en_US.UTF-8'))
+    load_locale('en_US')
     assert natsorted(a, alg=ns.LOCALE | ns.CAPITALFIRST | ns.LOWERCASEFIRST) == ['apple', 'banana', 'corn', 'Apple', 'Banana', 'Corn']
     locale.setlocale(locale.LC_ALL, str(''))
 
 
 def test_natsorted_with_LOCALE_and_en_setting_returns_results_sorted_by_en_language():
-    locale.setlocale(locale.LC_ALL, str('en_US.UTF-8'))
+    load_locale('en_US')
     a = ['c', 'ä', 'b', 'a5,6', 'a5,50']
     assert natsorted(a, alg=ns.LOCALE | ns.F) == ['a5,6', 'a5,50', 'ä', 'b', 'c']
     locale.setlocale(locale.LC_ALL, str(''))
 
 
 def test_natsorted_with_LOCALE_and_de_setting_returns_results_sorted_by_de_language():
-    locale.setlocale(locale.LC_ALL, str('de_DE.UTF-8'))
+    load_locale('de_DE')
     a = ['c', 'ä', 'b', 'a5,6', 'a5,50']
     assert natsorted(a, alg=ns.LOCALE | ns.F) == ['a5,50', 'a5,6', 'ä', 'b', 'c']
     locale.setlocale(locale.LC_ALL, str(''))
 
 
 def test_natsorted_with_LOCALE_and_mixed_input_returns_sorted_results_without_error():
-    locale.setlocale(locale.LC_ALL, str('en_US.UTF-8'))
+    load_locale('en_US')
     a = ['0', 'Á', '2', 'Z']
     assert natsorted(a) == ['0', '2', 'Z', 'Á']
     a = ['2', 'ä', 'b', 1.5, 3]

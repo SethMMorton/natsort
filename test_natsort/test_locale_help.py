@@ -10,7 +10,7 @@ from itertools import chain
 from natsort.fake_fastnumbers import fast_float, isfloat, isint
 from natsort.locale_help import grouper, locale_convert, use_pyicu
 from natsort.py23compat import py23_str
-from hypothesis import given, assume
+from hypothesis import given, assume, example
 
 if use_pyicu:
     from natsort.locale_help import get_pyicu_transform
@@ -18,6 +18,14 @@ if use_pyicu:
     strxfrm = get_pyicu_transform(getlocale())
 else:
     from natsort.locale_help import strxfrm
+
+
+def load_locale(x):
+    try:
+        locale.setlocale(locale.LC_ALL, str('{}.ISO8859-1'.format(x)))
+    except:
+        locale.setlocale(locale.LC_ALL, str('{}.UTF-8'.format(x)))
+
 
 # Each test has an "example" version for demonstrative purposes,
 # and a test that uses the hypothesis module.
@@ -49,7 +57,7 @@ def test_grouper_returns_float_string_as_float(x):
 
 
 def test_locale_convert_transforms_float_string_to_float_example():
-    locale.setlocale(locale.LC_NUMERIC, str('en_US.UTF-8'))
+    load_locale('en_US')
     assert locale_convert('45.8', (fast_float, isfloat), False) == 45.8
     locale.setlocale(locale.LC_NUMERIC, str(''))
 
@@ -57,15 +65,13 @@ def test_locale_convert_transforms_float_string_to_float_example():
 @given(float)
 def test_locale_convert_transforms_float_string_to_float(x):
     assume(not isnan(x))
-    locale.setlocale(locale.LC_NUMERIC, str('en_US.UTF-8'))
+    load_locale('en_US')
     assert locale_convert(repr(x), (fast_float, isfloat), False) == x
     locale.setlocale(locale.LC_NUMERIC, str(''))
 
 
-# The following tests are example only, no hypothesis tests
-
 def test_locale_convert_transforms_nonfloat_string_to_strxfrm_string_example():
-    locale.setlocale(locale.LC_NUMERIC, str('en_US.UTF-8'))
+    load_locale('en_US')
     if use_pyicu:
         from natsort.locale_help import get_pyicu_transform
         from locale import getlocale
@@ -79,8 +85,8 @@ def test_locale_convert_transforms_nonfloat_string_to_strxfrm_string_example():
 
 @given(py23_str)
 def test_locale_convert_transforms_nonfloat_string_to_strxfrm_string(x):
-    assume(not x.isdigit())
-    locale.setlocale(locale.LC_NUMERIC, str('en_US.UTF-8'))
+    assume(type(fast_float(x)) is not float)
+    load_locale('en_US')
     if use_pyicu:
         from natsort.locale_help import get_pyicu_transform
         from locale import getlocale
@@ -92,7 +98,7 @@ def test_locale_convert_transforms_nonfloat_string_to_strxfrm_string(x):
 
 
 def test_locale_convert_with_groupletters_transforms_nonfloat_string_to_strxfrm_string_with_grouped_letters_example():
-    locale.setlocale(locale.LC_NUMERIC, str('en_US.UTF-8'))
+    load_locale('en_US')
     if use_pyicu:
         from natsort.locale_help import get_pyicu_transform
         from locale import getlocale
@@ -106,8 +112,8 @@ def test_locale_convert_with_groupletters_transforms_nonfloat_string_to_strxfrm_
 
 @given(py23_str)
 def test_locale_convert_with_groupletters_transforms_nonfloat_string_to_strxfrm_string_with_grouped_letters(x):
-    assume(not x.isdigit())
-    locale.setlocale(locale.LC_NUMERIC, str('en_US.UTF-8'))
+    assume(type(fast_float(x)) is not float)
+    load_locale('en_US')
     if use_pyicu:
         from natsort.locale_help import get_pyicu_transform
         from locale import getlocale
@@ -123,7 +129,7 @@ def test_locale_convert_with_groupletters_transforms_nonfloat_string_to_strxfrm_
 
 
 def test_locale_convert_transforms_float_string_to_float_with_de_locale_example():
-    locale.setlocale(locale.LC_NUMERIC, str('de_DE.UTF-8'))
+    load_locale('de_DE')
     assert locale_convert('45.8', (fast_float, isfloat), False) == 45.8
     assert locale_convert('45,8', (fast_float, isfloat), False) == 45.8
     locale.setlocale(locale.LC_NUMERIC, str(''))
@@ -132,7 +138,7 @@ def test_locale_convert_transforms_float_string_to_float_with_de_locale_example(
 @given(float)
 def test_locale_convert_transforms_float_string_to_float_with_de_locale(x):
     assume(not isnan(x))
-    locale.setlocale(locale.LC_NUMERIC, str('de_DE.UTF-8'))
+    load_locale('de_DE')
     assert locale_convert(repr(x), (fast_float, isfloat), False) == x
     assert locale_convert(repr(x).replace('.', ','), (fast_float, isfloat), False) == x
     locale.setlocale(locale.LC_NUMERIC, str(''))
