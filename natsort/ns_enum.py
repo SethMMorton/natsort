@@ -20,40 +20,51 @@ class ns(object):
                  C library that Python's locale module uses is broken.
                  On these systems it is recommended that you install
                  `PyICU <https://pypi.python.org/pypi/PyICU>`_
-                 if you wish to use ``LOCALE``.  If you are on one of
+                 if you wish to use ``LOCALE``, especially if you need
+                 to handle non-ASCII characters. If you are on one of
                  systems and get unexpected results, please try using
                  `PyICU <https://pypi.python.org/pypi/PyICU>`_ before
                  filing a bug report to ``natsort``.
 
     Attributes
     ----------
+    INT, I (default)
+        The default - parse numbers as integers.
     FLOAT, F
-        The default - parse numbers as floats.
-    INT, I
-        Tell `natsort` to parse numbers as ints.
-    UNSIGNED, U
-        Tell `natsort` to ignore any sign (i.e. "-" or "+") to the
-        immediate left of a number.  It is the same as setting the old
-        `signed` option to `False`.
+        Tell `natsort` to parse numbers as floats.
+    UNSIGNED, U (default)
+        Tell `natsort` to ignore any sign (i.e. "-" or "+") to the immediate
+        left of a number.  It is the same as setting the old `signed` option
+        to `False`. This is the default.
+    SIGNED, S
+        Tell `natsort` to take into account any sign (i.e. "-" or "+")
+        to the immediate left of a number.  It is the same as setting
+        the old `signed` option to `True`.
     VERSION, V
         This is a shortcut for ``ns.INT | ns.UNSIGNED``, which is useful
         when attempting to sort version numbers.  It is the same as
-        setting the old `number_type` option to `None`.
+        setting the old `number_type` option to `None`.  Since
+        ``ns.INT | ns.UNSIGNED`` is default, this is is
+        unnecessary.
     DIGIT, D
         Same as `VERSION` above.
+    REAL, R
+        This is a shortcut for ``ns.FLOAT | ns.SIGNED``, which is useful
+        when attempting to sort real numbers.
     NOEXP, N
         Tell `natsort` to not search for exponents as part of the number.
         For example, with `NOEXP` the number "5.6E5" would be interpreted
-        as `5.6`, `"E"`, and `5`.  It is the same as setting the old `exp`
-        option to `False`.
+        as `5.6`, `"E"`, and `5`.  It is the same as setting the old
+        `exp` option to `False`.
     PATH, P
         Tell `natsort` to interpret strings as filesystem paths, so they
         will be split according to the filesystem separator
         (i.e. '/' on UNIX, '\\' on Windows), as well as splitting on the
         file extension, if any. Without this, lists of file paths like
-        ``['Folder/', 'Folder (1)/', 'Folder (10)/']`` will not be sorted
-        properly; 'Folder/' will be placed at the end, not at the front.
-        It is the same as setting the old `as_path` option to `True`.
+        ``['Folder/', 'Folder (1)/', 'Folder (10)/']`` will not be
+        sorted properly; 'Folder/' will be placed at the end, not at the
+        front. It is the same as setting the old `as_path` option to
+        `True`.
     LOCALE, L
         Tell `natsort` to be locale-aware when sorting strings (everything
         that was not converted to a number).  Your sorting results will vary
@@ -72,7 +83,11 @@ class ns(object):
         ``['apple', 'banana', 'Apple', 'Banana']`` (the default order
         would be ``['Apple', 'Banana', 'apple', 'banana']`` which is
         the order from a purely ordinal sort).
-        Useless when used with `IGNORECASE`.
+        Useless when used with `IGNORECASE`. Please note that if used
+        with ``LOCALE``, this actually has the reverse effect and will
+        put uppercase first (this is because ``LOCALE`` already puts
+        lowercase first); you may use this to your advantage if you
+        need to modify the order returned with ``LOCALE``.
     GROUPLETTERS, G
         Tell `natsort` to group lowercase and uppercase letters together
         when sorting.  For example,
@@ -90,9 +105,8 @@ class ns(object):
     TYPESAFE, T
         Try hard to avoid "unorderable types" error on Python 3. It
         is the same as setting the old `py3_safe` option to `True`.
-        This is only needed if not using ``UNSIGNED`` or if
-        sorting by ``FLOAT``.
-        You shouldn't need to use this unless you are using
+        This is only needed if using ``SIGNED`` or if sorting by
+        ``FLOAT``. You shouldn't need to use this unless you are using
         ``natsort_keygen``. *NOTE:* It cannot resolve the ``TypeError``
         from trying to compare `str` and `bytes`.
 
@@ -120,11 +134,14 @@ class ns(object):
 
 
 # Sort algorithm "enum" values.
-_ns = {'FLOAT': 0,            'F': 0,
-       'INT': 1,              'I': 1,
-       'UNSIGNED': 2,         'U': 2,
-       'VERSION': 3,          'V': 3,  # Shortcut for INT | UNSIGNED
-       'DIGIT': 3,            'D': 3,  # Shortcut for INT | UNSIGNED
+_ns = {
+       'INT': 0,              'I': 0,
+       'FLOAT': 1,            'F': 1,
+       'UNSIGNED': 0,         'U': 0,
+       'SIGNED': 2,           'S': 2,
+       'VERSION': 0,          'V': 0,  # Shortcut for INT | UNSIGNED
+       'DIGIT': 0,            'D': 0,  # Shortcut for INT | UNSIGNED
+       'REAL': 3,             'R': 3,  # Shortcut for FLOAT | SIGNED
        'NOEXP': 4,            'N': 4,
        'PATH': 8,             'P': 8,
        'LOCALE': 16,          'L': 16,

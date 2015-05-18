@@ -9,6 +9,9 @@ import sys
 # python2 and python3.  This code is pretty much lifted from the iPython
 # project's py3compat.py file.  Credit to the iPython devs.
 
+# Numeric form of version
+PY_VERSION = float(sys.version[:3])
+
 # Assume all strings are Unicode in Python 2
 py23_str = str if sys.version[0] == '3' else unicode
 
@@ -17,6 +20,9 @@ py23_range = range if sys.version[0] == '3' else xrange
 
 # Uniform base string type
 py23_basestring = str if sys.version[0] == '3' else basestring
+
+# unichr function
+py23_unichr = chr if sys.version[0] == '3' else unichr
 
 # zip as an iterator
 if sys.version[0] == '3':

@@ -3,6 +3,17 @@
 Changelog
 ---------
 
+05-17-2015 v. 4.0.0
+'''''''''''''''''''
+
+    - Made default behavior of 'natsort' search for unsigned ints,
+      rather than signed floats. This is a backwards-incompatible
+      change but in 99% of use cases it should not required any
+      end-user changes.
+    - Improved handling of locale-aware sorting on systems where the
+      underlying locale library is broken.
+    - Greatly improved all unit tests by adding the hypothesis library.
+
 04-06-2015 v. 3.5.6
 '''''''''''''''''''
 

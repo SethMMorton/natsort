@@ -1,8 +1,6 @@
 language: python
 python:
-- 2.6
 - 2.7
-- 3.2
 - 3.3
 - 3.4
 env:
@@ -13,13 +11,14 @@ before_install:
 - sudo locale-gen de_DE.UTF-8
 - sudo apt-get install bc
 install:
+- pip install -U pip
 - if [[ $WITH_OPTIONS == true ]]; then sudo apt-get install libicu-dev; fi
 - if [[ $WITH_OPTIONS == true ]]; then pip install fastnumbers; fi
 - if [[ $WITH_OPTIONS == true ]]; then pip install PyICU; fi
-- if [[ $WITH_OPTIONS == true && 1 -eq $(echo "$TRAVIS_PYTHON_VERSION < 3.4" | bc -l) ]]; then pip install pathlib; fi
+- if [[ 1 -eq $(echo "$TRAVIS_PYTHON_VERSION < 3.4" | bc -l) ]]; then pip install pathlib; fi
 - if [[ $TRAVIS_PYTHON_VERSION == '2.6' ]]; then pip install argparse; fi
 - if [[ $(echo "$TRAVIS_PYTHON_VERSION < 3.3" | bc -l) ]]; then pip install mock; fi
-- pip install pytest-cov pytest-flakes pytest-pep8
+- pip install pytest-cov pytest-flakes pytest-pep8 hypothesis
 - pip install coveralls
 script:
 - python -m pytest --cov natsort --flakes --pep8

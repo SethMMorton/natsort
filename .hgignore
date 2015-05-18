@@ -4,6 +4,7 @@ syntax: glob
 
 # Packages
 *.egg
+*.eggs
 *.egg-info
 dist
 build
@@ -22,9 +23,11 @@ MANIFEST
 pip-log.txt
 
 # Unit test / coverage reports
+.hypothesis
 .coverage
 .tox
 .cache
+.pytest
 
 #Translations
 *.mo
