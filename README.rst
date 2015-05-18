@@ -83,7 +83,7 @@ BSD-based system (like Mac OS X).
 
 You can sort signed floats (i.e. real numbers) using the ``realsorted``; this is
 useful in scientific data analysis. This was the default behavior of ``natsorted``
-for ``natsort`` version < 4.0.0. ::
+for ``natsort`` version < 4.0.0:
 
 .. code-block:: python
 
