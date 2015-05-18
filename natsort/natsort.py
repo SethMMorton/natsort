@@ -152,7 +152,7 @@ def natsort_keygen(key=None, alg=0, **_kwargs):
     alg : ns enum, optional
         This option is used to control which algorithm `natsort`
         uses when sorting. For details into these options, please see
-        the :class:`ns` class documentation. The default is `ns.FLOAT`.
+        the :class:`ns` class documentation. The default is `ns.INT`.
 
     Returns
     -------
@@ -206,7 +206,7 @@ def natsorted(seq, key=None, reverse=False, alg=0, **_kwargs):
     alg : ns enum, optional
         This option is used to control which algorithm `natsort`
         uses when sorting. For details into these options, please see
-        the :class:`ns` class documentation. The default is `ns.FLOAT`.
+        the :class:`ns` class documentation. The default is `ns.INT`.
 
     Returns
     -------
@@ -277,7 +277,8 @@ def humansorted(seq, key=None, reverse=False, alg=0):
                  C library that Python's locale module uses is broken.
                  On these systems it is recommended that you install
                  `PyICU <https://pypi.python.org/pypi/PyICU>`_
-                 if you wish to use ``humansorted``.  If you are on
+                 if you wish to use ``humansorted``, especially if you need
+                 to handle non-ASCII characters.  If you are on
                  one of systems and get unexpected results, please try
                  using `PyICU <https://pypi.python.org/pypi/PyICU>`_
                  before filing a bug report to `natsort`.
@@ -313,10 +314,11 @@ def humansorted(seq, key=None, reverse=False, alg=0):
     Notes
     -----
     You may find that if you do not explicitly set
-    the locale your results may not be as you expect... I have found that
-    it depends on the system you are on. To do this is straightforward
-    (in the below example I use 'en_US.UTF-8', but you should use your
-    locale)::
+    the locale your results may not be as you expect, although
+    as of ``natsort`` version 4.0.0 the sorting algorithm has been
+    updated to account for a buggy ``locale`` installation.
+    In the below example 'en_US.UTF-8' is used, but you should use your
+    locale::
 
         >>> import locale
         >>> # The 'str' call is only to get around a bug on Python 2.x
@@ -327,7 +329,7 @@ def humansorted(seq, key=None, reverse=False, alg=0):
 
     It is preferred that you do this before importing `natsort`.
     If you use `PyICU <https://pypi.python.org/pypi/PyICU>`_ (see warning
-    above) then you should not need to do this.
+    above) then you should not need to do explicitly set a locale.
 
     Examples
     --------
@@ -510,6 +512,8 @@ def index_humansorted(seq, key=None, reverse=False, alg=0):
     of the given sequence.
 
     This is a wrapper around ``index_natsorted(seq, alg=ns.LOCALE)``.
+    Please see the ``humansorted`` documentation for caveats of
+    using ``index_humansorted``.
 
     Parameters
     ----------
@@ -543,10 +547,11 @@ def index_humansorted(seq, key=None, reverse=False, alg=0):
     Notes
     -----
     You may find that if you do not explicitly set
-    the locale your results may not be as you expect... I have found that
-    it depends on the system you are on. To do this is straightforward
-    (in the below example I use 'en_US.UTF-8', but you should use your
-    locale)::
+    the locale your results may not be as you expect, although
+    as of ``natsort`` version 4.0.0 the sorting algorithm has been
+    updated to account for a buggy ``locale`` installation.
+    In the below example 'en_US.UTF-8' is used, but you should use your
+    locale::
 
         >>> import locale
         >>> # The 'str' call is only to get around a bug on Python 2.x
@@ -557,7 +562,7 @@ def index_humansorted(seq, key=None, reverse=False, alg=0):
 
     It is preferred that you do this before importing `natsort`.
     If you use `PyICU <https://pypi.python.org/pypi/PyICU>`_ (see warning
-    above) then you should not need to do this.
+    above) then you should not need to explicitly set a locale.
 
     Examples
     --------

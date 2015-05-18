@@ -50,13 +50,16 @@ or as versions.  Using :func:`~natsorted` is simple::
 :func:`~natsorted` identifies numbers anywhere in a string and sorts them
 naturally.
 
-Sorting is handled properly by default (as of :mod:`natsort` version >= 4.0.0):
+Sorting versions is handled properly by default (as of :mod:`natsort` version >= 4.0.0):
 
 .. code-block:: python
 
     >>> a = ['version-1.9', 'version-2.0', 'version-1.11', 'version-1.10']
     >>> natsorted(a)
     ['version-1.9', 'version-1.10', 'version-1.11', 'version-2.0']
+
+If you need to sort release candidates, please see :ref:`rc_sorting` for
+a useful hack.
 
 You can also perform locale-aware sorting (or "human sorting"), where the
 non-numeric characters are ordered based on their meaning, not on their
@@ -155,9 +158,9 @@ If you want to build this documentation, enter::
 
     python setup.py build_sphinx
 
-:mod:`natsort` requires python version 2.6 or greater
-(this includes python 3.x). To run version 2.6, 3.0, or 3.1 the 
-`argparse <https://pypi.python.org/pypi/argparse>`_ module is required.
+:mod:`natsort` requires Python version 2.7 or greater or Python 3.3 or greater.
+Python 2.6 and 3.2 are no longer officially supported (no unit tests are performed)
+but it should work.
 
 The most efficient sorting can occur if you install the 
 `fastnumbers <https://pypi.python.org/pypi/fastnumbers>`_ package (it helps
@@ -167,14 +170,32 @@ recommended you include this as a dependency.  ``natsort`` will not require (or
 check) that `fastnumbers <https://pypi.python.org/pypi/fastnumbers>`_ is installed.
 
 On BSD-based systems (this includes Mac OS X), the underlying ``locale`` library
-can be buggy (please see http://bugs.python.org/issue23195), so ``natsort`` will use
-`PyICU <https://pypi.python.org/pypi/PyICU>`_ under the hood if it is installed
-on your computer; this will give more reliable cross-platform results.
-``natsort`` will not require (or check) that
-`PyICU <https://pypi.python.org/pypi/PyICU>`_ is installed at installation
-since in Linux-based systems and Windows systems ``locale`` should work just fine.
-Please visit https://github.com/SethMMorton/natsort/issues/21 for more details and
-how to install on Mac OS X.
+can be buggy (please see http://bugs.python.org/issue23195); ``locale`` is
+used for the ``ns.LOCALE`` option and ``humansorted`` function.. To remedy this,
+one can 
+
+    1. Use "\*.ISO8859-1" locale (i.e. 'en_US.ISO8859-1') rather than "\*.UTF-8"
+       encoding. These encodings do not suffer from as many problems as "UTF-8"
+       and thus should give expected results.
+    2. Use `PyICU <https://pypi.python.org/pypi/PyICU>`_.  If
+       `PyICU <https://pypi.python.org/pypi/PyICU>`_ is installed, ``natsort``
+       will use it under the hood if it is installed; this will give more
+       reliable cross-platform results in the long run. ``natsort`` will not
+       require (or check) that `PyICU <https://pypi.python.org/pypi/PyICU>`_
+       is installed at installation. Please visit
+       https://github.com/SethMMorton/natsort/issues/21 for more details and
+       how to install on Mac OS X. **Please note** that using
+       `PyICU <https://pypi.python.org/pypi/PyICU>`_ is the only way to
+       guarantee correct results for all input on BSD-based systems, since
+       every other suggestion is a workaround.
+    3. Do nothing. As of ``natsort`` version 4.0.0, ``natsort`` is configured
+       to compensate for a broken ``locale`` library in terms of case-handling;
+       if you do not need to be able to properly handle non-ASCII characters
+       then this may be the best option for you. 
+
+Note that the above solutions *should not* be required for Windows or
+Linux since in Linux-based systems and Windows systems ``locale`` *should* work
+just fine.
 
 :mod:`natsort` comes with a shell script called :mod:`natsort`, or can also be called
 from the command line with ``python -m natsort``.  The command line script is

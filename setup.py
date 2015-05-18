@@ -26,6 +26,7 @@ class PyTest(TestCommand):
                             '--flakes',
                             '--pep8',
                             # '--failed',
+                            # '-v',
                             ])
         err2 = pytest.main(['--doctest-modules', 'natsort'])
         err3 = pytest.main(['README.rst',

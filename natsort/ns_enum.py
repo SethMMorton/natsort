@@ -20,7 +20,8 @@ class ns(object):
                  C library that Python's locale module uses is broken.
                  On these systems it is recommended that you install
                  `PyICU <https://pypi.python.org/pypi/PyICU>`_
-                 if you wish to use ``LOCALE``.  If you are on one of
+                 if you wish to use ``LOCALE``, especially if you need
+                 to handle non-ASCII characters. If you are on one of
                  systems and get unexpected results, please try using
                  `PyICU <https://pypi.python.org/pypi/PyICU>`_ before
                  filing a bug report to ``natsort``.

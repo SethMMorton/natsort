@@ -29,6 +29,8 @@ As of :mod:`natsort` version >= 4.0.0, :func:`~natsorted` will now properly
 sort version numbers. The old function :func:`~versorted` exists for
 backwards compatibility but new development should use :func:`~natsorted`.
 
+.. _rc_sorting:
+
 Sorting with Alpha, Beta, and Release Candidates
 ++++++++++++++++++++++++++++++++++++++++++++++++
 
@@ -106,6 +108,32 @@ to users on BSD-based systems (like Mac OS X).  There are some known bugs
 with the ``locale`` module from the standard library that are solved when
 using `PyICU <https://pypi.python.org/pypi/PyICU>`_; you can read about
 them here: http://bugs.python.org/issue23195.
+
+If you have problems with ``ns.LOCALE`` (or :func:`~humansorted`),
+especially on BSD-based systems, you can try the following:
+
+    1. Use "\*.ISO8859-1" locale (i.e. 'en_US.ISO8859-1') rather than "\*.UTF-8"
+       encoding. These encodings do not suffer from as many problems as "UTF-8"
+       and thus should give expected results.
+    2. Use `PyICU <https://pypi.python.org/pypi/PyICU>`_.  If
+       `PyICU <https://pypi.python.org/pypi/PyICU>`_ is installed, ``natsort``
+       will use it under the hood if it is installed; this will give more
+       reliable cross-platform results in the long run. ``natsort`` will not
+       require (or check) that `PyICU <https://pypi.python.org/pypi/PyICU>`_
+       is installed at installation. Please visit
+       https://github.com/SethMMorton/natsort/issues/21 for more details and
+       how to install on Mac OS X. **Please note** that using
+       `PyICU <https://pypi.python.org/pypi/PyICU>`_ is the only way to
+       guarantee correct results for all input on BSD-based systems, since
+       every other suggestion is a workaround.
+    3. Do nothing. As of ``natsort`` version 4.0.0, ``natsort`` is configured
+       to compensate for a broken ``locale`` library in terms of case-handling;
+       if you do not need to be able to properly handle non-ASCII characters
+       then this may be the best option for you. 
+
+Note that the above solutions *should not* be required for Windows or
+Linux since in Linux-based systems and Windows systems ``locale`` *should* work
+just fine.
 
 Controlling Case When Sorting
 -----------------------------
