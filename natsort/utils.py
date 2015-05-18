@@ -311,7 +311,7 @@ def _natsort_key(val, key, alg):
         orig_val = val
         try:
             lowfirst = alg & _ns['LOWERCASEFIRST']
-            dumb = dumb_sort()
+            dumb = dumb_sort() if use_locale else False
             if use_locale and dumb and not lowfirst:
                 val = val.swapcase()  # Compensate for bad locale lib.
             elif lowfirst and not (use_locale and dumb):
