@@ -63,7 +63,9 @@ a useful hack.
 
 You can also perform locale-aware sorting (or "human sorting"), where the
 non-numeric characters are ordered based on their meaning, not on their
-ordinal value; this can be achieved with the :func:`~humansorted` function::
+ordinal value; this can be achieved with the :func:`~humansorted` function:
+
+.. code-block:: python
 
     >>> a = ['Apple', 'Banana', 'apple', 'banana']
     >>> natsorted(a)
@@ -82,7 +84,7 @@ below before using the :func:`~humansorted` function.
 
 You can sort signed floats (i.e. real numbers) using the :func:`~realsorted`;
 this is useful in scientific data analysis. This was the default behavior of
-:func:`~natsorted` for :mod:`natsort` version < 4.0.0. ::
+:func:`~natsorted` for :mod:`natsort` version < 4.0.0:
 
 .. code-block:: python
 
