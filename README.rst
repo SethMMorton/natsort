@@ -171,11 +171,11 @@ used for the ``ns.LOCALE`` option and ``humansorted`` function.. To remedy this,
 one can 
 
     1. Use "\*.ISO8859-1" locale (i.e. 'en_US.ISO8859-1') rather than "\*.UTF-8"
-       encoding. These encodings do not suffer from as many problems as "UTF-8"
+       locale. These locales do not suffer from as many problems as "UTF-8"
        and thus should give expected results.
     2. Use `PyICU <https://pypi.python.org/pypi/PyICU>`_.  If
        `PyICU <https://pypi.python.org/pypi/PyICU>`_ is installed, ``natsort``
-       will use it under the hood if it is installed; this will give more
+       will use it under the hood; this will give more
        reliable cross-platform results in the long run. ``natsort`` will not
        require (or check) that `PyICU <https://pypi.python.org/pypi/PyICU>`_
        is installed at installation. Please visit
@@ -203,18 +203,17 @@ Moving from older Natsort versions
       for this change is that it will cause ``natsort`` to return results that
       pass the "least astonishment" test for the most common use case, which is
       sorting version numbers. If you relied on the default behavior
-      to be signed floats, it is add ``alg=ns.F | ns.S`` to your
+      to be signed floats, add ``alg=ns.F | ns.S`` to your
       ``natsort`` calls or switch to the new ``realsorted`` function which
-      behaves identically to the current ``natsorted`` with default values.
-      For 99% of users this will have no effect... it is only expected that this
-      will effect users using ``natsort`` for science and engineering. What it
-      will do is make it so you no longer need ``ns.V`` or ``ns.I | ns.U`` to sort
-      version-like strings.
+      behaves identically to the older ``natsorted`` with default values.
+      For 99% of users this change will not effect their code... it is only
+      expected that this will effect users using ``natsort`` for science and
+      engineering. 
       This will also affect the default behavior of the ``natsort`` shell script.
     - In ``natsort`` version 4.0.0, the ``number_type``, ``signed``, ``exp``,
       ``as_path``, and ``py3_safe`` options have be removed from the (documented)
       API in favor of the ``alg`` option and ``ns`` enum.
-    - In ``natsort`` version 4.0.0, the ``natsort_key`` function has be removed
+    - In ``natsort`` version 4.0.0, the ``natsort_key`` function has been removed
       from the public API.
 
 Author
@@ -233,7 +232,7 @@ for the complete `changelog <http://pythonhosted.org//natsort/changelog.html>`_.
 
     - Made default behavior of 'natsort' search for unsigned ints,
       rather than signed floats. This is a backwards-incompatible
-      change but in 99% of use cases it should not required any
+      change but in 99% of use cases it should not require any
       end-user changes.
     - Improved handling of locale-aware sorting on systems where the
       underlying locale library is broken.

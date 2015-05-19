@@ -15,6 +15,7 @@ include test_natsort/test_locale_help.py
 include test_natsort/test_fake_fastnumbers.py
 include test_natsort/test_main.py
 include test_natsort/test_utils.py
+include test_natsort/test_unicode_numbers.py
 include setup.py
 include setup.cfg
 prune natsort/__pycache__

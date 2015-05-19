@@ -177,11 +177,11 @@ used for the ``ns.LOCALE`` option and ``humansorted`` function.. To remedy this,
 one can 
 
     1. Use "\*.ISO8859-1" locale (i.e. 'en_US.ISO8859-1') rather than "\*.UTF-8"
-       encoding. These encodings do not suffer from as many problems as "UTF-8"
+       locale. These locales do not suffer from as many problems as "UTF-8"
        and thus should give expected results.
     2. Use `PyICU <https://pypi.python.org/pypi/PyICU>`_.  If
        `PyICU <https://pypi.python.org/pypi/PyICU>`_ is installed, ``natsort``
-       will use it under the hood if it is installed; this will give more
+       will use it under the hood; this will give more
        reliable cross-platform results in the long run. ``natsort`` will not
        require (or check) that `PyICU <https://pypi.python.org/pypi/PyICU>`_
        is installed at installation. Please visit

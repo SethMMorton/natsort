@@ -8,7 +8,7 @@ Changelog
 
     - Made default behavior of 'natsort' search for unsigned ints,
       rather than signed floats. This is a backwards-incompatible
-      change but in 99% of use cases it should not required any
+      change but in 99% of use cases it should not require any
       end-user changes.
     - Improved handling of locale-aware sorting on systems where the
       underlying locale library is broken.
