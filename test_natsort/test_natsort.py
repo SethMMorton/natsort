@@ -17,9 +17,9 @@ from natsort.utils import _natsort_key
 
 def load_locale(x):
     try:
-        locale.setlocale(locale.LC_ALL, str('{}.ISO8859-1'.format(x)))
+        locale.setlocale(locale.LC_ALL, str('{0}.ISO8859-1'.format(x)))
     except:
-        locale.setlocale(locale.LC_ALL, str('{}.UTF-8'.format(x)))
+        locale.setlocale(locale.LC_ALL, str('{0}.UTF-8'.format(x)))
 
 
 def test_decoder_returns_function_that_can_decode_bytes_but_return_non_bytes_as_is():
