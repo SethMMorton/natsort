@@ -16,7 +16,7 @@ from natsort.ns_enum import ns
 from natsort.utils import _number_extracter, _py3_safe, _natsort_key, _args_to_enum
 from natsort.utils import _float_sign_exp_re, _float_nosign_exp_re, _float_sign_noexp_re
 from natsort.utils import _float_nosign_noexp_re, _int_nosign_re, _int_sign_re, _do_decoding
-from natsort.utils import _path_splitter
+from natsort.utils import _path_splitter, _fix_nan
 from natsort.locale_help import use_pyicu, null_string, locale_convert, dumb_sort
 from natsort.py23compat import py23_str
 from slow_splitters import int_splitter, float_splitter, sep_inserter
@@ -123,6 +123,16 @@ int_nosafe_locale_group = (fast_int, False, True, True)
 int_nosafe_locale_nogroup = (fast_int, False, True, False)
 int_nosafe_nolocale_group = (fast_int, False, False, True)
 int_nosafe_nolocale_nogroup = (fast_int, False, False, False)
+
+
+def test_fix_nan_converts_nan_to_negative_infinity_without_NANLAST():
+    assert _fix_nan((float('nan'),), 0) == (float('-inf'),)
+    assert _fix_nan(('a', 'b', float('nan')), 0) == ('a', 'b', float('-inf'))
+
+
+def test_fix_nan_converts_nan_to_positive_infinity_with_NANLAST():
+    assert _fix_nan((float('nan'),), ns.NANLAST) == (float('+inf'),)
+    assert _fix_nan(('a', 'b', float('nan')), ns.NANLAST) == ('a', 'b', float('+inf'))
 
 
 # Each test has an "example" version for demonstrative purposes,
@@ -378,6 +388,17 @@ def test_number_extracter_extracts_numbers_and_strxfrms_letter_doubled_strings_w
     t = [y if i == 0 and y is null_string else locale_convert(y, (fast_int, isint), True) for i, y in enumerate(t)]
     assert _number_extracter(s, _int_nosign_re, *int_nosafe_locale_group) == t
     locale.setlocale(locale.LC_NUMERIC, str(''))
+
+
+def test__natsort_key_with_nan_input_transforms_nan_to_negative_inf():
+    assert _natsort_key('nan', None, ns.FLOAT) == (u'', float('-inf'))
+    assert _natsort_key(float('nan'), None, 0) == (u'', float('-inf'))
+
+
+def test__natsort_key_with_nan_input_and_NANLAST_transforms_nan_to_positive_inf():
+    assert _natsort_key('nan', None, ns.FLOAT | ns.NANLAST) == (u'', float('+inf'))
+    assert _natsort_key(float('nan'), None, ns.NANLAST) == (u'', float('+inf'))
+    assert ns.NL == ns.NANLAST
 
 
 # The remaining tests provide no examples, just hypothesis tests.

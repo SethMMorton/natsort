@@ -146,6 +146,18 @@ def test_natsorted_with_mixed_input_returns_sorted_results_without_error():
     assert natsorted(a) == [1.5, '2', 3, 'b', 'ä']
 
 
+def test_natsorted_with_nan_input_returns_sorted_results_with_nan_last_with_NANLAST():
+    a = ['25', 5, float('nan'), 1E40]
+    # The slice is because NaN != NaN
+    assert natsorted(a, alg=ns.NANLAST)[:3] == [5, '25', 1E40, float('nan')][:3]
+
+
+def test_natsorted_with_nan_input_returns_sorted_results_with_nan_first_without_NANLAST():
+    a = ['25', 5, float('nan'), 1E40]
+    # The slice is because NaN != NaN
+    assert natsorted(a)[1:] == [float('nan'), 5, '25', 1E40][1:]
+
+
 def test_natsorted_with_mixed_input_raises_TypeError_if_bytes_type_is_involved_on_Python3():
     if sys.version[0] == '3':
         with raises(TypeError) as e:

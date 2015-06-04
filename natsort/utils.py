@@ -10,6 +10,7 @@ from __future__ import (print_function, division,
 
 # Std. lib imports.
 import re
+from math import isnan
 from warnings import warn
 from os import curdir, pardir
 from os.path import split, splitext
@@ -248,6 +249,20 @@ def _py3_safe(parsed_list, use_locale, check):
         return new_list
 
 
+def _fix_nan(ret, alg):
+    """Detect an NaN and replace or raise a ValueError."""
+    t = []
+    for r in ret:
+        if isfloat(r, num_only=True) and isnan(r):
+            if alg & _ns['NANLAST']:
+                t.append(float('+inf'))
+            else:
+                t.append(float('-inf'))
+        else:
+            t.append(r)
+    return tuple(t)
+
+
 def _natsort_key(val, key, alg):
     """\
     Key to sort strings and numbers naturally.
@@ -325,6 +340,9 @@ def _natsort_key(val, key, alg):
                                           alg & _ns['TYPESAFE'],
                                           use_locale,
                                           gl or (use_locale and dumb)))
+            # Handle NaN.
+            if any(isfloat(x, num_only=True) and isnan(x) for x in ret):
+                ret = _fix_nan(ret, alg)
             # For UNGROUPLETTERS, so the high level grouping can occur
             # based on the first letter of the string.
             # Do no locale transformation of the characters.
@@ -359,4 +377,6 @@ def _natsort_key(val, key, alg):
             # Return as-is, with a leading empty string.
             except TypeError:
                 n = null_string if use_locale else ''
+                if isfloat(val, num_only=True) and isnan(val):
+                    val = _fix_nan([val], alg)[0]
                 return ((n, val,),) if alg & _ns['PATH'] else (n, val,)
