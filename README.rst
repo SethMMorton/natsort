@@ -227,6 +227,12 @@ History
 These are the last three entries of the changelog.  See the package documentation
 for the complete `changelog <http://pythonhosted.org//natsort/changelog.html>`_.
 
+06-04-2015 v. 4.0.1
+'''''''''''''''''''
+
+    - Added support for sorting NaN by internally converting to -Infinity
+      or +Infinity
+
 05-17-2015 v. 4.0.0
 '''''''''''''''''''
 
@@ -245,10 +251,3 @@ for the complete `changelog <http://pythonhosted.org//natsort/changelog.html>`_.
       an ordinal sort when using 'LOCALE'.
     - Added convenience functions 'decoder', 'as_ascii', and 'as_utf8' for
       dealing with bytes types.
-
-04-04-2015 v. 3.5.5
-'''''''''''''''''''
-
-    - Added 'realsorted' and 'index_realsorted' functions for
-      forward-compatibility with >= 4.0.0.
-    - Made explanation of when to use "TYPESAFE" more clear in the docs.

@@ -102,6 +102,10 @@ class ns(object):
         behavior without `LOCALE`.
     UNGROUPLETTERS, UG
         An alias for `CAPITALFIRST`.
+    NANLAST, NL
+        If an NaN shows up in the input, this instructs `natsort` to
+        treat these as +Infinity and place them after all the other numbers.
+        By default, an NaN be treated as -Infinity and be placed first.
     TYPESAFE, T
         Try hard to avoid "unorderable types" error on Python 3. It
         is the same as setting the old `py3_safe` option to `True`.
@@ -150,7 +154,8 @@ _ns = {
        'GROUPLETTERS': 128,   'G': 128,
        'UNGROUPLETTERS': 256, 'UG': 256,
        'CAPITALFIRST': 256,   'C': 256,
-       'TYPESAFE': 1024,      'T': 1024,
+       'NANLAST': 512,        'NL': 512,
+       'TYPESAFE': 2048,      'T': 2048,
        }
 # Populate the ns class with the _ns values.
 for x, y in _ns.items():

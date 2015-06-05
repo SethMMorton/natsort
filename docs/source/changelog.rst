@@ -3,6 +3,12 @@
 Changelog
 ---------
 
+06-04-2015 v. 4.0.1
+'''''''''''''''''''
+
+    - Added support for sorting NaN by internally converting to -Infinity
+      or +Infinity
+
 05-17-2015 v. 4.0.0
 '''''''''''''''''''
 
