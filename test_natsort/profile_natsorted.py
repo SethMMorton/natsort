@@ -10,7 +10,7 @@ import sys
 
 sys.path.insert(0, '.')
 from natsort import natsorted, index_natsorted
-from natsort.py23compat import py23_range
+from natsort.compat.py23 import py23_range
 
 
 # Sample lists to sort

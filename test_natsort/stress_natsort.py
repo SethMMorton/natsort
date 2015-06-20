@@ -8,7 +8,7 @@ from string import printable
 from copy import copy
 from pytest import fail
 from natsort import natsorted
-from natsort.py23compat import py23_range
+from natsort.compat.py23 import py23_range
 
 
 def test_random():

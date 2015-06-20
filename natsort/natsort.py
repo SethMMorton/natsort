@@ -24,7 +24,7 @@ from warnings import warn
 # Local imports.
 from natsort.utils import _natsort_key, _args_to_enum, _do_decoding
 from natsort.ns_enum import ns
-from natsort.py23compat import u_format
+from natsort.compat.py23 import u_format
 
 # Make sure the doctest works for either python2 or python3
 __doc__ = u_format(__doc__)

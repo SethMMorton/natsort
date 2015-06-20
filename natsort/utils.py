@@ -19,7 +19,7 @@ from locale import localeconv
 # Local imports.
 from natsort.locale_help import (locale_convert, grouper,
                                  null_string, use_pyicu, dumb_sort)
-from natsort.py23compat import py23_str, py23_zip, PY_VERSION
+from natsort.compat.py23 import py23_str, py23_zip, PY_VERSION
 from natsort.ns_enum import ns, _ns
 from natsort.unicode_numbers import digits, numeric
 

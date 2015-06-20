@@ -4,7 +4,7 @@ Test the Unicode numbers module.
 """
 from __future__ import unicode_literals
 import unicodedata
-from natsort.py23compat import py23_range, py23_unichr
+from natsort.compat.py23 import py23_range, py23_unichr
 from natsort.unicode_numbers import numeric_chars, numeric, digit_chars, digits
 
 

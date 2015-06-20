@@ -13,7 +13,7 @@ from itertools import chain
 from locale import localeconv
 
 # Local imports.
-from natsort.py23compat import PY_VERSION
+from natsort.compat.py23 import PY_VERSION
 
 # We need cmp_to_key for Python2 because strxfrm is broken for unicode.
 try:
