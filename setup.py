@@ -25,6 +25,7 @@ class PyTest(TestCommand):
                             '--cov-report', 'term-missing',
                             '--flakes',
                             '--pep8',
+                            '-s',
                             # '--failed',
                             # '-v',
                             ])
@@ -62,9 +63,12 @@ REQUIRES = 'argparse' if sys.version[:3] in ('2.6', '3.0', '3.1') else ''
 # Testing needs pytest, and mock if less than python 3.3
 TESTS_REQUIRE = ['pytest', 'pytest-pep8', 'pytest-flakes',
                  'pytest-cov', 'pytest-cache', 'hypothesis']
-if sys.version[0] == 2 or (sys.version[3] == '3' and int(sys.version[2]) < 3):
+
+if (sys.version.startswith('2') or
+        (sys.version.startswith('3') and int(sys.version.split('.')[1]) < 3)):
     TESTS_REQUIRE.append('mock')
-if sys.version[0] == 2 or (sys.version[3] == '3' and int(sys.version[2]) < 4):
+if (sys.version.startswith('2') or
+        (sys.version.startswith('3') and int(sys.version.split('.')[1]) < 4)):
     TESTS_REQUIRE.append('pathlib')
 
 # The setup parameters

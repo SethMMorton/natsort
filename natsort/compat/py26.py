@@ -3,7 +3,7 @@ import sys
 
 major_minor = sys.version_info[:2]
 
-if major_minor != (2, 6) and major_minor != (3, 3):
+if major_minor != (2, 6):
     use_hypothesis = True
     from hypothesis import assume, given, example
     from hypothesis.specifiers import (
