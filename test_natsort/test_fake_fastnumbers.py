@@ -9,7 +9,7 @@ import unicodedata
 from math import isnan
 from natsort.fake_fastnumbers import fast_float, fast_int, isfloat, isint
 from natsort.compat.py23 import py23_str
-from natsort.compat.py26 import assume, given, use_hypothesis
+from compat.py26 import assume, given, use_hypothesis
 
 
 def is_float(x):

@@ -12,7 +12,7 @@ from natsort.fake_fastnumbers import fast_float, isfloat
 from natsort.locale_help import grouper, locale_convert, use_pyicu
 from natsort.compat.locale import load_locale, has_locale_de_DE
 from natsort.compat.py23 import py23_str
-from natsort.compat.py26 import assume, given, use_hypothesis
+from compat.py26 import assume, given, use_hypothesis
 
 if use_pyicu:
     from natsort.locale_help import get_pyicu_transform

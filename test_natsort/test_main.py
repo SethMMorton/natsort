@@ -7,7 +7,7 @@ import pytest
 import re
 import sys
 from pytest import raises
-from natsort.compat.py26 import (
+from compat.py26 import (
     assume,
     given,
     integers_from,

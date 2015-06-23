@@ -21,7 +21,7 @@ from natsort.compat.py23 import py23_str
 from slow_splitters import int_splitter, float_splitter, sep_inserter
 
 
-from natsort.compat.py26 import (
+from compat.py26 import (
     assume,
     given,
     example,
