@@ -2,7 +2,6 @@
 """
 Utilities and definitions for natsort, mostly all used to define
 the _natsort_key function.
-
 """
 
 from __future__ import (

@@ -9,7 +9,6 @@ You can mix types with natsorted.  This can get around the new
 descend into lists of lists so you can sort by the sublist contents.
 
 See the README or the natsort homepage for more details.
-
 """
 
 from __future__ import (

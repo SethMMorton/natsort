@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 """
 Contains all possible non-ASCII unicode numbers.
-
 """
 
 from __future__ import (
