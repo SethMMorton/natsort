@@ -12,8 +12,12 @@ See the README or the natsort homepage for more details.
 
 """
 
-from __future__ import (print_function, division,
-                        unicode_literals, absolute_import)
+from __future__ import (
+    print_function,
+    division,
+    unicode_literals,
+    absolute_import
+)
 
 # Std lib. imports.
 import re
@@ -22,9 +26,13 @@ from functools import partial
 from warnings import warn
 
 # Local imports.
-from natsort.utils import _natsort_key, _args_to_enum, _do_decoding
 from natsort.ns_enum import ns
 from natsort.compat.py23 import u_format
+from natsort.utils import (
+    _natsort_key,
+    _args_to_enum,
+    _do_decoding,
+)
 
 # Make sure the doctest works for either python2 or python3
 __doc__ = u_format(__doc__)

@@ -21,10 +21,15 @@ try:
 except ImportError:
     from mock import patch, call
 
-from natsort.__main__ import main, range_check, check_filter
-from natsort.__main__ import keep_entry_range, exclude_entry
-from natsort.__main__ import sort_and_print_entries
-from natsort.compat.py23 import py23_str
+from natsort.__main__ import (
+    main,
+    range_check,
+    check_filter,
+    keep_entry_range,
+    exclude_entry,
+    sort_and_print_entries,
+    py23_str,
+)
 
 
 def test_main_passes_default_arguments_with_no_command_line_options():

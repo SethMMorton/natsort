@@ -5,8 +5,12 @@ the _natsort_key function.
 
 """
 
-from __future__ import (print_function, division,
-                        unicode_literals, absolute_import)
+from __future__ import (
+    print_function,
+    division,
+    unicode_literals,
+    absolute_import
+)
 
 # Std. lib imports.
 import re
@@ -18,11 +22,20 @@ from itertools import islice
 from locale import localeconv
 
 # Local imports.
-from natsort.locale_help import (locale_convert, grouper,
-                                 null_string, use_pyicu, dumb_sort)
-from natsort.compat.py23 import py23_str, py23_zip, PY_VERSION
 from natsort.ns_enum import ns, _ns
 from natsort.unicode_numbers import digits, numeric
+from natsort.locale_help import (
+    locale_convert,
+    grouper,
+    null_string,
+    use_pyicu,
+    dumb_sort,
+)
+from natsort.compat.py23 import (
+    py23_str,
+    py23_zip,
+    PY_VERSION,
+)
 
 # If the user has fastnumbers installed, they will get great speed
 # benefits. If not, we simulate the functions here.

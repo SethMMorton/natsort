@@ -11,14 +11,34 @@ from math import isnan
 from operator import itemgetter
 from itertools import chain
 from pytest import raises
-from natsort.ns_enum import ns
-from natsort.utils import _number_extracter, _py3_safe, _natsort_key, _args_to_enum
-from natsort.utils import _float_sign_exp_re, _float_nosign_exp_re, _float_sign_noexp_re
-from natsort.utils import _float_nosign_noexp_re, _int_nosign_re, _int_sign_re, _do_decoding
-from natsort.utils import _path_splitter, _fix_nan
-from natsort.locale_help import use_pyicu, null_string, locale_convert, dumb_sort
 from natsort.compat.py23 import py23_str
-from slow_splitters import int_splitter, float_splitter, sep_inserter
+from natsort.ns_enum import ns
+from natsort.utils import (
+    _number_extracter,
+    _py3_safe,
+    _natsort_key,
+    _args_to_enum,
+    _float_sign_exp_re,
+    _float_nosign_exp_re,
+    _float_sign_noexp_re,
+    _float_nosign_noexp_re,
+    _int_nosign_re,
+    _int_sign_re,
+    _do_decoding,
+    _path_splitter,
+    _fix_nan,
+)
+from natsort.locale_help import (
+    use_pyicu,
+    null_string,
+    locale_convert,
+    dumb_sort,
+)
+from slow_splitters import (
+    int_splitter,
+    float_splitter,
+    sep_inserter,
+)
 
 
 from compat.py26 import (

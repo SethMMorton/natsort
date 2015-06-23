@@ -10,9 +10,23 @@ import warnings
 import locale
 from operator import itemgetter
 from pytest import raises
-from natsort import natsorted, index_natsorted, natsort_key, versorted, index_versorted
-from natsort import humansorted, index_humansorted, natsort_keygen, order_by_index, ns
-from natsort import realsorted, index_realsorted, decoder, as_ascii, as_utf8
+from natsort import (
+    natsorted,
+    index_natsorted,
+    natsort_key,
+    versorted,
+    index_versorted,
+    humansorted,
+    index_humansorted,
+    natsort_keygen,
+    order_by_index,
+    ns,
+    realsorted,
+    index_realsorted,
+    decoder,
+    as_ascii,
+    as_utf8,
+)
 from natsort.compat.locale import load_locale, has_locale_de_DE
 from natsort.utils import _natsort_key
 
