@@ -11,7 +11,7 @@ from __future__ import (print_function, division,
 import unicodedata
 
 # Local imports.
-from natsort.py23compat import py23_unichr
+from natsort.compat.py23 import py23_unichr
 
 
 # Rather than determine this on the fly, which would incur a startup

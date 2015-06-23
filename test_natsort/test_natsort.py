@@ -4,6 +4,7 @@ Here are a collection of examples of how this module can be used.
 See the README or the natsort homepage for more details.
 """
 from __future__ import unicode_literals, print_function
+import pytest
 import sys
 import warnings
 import locale
@@ -12,14 +13,8 @@ from pytest import raises
 from natsort import natsorted, index_natsorted, natsort_key, versorted, index_versorted
 from natsort import humansorted, index_humansorted, natsort_keygen, order_by_index, ns
 from natsort import realsorted, index_realsorted, decoder, as_ascii, as_utf8
+from natsort.compat.locale import load_locale, has_locale_de_DE
 from natsort.utils import _natsort_key
-
-
-def load_locale(x):
-    try:
-        locale.setlocale(locale.LC_ALL, str('{}.ISO8859-1'.format(x)))
-    except:
-        locale.setlocale(locale.LC_ALL, str('{}.UTF-8'.format(x)))
 
 
 def test_decoder_returns_function_that_can_decode_bytes_but_return_non_bytes_as_is():
@@ -291,6 +286,7 @@ def test_natsorted_with_LOCALE_and_en_setting_returns_results_sorted_by_en_langu
     locale.setlocale(locale.LC_ALL, str(''))
 
 
+@pytest.mark.skipif(not has_locale_de_DE, reason='requires de_DE locale')
 def test_natsorted_with_LOCALE_and_de_setting_returns_results_sorted_by_de_language():
     load_locale('de_DE')
     a = ['c', 'ä', 'b', 'a5,6', 'a5,50']

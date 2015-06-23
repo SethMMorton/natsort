@@ -5,12 +5,14 @@ Test the locale help module module.
 from __future__ import unicode_literals
 
 import locale
+import pytest
 from math import isnan
 from itertools import chain
-from natsort.fake_fastnumbers import fast_float, isfloat, isint
+from natsort.fake_fastnumbers import fast_float, isfloat
 from natsort.locale_help import grouper, locale_convert, use_pyicu
-from natsort.py23compat import py23_str
-from hypothesis import given, assume, example
+from natsort.compat.locale import load_locale, has_locale_de_DE
+from natsort.compat.py23 import py23_str
+from natsort.compat.py26 import assume, given, use_hypothesis
 
 if use_pyicu:
     from natsort.locale_help import get_pyicu_transform
@@ -18,13 +20,6 @@ if use_pyicu:
     strxfrm = get_pyicu_transform(getlocale())
 else:
     from natsort.locale_help import strxfrm
-
-
-def load_locale(x):
-    try:
-        locale.setlocale(locale.LC_ALL, str('{}.ISO8859-1'.format(x)))
-    except:
-        locale.setlocale(locale.LC_ALL, str('{}.UTF-8'.format(x)))
 
 
 # Each test has an "example" version for demonstrative purposes,
@@ -36,6 +31,7 @@ def test_grouper_returns_letters_with_lowercase_transform_of_letter_example():
     assert grouper('hello', (fast_float, isfloat)) == 'hheelllloo'
 
 
+@pytest.mark.skipif(not use_hypothesis, reason='requires python2.7 or greater')
 @given(py23_str)
 def test_grouper_returns_letters_with_lowercase_transform_of_letter(x):
     assume(type(fast_float(x)) is not float)
@@ -50,6 +46,7 @@ def test_grouper_returns_float_string_as_float_example():
     assert grouper('45.8e-2', (fast_float, isfloat)) == 45.8e-2
 
 
+@pytest.mark.skipif(not use_hypothesis, reason='requires python2.7 or greater')
 @given(float)
 def test_grouper_returns_float_string_as_float(x):
     assume(not isnan(x))
@@ -62,6 +59,7 @@ def test_locale_convert_transforms_float_string_to_float_example():
     locale.setlocale(locale.LC_NUMERIC, str(''))
 
 
+@pytest.mark.skipif(not use_hypothesis, reason='requires python2.7 or greater')
 @given(float)
 def test_locale_convert_transforms_float_string_to_float(x):
     assume(not isnan(x))
@@ -83,6 +81,7 @@ def test_locale_convert_transforms_nonfloat_string_to_strxfrm_string_example():
     locale.setlocale(locale.LC_NUMERIC, str(''))
 
 
+@pytest.mark.skipif(not use_hypothesis, reason='requires python2.7 or greater')
 @given(py23_str)
 def test_locale_convert_transforms_nonfloat_string_to_strxfrm_string(x):
     assume(type(fast_float(x)) is not float)
@@ -110,6 +109,7 @@ def test_locale_convert_with_groupletters_transforms_nonfloat_string_to_strxfrm_
     locale.setlocale(locale.LC_NUMERIC, str(''))
 
 
+@pytest.mark.skipif(not use_hypothesis, reason='requires python2.7 or greater')
 @given(py23_str)
 def test_locale_convert_with_groupletters_transforms_nonfloat_string_to_strxfrm_string_with_grouped_letters(x):
     assume(type(fast_float(x)) is not float)
@@ -128,6 +128,7 @@ def test_locale_convert_with_groupletters_transforms_nonfloat_string_to_strxfrm_
     locale.setlocale(locale.LC_NUMERIC, str(''))
 
 
+@pytest.mark.skipif(not has_locale_de_DE, reason='requires de_DE locale')
 def test_locale_convert_transforms_float_string_to_float_with_de_locale_example():
     load_locale('de_DE')
     assert locale_convert('45.8', (fast_float, isfloat), False) == 45.8
@@ -135,6 +136,8 @@ def test_locale_convert_transforms_float_string_to_float_with_de_locale_example(
     locale.setlocale(locale.LC_NUMERIC, str(''))
 
 
+@pytest.mark.skipif(not has_locale_de_DE, reason='requires de_DE locale')
+@pytest.mark.skipif(not use_hypothesis, reason='requires python2.7 or greater')
 @given(float)
 def test_locale_convert_transforms_float_string_to_float_with_de_locale(x):
     assume(not isnan(x))

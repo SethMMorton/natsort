@@ -1,11 +1,11 @@
 natsort
 =======
 
-.. image:: https://travis-ci.org/SethMMorton/natsort.svg?branch=develop
+.. image:: https://travis-ci.org/SethMMorton/natsort.svg?branch=master
     :target: https://travis-ci.org/SethMMorton/natsort
 
-.. image:: https://coveralls.io/repos/SethMMorton/natsort/badge.png?branch=develop
-    :target: https://coveralls.io/r/SethMMorton/natsort?branch=develop
+.. image:: https://coveralls.io/repos/SethMMorton/natsort/badge.png?branch=master
+    :target: https://coveralls.io/r/SethMMorton/natsort?branch=master
 
 Natural sorting for python. 
 
