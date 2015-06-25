@@ -39,9 +39,12 @@ from slow_splitters import (
     float_splitter,
     sep_inserter,
 )
-
-
-from compat.py26 import (
+from compat.locale import (
+    load_locale,
+    get_strxfrm,
+    low,
+)
+from compat.hypothesis import (
     assume,
     given,
     example,
@@ -63,13 +66,6 @@ if sys.version[0] == '3':
     long = int
 
 ichain = chain.from_iterable
-
-
-def load_locale(x):
-    try:
-        locale.setlocale(locale.LC_ALL, str('{}.ISO8859-1'.format(x)))
-    except:
-        locale.setlocale(locale.LC_ALL, str('{}.UTF-8'.format(x)))
 
 
 def test_do_decoding_decodes_bytes_string_to_unicode():
@@ -359,10 +355,6 @@ def test_number_extracter_doubles_letters_with_lowercase_version_with_grouplette
 def test_number_extracter_doubles_letters_with_lowercase_version_with_groupletters_for_float(x):
     assume(len(x) <= 10)
     assume(not any(type(y) == float and isnan(y) for y in x))
-    try:
-        low = py23_str.casefold
-    except AttributeError:
-        low = py23_str.lower
     s = ''.join(repr(y) if type(y) in (float, long, int) else y for y in x)
     t = float_splitter(s, True, True, False, '')
     t = [''.join([low(z) + z for z in y]) if type(y) != float else y for y in t]
@@ -377,10 +369,6 @@ def test_number_extracter_doubles_letters_with_lowercase_version_with_grouplette
 @given([float, py23_str, int])
 def test_number_extracter_doubles_letters_with_lowercase_version_with_groupletters_for_int(x):
     assume(len(x) <= 10)
-    try:
-        low = py23_str.casefold
-    except AttributeError:
-        low = py23_str.lower
     s = ''.join(repr(y) if type(y) in (float, long, int) else y for y in x)
     t = int_splitter(s, False, False, '')
     t = [''.join([low(z) + z for z in y]) if type(y) not in (int, long) else y for y in t]
@@ -389,12 +377,7 @@ def test_number_extracter_doubles_letters_with_lowercase_version_with_grouplette
 
 def test_number_extracter_extracts_numbers_and_strxfrms_strings_with_use_locale_example():
     load_locale('en_US')
-    if use_pyicu:
-        from natsort.locale_help import get_pyicu_transform
-        from locale import getlocale
-        strxfrm = get_pyicu_transform(getlocale())
-    else:
-        from natsort.locale_help import strxfrm
+    strxfrm = get_strxfrm()
     assert _number_extracter('A5+5.034E-1', _int_nosign_re, *int_nosafe_locale_nogroup) == [strxfrm('A'), 5, strxfrm('+'), 5, strxfrm('.'), 34, strxfrm('E-'), 1]
     locale.setlocale(locale.LC_NUMERIC, str(''))
 
@@ -413,12 +396,7 @@ def test_number_extracter_extracts_numbers_and_strxfrms_strings_with_use_locale(
 
 def test_number_extracter_extracts_numbers_and_strxfrms_letter_doubled_strings_with_use_locale_and_groupletters_example():
     load_locale('en_US')
-    if use_pyicu:
-        from natsort.locale_help import get_pyicu_transform
-        from locale import getlocale
-        strxfrm = get_pyicu_transform(getlocale())
-    else:
-        from natsort.locale_help import strxfrm
+    strxfrm = get_strxfrm()
     assert _number_extracter('A5+5.034E-1', _int_nosign_re, *int_nosafe_locale_group) == [strxfrm('aA'), 5, strxfrm('++'), 5, strxfrm('..'), 34, strxfrm('eE--'), 1]
     locale.setlocale(locale.LC_NUMERIC, str(''))
 
@@ -626,10 +604,6 @@ def test__natsort_key_with_LOWERCASEFIRST_inverts_text_case(x):
 @pytest.mark.skipif(not use_hypothesis, reason='requires python2.7 or greater')
 @given([float, py23_str, int])
 def test__natsort_key_with_GROUPLETTERS_doubles_text_with_lowercase_letter_first(x):
-    try:
-        low = py23_str.casefold
-    except AttributeError:
-        low = py23_str.lower
     assume(len(x) <= 10)
     assume(not any(type(y) == float and isnan(y) for y in x))
     s = ''.join(ichain([repr(y)] if type(y) in (float, long, int) else [low(y), y] for y in x))
@@ -641,10 +615,6 @@ def test__natsort_key_with_GROUPLETTERS_doubles_text_with_lowercase_letter_first
 @pytest.mark.skipif(not use_hypothesis, reason='requires python2.7 or greater')
 @given([float, py23_str, int])
 def test__natsort_key_with_GROUPLETTERS_and_LOWERCASEFIRST_inverts_text_first_then_doubles_letters_with_lowercase_letter_first(x):
-    try:
-        low = py23_str.casefold
-    except AttributeError:
-        low = py23_str.lower
     assume(len(x) <= 10)
     assume(not any(type(y) == float and isnan(y) for y in x))
     s = ''.join(ichain([repr(y)] if type(y) in (float, long, int) else [low(y), y] for y in x))

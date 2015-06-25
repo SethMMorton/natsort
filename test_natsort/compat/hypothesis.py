@@ -1,8 +1,12 @@
+# -*- coding: utf-8 -*-
+from __future__ import (
+    print_function,
+    division,
+    unicode_literals,
+    absolute_import
+)
 import sys
-try:
-    import unittest.mock as mock
-except ImportError:
-    import mock
+import compat.mock
 
 major_minor = sys.version_info[:2]
 
@@ -15,8 +19,9 @@ if major_minor != (2, 6):
         integers_from,
         sampled_from,
     )
-# Otherwise mock these imports.
+# Otherwise mock these imports, because hypothesis
+# is incompatible with python 2.6.
 else:
     example = integers_in_range = integers_from = \
-        sampled_from = assume = given = mock.MagicMock()
+        sampled_from = assume = given = compat.mock.MagicMock()
     use_hypothesis = False

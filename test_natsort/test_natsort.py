@@ -27,7 +27,7 @@ from natsort import (
     as_ascii,
     as_utf8,
 )
-from natsort.compat.locale import load_locale, has_locale_de_DE
+from compat.locale import load_locale, has_locale_de_DE
 from natsort.utils import _natsort_key
 
 

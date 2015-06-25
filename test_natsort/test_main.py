@@ -7,7 +7,8 @@ import pytest
 import re
 import sys
 from pytest import raises
-from compat.py26 import (
+from compat.mock import patch, call
+from compat.hypothesis import (
     assume,
     given,
     integers_from,
@@ -15,12 +16,6 @@ from compat.py26 import (
     sampled_from,
     use_hypothesis,
 )
-
-try:
-    from unittest.mock import patch, call
-except ImportError:
-    from mock import patch, call
-
 from natsort.__main__ import (
     main,
     range_check,

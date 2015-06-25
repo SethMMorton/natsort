@@ -14,7 +14,7 @@ from natsort.fake_fastnumbers import (
     isfloat,
     isint,
 )
-from compat.py26 import (
+from compat.hypothesis import (
     assume,
     given,
     use_hypothesis,
