@@ -8,7 +8,13 @@ include natsort/locale_help.py
 include natsort/utils.py
 include natsort/ns_enum.py
 include natsort/unicode_numbers.py
-graft natsort/compat
+include natsort/compat/__init__.py
+include natsort/compat/py23.py
+include natsort/compat/fake_fastnumbers.py
+include natsort/compat/fastnumbers.py
+include natsort/compat/locale.py
+include natsort/compat/pathlib.py
+include natsort/compat/pathlib.py
 include test_natsort/profile_natsorted.py
 include test_natsort/stress_natsort.py
 include test_natsort/slow_splitters.py
@@ -18,7 +24,10 @@ include test_natsort/test_fake_fastnumbers.py
 include test_natsort/test_main.py
 include test_natsort/test_utils.py
 include test_natsort/test_unicode_numbers.py
-graft test_natsort/compat
+include test_natsort/compat/__init__.py
+include test_natsort/compat/hypothesis.py
+include test_natsort/compat/locale.py
+include test_natsort/compat/mock.py
 include setup.py
 include setup.cfg
 prune natsort/__pycache__

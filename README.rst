@@ -225,6 +225,11 @@ History
 These are the last three entries of the changelog.  See the package documentation
 for the complete `changelog <http://pythonhosted.org//natsort/changelog.html>`_.
 
+06-25-2015 v. 4.0.3
+'''''''''''''''''''
+
+    - Fixed bad install on last release (sorry guys!).
+
 06-24-2015 v. 4.0.2
 '''''''''''''''''''
 
@@ -237,22 +242,3 @@ for the complete `changelog <http://pythonhosted.org//natsort/changelog.html>`_.
 
     - Added support for sorting NaN by internally converting to -Infinity
       or +Infinity
-
-05-17-2015 v. 4.0.0
-'''''''''''''''''''
-
-    - Made default behavior of 'natsort' search for unsigned ints,
-      rather than signed floats. This is a backwards-incompatible
-      change but in 99% of use cases it should not require any
-      end-user changes.
-    - Improved handling of locale-aware sorting on systems where the
-      underlying locale library is broken.
-    - Greatly improved all unit tests by adding the hypothesis library.
-
-04-06-2015 v. 3.5.6
-'''''''''''''''''''
-
-    - Added 'UNGROUPLETTERS' algorithm to get the case-grouping behavior of
-      an ordinal sort when using 'LOCALE'.
-    - Added convenience functions 'decoder', 'as_ascii', and 'as_utf8' for
-      dealing with bytes types.

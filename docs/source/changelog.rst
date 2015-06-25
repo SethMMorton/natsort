@@ -3,6 +3,11 @@
 Changelog
 ---------
 
+06-25-2015 v. 4.0.3
+'''''''''''''''''''
+
+    - Fixed bad install on last release (sorry guys!).
+
 06-24-2015 v. 4.0.2
 '''''''''''''''''''
 
