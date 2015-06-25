@@ -80,7 +80,7 @@ setup(
     url='https://github.com/SethMMorton/natsort',
     license='MIT',
     install_requires=REQUIRES,
-    packages=['natsort'],
+    packages=['natsort', 'natsort.compat'],
     entry_points={'console_scripts': ['natsort = natsort.__main__:main']},
     tests_require=TESTS_REQUIRE,
     cmdclass={'test': PyTest},
