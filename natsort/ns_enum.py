@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 """This module defines the "ns" enum for natsort."""
-
 from __future__ import (
     print_function,
     division,

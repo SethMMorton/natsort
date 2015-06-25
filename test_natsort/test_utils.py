@@ -11,7 +11,6 @@ from math import isnan
 from operator import itemgetter
 from itertools import chain
 from pytest import raises
-from natsort.compat.py23 import py23_str
 from natsort.ns_enum import ns
 from natsort.utils import (
     _number_extracter,
@@ -28,11 +27,17 @@ from natsort.utils import (
     _path_splitter,
     _fix_nan,
 )
-from natsort.locale_help import (
+from natsort.locale_help import locale_convert
+from natsort.compat.py23 import py23_str
+from natsort.compat.locale import (
     use_pyicu,
     null_string,
-    locale_convert,
     dumb_sort,
+)
+from natsort.compat.fastnumbers import (
+    fast_float,
+    fast_int,
+    isint,
 )
 from slow_splitters import (
     int_splitter,
@@ -51,16 +56,6 @@ from compat.hypothesis import (
     sampled_from,
     use_hypothesis,
 )
-
-
-try:
-    from fastnumbers import fast_float, fast_int, isint
-    import fastnumbers
-    v = list(map(int, fastnumbers.__version__.split('.')))
-    if not (v[0] >= 0 and v[1] >= 5):  # Require >= version 0.5.0.
-        raise ImportError
-except ImportError:
-    from natsort.fake_fastnumbers import fast_float, fast_int, isint
 
 if sys.version[0] == '3':
     long = int

@@ -12,94 +12,15 @@ from __future__ import (
 )
 
 # Std. lib imports.
-import sys
 from itertools import chain
 from locale import localeconv
 
 # Local imports.
-from natsort.compat.py23 import PY_VERSION
-
-# We need cmp_to_key for Python2 because strxfrm is broken for unicode.
-try:
-    from functools import cmp_to_key
-# cmp_to_key was not created till 2.7.
-except ImportError:  # pragma: no cover
-    def cmp_to_key(mycmp):
-        """Convert a cmp= function into a key= function"""
-        class K(object):
-            __slots__ = ['obj']
-
-            def __init__(self, obj):
-                self.obj = obj
-
-            def __lt__(self, other):
-                return mycmp(self.obj, other.obj) < 0
-
-            def __gt__(self, other):
-                return mycmp(self.obj, other.obj) > 0
-
-            def __eq__(self, other):
-                return mycmp(self.obj, other.obj) == 0
-
-            def __le__(self, other):
-                return mycmp(self.obj, other.obj) <= 0
-
-            def __ge__(self, other):
-                return mycmp(self.obj, other.obj) >= 0
-
-            def __ne__(self, other):
-                return mycmp(self.obj, other.obj) != 0
-
-            def __hash__(self):
-                raise TypeError('hash not implemented')
-
-        return K
-
-# Make the strxfrm function from strcoll on Python2
-# It can be buggy (especially on BSD-based systems),
-# so prefer PyICU if available.
-try:
-    import PyICU
-    from locale import getlocale
-
-    # If using PyICU, get the locale from the current global locale,
-    # then create a sort key from that
-    def get_pyicu_transform(l, _d={}):
-        if l not in _d:
-            if l == (None, None):
-                c = PyICU.Collator.createInstance(PyICU.Locale())
-            else:
-                loc = '.'.join(l)
-                c = PyICU.Collator.createInstance(PyICU.Locale(loc))
-            _d[l] = c.getSortKey
-        return _d[l]
-    use_pyicu = True
-    null_string = b''
-
-    def dumb_sort():
-        return False
-except ImportError:
-    if sys.version[0] == '2':
-        from locale import strcoll
-        strxfrm = cmp_to_key(strcoll)
-        null_string = strxfrm('')
-    else:
-        from locale import strxfrm
-        null_string = ''
-    use_pyicu = False
-
-    # On some systems, locale is broken and does not sort in the expected
-    # order. We will try to detect this and compensate.
-    def dumb_sort():
-        return strxfrm('A') < strxfrm('a')
-
-
-if PY_VERSION >= 3.3:
-    def _low(x):
-        return x.casefold()
+from natsort.compat.locale import use_pyicu, _low
+if use_pyicu:
+    from natsort.compat.locale import get_pyicu_transform, getlocale
 else:
-    def _low(x):
-        return x.lower()
+    from natsort.compat.locale import strxfrm
 
 
 def groupletters(x):

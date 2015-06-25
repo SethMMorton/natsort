@@ -2,7 +2,6 @@
 """
 Contains all possible non-ASCII unicode numbers.
 """
-
 from __future__ import (
     print_function,
     division,

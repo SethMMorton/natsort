@@ -10,7 +10,6 @@ descend into lists of lists so you can sort by the sublist contents.
 
 See the README or the natsort homepage for more details.
 """
-
 from __future__ import (
     print_function,
     division,

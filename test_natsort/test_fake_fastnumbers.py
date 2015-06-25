@@ -8,7 +8,7 @@ import pytest
 import unicodedata
 from math import isnan
 from natsort.compat.py23 import py23_str
-from natsort.fake_fastnumbers import (
+from natsort.compat.fake_fastnumbers import (
     fast_float,
     fast_int,
     isfloat,

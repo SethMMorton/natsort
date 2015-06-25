@@ -8,13 +8,10 @@ import locale
 import pytest
 from math import isnan
 from itertools import chain
+from natsort.compat.fake_fastnumbers import fast_float, isfloat
+from natsort.locale_help import grouper, locale_convert
 from natsort.compat.py23 import py23_str
-from natsort.fake_fastnumbers import fast_float, isfloat
-from natsort.locale_help import (
-    grouper,
-    locale_convert,
-    use_pyicu,
-)
+from natsort.compat.locale import use_pyicu
 from compat.locale import (
     load_locale,
     has_locale_de_DE,
