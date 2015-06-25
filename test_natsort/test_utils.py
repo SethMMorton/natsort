@@ -384,7 +384,7 @@ def test_number_extracter_extracts_numbers_and_strxfrms_strings_with_use_locale(
     load_locale('en_US')
     s = ''.join(repr(y) if type(y) in (float, long, int) else y for y in x)
     t = int_splitter(s, False, False, null_string)
-    try:
+    try:  # Account for locale bug on Python 3.2
         t = [y if i == 0 and y is null_string else locale_convert(y, (fast_int, isint), False) for i, y in enumerate(t)]
         assert _number_extracter(s, _int_nosign_re, *int_nosafe_locale_nogroup) == t
     except OverflowError:
@@ -406,7 +406,7 @@ def test_number_extracter_extracts_numbers_and_strxfrms_letter_doubled_strings_w
     load_locale('en_US')
     s = ''.join(repr(y) if type(y) in (float, long, int) else y for y in x)
     t = int_splitter(s, False, False, null_string)
-    try:
+    try:  # Account for locale bug on Python 3.2
         t = [y if i == 0 and y is null_string else locale_convert(y, (fast_int, isint), True) for i, y in enumerate(t)]
         assert _number_extracter(s, _int_nosign_re, *int_nosafe_locale_group) == t
     except OverflowError:

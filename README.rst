@@ -142,9 +142,7 @@ from the command line with ``python -m natsort``.
 Requirements
 ------------
 
-``natsort`` requires Python version 2.7 or greater or Python 3.3 or greater.
-Python 2.6 and 3.2 are no longer officially supported (no unit tests are performed)
-but it should work.
+``natsort`` requires Python version 2.7 or greater or Python 3.2 or greater.
 
 .. _optional:
 
@@ -226,6 +224,13 @@ History
 
 These are the last three entries of the changelog.  See the package documentation
 for the complete `changelog <http://pythonhosted.org//natsort/changelog.html>`_.
+
+06-24-2015 v. 4.0.2
+'''''''''''''''''''
+
+    - Added back Python 2.6 and Python 3.2 compatibility. Unit testing is now
+      performed for these versions.
+    - Consolidated under-the-hood compatibility functionality.
 
 06-04-2015 v. 4.0.1
 '''''''''''''''''''

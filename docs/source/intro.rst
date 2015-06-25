@@ -160,9 +160,7 @@ If you want to build this documentation, enter::
 
     python setup.py build_sphinx
 
-:mod:`natsort` requires Python version 2.7 or greater or Python 3.3 or greater.
-Python 2.6 and 3.2 are no longer officially supported (no unit tests are performed)
-but it should work.
+:mod:`natsort` requires Python version 2.7 or greater or Python 3.2 or greater.
 
 The most efficient sorting can occur if you install the 
 `fastnumbers <https://pypi.python.org/pypi/fastnumbers>`_ package (it helps
