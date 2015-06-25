@@ -409,13 +409,13 @@ def test_number_extracter_extracts_numbers_and_strxfrms_letter_doubled_strings_w
 
 
 def test__natsort_key_with_nan_input_transforms_nan_to_negative_inf():
-    assert _natsort_key('nan', None, ns.FLOAT) == (u'', float('-inf'))
-    assert _natsort_key(float('nan'), None, 0) == (u'', float('-inf'))
+    assert _natsort_key('nan', None, ns.FLOAT) == ('', float('-inf'))
+    assert _natsort_key(float('nan'), None, 0) == ('', float('-inf'))
 
 
 def test__natsort_key_with_nan_input_and_NANLAST_transforms_nan_to_positive_inf():
-    assert _natsort_key('nan', None, ns.FLOAT | ns.NANLAST) == (u'', float('+inf'))
-    assert _natsort_key(float('nan'), None, ns.NANLAST) == (u'', float('+inf'))
+    assert _natsort_key('nan', None, ns.FLOAT | ns.NANLAST) == ('', float('+inf'))
+    assert _natsort_key(float('nan'), None, ns.NANLAST) == ('', float('+inf'))
     assert ns.NL == ns.NANLAST
 
 
