@@ -3,7 +3,7 @@
 from __future__ import unicode_literals
 
 import unicodedata
-from natsort.py23compat import PY_VERSION
+from natsort.compat.py23 import PY_VERSION
 
 if PY_VERSION >= 3.0:
     long = int

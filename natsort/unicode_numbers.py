@@ -1,17 +1,19 @@
 # -*- coding: utf-8 -*-
 """
 Contains all possible non-ASCII unicode numbers.
-
 """
-
-from __future__ import (print_function, division,
-                        unicode_literals, absolute_import)
+from __future__ import (
+    print_function,
+    division,
+    unicode_literals,
+    absolute_import
+)
 
 # Std. lib imports.
 import unicodedata
 
 # Local imports.
-from natsort.py23compat import py23_unichr
+from natsort.compat.py23 import py23_unichr
 
 
 # Rather than determine this on the fly, which would incur a startup

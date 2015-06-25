@@ -1,6 +1,10 @@
 # -*- coding: utf-8 -*-
-from __future__ import (print_function, division,
-                        unicode_literals, absolute_import)
+from __future__ import (
+    print_function,
+    division,
+    unicode_literals,
+    absolute_import
+)
 
 # Std. lib imports.
 import sys
@@ -9,7 +13,7 @@ import sys
 from natsort.natsort import natsorted, ns
 from natsort.utils import _regex_and_num_function_chooser
 from natsort._version import __version__
-from natsort.py23compat import py23_str
+from natsort.compat.py23 import py23_str
 
 
 def main():

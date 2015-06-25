@@ -4,8 +4,12 @@ This module is intended to replicate some of the functionality
 from the fastnumbers module in the event that module is not
 installed.
 """
-from __future__ import (print_function, division,
-                        unicode_literals, absolute_import)
+from __future__ import (
+    print_function,
+    division,
+    unicode_literals,
+    absolute_import
+)
 
 # Std. lib imports.
 import sys

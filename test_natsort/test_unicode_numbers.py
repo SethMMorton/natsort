@@ -4,8 +4,13 @@ Test the Unicode numbers module.
 """
 from __future__ import unicode_literals
 import unicodedata
-from natsort.py23compat import py23_range, py23_unichr
-from natsort.unicode_numbers import numeric_chars, numeric, digit_chars, digits
+from natsort.compat.py23 import py23_range, py23_unichr
+from natsort.unicode_numbers import (
+    numeric_chars,
+    numeric,
+    digit_chars,
+    digits,
+)
 
 
 def test_numeric_chars_contains_only_valid_unicode_numeric_characters():

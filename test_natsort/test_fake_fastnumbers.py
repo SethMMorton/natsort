@@ -4,11 +4,21 @@ Test the fake fastnumbers module.
 """
 from __future__ import unicode_literals
 
+import pytest
 import unicodedata
 from math import isnan
-from hypothesis import given, assume
-from natsort.fake_fastnumbers import fast_float, fast_int, isfloat, isint
-from natsort.py23compat import py23_str
+from natsort.compat.py23 import py23_str
+from natsort.compat.fake_fastnumbers import (
+    fast_float,
+    fast_int,
+    isfloat,
+    isint,
+)
+from compat.hypothesis import (
+    assume,
+    given,
+    use_hypothesis,
+)
 
 
 def is_float(x):
@@ -38,9 +48,9 @@ def is_int(x):
     else:
         return True
 
-
 # Each test has an "example" version for demonstrative purposes,
 # and a test that uses the hypothesis module.
+
 
 def test_fast_float_converts_float_string_to_float_example():
     assert fast_float('45.8') == 45.8
@@ -49,6 +59,7 @@ def test_fast_float_converts_float_string_to_float_example():
     assert isnan(fast_float('nan'))
 
 
+@pytest.mark.skipif(not use_hypothesis, reason='requires python2.7 or greater')
 @given(float)
 def test_fast_float_converts_float_string_to_float(x):
     assume(not isnan(x))  # But inf is included
@@ -59,6 +70,7 @@ def test_fast_float_leaves_string_as_is_example():
     assert fast_float('invalid') == 'invalid'
 
 
+@pytest.mark.skipif(not use_hypothesis, reason='requires python2.7 or greater')
 @given(py23_str)
 def test_fast_float_leaves_string_as_is(x):
     assume(not is_float(x))
@@ -71,6 +83,7 @@ def test_fast_int_leaves_float_string_as_is_example():
     assert fast_int('inf') == 'inf'
 
 
+@pytest.mark.skipif(not use_hypothesis, reason='requires python2.7 or greater')
 @given(float)
 def test_fast_int_leaves_float_string_as_is(x):
     assume(not x.is_integer())
@@ -91,6 +104,7 @@ def test_fast_int_leaves_string_as_is_example():
     assert fast_int('invalid') == 'invalid'
 
 
+@pytest.mark.skipif(not use_hypothesis, reason='requires python2.7 or greater')
 @given(py23_str)
 def test_fast_int_leaves_string_as_is(x):
     assume(not is_int(x))

@@ -2,11 +2,13 @@
 """
 Utilities and definitions for natsort, mostly all used to define
 the _natsort_key function.
-
 """
-
-from __future__ import (print_function, division,
-                        unicode_literals, absolute_import)
+from __future__ import (
+    print_function,
+    division,
+    unicode_literals,
+    absolute_import
+)
 
 # Std. lib imports.
 import re
@@ -18,32 +20,26 @@ from itertools import islice
 from locale import localeconv
 
 # Local imports.
-from natsort.locale_help import (locale_convert, grouper,
-                                 null_string, use_pyicu, dumb_sort)
-from natsort.py23compat import py23_str, py23_zip, PY_VERSION
 from natsort.ns_enum import ns, _ns
 from natsort.unicode_numbers import digits, numeric
-
-# If the user has fastnumbers installed, they will get great speed
-# benefits. If not, we simulate the functions here.
-try:
-    from fastnumbers import fast_float, fast_int, isint, isfloat
-    import fastnumbers
-    v = list(map(int, fastnumbers.__version__.split('.')))
-    if not (v[0] >= 0 and v[1] >= 5):  # Require >= version 0.5.0.
-        raise ImportError
-except ImportError:
-    from natsort.fake_fastnumbers import fast_float, fast_int, isint, isfloat
-
-# If the user has pathlib installed, the ns.PATH option will convert
-# Path objects to str before sorting.
-try:
-    from pathlib import PurePath  # PurePath is the base object for Paths.
-except ImportError:  # pragma: no cover
-    PurePath = object  # To avoid NameErrors.
-    has_pathlib = False
-else:
-    has_pathlib = True
+from natsort.locale_help import locale_convert, grouper
+from natsort.compat.pathlib import PurePath, has_pathlib
+from natsort.compat.py23 import (
+    py23_str,
+    py23_zip,
+    PY_VERSION,
+)
+from natsort.compat.locale import (
+    dumb_sort,
+    use_pyicu,
+    null_string,
+)
+from natsort.compat.fastnumbers import (
+    fast_float,
+    fast_int,
+    isint,
+    isfloat,
+)
 
 # Group algorithm types for easy extraction
 _NUMBER_ALGORITHMS = ns.FLOAT | ns.INT | ns.UNSIGNED | ns.SIGNED | ns.NOEXP
@@ -51,35 +47,35 @@ _ALL_BUT_PATH = (ns.F | ns.I | ns.U | ns.S | ns.N | ns.L |
                  ns.IC | ns.LF | ns.G | ns.UG | ns.TYPESAFE)
 
 # The regex that locates floats - include Unicode numerals.
-_float_sign_exp_re = r'([-+]?[0-9]*\.?[0-9]+(?:[eE][-+]?[0-9]+)?|[{}])'
+_float_sign_exp_re = r'([-+]?[0-9]*\.?[0-9]+(?:[eE][-+]?[0-9]+)?|[{0}])'
 _float_sign_exp_re = _float_sign_exp_re.format(numeric)
 _float_sign_exp_re = re.compile(_float_sign_exp_re, flags=re.U)
-_float_nosign_exp_re = r'([0-9]*\.?[0-9]+(?:[eE][-+]?[0-9]+)?|[{}])'
+_float_nosign_exp_re = r'([0-9]*\.?[0-9]+(?:[eE][-+]?[0-9]+)?|[{0}])'
 _float_nosign_exp_re = _float_nosign_exp_re.format(numeric)
 _float_nosign_exp_re = re.compile(_float_nosign_exp_re, flags=re.U)
-_float_sign_noexp_re = r'([-+]?[0-9]*\.?[0-9]+|[{}])'
+_float_sign_noexp_re = r'([-+]?[0-9]*\.?[0-9]+|[{0}])'
 _float_sign_noexp_re = _float_sign_noexp_re.format(numeric)
 _float_sign_noexp_re = re.compile(_float_sign_noexp_re, flags=re.U)
-_float_nosign_noexp_re = r'([0-9]*\.?[0-9]+|[{}])'
+_float_nosign_noexp_re = r'([0-9]*\.?[0-9]+|[{0}])'
 _float_nosign_noexp_re = _float_nosign_noexp_re.format(numeric)
 _float_nosign_noexp_re = re.compile(_float_nosign_noexp_re, flags=re.U)
-_float_sign_exp_re_c = r'([-+]?[0-9]*[.,]?[0-9]+(?:[eE][-+]?[0-9]+)?)|[{}]'
+_float_sign_exp_re_c = r'([-+]?[0-9]*[.,]?[0-9]+(?:[eE][-+]?[0-9]+)?)|[{0}]'
 _float_sign_exp_re_c = _float_sign_exp_re_c.format(numeric)
 _float_sign_exp_re_c = re.compile(_float_sign_exp_re_c, flags=re.U)
-_float_nosign_exp_re_c = r'([0-9]*[.,]?[0-9]+(?:[eE][-+]?[0-9]+)?|[{}])'
+_float_nosign_exp_re_c = r'([0-9]*[.,]?[0-9]+(?:[eE][-+]?[0-9]+)?|[{0}])'
 _float_nosign_exp_re_c = _float_nosign_exp_re_c.format(numeric)
 _float_nosign_exp_re_c = re.compile(_float_nosign_exp_re_c, flags=re.U)
-_float_sign_noexp_re_c = r'([-+]?[0-9]*[.,]?[0-9]+|[{}])'
+_float_sign_noexp_re_c = r'([-+]?[0-9]*[.,]?[0-9]+|[{0}])'
 _float_sign_noexp_re_c = _float_sign_noexp_re_c.format(numeric)
 _float_sign_noexp_re_c = re.compile(_float_sign_noexp_re_c, flags=re.U)
-_float_nosign_noexp_re_c = r'([0-9]*[.,]?[0-9]+|[{}])'
+_float_nosign_noexp_re_c = r'([0-9]*[.,]?[0-9]+|[{0}])'
 _float_nosign_noexp_re_c = _float_nosign_noexp_re_c.format(numeric)
 _float_nosign_noexp_re_c = re.compile(_float_nosign_noexp_re_c, flags=re.U)
 
 # Integer regexes - include Unicode digits.
-_int_nosign_re = r'([0-9]+|[{}])'.format(digits)
+_int_nosign_re = r'([0-9]+|[{0}])'.format(digits)
 _int_nosign_re = re.compile(_int_nosign_re, flags=re.U)
-_int_sign_re = r'([-+]?[0-9]+|[{}])'.format(digits)
+_int_sign_re = r'([-+]?[0-9]+|[{0}])'.format(digits)
 _int_sign_re = re.compile(_int_sign_re, flags=re.U)
 
 # This dict will help select the correct regex and number conversion function.
