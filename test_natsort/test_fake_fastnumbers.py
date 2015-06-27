@@ -52,6 +52,17 @@ def is_int(x):
 # and a test that uses the hypothesis module.
 
 
+def test_fast_float_leaves_float_asis_example():
+    assert fast_float(45.8) == 45.8
+
+
+@pytest.mark.skipif(not use_hypothesis, reason='requires python2.7 or greater')
+@given(float)
+def test_fast_float_leaves_float_asis(x):
+    assume(not isnan(x))  # But inf is included
+    assert fast_float(x) == x
+
+
 def test_fast_float_converts_float_string_to_float_example():
     assert fast_float('45.8') == 45.8
     assert fast_float('-45') == -45.0
@@ -75,6 +86,16 @@ def test_fast_float_leaves_string_as_is_example():
 def test_fast_float_leaves_string_as_is(x):
     assume(not is_float(x))
     assert fast_float(x) == x
+
+
+def test_fast_int_leaves_int_asis_example():
+    assert fast_int(45) == 45
+
+
+@pytest.mark.skipif(not use_hypothesis, reason='requires python2.7 or greater')
+@given(int)
+def test_fast_int_leaves_int_asis(x):
+    assert fast_int(x) == x
 
 
 def test_fast_int_leaves_float_string_as_is_example():
