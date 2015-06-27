@@ -6,7 +6,7 @@ import sys
 from os.path import join
 
 # Non-std lib imports
-from setuptools import setup
+from setuptools import setup, find_packages
 from setuptools.command.test import test as TestCommand
 
 
@@ -80,7 +80,7 @@ setup(
     url='https://github.com/SethMMorton/natsort',
     license='MIT',
     install_requires=REQUIRES,
-    packages=['natsort', 'natsort.compat'],
+    packages=find_packages(exclude=['test*']),
     entry_points={'console_scripts': ['natsort = natsort.__main__:main']},
     tests_require=TESTS_REQUIRE,
     cmdclass={'test': PyTest},
