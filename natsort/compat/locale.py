@@ -23,7 +23,7 @@ try:
     # then create a sort key from that
     def get_pyicu_transform(l, _d={}):
         if l not in _d:
-            if l == (None, None):
+            if l == (None, None):  # pragma: no cover
                 c = PyICU.Collator.createInstance(PyICU.Locale())
             else:
                 loc = '.'.join(l)

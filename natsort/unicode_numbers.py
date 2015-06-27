@@ -170,7 +170,7 @@ numeric_chars = []
 for a in numeric_hex:
     try:
         l = py23_unichr(a)
-    except ValueError:
+    except ValueError:  # pragma: no cover
         break
     if unicodedata.numeric(l, None) is None:
         continue

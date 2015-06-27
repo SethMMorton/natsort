@@ -323,7 +323,7 @@ def _natsort_key(val, key, alg):
         try:
             lowfirst = alg & _ns['LOWERCASEFIRST']
             dumb = dumb_sort() if use_locale else False
-            if use_locale and dumb and not lowfirst:
+            if use_locale and dumb and not lowfirst:  # pragma: no cover
                 val = val.swapcase()  # Compensate for bad locale lib.
             elif lowfirst and not (use_locale and dumb):
                 val = val.swapcase()
@@ -348,7 +348,7 @@ def _natsort_key(val, key, alg):
                 elif ret[0] == null_string:
                     return ((b'' if use_pyicu else '',), ret)
                 elif dumb:
-                    if lowfirst:
+                    if lowfirst:  # pragma: no cover
                         return ((orig_val[0].swapcase(),), ret)
                     else:
                         return ((orig_val[0],), ret)
