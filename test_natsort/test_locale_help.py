@@ -21,6 +21,8 @@ from compat.locale import (
 from compat.hypothesis import (
     assume,
     given,
+    text,
+    floats,
     use_hypothesis,
 )
 
@@ -35,7 +37,7 @@ def test_grouper_returns_letters_with_lowercase_transform_of_letter_example():
 
 
 @pytest.mark.skipif(not use_hypothesis, reason='requires python2.7 or greater')
-@given(py23_str)
+@given(text())
 def test_grouper_returns_letters_with_lowercase_transform_of_letter(x):
     assume(type(fast_float(x)) is not float)
     assert grouper(x, (fast_float, isfloat)) == ''.join(chain.from_iterable([low(y), y] for y in x))
@@ -46,7 +48,7 @@ def test_grouper_returns_float_string_as_float_example():
 
 
 @pytest.mark.skipif(not use_hypothesis, reason='requires python2.7 or greater')
-@given(float)
+@given(floats())
 def test_grouper_returns_float_string_as_float(x):
     assume(not isnan(x))
     assert grouper(repr(x), (fast_float, isfloat)) == x
@@ -59,7 +61,7 @@ def test_locale_convert_transforms_float_string_to_float_example():
 
 
 @pytest.mark.skipif(not use_hypothesis, reason='requires python2.7 or greater')
-@given(float)
+@given(floats())
 def test_locale_convert_transforms_float_string_to_float(x):
     assume(not isnan(x))
     load_locale('en_US')
@@ -76,7 +78,7 @@ def test_locale_convert_transforms_nonfloat_string_to_strxfrm_string_example():
 
 
 @pytest.mark.skipif(not use_hypothesis, reason='requires python2.7 or greater')
-@given(py23_str)
+@given(text())
 def test_locale_convert_transforms_nonfloat_string_to_strxfrm_string(x):
     assume(type(fast_float(x)) is not float)
     load_locale('en_US')
@@ -94,7 +96,7 @@ def test_locale_convert_with_groupletters_transforms_nonfloat_string_to_strxfrm_
 
 
 @pytest.mark.skipif(not use_hypothesis, reason='requires python2.7 or greater')
-@given(py23_str)
+@given(text())
 def test_locale_convert_with_groupletters_transforms_nonfloat_string_to_strxfrm_string_with_grouped_letters(x):
     assume(type(fast_float(x)) is not float)
     load_locale('en_US')
@@ -113,7 +115,7 @@ def test_locale_convert_transforms_float_string_to_float_with_de_locale_example(
 
 @pytest.mark.skipif(not has_locale_de_DE, reason='requires de_DE locale')
 @pytest.mark.skipif(not use_hypothesis, reason='requires python2.7 or greater')
-@given(float)
+@given(floats())
 def test_locale_convert_transforms_float_string_to_float_with_de_locale(x):
     assume(not isnan(x))
     load_locale('de_DE')

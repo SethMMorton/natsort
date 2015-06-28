@@ -11,9 +11,11 @@ from compat.mock import patch, call
 from compat.hypothesis import (
     assume,
     given,
-    integers_from,
-    integers_in_range,
     sampled_from,
+    integers,
+    floats,
+    tuples,
+    text,
     use_hypothesis,
 )
 from natsort.__main__ import (
@@ -172,14 +174,14 @@ def test_range_check_returns_range_as_is_but_with_floats_if_first_is_less_than_s
 
 
 @pytest.mark.skipif(not use_hypothesis, reason='requires python2.7 or greater')
-@given(x=int, y=int)
+@given(x=integers(), y=integers())
 def test_range_check_returns_range_as_is_but_with_floats_if_first_is_less_than_second(x, y):
     assume(x < y)
     assert range_check(x, y) == (float(x), float(y))
 
 
 @pytest.mark.skipif(not use_hypothesis, reason='requires python2.7 or greater')
-@given(x=float, y=float)
+@given(x=floats(), y=floats())
 def test_range_check_returns_range_as_is_but_with_floats_if_first_is_less_than_second2(x, y):
     assume(x < y)
     assert range_check(x, y) == (x, y)
@@ -192,7 +194,7 @@ def test_range_check_raises_ValueError_if_second_is_less_than_first_example():
 
 
 @pytest.mark.skipif(not use_hypothesis, reason='requires python2.7 or greater')
-@given(x=float, y=float)
+@given(x=floats(), y=floats())
 def test_range_check_raises_ValueError_if_second_is_less_than_first(x, y):
     assume(x >= y)
     with raises(ValueError) as err:
@@ -212,7 +214,7 @@ def test_check_filter_converts_filter_numbers_to_floats_if_filter_is_valid_examp
 
 
 @pytest.mark.skipif(not use_hypothesis, reason='requires python2.7 or greater')
-@given(x=(int, int, float, float), y=(int, float, float, int))
+@given(x=tuples(integers(), integers(), floats(), floats()), y=tuples(integers(), floats(), floats(), integers()))
 def test_check_filter_converts_filter_numbers_to_floats_if_filter_is_valid(x, y):
     assume(all(i < j for i, j in zip(x, y)))
     assert check_filter(list(zip(x, y))) == [(float(i), float(j)) for i, j in zip(x, y)]
@@ -225,7 +227,7 @@ def test_check_filter_raises_ValueError_if_filter_is_invalid_example():
 
 
 @pytest.mark.skipif(not use_hypothesis, reason='requires python2.7 or greater')
-@given(x=(int, int, float, float), y=(int, float, float, int))
+@given(x=tuples(integers(), integers(), floats(), floats()), y=tuples(integers(), floats(), floats(), integers()))
 def test_check_filter_raises_ValueError_if_filter_is_invalid(x, y):
     assume(any(i >= j for i, j in zip(x, y)))
     with raises(ValueError) as err:
@@ -238,7 +240,7 @@ def test_keep_entry_range_returns_True_if_any_portion_of_input_is_between_the_ra
 
 
 @pytest.mark.skipif(not use_hypothesis, reason='requires python2.7 or greater')
-@given((py23_str, integers_in_range(1, 99), py23_str, integers_in_range(1, 99), py23_str))
+@given(tuples(text(), integers(1, 99), text(), integers(1, 99), text()))
 def test_keep_entry_range_returns_True_if_any_portion_of_input_is_between_the_range_bounds(x):
     s = ''.join(map(py23_str, x))
     assume(any(0 < int(i) < 100 for i in re.findall(r'\d+', s) if re.match(r'\d+$', i)))
@@ -250,7 +252,7 @@ def test_keep_entry_range_returns_True_if_any_portion_of_input_is_between_any_ra
 
 
 @pytest.mark.skipif(not use_hypothesis, reason='requires python2.7 or greater')
-@given((py23_str, integers_in_range(2, 89), py23_str, integers_in_range(2, 89), py23_str))
+@given(tuples(text(), integers(2, 89), text(), integers(2, 89), text()))
 def test_keep_entry_range_returns_True_if_any_portion_of_input_is_between_any_range_bounds(x):
     s = ''.join(map(py23_str, x))
     assume(any((1 < int(i) < 20) or (88 < int(i) < 90) for i in re.findall(r'\d+', s) if re.match(r'\d+$', i)))
@@ -262,7 +264,7 @@ def test_keep_entry_range_returns_False_if_no_portion_of_input_is_between_the_ra
 
 
 @pytest.mark.skipif(not use_hypothesis, reason='requires python2.7 or greater')
-@given((py23_str, integers_from(21), py23_str, integers_from(21), py23_str))
+@given(tuples(text(), integers(min_value=21), text(), integers(min_value=21), text()))
 def test_keep_entry_range_returns_False_if_no_portion_of_input_is_between_the_range_bounds(x):
     s = ''.join(map(py23_str, x))
     assume(all(not (1 <= int(i) <= 20) for i in re.findall(r'\d+', s) if re.match(r'\d+$', i)))
@@ -274,7 +276,7 @@ def test_exclude_entry_returns_True_if_exlcude_parameters_are_not_in_input_examp
 
 
 @pytest.mark.skipif(not use_hypothesis, reason='requires python2.7 or greater')
-@given((py23_str, integers_from(0), py23_str, integers_from(0), py23_str))
+@given(tuples(text(), integers(min_value=0), text(), integers(min_value=0), text()))
 def test_exclude_entry_returns_True_if_exlcude_parameters_are_not_in_input(x):
     s = ''.join(map(py23_str, x))
     assume(not any(int(i) in (23, 45, 87) for i in re.findall(r'\d+', s) if re.match(r'\d+$', i)))
@@ -286,7 +288,7 @@ def test_exclude_entry_returns_False_if_exlcude_parameters_are_in_input_example(
 
 
 @pytest.mark.skipif(not use_hypothesis, reason='requires python2.7 or greater')
-@given((py23_str, sampled_from([23, 45, 87]), py23_str, sampled_from([23, 45, 87]), py23_str))
+@given(tuples(text(), sampled_from([23, 45, 87]), text(), sampled_from([23, 45, 87]), text()))
 def test_exclude_entry_returns_False_if_exlcude_parameters_are_in_input(x):
     s = ''.join(map(py23_str, x))
     assume(any(int(i) in (23, 45, 87) for i in re.findall(r'\d+', s) if re.match(r'\d+$', i)))
