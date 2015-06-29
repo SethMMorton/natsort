@@ -347,8 +347,8 @@ def _natsort_key(val, key, alg):
                     return (ret, ret)
                 elif ret[0] == null_string:
                     return ((b'' if use_pyicu else '',), ret)
-                elif dumb:
-                    if lowfirst:  # pragma: no cover
+                elif dumb:  # pragma: no cover
+                    if lowfirst:
                         return ((orig_val[0].swapcase(),), ret)
                     else:
                         return ((orig_val[0],), ret)
