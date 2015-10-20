@@ -56,7 +56,7 @@ Sorting versions is handled properly by default (as of ``natsort`` version >= 4.
     ['version-1.9', 'version-1.10', 'version-1.11', 'version-2.0']
 
 If you need to sort release candidates, please see
-`this useful hack <http://pythonhosted.org//natsort/examples.htm#rc-sorting>`_ .
+`this useful hack <https://github.com/SethMMorton/natsort/blob/master/docs/source/examples.rst#sorting-with-alpha-beta-and-release-candidates>`_ .
 
 You can also perform locale-aware sorting (or "human sorting"), where the
 non-numeric characters are ordered based on their meaning, not on their
@@ -76,7 +76,7 @@ ordinal value; this can be achieved with the ``humansorted`` function:
 
 You may find you need to explicitly set the locale to get this to work
 (as shown in the example).
-Please see the `following caveat <http://pythonhosted.org//natsort/examples.html#bug-note>`_
+Please see the `following caveat <https://github.com/SethMMorton/natsort/blob/master/docs/source/examples.rst#locale-aware-sorting-human-sorting>`_
 and the `Optional Dependencies`_ section
 below before using the ``humansorted`` function, *especially* if you are on a
 BSD-based system (like Mac OS X).
@@ -131,7 +131,7 @@ The natsort algorithm does other fancy things like
  - exposes a natsort_key generator to pass to ``list.sort``
 
 Please see the package documentation for more details, including 
-`examples and recipes <http://pythonhosted.org//natsort/examples.html>`_.
+`examples and recipes <https://github.com/SethMMorton/natsort/blob/master/docs/source/examples.rst>`_.
 
 Shell script
 ------------
