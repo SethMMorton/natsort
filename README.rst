@@ -56,7 +56,7 @@ Sorting versions is handled properly by default (as of ``natsort`` version >= 4.
     ['version-1.9', 'version-1.10', 'version-1.11', 'version-2.0']
 
 If you need to sort release candidates, please see
-`this useful hack <http://pythonhosted.org//natsort/examples.htm#rc-sorting>`_ .
+`this useful hack <http://pythonhosted.org//natsort/examples.html#rc-sorting>`_ .
 
 You can also perform locale-aware sorting (or "human sorting"), where the
 non-numeric characters are ordered based on their meaning, not on their
