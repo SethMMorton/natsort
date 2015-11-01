@@ -136,7 +136,8 @@ def float_splitter(x, signed, exp, safe, sep):
     # Fix a float that looks like a string.
     fstrings = ('inf', 'infinity', '-inf', '-infinity',
                 '+inf', '+infinity', 'nan')
-    full_list = [float(y) if type(y) != float and y.lower() in fstrings else y
+    full_list = [float(y.strip())
+                 if type(y) != float and y.lower().strip() in fstrings else y
                  for y in full_list]
     if safe:
         full_list = sep_inserter(full_list, (float,), sep)
