@@ -634,7 +634,7 @@ def test__natsort_key_with_LOCALE_and_UNGROUPLETTERS_places_space_before_string_
         t = tuple(_number_extracter(s, _float_nosign_exp_re, *float_nosafe_locale_nogroup))
     if not t:
         r = (t, t)
-    elif t[0] is null_string:
+    elif t[0] in (null_string, get_strxfrm()(b'\x00') if sys.version[0] == '2' and not use_pyicu else null_string):
         r = ((b'' if use_pyicu else '',), t)
     else:
         r = ((s[0],), t)
