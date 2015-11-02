@@ -54,6 +54,10 @@ from compat.hypothesis import (
     given,
     example,
     sampled_from,
+    lists,
+    text,
+    floats,
+    integers,
     use_hypothesis,
 )
 
@@ -177,7 +181,7 @@ def test_py3_safe_with_use_locale_inserts_null_string_between_two_numbers_exampl
 
 
 @pytest.mark.skipif(not use_hypothesis, reason='requires python2.7 or greater')
-@given([py23_str, int])
+@given(lists(elements=text() | integers()))
 def test_py3_safe_inserts_empty_string_between_two_numbers(x):
     assume(bool(x))
     assert _py3_safe(x, False, isint) == sep_inserter(x, (int, long), '')
@@ -189,9 +193,8 @@ def test_path_splitter_splits_path_string_by_separator_example():
 
 
 @pytest.mark.skipif(not use_hypothesis, reason='requires python2.7 or greater')
-@given([sampled_from(string.ascii_letters)])
+@given(lists(sampled_from(string.ascii_letters), min_size=2))
 def test_path_splitter_splits_path_string_by_separator(x):
-    assume(len(x) > 1)
     assume(all(x))
     z = py23_str(pathlib.Path(*x))
     assert _path_splitter(z) == list(pathlib.Path(z).parts)
@@ -204,9 +207,8 @@ def test_path_splitter_splits_path_string_by_separator_and_removes_extension_exa
 
 
 @pytest.mark.skipif(not use_hypothesis, reason='requires python2.7 or greater')
-@given([sampled_from(string.ascii_letters)])
+@given(lists(sampled_from(string.ascii_letters), min_size=3))
 def test_path_splitter_splits_path_string_by_separator_and_removes_extension(x):
-    assume(len(x) > 2)
     assume(all(x))
     z = py23_str(pathlib.Path(*x[:-2])) + '.' + x[-1]
     y = list(pathlib.Path(z).parts)
@@ -219,7 +221,7 @@ def test_number_extracter_raises_TypeError_if_given_a_number_example():
 
 
 @pytest.mark.skipif(not use_hypothesis, reason='requires python2.7 or greater')
-@given(float)
+@given(floats())
 def test_number_extracter_raises_TypeError_if_given_a_number(x):
     with raises(TypeError):
         assert _number_extracter(x, _float_sign_exp_re, *float_nosafe_nolocale_nogroup)
@@ -230,9 +232,8 @@ def test_number_extracter_includes_plus_sign_and_exponent_in_float_definition_fo
 
 
 @pytest.mark.skipif(not use_hypothesis, reason='requires python2.7 or greater')
-@given([float, py23_str, int])
+@given(lists(elements=floats() | text() | integers(), min_size=1, max_size=10))
 def test_number_extracter_includes_plus_sign_and_exponent_in_float_definition_for_signed_exp_floats(x):
-    assume(len(x) <= 10)
     assume(not any(type(y) == float and isnan(y) for y in x))
     s = ''.join(repr(y) if type(y) in (float, long, int) else y for y in x)
     assert _number_extracter(s, _float_sign_exp_re, *float_nosafe_nolocale_nogroup) == float_splitter(s, True, True, False, '')
@@ -243,9 +244,8 @@ def test_number_extracter_excludes_plus_sign_in_float_definition_but_includes_ex
 
 
 @pytest.mark.skipif(not use_hypothesis, reason='requires python2.7 or greater')
-@given([float, py23_str, int])
+@given(lists(elements=floats() | text() | integers(), min_size=1, max_size=10))
 def test_number_extracter_excludes_plus_sign_in_float_definition_but_includes_exponent_for_unsigned_exp_floats(x):
-    assume(len(x) <= 10)
     assume(not any(type(y) == float and isnan(y) for y in x))
     s = ''.join(repr(y) if type(y) in (float, long, int) else y for y in x)
     assert _number_extracter(s, _float_nosign_exp_re, *float_nosafe_nolocale_nogroup) == float_splitter(s, False, True, False, '')
@@ -256,9 +256,8 @@ def test_number_extracter_includes_plus_and_minus_sign_in_float_definition_but_e
 
 
 @pytest.mark.skipif(not use_hypothesis, reason='requires python2.7 or greater')
-@given([float, py23_str, int])
+@given(lists(elements=floats() | text() | integers(), min_size=1, max_size=10))
 def test_number_extracter_includes_plus_and_minus_sign_in_float_definition_but_excludes_exponent_for_signed_noexp_floats(x):
-    assume(len(x) <= 10)
     assume(not any(type(y) == float and isnan(y) for y in x))
     s = ''.join(repr(y) if type(y) in (float, long, int) else y for y in x)
     assert _number_extracter(s, _float_sign_noexp_re, *float_nosafe_nolocale_nogroup) == float_splitter(s, True, False, False, '')
@@ -269,9 +268,8 @@ def test_number_extracter_excludes_plus_sign_and_exponent_in_float_definition_fo
 
 
 @pytest.mark.skipif(not use_hypothesis, reason='requires python2.7 or greater')
-@given([float, py23_str, int])
+@given(lists(elements=floats() | text() | integers(), min_size=1, max_size=10))
 def test_number_extracter_excludes_plus_sign_and_exponent_in_float_definition_for_unsigned_noexp_floats(x):
-    assume(len(x) <= 10)
     assume(not any(type(y) == float and isnan(y) for y in x))
     s = ''.join(repr(y) if type(y) in (float, long, int) else y for y in x)
     assert _number_extracter(s, _float_nosign_noexp_re, *float_nosafe_nolocale_nogroup) == float_splitter(s, False, False, False, '')
@@ -282,12 +280,11 @@ def test_number_extracter_excludes_plus_and_minus_sign_in_int_definition_for_uns
 
 
 @pytest.mark.skipif(not use_hypothesis, reason='requires python2.7 or greater')
-@given([float, py23_str, int])
+@given(lists(elements=floats() | text() | integers(), min_size=1, max_size=10))
 @example([10000000000000000000000000000000000000000000000000000000000000000000000000,
           100000000000000000000000000000000000000000000000000000000000000000000000000,
           100000000000000000000000000000000000000000000000000000000000000000000000000])
 def test_number_extracter_excludes_plus_and_minus_sign_in_int_definition_for_unsigned_ints(x):
-    assume(len(x) <= 10)
     s = ''.join(repr(y) if type(y) in (float, long, int) else y for y in x)
     assert _number_extracter(s, _int_nosign_re, *int_nosafe_nolocale_nogroup) == int_splitter(s, False, False, '')
 
@@ -297,9 +294,8 @@ def test_number_extracter_includes_plus_and_minus_sign_in_int_definition_for_sig
 
 
 @pytest.mark.skipif(not use_hypothesis, reason='requires python2.7 or greater')
-@given([float, py23_str, int])
+@given(lists(elements=floats() | text() | integers(), min_size=1, max_size=10))
 def test_number_extracter_includes_plus_and_minus_sign_in_int_definition_for_signed_ints(x):
-    assume(len(x) <= 10)
     s = ''.join(repr(y) if type(y) in (float, long, int) else y for y in x)
     assert _number_extracter(s, _int_sign_re, *int_nosafe_nolocale_nogroup) == int_splitter(s, True, False, '')
 
@@ -309,9 +305,8 @@ def test_number_extracter_inserts_empty_string_between_floats_for_py3safe_option
 
 
 @pytest.mark.skipif(not use_hypothesis, reason='requires python2.7 or greater')
-@given([float, py23_str, int])
+@given(lists(elements=floats() | text() | integers(), min_size=1, max_size=10))
 def test_number_extracter_inserts_empty_string_between_floats_for_py3safe_option(x):
-    assume(len(x) <= 10)
     assume(not any(type(y) == float and isnan(y) for y in x))
     s = ''.join(repr(y) if type(y) in (float, long, int) else y for y in x)
     assert _number_extracter(s, _float_sign_exp_re, *float_safe_nolocale_nogroup) == float_splitter(s, True, True, True, '')
@@ -322,9 +317,8 @@ def test_number_extracter_inserts_empty_string_between_ints_for_py3safe_option_e
 
 
 @pytest.mark.skipif(not use_hypothesis, reason='requires python2.7 or greater')
-@given([float, py23_str, int])
+@given(lists(elements=floats() | text() | integers(), min_size=1, max_size=10))
 def test_number_extracter_inserts_empty_string_between_ints_for_py3safe_option(x):
-    assume(len(x) <= 10)
     s = ''.join(repr(y) if type(y) in (float, long, int) else y for y in x)
     assert _number_extracter(s, _int_sign_re, *int_safe_nolocale_nogroup) == int_splitter(s, True, True, '')
 
@@ -346,9 +340,8 @@ def test_number_extracter_doubles_letters_with_lowercase_version_with_grouplette
 
 
 @pytest.mark.skipif(not use_hypothesis, reason='requires python2.7 or greater')
-@given([float, py23_str, int])
+@given(lists(elements=floats() | text() | integers(), min_size=1, max_size=10))
 def test_number_extracter_doubles_letters_with_lowercase_version_with_groupletters_for_float(x):
-    assume(len(x) <= 10)
     assume(not any(type(y) == float and isnan(y) for y in x))
     s = ''.join(repr(y) if type(y) in (float, long, int) else y for y in x)
     t = float_splitter(s, True, True, False, '')
@@ -361,9 +354,8 @@ def test_number_extracter_doubles_letters_with_lowercase_version_with_grouplette
 
 
 @pytest.mark.skipif(not use_hypothesis, reason='requires python2.7 or greater')
-@given([float, py23_str, int])
+@given(lists(elements=floats() | text() | integers(), min_size=1, max_size=10))
 def test_number_extracter_doubles_letters_with_lowercase_version_with_groupletters_for_int(x):
-    assume(len(x) <= 10)
     s = ''.join(repr(y) if type(y) in (float, long, int) else y for y in x)
     t = int_splitter(s, False, False, '')
     t = [''.join([low(z) + z for z in y]) if type(y) not in (int, long) else y for y in t]
@@ -378,9 +370,8 @@ def test_number_extracter_extracts_numbers_and_strxfrms_strings_with_use_locale_
 
 
 @pytest.mark.skipif(not use_hypothesis, reason='requires python2.7 or greater')
-@given([float, py23_str, int])
+@given(lists(elements=floats() | text() | integers(), min_size=1, max_size=10))
 def test_number_extracter_extracts_numbers_and_strxfrms_strings_with_use_locale(x):
-    assume(len(x) <= 10)
     load_locale('en_US')
     s = ''.join(repr(y) if type(y) in (float, long, int) else y for y in x)
     t = int_splitter(s, False, False, null_string)
@@ -400,9 +391,8 @@ def test_number_extracter_extracts_numbers_and_strxfrms_letter_doubled_strings_w
 
 
 @pytest.mark.skipif(not use_hypothesis, reason='requires python2.7 or greater')
-@given([float, py23_str, int])
+@given(lists(elements=floats() | text() | integers(), min_size=1, max_size=10))
 def test_number_extracter_extracts_numbers_and_strxfrms_letter_doubled_strings_with_use_locale_and_groupletters(x):
-    assume(len(x) <= 10)
     load_locale('en_US')
     s = ''.join(repr(y) if type(y) in (float, long, int) else y for y in x)
     t = int_splitter(s, False, False, null_string)
@@ -430,9 +420,8 @@ def test__natsort_key_with_nan_input_and_NANLAST_transforms_nan_to_positive_inf(
 
 
 @pytest.mark.skipif(not use_hypothesis, reason='requires python2.7 or greater')
-@given([float, py23_str, int])
+@given(lists(elements=floats() | text() | integers(), min_size=1, max_size=10))
 def test__natsort_key_with_float_and_signed_splits_input_into_string_and_signed_float_with_exponent(x):
-    assume(len(x) <= 10)
     assume(not any(type(y) == float and isnan(y) for y in x))
     s = ''.join(repr(y) if type(y) in (float, long, int) else y for y in x)
     assert ns.F == ns.FLOAT
@@ -441,9 +430,8 @@ def test__natsort_key_with_float_and_signed_splits_input_into_string_and_signed_
 
 
 @pytest.mark.skipif(not use_hypothesis, reason='requires python2.7 or greater')
-@given([float, py23_str, int])
+@given(lists(elements=floats() | text() | integers(), min_size=1, max_size=10))
 def test__natsort_key_with_real_splits_input_into_string_and_signed_float_with_exponent(x):
-    assume(len(x) <= 10)
     assume(not any(type(y) == float and isnan(y) for y in x))
     s = ''.join(repr(y) if type(y) in (float, long, int) else y for y in x)
     assert ns.R == ns.F | ns.S
@@ -451,18 +439,16 @@ def test__natsort_key_with_real_splits_input_into_string_and_signed_float_with_e
 
 
 @pytest.mark.skipif(not use_hypothesis, reason='requires python2.7 or greater')
-@given([float, py23_str, int])
+@given(lists(elements=floats() | text() | integers(), min_size=1, max_size=10))
 def test__natsort_key_with_real_matches_signed_float(x):
-    assume(len(x) <= 10)
     assume(not any(type(y) == float and isnan(y) for y in x))
     s = ''.join(repr(y) if type(y) in (float, long, int) else y for y in x)
     assert _natsort_key(s, None, ns.R) == _natsort_key(s, None, ns.F | ns.S)
 
 
 @pytest.mark.skipif(not use_hypothesis, reason='requires python2.7 or greater')
-@given([float, py23_str, int])
+@given(lists(elements=floats() | text() | integers(), min_size=1, max_size=10))
 def test__natsort_key_with_float_and_signed_and_noexp_splits_input_into_string_and_signed_float_without_exponent(x):
-    assume(len(x) <= 10)
     assume(not any(type(y) == float and isnan(y) for y in x))
     s = ''.join(repr(y) if type(y) in (float, long, int) else y for y in x)
     assert ns.N == ns.NOEXP
@@ -470,9 +456,8 @@ def test__natsort_key_with_float_and_signed_and_noexp_splits_input_into_string_a
 
 
 @pytest.mark.skipif(not use_hypothesis, reason='requires python2.7 or greater')
-@given([float, py23_str, int])
+@given(lists(elements=floats() | text() | integers(), min_size=1, max_size=10))
 def test__natsort_key_with_float_and_unsigned_splits_input_into_string_and_unsigned_float(x):
-    assume(len(x) <= 10)
     assume(not any(type(y) == float and isnan(y) for y in x))
     s = ''.join(repr(y) if type(y) in (float, long, int) else y for y in x)
     assert ns.U == ns.UNSIGNED
@@ -482,18 +467,16 @@ def test__natsort_key_with_float_and_unsigned_splits_input_into_string_and_unsig
 
 
 @pytest.mark.skipif(not use_hypothesis, reason='requires python2.7 or greater')
-@given([float, py23_str, int])
+@given(lists(elements=floats() | text() | integers(), min_size=1, max_size=10))
 def test__natsort_key_with_float_and_noexp_splits_input_into_string_and_unsigned_float_without_exponent(x):
-    assume(len(x) <= 10)
     assume(not any(type(y) == float and isnan(y) for y in x))
     s = ''.join(repr(y) if type(y) in (float, long, int) else y for y in x)
     assert _natsort_key(s, None, ns.F | ns.N) == tuple(_number_extracter(s, _float_nosign_noexp_re, *float_nosafe_nolocale_nogroup))
 
 
 @pytest.mark.skipif(not use_hypothesis, reason='requires python2.7 or greater')
-@given([float, py23_str, int])
+@given(lists(elements=floats() | text() | integers(), min_size=1, max_size=10))
 def test__natsort_key_with_int_splits_input_into_string_and_unsigned_int(x):
-    assume(len(x) <= 10)
     assume(not any(type(y) == float and isnan(y) for y in x))
     s = ''.join(repr(y) if type(y) in (float, long, int) else y for y in x)
     assert ns.I == ns.INT
@@ -505,9 +488,8 @@ def test__natsort_key_with_int_splits_input_into_string_and_unsigned_int(x):
 
 
 @pytest.mark.skipif(not use_hypothesis, reason='requires python2.7 or greater')
-@given([float, py23_str, int])
+@given(lists(elements=floats() | text() | integers(), min_size=1, max_size=10))
 def test__natsort_key_with_int_splits_and_signed_input_into_string_and_signed_int(x):
-    assume(len(x) <= 10)
     assume(not any(type(y) == float and isnan(y) for y in x))
     s = ''.join(repr(y) if type(y) in (float, long, int) else y for y in x)
     assert _natsort_key(s, None, ns.INT | ns.SIGNED) == tuple(_number_extracter(s, _int_sign_re, *int_nosafe_nolocale_nogroup))
@@ -515,9 +497,8 @@ def test__natsort_key_with_int_splits_and_signed_input_into_string_and_signed_in
 
 
 @pytest.mark.skipif(not use_hypothesis, reason='requires python2.7 or greater')
-@given([float, py23_str, int])
+@given(lists(elements=floats() | text() | integers(), min_size=1, max_size=10))
 def test__natsort_key_with_version_or_digit_matches_usigned_int(x):
-    assume(len(x) <= 10)
     assume(not any(type(y) == float and isnan(y) for y in x))
     s = ''.join(repr(y) if type(y) in (float, long, int) else y for y in x)
     assert _natsort_key(s, None, ns.VERSION) == _natsort_key(s, None, ns.INT | ns.UNSIGNED)
@@ -525,19 +506,17 @@ def test__natsort_key_with_version_or_digit_matches_usigned_int(x):
 
 
 @pytest.mark.skipif(not use_hypothesis, reason='requires python2.7 or greater')
-@given([float, py23_str, int])
+@given(lists(elements=floats() | text() | integers(), min_size=1, max_size=10))
 def test__natsort_key_with_key_applies_key_function_before_splitting(x):
-    assume(len(x) <= 10)
     assume(not any(type(y) == float and isnan(y) for y in x))
     s = ''.join(repr(y) if type(y) in (float, long, int) else y for y in x)
     assert _natsort_key(s, lambda x: x.upper(), ns.I) == tuple(_number_extracter(s.upper(), _int_nosign_re, *int_nosafe_nolocale_nogroup))
 
 
 @pytest.mark.skipif(not use_hypothesis, reason='requires python2.7 or greater')
-@given([float, py23_str, int])
+@given(lists(elements=floats() | text() | integers(), min_size=1, max_size=10))
 def test__natsort_key_with_tuple_input_returns_nested_tuples(x):
     # Iterables are parsed recursively so you can sort lists of lists.
-    assume(len(x) <= 10)
     assume(not any(type(y) == float and isnan(y) for y in x))
     s = ''.join(repr(y) if type(y) in (float, long, int) else y for y in x)
     t = tuple(_number_extracter(s, _int_nosign_re, *int_nosafe_nolocale_nogroup))
@@ -545,10 +524,9 @@ def test__natsort_key_with_tuple_input_returns_nested_tuples(x):
 
 
 @pytest.mark.skipif(not use_hypothesis, reason='requires python2.7 or greater')
-@given([float, py23_str, int])
+@given(lists(elements=floats() | text() | integers(), min_size=1, max_size=10))
 def test__natsort_key_with_tuple_input_but_itemgetter_key_returns_split_second_element(x):
     # A key is applied before recursion, but not in the recursive calls.
-    assume(len(x) <= 10)
     assume(not any(type(y) == float and isnan(y) for y in x))
     s = ''.join(repr(y) if type(y) in (float, long, int) else y for y in x)
     t = tuple(_number_extracter(s, _int_nosign_re, *int_nosafe_nolocale_nogroup))
@@ -556,7 +534,7 @@ def test__natsort_key_with_tuple_input_but_itemgetter_key_returns_split_second_e
 
 
 @pytest.mark.skipif(not use_hypothesis, reason='requires python2.7 or greater')
-@given(float)
+@given(floats())
 def test__natsort_key_with_numeric_input_returns_number_with_leading_empty_string(x):
     assume(not isnan(x))
     if x.is_integer():
@@ -565,10 +543,9 @@ def test__natsort_key_with_numeric_input_returns_number_with_leading_empty_strin
 
 
 @pytest.mark.skipif(not use_hypothesis, reason='requires python2.7 or greater')
-@given([float, py23_str, int])
+@given(lists(elements=floats() | text() | integers(), min_size=1, max_size=10))
 def test__natsort_key_with_TYPESAFE_inserts_spaces_between_numbers(x):
     # Turn on TYPESAFE to put a '' between adjacent numbers
-    assume(len(x) <= 10)
     assume(not any(type(y) == float and isnan(y) for y in x))
     s = ''.join(repr(y) if type(y) in (float, long, int) else y for y in x)
     assert _natsort_key(s, None, ns.TYPESAFE | ns.S) == tuple(_number_extracter(s, _int_sign_re, *int_safe_nolocale_nogroup))
@@ -582,9 +559,8 @@ def test__natsort_key_with_invalid_alg_input_raises_ValueError():
 
 
 @pytest.mark.skipif(not use_hypothesis, reason='requires python2.7 or greater')
-@given([float, py23_str, int])
+@given(lists(elements=floats() | text() | integers(), min_size=1, max_size=10))
 def test__natsort_key_with_IGNORECASE_lowercases_text(x):
-    assume(len(x) <= 10)
     assume(not any(type(y) == float and isnan(y) for y in x))
     s = ''.join(repr(y) if type(y) in (float, long, int) else y for y in x)
     try:
@@ -594,18 +570,16 @@ def test__natsort_key_with_IGNORECASE_lowercases_text(x):
 
 
 @pytest.mark.skipif(not use_hypothesis, reason='requires python2.7 or greater')
-@given([float, py23_str, int])
+@given(lists(elements=floats() | text() | integers(), min_size=1, max_size=10))
 def test__natsort_key_with_LOWERCASEFIRST_inverts_text_case(x):
-    assume(len(x) <= 10)
     assume(not any(type(y) == float and isnan(y) for y in x))
     s = ''.join(repr(y) if type(y) in (float, long, int) else y for y in x)
     assert _natsort_key(s, None, ns.LOWERCASEFIRST) == tuple(_number_extracter(s.swapcase(), _int_nosign_re, *int_nosafe_nolocale_nogroup))
 
 
 @pytest.mark.skipif(not use_hypothesis, reason='requires python2.7 or greater')
-@given([float, py23_str, int])
+@given(lists(elements=floats() | text() | integers(), min_size=1, max_size=10))
 def test__natsort_key_with_GROUPLETTERS_doubles_text_with_lowercase_letter_first(x):
-    assume(len(x) <= 10)
     assume(not any(type(y) == float and isnan(y) for y in x))
     s = ''.join(ichain([repr(y)] if type(y) in (float, long, int) else [low(y), y] for y in x))
     s = ''.join(repr(y) if type(y) in (float, long, int) else y for y in x)
@@ -614,9 +588,8 @@ def test__natsort_key_with_GROUPLETTERS_doubles_text_with_lowercase_letter_first
 
 
 @pytest.mark.skipif(not use_hypothesis, reason='requires python2.7 or greater')
-@given([float, py23_str, int])
+@given(lists(elements=floats() | text() | integers(), min_size=1, max_size=10))
 def test__natsort_key_with_GROUPLETTERS_and_LOWERCASEFIRST_inverts_text_first_then_doubles_letters_with_lowercase_letter_first(x):
-    assume(len(x) <= 10)
     assume(not any(type(y) == float and isnan(y) for y in x))
     s = ''.join(ichain([repr(y)] if type(y) in (float, long, int) else [low(y), y] for y in x))
     s = ''.join(repr(y) if type(y) in (float, long, int) else y for y in x)
@@ -635,10 +608,9 @@ def test__natsort_key_with_bytes_input_only_applies_LOWERCASEFIRST_or_IGNORECASE
 
 
 @pytest.mark.skipif(not use_hypothesis, reason='requires python2.7 or greater')
-@given([float, py23_str, int])
+@given(lists(elements=floats() | text() | integers(), min_size=1, max_size=10))
 def test__natsort_key_with_LOCALE_transforms_floats_according_to_the_current_locale_and_strxfrms_strings(x):
     # Locale aware sorting
-    assume(len(x) <= 10)
     assume(not any(type(y) == float and isnan(y) for y in x))
     s = ''.join(repr(y) if type(y) in (float, long, int) else y for y in x)
     load_locale('en_US')
@@ -650,10 +622,9 @@ def test__natsort_key_with_LOCALE_transforms_floats_according_to_the_current_loc
 
 
 @pytest.mark.skipif(not use_hypothesis, reason='requires python2.7 or greater')
-@given([float, py23_str, int])
+@given(lists(elements=floats() | text() | integers(), min_size=1, max_size=10))
 def test__natsort_key_with_LOCALE_and_UNGROUPLETTERS_places_space_before_string_with_capital_first_letter(x):
     # Locale aware sorting
-    assume(len(x) <= 10)
     assume(not any(type(y) == float and isnan(y) for y in x))
     s = ''.join(repr(y) if type(y) in (float, long, int) else y for y in x)
     load_locale('en_US')
@@ -663,7 +634,7 @@ def test__natsort_key_with_LOCALE_and_UNGROUPLETTERS_places_space_before_string_
         t = tuple(_number_extracter(s, _float_nosign_exp_re, *float_nosafe_locale_nogroup))
     if not t:
         r = (t, t)
-    elif t[0] is null_string:
+    elif t[0] in (null_string, get_strxfrm()(b'\x00') if sys.version[0] == '2' and not use_pyicu else null_string):
         r = ((b'' if use_pyicu else '',), t)
     else:
         r = ((s[0],), t)
@@ -676,9 +647,8 @@ def test__natsort_key_with_LOCALE_and_UNGROUPLETTERS_places_space_before_string_
 
 
 @pytest.mark.skipif(not use_hypothesis, reason='requires python2.7 or greater')
-@given([float, py23_str, int])
+@given(lists(elements=floats() | text() | integers(), min_size=1, max_size=10))
 def test__natsort_key_with_UNGROUPLETTERS_does_nothing_without_LOCALE(x):
-    assume(len(x) <= 10)
     assume(not any(type(y) == float and isnan(y) for y in x))
     s = ''.join(repr(y) if type(y) in (float, long, int) else y for y in x)
     assert _natsort_key(s, None, ns.UG | ns.I) == _natsort_key(s, None, ns.I)

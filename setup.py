@@ -6,7 +6,7 @@ import sys
 from os.path import join
 
 # Non-std lib imports
-from setuptools import setup
+from setuptools import setup, find_packages
 from setuptools.command.test import test as TestCommand
 
 
@@ -62,7 +62,7 @@ REQUIRES = 'argparse' if sys.version[:3] in ('2.6', '3.0', '3.1') else ''
 
 # Testing needs pytest, and mock if less than python 3.3
 TESTS_REQUIRE = ['pytest', 'pytest-pep8', 'pytest-flakes',
-                 'pytest-cov', 'pytest-cache', 'hypothesis']
+                 'pytest-cov', 'pytest-cache', 'hypothesis>=1.6.2']
 
 if (sys.version.startswith('2') or
         (sys.version.startswith('3') and int(sys.version.split('.')[1]) < 3)):
@@ -80,7 +80,7 @@ setup(
     url='https://github.com/SethMMorton/natsort',
     license='MIT',
     install_requires=REQUIRES,
-    packages=['natsort', 'natsort.compat'],
+    packages=find_packages(exclude=['test*']),
     entry_points={'console_scripts': ['natsort = natsort.__main__:main']},
     tests_require=TESTS_REQUIRE,
     cmdclass={'test': PyTest},

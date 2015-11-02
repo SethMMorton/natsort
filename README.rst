@@ -56,7 +56,7 @@ Sorting versions is handled properly by default (as of ``natsort`` version >= 4.
     ['version-1.9', 'version-1.10', 'version-1.11', 'version-2.0']
 
 If you need to sort release candidates, please see
-`this useful hack <http://pythonhosted.org//natsort/examples.htm#rc-sorting>`_ .
+`this useful hack <http://pythonhosted.org//natsort/examples.html#rc-sorting>`_ .
 
 You can also perform locale-aware sorting (or "human sorting"), where the
 non-numeric characters are ordered based on their meaning, not on their
@@ -225,6 +225,13 @@ History
 These are the last three entries of the changelog.  See the package documentation
 for the complete `changelog <http://pythonhosted.org//natsort/changelog.html>`_.
 
+11-01-2015 v. 4.0.4
+'''''''''''''''''''
+
+    - Improved coverage of unit tests.
+    - Unit tests use new and improved hypothesis library.
+    - Fixed compatibility issues with Python 3.5
+
 06-25-2015 v. 4.0.3
 '''''''''''''''''''
 
@@ -236,9 +243,3 @@ for the complete `changelog <http://pythonhosted.org//natsort/changelog.html>`_.
     - Added back Python 2.6 and Python 3.2 compatibility. Unit testing is now
       performed for these versions.
     - Consolidated under-the-hood compatibility functionality.
-
-06-04-2015 v. 4.0.1
-'''''''''''''''''''
-
-    - Added support for sorting NaN by internally converting to -Infinity
-      or +Infinity

@@ -3,6 +3,13 @@
 Changelog
 ---------
 
+11-01-2015 v. 4.0.4
+'''''''''''''''''''
+
+    - Improved coverage of unit tests.
+    - Unit tests use new and improved hypothesis library.
+    - Fixed compatibility issues with Python 3.5
+
 06-25-2015 v. 4.0.3
 '''''''''''''''''''
 
