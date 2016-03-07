@@ -15,6 +15,7 @@ var
 sdist
 develop-eggs
 .installed.cfg
+.python-version
 
 # We are using MANIFEST.in instead
 MANIFEST
