@@ -176,7 +176,7 @@ def test_range_check_returns_range_as_is_but_with_floats_if_first_is_less_than_s
 @pytest.mark.skipif(not use_hypothesis, reason='requires python2.7 or greater')
 @given(x=integers(), y=integers())
 def test_range_check_returns_range_as_is_but_with_floats_if_first_is_less_than_second(x, y):
-    assume(x < y)
+    assume(float(x) < float(y))
     assert range_check(x, y) == (float(x), float(y))
 
 
@@ -216,7 +216,7 @@ def test_check_filter_converts_filter_numbers_to_floats_if_filter_is_valid_examp
 @pytest.mark.skipif(not use_hypothesis, reason='requires python2.7 or greater')
 @given(x=tuples(integers(), integers(), floats(), floats()), y=tuples(integers(), floats(), floats(), integers()))
 def test_check_filter_converts_filter_numbers_to_floats_if_filter_is_valid(x, y):
-    assume(all(i < j for i, j in zip(x, y)))
+    assume(all(float(i) < float(j) for i, j in zip(x, y)))
     assert check_filter(list(zip(x, y))) == [(float(i), float(j)) for i, j in zip(x, y)]
 
 
@@ -229,7 +229,7 @@ def test_check_filter_raises_ValueError_if_filter_is_invalid_example():
 @pytest.mark.skipif(not use_hypothesis, reason='requires python2.7 or greater')
 @given(x=tuples(integers(), integers(), floats(), floats()), y=tuples(integers(), floats(), floats(), integers()))
 def test_check_filter_raises_ValueError_if_filter_is_invalid(x, y):
-    assume(any(i >= j for i, j in zip(x, y)))
+    assume(any(float(i) >= float(j) for i, j in zip(x, y)))
     with raises(ValueError) as err:
         check_filter(list(zip(x, y)))
     assert str(err.value) == 'Error in --filter: low >= high'
