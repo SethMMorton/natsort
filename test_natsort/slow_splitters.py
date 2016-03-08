@@ -11,6 +11,7 @@ if PY_VERSION >= 3.0:
 
 def int_splitter(x, signed, safe, sep):
     """Alternate (slow) method to split a string into numbers."""
+    # Hacked together and not maintainable.
     if not x:
         return []
     all_digits = set('0123456789')
@@ -66,6 +67,7 @@ def int_splitter(x, signed, safe, sep):
 
 def float_splitter(x, signed, exp, safe, sep):
     """Alternate (slow) method to split a string into numbers."""
+    # Hacked together and not maintainable.
     if not x:
         return []
     all_digits = set('0123456789')
@@ -75,9 +77,9 @@ def float_splitter(x, signed, exp, safe, sep):
         # If this character is a sign and the next is a number,
         # start a new number.
         if (i+1 < input_len and
-                (signed or (i > 1 and exp and x[i-1] in 'eE' and
+                (signed or (nums and i > 1 and exp and x[i-1] in 'eE' and
                             x[i-2] in all_digits)) and
-                (char in '-+') and (x[i+1] in all_digits)):
+                (char in '-+') and (x[i+1] in all_digits | set('.'))):
             # Reset any current string or number.
             if strings:
                 full_list.append(''.join(strings))
@@ -96,7 +98,7 @@ def float_splitter(x, signed, exp, safe, sep):
             strings = []
         # If this is a decimal, add to the number list.
         elif (i + 1 < input_len and char == '.' and x[i+1] in all_digits):
-            if nums and '.' in nums:
+            if nums and ('.' in nums or 'e' in nums or 'E' in nums):
                 full_list.append(float(''.join(nums)))
                 nums = []
             nums.append(char)
