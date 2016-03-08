@@ -15,12 +15,12 @@ from __future__ import (
 import sys
 import re
 import unicodedata
-s = r'\s*[-+]?(\d*\.?\d+(?:[eE][-+]?\d+)?|inf(?:inity)?|nan)\s*$'
+s = r'[ \t\n]*[-+]?(\d*\.?\d+(?:[eE][-+]?\d+)?|inf(?:inity)?|nan)[ \t\n]*$'
 float_re = re.compile(s)
 if sys.version[0] == '2':
-    int_re = re.compile(r'\s*[-+]?\d+[lL]?\s*$')
+    int_re = re.compile(r'[ \t\n]*[-+]?\d+[lL]?[ \t\n]*$')
 else:
-    int_re = re.compile(r'\s*[-+]?\d+\s*$')
+    int_re = re.compile(r'[ \t\n]*[-+]?\d+[ \t\n]*$')
     long = int
     unicode = str
 
@@ -30,7 +30,7 @@ def fast_float(x, regex_matcher=float_re.match, uni=unicodedata.numeric):
     if type(x) in (int, long, float):
         return float(x)
     elif regex_matcher(x):
-        return float(x.strip())
+        return float(x.strip(' \t\n'))
     elif type(x) == unicode and len(x) == 1 and uni(x, None) is not None:
         return uni(x)
     else:
@@ -44,7 +44,7 @@ def fast_int(x, regex_matcher=int_re.match, uni=unicodedata.digit):
     if type(x) in (int, long, float):
         return int(x)
     elif regex_matcher(x):
-        return int(x.strip().rstrip('Ll'))
+        return int(x.strip(' \t\n').rstrip('Ll'))
     elif type(x) == unicode and len(x) == 1 and uni(x, None) is not None:
         return uni(x)
     else:
