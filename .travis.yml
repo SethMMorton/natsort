@@ -29,7 +29,8 @@ install:
 - pip install pytest-cov pytest-flakes pytest-pep8 hypothesis
 - pip install coveralls
 script:
-- python -m pytest --cov natsort --flakes --pep8 test_natsort README.rst docs/source/intro.rst docs/source/examples.rst
+- python -m pytest README.rst docs/source/intro.rst docs/source/examples.rst
 - python -m pytest --doctest-modules natsort
+- python -m pytest --cov natsort --flakes --pep8 test_natsort README.rst docs/source/intro.rst docs/source/examples.rst
 after_success:
   coveralls
