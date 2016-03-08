@@ -25,7 +25,7 @@ from compat.hypothesis import (
 
 def is_float(x):
     try:
-        float(x)
+        float(x.strip())
     except ValueError:
         try:
             unicodedata.numeric(x)
@@ -39,7 +39,7 @@ def is_float(x):
 
 def is_int(x):
     try:
-        int(x)
+        int(x.strip())
     except ValueError:
         try:
             unicodedata.digit(x)
