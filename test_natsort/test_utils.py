@@ -48,6 +48,7 @@ from compat.locale import (
     load_locale,
     get_strxfrm,
     low,
+    bad_uni_chars,
 )
 from compat.hypothesis import (
     assume,
@@ -373,6 +374,7 @@ def test_number_extracter_extracts_numbers_and_strxfrms_strings_with_use_locale_
 @given(lists(elements=floats() | text() | integers(), min_size=1, max_size=10))
 def test_number_extracter_extracts_numbers_and_strxfrms_strings_with_use_locale(x):
     load_locale('en_US')
+    assume(not any(any(i in bad_uni_chars for i in y) for y in x if isinstance(y, py23_str)))
     s = ''.join(repr(y) if type(y) in (float, long, int) else y for y in x)
     t = int_splitter(s, False, False, null_string)
     try:  # Account for locale bug on Python 3.2
@@ -394,6 +396,7 @@ def test_number_extracter_extracts_numbers_and_strxfrms_letter_doubled_strings_w
 @given(lists(elements=floats() | text() | integers(), min_size=1, max_size=10))
 def test_number_extracter_extracts_numbers_and_strxfrms_letter_doubled_strings_with_use_locale_and_groupletters(x):
     load_locale('en_US')
+    assume(not any(any(i in bad_uni_chars for i in y) for y in x if isinstance(y, py23_str)))
     s = ''.join(repr(y) if type(y) in (float, long, int) else y for y in x)
     t = int_splitter(s, False, False, null_string)
     try:  # Account for locale bug on Python 3.2
@@ -612,6 +615,7 @@ def test__natsort_key_with_bytes_input_only_applies_LOWERCASEFIRST_or_IGNORECASE
 def test__natsort_key_with_LOCALE_transforms_floats_according_to_the_current_locale_and_strxfrms_strings(x):
     # Locale aware sorting
     assume(not any(type(y) == float and isnan(y) for y in x))
+    assume(not any(any(i in bad_uni_chars for i in y) for y in x if isinstance(y, py23_str)))
     s = ''.join(repr(y) if type(y) in (float, long, int) else y for y in x)
     load_locale('en_US')
     if dumb_sort():
@@ -626,6 +630,7 @@ def test__natsort_key_with_LOCALE_transforms_floats_according_to_the_current_loc
 def test__natsort_key_with_LOCALE_and_UNGROUPLETTERS_places_space_before_string_with_capital_first_letter(x):
     # Locale aware sorting
     assume(not any(type(y) == float and isnan(y) for y in x))
+    assume(not any(any(i in bad_uni_chars for i in y) for y in x if isinstance(y, py23_str)))
     s = ''.join(repr(y) if type(y) in (float, long, int) else y for y in x)
     load_locale('en_US')
     if dumb_sort():

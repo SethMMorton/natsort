@@ -11,7 +11,7 @@ import locale
 
 # Local imports
 from natsort.locale_help import use_pyicu
-from natsort.compat.py23 import py23_str
+from natsort.compat.py23 import py23_str, py23_unichr, py23_range
 
 
 def load_locale(x):
@@ -48,3 +48,13 @@ try:
     low = py23_str.casefold
 except AttributeError:
     low = py23_str.lower
+
+# There are some unicode values that are known failures on BSD systems
+# that has nothing to do with natsort (a ValueError is raised by strxfrm).
+# Let's filter them out.
+try:
+    bad_uni_chars = set(py23_unichr(x) for x in py23_range(0X10fefd,
+                                                           0X10ffff+1))
+except ValueError:
+    # Narrow unicode build... no worries.
+    bad_uni_chars = set()

@@ -17,6 +17,7 @@ from compat.locale import (
     has_locale_de_DE,
     get_strxfrm,
     low,
+    bad_uni_chars,
 )
 from compat.hypothesis import (
     assume,
@@ -81,6 +82,7 @@ def test_locale_convert_transforms_nonfloat_string_to_strxfrm_string_example():
 @given(text())
 def test_locale_convert_transforms_nonfloat_string_to_strxfrm_string(x):
     assume(type(fast_float(x)) is not float)
+    assume(not any(i in bad_uni_chars for i in x))
     load_locale('en_US')
     strxfrm = get_strxfrm()
     assert locale_convert(x, (fast_float, isfloat), False) == strxfrm(x)
@@ -99,6 +101,7 @@ def test_locale_convert_with_groupletters_transforms_nonfloat_string_to_strxfrm_
 @given(text())
 def test_locale_convert_with_groupletters_transforms_nonfloat_string_to_strxfrm_string_with_grouped_letters(x):
     assume(type(fast_float(x)) is not float)
+    assume(not any(i in bad_uni_chars for i in x))
     load_locale('en_US')
     strxfrm = get_strxfrm()
     assert locale_convert(x, (fast_float, isfloat), True) == strxfrm(''.join(chain.from_iterable([low(y), y] for y in x)))
