@@ -185,7 +185,7 @@ def test_py3_safe_with_use_locale_inserts_null_string_between_two_numbers_exampl
 @given(lists(elements=text() | integers()))
 def test_py3_safe_inserts_empty_string_between_two_numbers(x):
     assume(bool(x))
-    assert _py3_safe(x, False, isint) == sep_inserter(x, (int, long), '')
+    assert _py3_safe(x, False, isint) == list(sep_inserter(x, ''))
 
 
 def test_path_splitter_splits_path_string_by_separator_example():

@@ -3,66 +3,154 @@
 from __future__ import unicode_literals
 
 import unicodedata
-from natsort.compat.py23 import PY_VERSION
+import collections
+import itertools
+from natsort.compat.py23 import PY_VERSION, py23_zip, py23_map
 
 if PY_VERSION >= 3.0:
     long = int
 
 
-def int_splitter(x, signed, safe, sep):
+def int_splitter(iterable, signed, safe, sep):
     """Alternate (slow) method to split a string into numbers."""
-    # Hacked together and not maintainable.
-    if not x:
-        return []
-    all_digits = set('0123456789')
-    full_list, strings, nums = [], [], []
-    input_len = len(x)
-    for i, char in enumerate(x):
-        # If this character is a sign and the next is a number,
-        # start a new number.
-        if (i+1 < input_len and signed and
-                (char in '-+') and (x[i+1] in all_digits)):
-            # Reset any current string or number.
-            if strings:
-                full_list.append(''.join(strings))
-            if nums:
-                full_list.append(int(''.join(nums)))
-            strings = []
-            nums = [char]
-        # If this is a number, add to the number list.
-        elif char in all_digits:
-            nums.append(char)
-            # Reset any string.
-            if strings:
-                full_list.append(''.join(strings))
-            strings = []
-        # If this is a unicode digit, append directly to the full list.
-        elif char.isdigit():
-            # Reset any string or number.
-            if strings:
-                full_list.append(''.join(strings))
-            if nums:
-                full_list.append(int(''.join(nums)))
-            strings = []
-            nums = []
-            full_list.append(unicodedata.digit(char))
-        # Otherwise add to the string.
-        else:
-            strings.append(char)
-            # Reset any number.
-            if nums:
-                full_list.append(int(''.join(nums)))
-            nums = []
-    if nums:
-        full_list.append(int(''.join(nums)))
-    elif strings:
-        full_list.append(''.join(strings))
+    split_by_digits = itertools.groupby(iterable, lambda a: a.isdigit())
+    split_by_digits = refine_split_grouping(split_by_digits)
+    split = int_splitter_iter(split_by_digits, signed)
     if safe:
-        full_list = sep_inserter(full_list, (int, long), sep)
-    if type(full_list[0]) in (int, long):
-        return [sep] + full_list
+        split = sep_inserter(split, sep)
+    return list(add_leading_space_if_first_is_num(split, sep))
+
+
+def refine_split_grouping(iterable):
+    """Combines lists into strings, and separates unicode numbers from ASCII"""
+    SplitElement = collections.namedtuple('SplitElement',
+                                          ['isnum', 'val', 'isuni'])
+    for isnum, values in iterable:
+        values = list(values)
+        # Further refine numbers into unicode and ASCII numeric characters.
+        if isnum:
+            num_grouped = group_unicode_and_ascii_numbers(values)
+            for isuni, num_values in num_grouped:
+                # If unicode, return one character at a time.
+                if isuni:
+                    for u in num_values:
+                        yield SplitElement(True, u, True)
+                # If ASCII, combine into a single multicharacter number.
+                else:
+                    val = ''.join(num_values)
+                    yield SplitElement(True, val, False)
+
+        else:
+            # If non-numeric, combine into a single string.
+            val = ''.join(values)
+            yield SplitElement(False, val, False)
+
+
+def group_unicode_and_ascii_numbers(iterable, ascii_digits=set('0123456789')):
+    """
+    Use groupby to group ASCII and unicode numeric characters.
+    Assumes all input is already all numeric characters.
+    """
+    return itertools.groupby(iterable, lambda a: a not in ascii_digits)
+
+
+def int_splitter_iter(iterable, signed):
+    """Split the input into unsigned integers and other."""
+    for isnum, val, isuni in iterable:
+        if isnum and isuni:
+            yield unicodedata.digit(val)
+        elif isnum:
+            yield int(val)
+        elif signed:
+            for x in try_to_read_signed_integer(iterable, val):
+                yield x
+        else:
+            yield val
+
+
+def try_to_read_signed_integer(iterable, val):
+    """
+    If the given string ends with +/-, attempt to return a signed int.
+    Otherwise, return the string as-is.
+    """
+    if val.endswith('+') or val.endswith('-'):
+        next_element = next(iterable, None)
+
+        # Last element, return as-is.
+        if next_element is None:
+            yield val
+
+        # We know the next value in the sequence must be "isnum == True".
+        # We just need to handle unicode or not.
+        else:
+            _, next_val, next_isuni = next_element
+
+            # If unicode, don't apply sign and just return the val as-is
+            # and convert the unicode character.
+            if next_isuni:
+                yield val
+                yield unicodedata.digit(next_val)
+
+            # If the val is *only* the sign, return only the number.
+            elif val in ('-', '+'):
+                yield int(val + next_val)
+
+            # Otherwise, remove the sign from the val and apply it to the number,
+            # returning both.
+            else: 
+                yield val[:-1]
+                yield int(val[-1] + next_val)
+
     else:
-        return full_list
+        yield val
+
+
+def add_leading_space_if_first_is_num(iterable, sep):
+    """Check if the first element is a number, and prepend with space if so."""
+    z, peek = itertools.tee(iterable)
+    if type(next(peek, None)) in (int, long, float):
+        z = itertools.chain([sep], z)
+    del peek
+    return z
+
+
+def sep_inserter(iterable, sep, t=set((int, long, float))):
+    """Simulates the py3_safe function."""
+    pairs = pairwise(iterable)
+
+    # Prime loop by handling first pair specially.
+    first, second = next(pairs)
+    if second is None:  # Only one element
+        yield first
+    elif type(first) in t and type(second) in t:
+        yield first
+        yield sep
+        yield second
+    else:
+        yield first
+        yield second
+
+    # Handle all remaining pairs in loop.
+    for first, second in pairs:
+        if type(first) in t and type(second) in t:
+            yield sep
+        yield second
+
+
+def pairwise(iterable):
+    "s -> (s0,s1), (s1,s2), (s2,s3), ..."
+    split1, split2 = itertools.tee(iterable)
+    a, b = itertools.tee(split1)
+    test1, test2 = itertools.tee(split2)
+    next(b, None)
+    if next(test1, None) is None:
+        ret = py23_zip(a, b)  # Returns empty list
+    elif next(test2, None) is not None and next(test2, None) is None:
+        ret = py23_zip(a, [None])  # Return at least one value
+    else:
+        ret = py23_zip(a, b)
+    del test1, test2, split2
+    return ret
 
 
 def float_splitter(x, signed, exp, safe, sep):
@@ -152,18 +240,8 @@ def float_splitter(x, signed, exp, safe, sep):
                  in fstrings else y
                  for y in full_list]
     if safe:
-        full_list = sep_inserter(full_list, (float,), sep)
+        full_list = list(sep_inserter(full_list, sep))
     if type(full_list[0]) == float:
         return [sep] + full_list
     else:
         return full_list
-
-
-def sep_inserter(x, t, sep):
-    # Simulates the py3_safe function.
-    ret = [x[0]]
-    for i, y in enumerate(x[1:]):
-        if type(y) in t and type(x[i]) in t:
-            ret.append(sep)
-        ret.append(y)
-    return ret

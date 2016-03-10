@@ -32,9 +32,11 @@ py23_unichr = chr if sys.version[0] == '3' else unichr
 # zip as an iterator
 if sys.version[0] == '3':
     py23_zip = zip
+    py23_map = map
 else:
     import itertools
     py23_zip = itertools.izip
+    py23_map = itertools.imap
 
 
 # cmp_to_key was not created till 2.7, so require this for 2.6
