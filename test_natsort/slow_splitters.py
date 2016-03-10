@@ -106,8 +106,17 @@ def float_splitter(x, signed, exp, safe, sep):
                 full_list.append(''.join(strings))
             strings = []
         # If this is an exponent, add to the number list.
+        elif (i > 0 and i + 2 < input_len and exp and char in 'eE' and
+                x[i-1] in all_digits and x[i+1] in set('+-') and
+                x[i+2] in all_digits):
+            if 'e' in nums or 'E' in nums:
+                strings = [char]
+                full_list.append(float(''.join(nums)))
+                nums = []
+            else:
+                nums.append(char)
         elif (i > 0 and i + 1 < input_len and exp and char in 'eE' and
-                x[i-1] in all_digits and x[i+1] in all_digits | set('+-')):
+                x[i-1] in all_digits and x[i+1] in all_digits):
             if 'e' in nums or 'E' in nums:
                 strings = [char]
                 full_list.append(float(''.join(nums)))
