@@ -189,19 +189,19 @@ def natsort_keygen(key=None, alg=0, **_kwargs):
 @u_format
 def natsorted(seq, key=None, reverse=False, alg=0, **_kwargs):
     """\
-    Sorts a sequence naturally.
+    Sorts an iterable naturally.
 
-    Sorts a sequence naturally (alphabetically and numerically),
-    not lexicographically. Returns a new copy of the sorted
-    sequence as a list.
+    Sorts an iterable naturally (alphabetically and numerically),
+    not lexicographically. Returns a list containing a sorted copy
+    of the iterable.
 
     Parameters
     ----------
     seq : iterable
-        The sequence to sort.
+        The iterable to sort.
 
     key : callable, optional
-        A key used to determine how to sort each element of the sequence.
+        A key used to determine how to sort each element of the iterable.
         It is **not** applied recursively.
         It should accept a single argument and return a single value.
 
