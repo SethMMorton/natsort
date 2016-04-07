@@ -185,7 +185,13 @@ def try_to_read_float(iterable, isnum, val):
 
         # If the next element is not '.', return now.
         if next_val != '.':
-            yield [val]
+            # If the next val starts with a '.', let's add that.
+            if next_val is not None and next_val.startswith('.'):
+                next(iterable)  # To progress the iterator.
+                iterable.push(SplitElement(False, next_val[1:], False))
+                yield [val, next_val[0]]
+            else:
+                yield [val]
 
         # Recursively parse the decimal and after. If the returned
         # value is a list, add the list to the current number.
@@ -243,18 +249,39 @@ def try_to_read_signed_float_template(iterable, isnum, val, key):
     # Extract what is coming next.
     next_isnum, next_val, next_isuni = iterable.peek(triple_none)
 
-    # If this value is a sign, and the next value is a non-unicode number,
-    # return the combo.
-    if val in ('+', '-') and next_isnum and not next_isuni:
-        next(iterable)  # To progress the iterator.
-        yield [val] + next(key(iterable, next_isnum, next_val))
+    # If it looks like there is a sign here and the next value is a
+    # non-unicode number, try to parse that with the sign.
+    if val.endswith(('+', '-')) and next_isnum and not next_isuni:
 
-    # If the val ends with the sign and the next value is a non-unicode
-    # number, split the sign off the end of the string then place it to the
-    # front of the iterable so that we can use it later.
-    elif val.endswith(('+', '-')) and next_isnum and not next_isuni:
-        iterable.push(SplitElement(False, val[-1], False))
-        yield val[:-1]
+        # If this value is a sign, return the combo.
+        if val in ('+', '-'):
+            next(iterable)  # To progress the iterator.
+            yield [val] + next(key(iterable, next_isnum, next_val))
+
+        # If the val ends with the sign split the sign off the end of
+        # the string then place it to the front of the iterable so that
+        # we can use it later.
+        else:
+            iterable.push(SplitElement(False, val[-1], False))
+            yield val[:-1]
+
+    # If it looks like there is a sign here and the next value is a
+    # decimal, try to parse as a decimal.
+    elif val.endswith(('+.', '-.')) and next_isnum and not next_isuni:
+
+        # Push back a zero before the decimal then parse.
+        print(val, iterable.peek())
+
+        # If this value is a sign, return the combo
+        if val[:-1] in ('+', '-'):
+            yield [val[:-1]] + next(key(iterable, False, val[-1]))
+
+        # If the val ends with the sign split the decimal the end of
+        # the string then place it to the front of the iterable so that
+        # we can use it later.
+        else:
+            iterable.push(SplitElement(False, val[-2:], False))
+            yield val[:-2]
 
     # If no sign, pass directly to the key function.
     else:
