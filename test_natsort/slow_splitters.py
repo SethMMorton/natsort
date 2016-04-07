@@ -5,10 +5,17 @@ from __future__ import unicode_literals
 import unicodedata
 import collections
 import itertools
-from natsort.compat.py23 import PY_VERSION, py23_zip, py23_map
+import functools
+from natsort.compat.py23 import PY_VERSION, py23_zip
+# from natsort.compat.py23 import PY_VERSION, py23_zip, py23_map
 
 if PY_VERSION >= 3.0:
     long = int
+
+triple_none = None, None, None
+_sentinel = object()
+SplitElement = collections.namedtuple('SplitElement',
+                                      ['isnum', 'val', 'isuni'])
 
 
 def int_splitter(iterable, signed, safe, sep):
@@ -21,10 +28,22 @@ def int_splitter(iterable, signed, safe, sep):
     return list(add_leading_space_if_first_is_num(split, sep))
 
 
+def float_splitter(iterable, signed, exp, safe, sep):
+    """Alternate (slow) method to split a string into numbers."""
+
+    def number_tester(x):
+        return x.isdigit() or unicodedata.numeric(x, None) is not None
+
+    split_by_digits = itertools.groupby(iterable, number_tester)
+    split_by_digits = peekable(refine_split_grouping(split_by_digits))
+    split = float_splitter_iter(split_by_digits, signed, exp)
+    if safe:
+        split = sep_inserter(split, sep)
+    return list(add_leading_space_if_first_is_num(split, sep))
+
+
 def refine_split_grouping(iterable):
     """Combines lists into strings, and separates unicode numbers from ASCII"""
-    SplitElement = collections.namedtuple('SplitElement',
-                                          ['isnum', 'val', 'isuni'])
     for isnum, values in iterable:
         values = list(values)
         # Further refine numbers into unicode and ASCII numeric characters.
@@ -55,17 +74,42 @@ def group_unicode_and_ascii_numbers(iterable, ascii_digits=set('0123456789')):
 
 
 def int_splitter_iter(iterable, signed):
-    """Split the input into unsigned integers and other."""
+    """Split the input into integers and strings."""
     for isnum, val, isuni in iterable:
-        if isnum and isuni:
+        if isuni:
             yield unicodedata.digit(val)
         elif isnum:
             yield int(val)
         elif signed:
             for x in try_to_read_signed_integer(iterable, val):
-                yield x
+                yield int(''.join(x)) if isinstance(x, list) else x
         else:
             yield val
+
+
+def float_splitter_iter(iterable, signed, exp):
+    """Split the input into integers and other."""
+    weird_check = ('-inf', '-infinity', '+inf', '+infinity',
+                   'inf', 'infinity', 'nan', '-nan', '+nan')
+    try_to_read_float_correctly = [
+        try_to_read_float,
+        try_to_read_float_with_exp,
+        functools.partial(try_to_read_signed_float_template,
+                          key=try_to_read_float),
+        functools.partial(try_to_read_signed_float_template,
+                          key=try_to_read_float_with_exp),
+    ][signed * 2 + exp * 1]  # Choose the appropriate converter function.
+    for isnum, val, isuni in iterable:
+        if isuni:
+            yield unicodedata.numeric(val)
+        else:
+            for x in try_to_read_float_correctly(iterable, isnum, val):
+                if isinstance(x, list):
+                    yield float(''.join(x))
+                elif x.lower().strip(' \t\n') in weird_check:
+                    yield float(x)
+                else:
+                    yield x
 
 
 def try_to_read_signed_integer(iterable, val):
@@ -73,36 +117,148 @@ def try_to_read_signed_integer(iterable, val):
     If the given string ends with +/-, attempt to return a signed int.
     Otherwise, return the string as-is.
     """
-    if val.endswith('+') or val.endswith('-'):
+    if val.endswith(('+', '-')):
         next_element = next(iterable, None)
 
         # Last element, return as-is.
         if next_element is None:
             yield val
+            return
 
         # We know the next value in the sequence must be "isnum == True".
         # We just need to handle unicode or not.
+        _, next_val, next_isuni = next_element
+
+        # If unicode, don't apply sign and just return the val as-is
+        # and convert the unicode character.
+        if next_isuni:
+            yield val
+            yield unicodedata.digit(next_val)
+
+        # If the val is *only* the sign, return only the number.
+        elif val in ('-', '+'):
+            yield [val, next_val]
+
+        # Otherwise, remove the sign from the val and apply it to the number,
+        # returning both.
         else:
-            _, next_val, next_isuni = next_element
-
-            # If unicode, don't apply sign and just return the val as-is
-            # and convert the unicode character.
-            if next_isuni:
-                yield val
-                yield unicodedata.digit(next_val)
-
-            # If the val is *only* the sign, return only the number.
-            elif val in ('-', '+'):
-                yield int(val + next_val)
-
-            # Otherwise, remove the sign from the val and apply it to the number,
-            # returning both.
-            else: 
-                yield val[:-1]
-                yield int(val[-1] + next_val)
+            yield val[:-1]
+            yield [val[-1], next_val]
 
     else:
         yield val
+
+
+def try_to_read_float(iterable, isnum, val):
+    """
+    Try to read a string that matches num.num and return as a float.
+    Otherwise return the input as found.
+    """
+    # Extract what is coming next.
+    next_isnum, next_val, next_isuni = iterable.peek(triple_none)
+
+    # If a non-number was given, we can only accept a decimal point.
+    if not isnum:
+
+        # If the next value is None or not a non-uni number, return as-is.
+        if next_val is None or not next_isnum or next_isuni:
+            yield val
+
+        # If this the decimal point, add it to the number and return.
+        elif val == '.':
+            next(iterable)  # To progress the iterator.
+            yield [val, next_val]
+
+        # If the val ends with the decimal point, split the decimal point
+        # off the end of the string then place it to the front of the
+        # iterable so that we can use it later.
+        elif val.endswith('.'):
+            iterable.push(SplitElement(False, val[-1], False))
+            yield val[:-1]
+
+        # Otherwise, just return the val and move on.
+        else:
+            yield val
+
+    # If a number, read the number then try to get the post-decimal part.
+    else:
+
+        # If the next element is not '.', return now.
+        if next_val != '.':
+            yield [val]
+
+        # Recursively parse the decimal and after. If the returned
+        # value is a list, add the list to the current number.
+        # If not, just return the number with the decimal.
+        else:
+            # If the first value returned from the try_to_read_float
+            # is a list, add it to the float component list.
+            next(iterable)  # To progress the iterator.
+            ret = next(try_to_read_float(iterable, next_isnum, next_val))
+            if isinstance(ret, list):
+                yield [val] + ret
+            else:
+                yield [val, next_val]
+
+
+def try_to_read_float_with_exp(iterable, isnum, val):
+    """
+    Try to read a string that matches num.numE[+-]num and return as a float.
+    Otherwise return the input as found.
+    """
+    exp_ident = ('e', 'E', 'e-', 'E-', 'e+', 'E+')
+
+    # Start by reading the floating point part.
+    float_ret = next(try_to_read_float(iterable, isnum, val))
+
+    # Extract what is coming next.
+    next_isnum, next_val, next_isuni = iterable.peek(triple_none)
+
+    # If the float part is not a list, or the next value
+    # is not in the exponential identifier list, return it as-is.
+    if not isinstance(float_ret, list) or next_val not in exp_ident:
+        yield float_ret
+
+    # We know the next_val is an exponential identifier. See if the value
+    # after that is a non-unicode number. If so, return all as a float.
+    # If not, put the exponential identifier back on the front of the
+    # list and return the float_ret as-is.
+    else:
+        exp = SplitElement(next_isnum, next_val, next_isuni)
+        next(iterable)  # To progress the iterator.
+        next_isnum, next_val, next_isuni = iterable.peek(triple_none)
+        if next_isnum and not next_isuni:
+            next(iterable)  # To progress the iterator.
+            yield float_ret + [exp.val, next_val]
+        else:
+            iterable.push(exp)
+            yield float_ret
+
+
+def try_to_read_signed_float_template(iterable, isnum, val, key):
+    """
+    Try to read a string that matches [+-]num.numE[+-]num and return as a
+    float. Otherwise return the input as found.
+    """
+    # Extract what is coming next.
+    next_isnum, next_val, next_isuni = iterable.peek(triple_none)
+
+    # If this value is a sign, and the next value is a non-unicode number,
+    # return the combo.
+    if val in ('+', '-') and next_isnum and not next_isuni:
+        next(iterable)  # To progress the iterator.
+        yield [val] + next(key(iterable, next_isnum, next_val))
+
+    # If the val ends with the sign and the next value is a non-unicode
+    # number, split the sign off the end of the string then place it to the
+    # front of the iterable so that we can use it later.
+    elif val.endswith(('+', '-')) and next_isnum and not next_isuni:
+        iterable.push(SplitElement(False, val[-1], False))
+        yield val[:-1]
+
+    # If no sign, pass directly to the key function.
+    else:
+        yield next(key(iterable, isnum, val))
 
 
 def add_leading_space_if_first_is_num(iterable, sep):
@@ -153,95 +309,77 @@ def pairwise(iterable):
     return ret
 
 
-def float_splitter(x, signed, exp, safe, sep):
-    """Alternate (slow) method to split a string into numbers."""
-    # Hacked together and not maintainable.
-    if not x:
-        return []
-    all_digits = set('0123456789')
-    full_list, strings, nums = [], [], []
-    input_len = len(x)
-    for i, char in enumerate(x):
-        # If this character is a sign and the next is a number,
-        # start a new number.
-        if (i+1 < input_len and
-                (signed or (nums and i > 1 and exp and x[i-1] in 'eE' and
-                            x[i-2] in all_digits)) and
-                (char in '-+') and (x[i+1] in all_digits | set('.'))):
-            # Reset any current string or number.
-            if strings:
-                full_list.append(''.join(strings))
-            if nums and i > 0 and x[i-1] not in 'eE':
-                full_list.append(float(''.join(nums)))
-                nums = [char]
-            else:
-                nums.append(char)
-            strings = []
-        # If this is a number, add to the number list.
-        elif char in all_digits:
-            nums.append(char)
-            # Reset any string.
-            if strings:
-                full_list.append(''.join(strings))
-            strings = []
-        # If this is a decimal, add to the number list.
-        elif (i + 1 < input_len and char == '.' and x[i+1] in all_digits):
-            if nums and ('.' in nums or 'e' in nums or 'E' in nums):
-                full_list.append(float(''.join(nums)))
-                nums = []
-            nums.append(char)
-            if strings:
-                full_list.append(''.join(strings))
-            strings = []
-        # If this is an exponent, add to the number list.
-        elif (i > 0 and i + 2 < input_len and exp and char in 'eE' and
-                x[i-1] in all_digits and x[i+1] in set('+-') and
-                x[i+2] in all_digits):
-            if 'e' in nums or 'E' in nums:
-                strings = [char]
-                full_list.append(float(''.join(nums)))
-                nums = []
-            else:
-                nums.append(char)
-        elif (i > 0 and i + 1 < input_len and exp and char in 'eE' and
-                x[i-1] in all_digits and x[i+1] in all_digits):
-            if 'e' in nums or 'E' in nums:
-                strings = [char]
-                full_list.append(float(''.join(nums)))
-                nums = []
-            else:
-                nums.append(char)
-        # If this is a unicode digit, append directly to the full list.
-        elif unicodedata.numeric(char, None) is not None:
-            # Reset any string or number.
-            if strings:
-                full_list.append(''.join(strings))
-            if nums:
-                full_list.append(float(''.join(nums)))
-            strings = []
-            nums = []
-            full_list.append(unicodedata.numeric(char))
-        # Otherwise add to the string.
+class peekable(object):
+    """Wrapper for an iterator to allow 1-item lookahead
+    Call ``peek()`` on the result to get the value that will next pop out of
+    ``next()``, without advancing the iterator:
+        >>> p = peekable(xrange(2))
+        >>> p.peek()
+        0
+        >>> p.next()
+        0
+        >>> p.peek()
+        1
+        >>> p.next()
+        1
+    Pass ``peek()`` a default value, and it will be returned in the case where
+    the iterator is exhausted:
+        >>> p = peekable([])
+        >>> p.peek('hi')
+        'hi'
+    If no default is provided, ``peek()`` raises ``StopIteration`` when there
+    are no items left.
+    To test whether there are more items in the iterator, examine the
+    peekable's truth value. If it is truthy, there are more items.
+        >>> assert peekable(xrange(1))
+        >>> assert not peekable([])
+    """
+    # Lowercase to blend in with itertools. The fact that it's a class is an
+    # implementation detail.
+
+    def __init__(self, iterable):
+        self._it = iter(iterable)
+
+    def __iter__(self):
+        return self
+
+    def __nonzero__(self):
+        try:
+            self.peek()
+        except StopIteration:
+            return False
+        return True
+
+    __bool__ = __nonzero__
+
+    def peek(self, default=_sentinel):
+        """Return the item that will be next returned from ``next()``.
+        Return ``default`` if there are no items left. If ``default`` is not
+        provided, raise ``StopIteration``.
+        """
+        if not hasattr(self, '_peek'):
+            try:
+                self._peek = next(self._it)
+            except StopIteration:
+                if default is _sentinel:
+                    raise
+                return default
+        return self._peek
+
+    def next(self):
+        ret = self.peek()
+        try:
+            del self._peek
+        except AttributeError:
+            pass
+        return ret
+
+    __next__ = next
+
+    def push(self, value):
+        """Put an element at the front of the iterable."""
+        if hasattr(self, '_peek'):
+            self._it = itertools.chain([value, self._peek], self._it)
+            del self._peek
         else:
-            strings.append(char)
-            # Reset any number.
-            if nums:
-                full_list.append(float(''.join(nums)))
-            nums = []
-    if nums:
-        full_list.append(float(''.join(nums)))
-    elif strings:
-        full_list.append(''.join(strings))
-    # Fix a float that looks like a string.
-    fstrings = ('inf', 'infinity', '-inf', '-infinity',
-                '+inf', '+infinity', 'nan')
-    full_list = [float(y)
-                 if type(y) != float and y.lower().strip(' \t\n')
-                 in fstrings else y
-                 for y in full_list]
-    if safe:
-        full_list = list(sep_inserter(full_list, sep))
-    if type(full_list[0]) == float:
-        return [sep] + full_list
-    else:
-        return full_list
+            self._it = itertools.chain([value], self._it)
