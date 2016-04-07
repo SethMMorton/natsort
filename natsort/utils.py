@@ -46,29 +46,32 @@ _ALL_BUT_PATH = (ns.F | ns.I | ns.U | ns.S | ns.N | ns.L |
                  ns.IC | ns.LF | ns.G | ns.UG | ns.TYPESAFE)
 
 # The regex that locates floats - include Unicode numerals.
-_float_sign_exp_re = r'([-+]?[0-9]*\.?[0-9]+(?:[eE][-+]?[0-9]+)?|[{0}])'
-_float_sign_exp_re = _float_sign_exp_re.format(numeric)
+_exp = r'(?:[eE][-+]?[0-9]+)?'
+_num = r'(?:[0-9]+\.?[0-9]*|\.[0-9]+)'
+_num_c = r'(?:[0-9]+[.,]?[0-9]*|[.,][0-9]+)'
+_float_sign_exp_re = r'([-+]?{0}{1}|[{2}])'
+_float_sign_exp_re = _float_sign_exp_re.format(_num, _exp, numeric)
 _float_sign_exp_re = re.compile(_float_sign_exp_re, flags=re.U)
-_float_nosign_exp_re = r'([0-9]*\.?[0-9]+(?:[eE][-+]?[0-9]+)?|[{0}])'
-_float_nosign_exp_re = _float_nosign_exp_re.format(numeric)
+_float_nosign_exp_re = r'({0}{1}|[{2}])'
+_float_nosign_exp_re = _float_nosign_exp_re.format(_num, _exp, numeric)
 _float_nosign_exp_re = re.compile(_float_nosign_exp_re, flags=re.U)
-_float_sign_noexp_re = r'([-+]?[0-9]*\.?[0-9]+|[{0}])'
-_float_sign_noexp_re = _float_sign_noexp_re.format(numeric)
+_float_sign_noexp_re = r'([-+]?{0}|[{1}])'
+_float_sign_noexp_re = _float_sign_noexp_re.format(_num, numeric)
 _float_sign_noexp_re = re.compile(_float_sign_noexp_re, flags=re.U)
-_float_nosign_noexp_re = r'([0-9]*\.?[0-9]+|[{0}])'
-_float_nosign_noexp_re = _float_nosign_noexp_re.format(numeric)
+_float_nosign_noexp_re = r'({0}|[{1}])'
+_float_nosign_noexp_re = _float_nosign_noexp_re.format(_num, numeric)
 _float_nosign_noexp_re = re.compile(_float_nosign_noexp_re, flags=re.U)
-_float_sign_exp_re_c = r'([-+]?[0-9]*[.,]?[0-9]+(?:[eE][-+]?[0-9]+)?)|[{0}]'
-_float_sign_exp_re_c = _float_sign_exp_re_c.format(numeric)
+_float_sign_exp_re_c = r'([-+]?{0}{1}|[{2}])'
+_float_sign_exp_re_c = _float_sign_exp_re_c.format(_num_c, _exp, numeric)
 _float_sign_exp_re_c = re.compile(_float_sign_exp_re_c, flags=re.U)
-_float_nosign_exp_re_c = r'([0-9]*[.,]?[0-9]+(?:[eE][-+]?[0-9]+)?|[{0}])'
-_float_nosign_exp_re_c = _float_nosign_exp_re_c.format(numeric)
+_float_nosign_exp_re_c = r'({0}{1}|[{2}])'
+_float_nosign_exp_re_c = _float_nosign_exp_re_c.format(_num_c, _exp, numeric)
 _float_nosign_exp_re_c = re.compile(_float_nosign_exp_re_c, flags=re.U)
-_float_sign_noexp_re_c = r'([-+]?[0-9]*[.,]?[0-9]+|[{0}])'
-_float_sign_noexp_re_c = _float_sign_noexp_re_c.format(numeric)
+_float_sign_noexp_re_c = r'([-+]?{0}|[{1}])'
+_float_sign_noexp_re_c = _float_sign_noexp_re_c.format(_num_c, numeric)
 _float_sign_noexp_re_c = re.compile(_float_sign_noexp_re_c, flags=re.U)
-_float_nosign_noexp_re_c = r'([0-9]*[.,]?[0-9]+|[{0}])'
-_float_nosign_noexp_re_c = _float_nosign_noexp_re_c.format(numeric)
+_float_nosign_noexp_re_c = r'({0}|[{1}])'
+_float_nosign_noexp_re_c = _float_nosign_noexp_re_c.format(_num_c, numeric)
 _float_nosign_noexp_re_c = re.compile(_float_nosign_noexp_re_c, flags=re.U)
 
 # Integer regexes - include Unicode digits.

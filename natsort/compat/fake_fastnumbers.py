@@ -15,7 +15,8 @@ from __future__ import (
 import sys
 import re
 import unicodedata
-s = r'[ \t\n]*[-+]?(\d*\.?\d+(?:[eE][-+]?\d+)?|inf(?:inity)?|nan)[ \t\n]*$'
+s = r'[ \t\n]*[-+]?((?:\d+\.?\d*|\.\d+)(?:[eE][-+]?\d+)?|inf(?:inity)?|nan)'
+s += r'[ \t\n]*$'
 float_re = re.compile(s)
 if sys.version[0] == '2':
     int_re = re.compile(r'[ \t\n]*[-+]?\d+[lL]?[ \t\n]*$')
