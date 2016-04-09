@@ -13,10 +13,11 @@ from __future__ import (
 # Std. lib imports.
 import re
 from warnings import warn
-from os import curdir, pardir
-from os.path import split, splitext
+from os import curdir as os_curdir, pardir as os_pardir
+from os.path import split as path_split, splitext as path_splitext
 from itertools import islice
 from locale import localeconv
+from collections import deque
 
 # Local imports.
 from natsort.ns_enum import ns, _ns
@@ -185,50 +186,46 @@ def _number_extracter(s, regex, numconv, py3_safe, use_locale, group_letters):
 
 def _path_splitter(s, _d_match=re.compile(r'\.\d').match):
     """Split a string into its path components. Assumes a string is a path."""
-    path_parts = []
-    p_append = path_parts.append
+    path_parts = deque()
+    p_appendleft = path_parts.appendleft
     # Convert a pathlib PurePath object to a string.
     if has_pathlib and isinstance(s, PurePath):
         path_location = str(s)
-    else:  # pragma: no cover
+    else:
         path_location = s
 
     # Continue splitting the path from the back until we have reached
     # '..' or '.', or until there is nothing left to split.
-    while path_location != curdir and path_location != pardir:
+    while path_location != os_curdir and path_location != os_pardir:
         parent_path = path_location
-        path_location, child_path = split(parent_path)
+        path_location, child_path = path_split(parent_path)
         if path_location == parent_path:
             break
-        p_append(child_path)
+        p_appendleft(child_path)
 
     # This last append is the base path.
     # Only append if the string is non-empty.
     if path_location:
-        p_append(path_location)
-
-    # We created this list in reversed order, so we now correct the order.
-    path_parts.reverse()
+        p_appendleft(path_location)
 
     # Now, split off the file extensions using a similar method to above.
     # Continue splitting off file extensions until we reach a decimal number
     # or there are no more extensions.
     base = path_parts.pop()
-    base_parts = []
-    b_append = base_parts.append
+    base_parts = deque()
+    b_appendleft = base_parts.appendleft
     while True:
         front = base
-        base, ext = splitext(front)
+        base, ext = path_splitext(front)
         if _d_match(ext) or not ext:
             # Reset base to before the split if the split is invalid.
             base = front
             break
-        b_append(ext)
-    b_append(base)
-    base_parts.reverse()
+        b_appendleft(ext)
+    b_appendleft(base)
 
     # Return the split parent paths and then the split basename.
-    return path_parts + base_parts
+    return tuple(path_parts + base_parts)
 
 
 def _py3_safe(parsed_list, use_locale, check):

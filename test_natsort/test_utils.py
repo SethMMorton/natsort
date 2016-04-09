@@ -190,7 +190,7 @@ def test_py3_safe_inserts_empty_string_between_two_numbers(x):
 
 def test_path_splitter_splits_path_string_by_separator_example():
     z = '/this/is/a/path'
-    assert _path_splitter(z) == list(pathlib.Path(z).parts)
+    assert _path_splitter(z) == tuple(pathlib.Path(z).parts)
 
 
 @pytest.mark.skipif(not use_hypothesis, reason='requires python2.7 or greater')
@@ -198,13 +198,13 @@ def test_path_splitter_splits_path_string_by_separator_example():
 def test_path_splitter_splits_path_string_by_separator(x):
     assume(all(x))
     z = py23_str(pathlib.Path(*x))
-    assert _path_splitter(z) == list(pathlib.Path(z).parts)
+    assert _path_splitter(z) == tuple(pathlib.Path(z).parts)
 
 
 def test_path_splitter_splits_path_string_by_separator_and_removes_extension_example():
     z = '/this/is/a/path/file.exe'
-    y = list(pathlib.Path(z).parts)
-    assert _path_splitter(z) == y[:-1] + [pathlib.Path(z).stem] + [pathlib.Path(z).suffix]
+    y = tuple(pathlib.Path(z).parts)
+    assert _path_splitter(z) == y[:-1] + (pathlib.Path(z).stem, pathlib.Path(z).suffix)
 
 
 @pytest.mark.skipif(not use_hypothesis, reason='requires python2.7 or greater')
@@ -212,8 +212,8 @@ def test_path_splitter_splits_path_string_by_separator_and_removes_extension_exa
 def test_path_splitter_splits_path_string_by_separator_and_removes_extension(x):
     assume(all(x))
     z = py23_str(pathlib.Path(*x[:-2])) + '.' + x[-1]
-    y = list(pathlib.Path(z).parts)
-    assert _path_splitter(z) == y[:-1] + [pathlib.Path(z).stem] + [pathlib.Path(z).suffix]
+    y = tuple(pathlib.Path(z).parts)
+    assert _path_splitter(z) == y[:-1] + (pathlib.Path(z).stem, pathlib.Path(z).suffix)
 
 
 def test_number_extracter_raises_TypeError_if_given_a_number_example():
