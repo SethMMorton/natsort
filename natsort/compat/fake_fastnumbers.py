@@ -13,43 +13,47 @@ from __future__ import (
 
 # Std. lib imports.
 import sys
-import re
 import unicodedata
-s = r'[ \t\n]*[-+]?((?:\d+\.?\d*|\.\d+)(?:[eE][-+]?\d+)?|inf(?:inity)?|nan)'
-s += r'[ \t\n]*$'
-float_re = re.compile(s)
-if sys.version[0] == '2':
-    int_re = re.compile(r'[ \t\n]*[-+]?\d+[lL]?[ \t\n]*$')
-else:
-    int_re = re.compile(r'[ \t\n]*[-+]?\d+[ \t\n]*$')
+if sys.version[0] != '2':
     long = int
-    unicode = str
 
 
-def fast_float(x, regex_matcher=float_re.match, uni=unicodedata.numeric):
-    """Convert a string to a float quickly"""
+nan_inf = set(['INF', 'INf', 'Inf', 'inF', 'iNF', 'InF', 'inf', 'iNf',
+               'NAN', 'nan', 'NaN', 'nAn', 'naN', 'NAn', 'nAN', 'Nan'])
+
+
+def fast_float(x, uni=unicodedata.numeric, nan_inf=nan_inf):
+    """\
+    Convert a string to a float quickly, return input as-is if not possible.
+    We don't need to accept all input that the real fast_int accepts because
+    the input will be controlled by the splitting algorithm.
+    """
     if type(x) in (int, long, float):
         return float(x)
-    elif regex_matcher(x):
-        return float(x.strip(' \t\n'))
-    elif type(x) == unicode and len(x) == 1 and uni(x, None) is not None:
-        return uni(x)
+    elif x[0] in '0123456789+-.' or x[:3] in nan_inf:
+        try:
+            return float(x)
+        except ValueError:
+            return uni(x, x) if len(x) == 1 else x
     else:
-        return x
+        return uni(x, x) if len(x) == 1 else x
 
 
-def fast_int(x, regex_matcher=int_re.match, uni=unicodedata.digit):
+def fast_int(x, uni=unicodedata.digit):
     """\
     Convert a string to a int quickly, return input as-is if not possible.
+    We don't need to accept all input that the real fast_int accepts because
+    the input will be controlled by the splitting algorithm.
     """
     if type(x) in (int, long, float):
         return int(x)
-    elif regex_matcher(x):
-        return int(x.strip(' \t\n').rstrip('Ll'))
-    elif type(x) == unicode and len(x) == 1 and uni(x, None) is not None:
-        return uni(x)
+    elif x[0] in '0123456789+-':
+        try:
+            return int(x)
+        except ValueError:
+            return uni(x, x) if len(x) == 1 else x
     else:
-        return x
+        return uni(x, x) if len(x) == 1 else x
 
 
 def isfloat(x, num_only=False):

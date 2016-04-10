@@ -25,7 +25,7 @@ from compat.hypothesis import (
 
 def is_float(x):
     try:
-        float(x.strip(' \t\n'))
+        float(x)
     except ValueError:
         try:
             unicodedata.numeric(x)
@@ -39,7 +39,7 @@ def is_float(x):
 
 def is_int(x):
     try:
-        int(x.strip(' \t\n'))
+        int(x)
     except ValueError:
         try:
             unicodedata.digit(x)
@@ -87,6 +87,7 @@ def test_fast_float_leaves_string_as_is_example():
 @given(text())
 def test_fast_float_leaves_string_as_is(x):
     assume(not is_float(x))
+    assume(bool(x))
     assert fast_float(x) == x
 
 
@@ -131,6 +132,7 @@ def test_fast_int_leaves_string_as_is_example():
 @given(text())
 def test_fast_int_leaves_string_as_is(x):
     assume(not is_int(x))
+    assume(bool(x))
     assert fast_int(x) == x
 
 
