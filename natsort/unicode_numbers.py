@@ -19,7 +19,7 @@ from natsort.compat.py23 import py23_unichr
 # Rather than determine this on the fly, which would incur a startup
 # runtime penalty, the hex values of the Unicode numeric characters
 # are hard-coded below.
-numeric_hex = [
+numeric_hex = (
     0X30, 0X31, 0X32, 0X33, 0X34, 0X35, 0X36, 0X37, 0X38,
     0X39, 0XB2, 0XB3, 0XB9, 0XBC, 0XBD, 0XBE, 0X660, 0X661,
     0X662, 0X663, 0X664, 0X665, 0X666, 0X667, 0X668, 0X669,
@@ -233,7 +233,7 @@ numeric_hex = [
     0X20064, 0X200E2, 0X20121, 0X2092A, 0X20983, 0X2098C, 0X2099C,
     0X20AEA, 0X20AFD, 0X20B19, 0X22390, 0X22998, 0X23B1B, 0X2626D,
     0X2F890
-]
+)
 
 # Convert each hex into the literal Unicode character.
 # Stop if a ValueError is raised in case of a narrow Unicode build.
