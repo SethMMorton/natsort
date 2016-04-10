@@ -186,31 +186,32 @@ def _number_extracter(s, regex, numconv, py3_safe, use_locale, group_letters):
 
 def _path_splitter(s, _d_match=re.compile(r'\.\d').match):
     """Split a string into its path components. Assumes a string is a path."""
-    path_parts = deque()
-    p_appendleft = path_parts.appendleft
-    # Convert a pathlib PurePath object to a string.
+    # If a PathLib Object, use it's functionality to perform the split.
     if has_pathlib and isinstance(s, PurePath):
-        path_location = str(s)
+        path_parts = deque(s.parts)
     else:
+        path_parts = deque()
+        p_appendleft = path_parts.appendleft
+        # Continue splitting the path from the back until we have reached
+        # '..' or '.', or until there is nothing left to split.
         path_location = s
+        while path_location != os_curdir and path_location != os_pardir:
+            parent_path = path_location
+            path_location, child_path = path_split(parent_path)
+            if path_location == parent_path:
+                break
+            p_appendleft(child_path)
 
-    # Continue splitting the path from the back until we have reached
-    # '..' or '.', or until there is nothing left to split.
-    while path_location != os_curdir and path_location != os_pardir:
-        parent_path = path_location
-        path_location, child_path = path_split(parent_path)
-        if path_location == parent_path:
-            break
-        p_appendleft(child_path)
-
-    # This last append is the base path.
-    # Only append if the string is non-empty.
-    if path_location:
-        p_appendleft(path_location)
+        # This last append is the base path.
+        # Only append if the string is non-empty.
+        if path_location:
+            p_appendleft(path_location)
 
     # Now, split off the file extensions using a similar method to above.
     # Continue splitting off file extensions until we reach a decimal number
     # or there are no more extensions.
+    # We are not using built-in functionality of PathLib here because of
+    # the recursive splitting up to a decimal.
     base = path_parts.pop()
     base_parts = deque()
     b_appendleft = base_parts.appendleft
@@ -292,7 +293,7 @@ def _natsort_key(val, key, alg):
     try:
         regex, num_function = _regex_and_num_function_chooser[inp_options]
     except KeyError:  # pragma: no cover
-        if inp_options[1] not in ('.', ','):  # pragma: no cover
+        if inp_options[1] not in ('.', ','):
             raise ValueError("_natsort_key: currently natsort only supports "
                              "the decimal separators '.' and ','. "
                              "Please file a bug report.")

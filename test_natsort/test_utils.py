@@ -191,6 +191,8 @@ def test_py3_safe_inserts_empty_string_between_two_numbers(x):
 def test_path_splitter_splits_path_string_by_separator_example():
     z = '/this/is/a/path'
     assert _path_splitter(z) == tuple(pathlib.Path(z).parts)
+    z = pathlib.Path('/this/is/a/path')
+    assert _path_splitter(z) == tuple(pathlib.Path(z).parts)
 
 
 @pytest.mark.skipif(not use_hypothesis, reason='requires python2.7 or greater')
