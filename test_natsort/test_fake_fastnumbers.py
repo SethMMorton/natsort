@@ -65,11 +65,18 @@ def test_fast_float_leaves_float_asis(x):
     assert fast_float(x) == x
 
 
+def test_fast_float_returns_nan_alternate_if_nan_option_is_given():
+    assert fast_float('nan', nan=7) == 7
+    assert fast_float(float('nan'), nan=3) == 3
+
+
 def test_fast_float_converts_float_string_to_float_example():
     assert fast_float('45.8') == 45.8
     assert fast_float('-45') == -45.0
-    assert fast_float('45.8e-2') == 45.8e-2
+    assert fast_float('45.8e-2', key=len) == 45.8e-2
     assert isnan(fast_float('nan'))
+    assert isnan(fast_float('+nan'))
+    assert isnan(fast_float('-NaN'))
 
 
 @pytest.mark.skipif(not use_hypothesis, reason='requires python2.7 or greater')
@@ -89,6 +96,18 @@ def test_fast_float_leaves_string_as_is(x):
     assume(not is_float(x))
     assume(bool(x))
     assert fast_float(x) == x
+
+
+def test_fast_float_with_key_applies_to_string_example():
+    assert fast_float('invalid', key=len) == len('invalid')
+
+
+@pytest.mark.skipif(not use_hypothesis, reason='requires python2.7 or greater')
+@given(text())
+def test_fast_float_with_key_applies_to_string(x):
+    assume(not is_float(x))
+    assume(bool(x))
+    assert fast_float(x, key=len) == len(x)
 
 
 def test_fast_int_leaves_int_asis_example():
@@ -134,6 +153,18 @@ def test_fast_int_leaves_string_as_is(x):
     assume(not is_int(x))
     assume(bool(x))
     assert fast_int(x) == x
+
+
+def test_fast_int_with_key_applies_to_string_example():
+    assert fast_int('invalid', key=len) == len('invalid')
+
+
+@pytest.mark.skipif(not use_hypothesis, reason='requires python2.7 or greater')
+@given(text())
+def test_fast_int_with_key_applies_to_string(x):
+    assume(not is_int(x))
+    assume(bool(x))
+    assert fast_int(x, key=len) == len(x)
 
 
 def test_isfloat_returns_True_for_real_numbers_example():
