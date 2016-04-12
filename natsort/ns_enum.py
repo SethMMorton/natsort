@@ -110,12 +110,8 @@ class ns(object):
         treat these as +Infinity and place them after all the other numbers.
         By default, an NaN be treated as -Infinity and be placed first.
     TYPESAFE, T
-        Try hard to avoid "unorderable types" error on Python 3. It
-        is the same as setting the old `py3_safe` option to `True`.
-        This is only needed if using ``SIGNED`` or if sorting by
-        ``FLOAT``. You shouldn't need to use this unless you are using
-        ``natsort_keygen``. *NOTE:* It cannot resolve the ``TypeError``
-        from trying to compare `str` and `bytes`.
+        Deprecated as of `natsort` version 5.0.0; this option is now
+        a no-op because it is always true.
 
     Notes
     -----
@@ -142,6 +138,7 @@ class ns(object):
 
 # Sort algorithm "enum" values.
 _ns = {
+       'TYPESAFE': 0,         'T': 0,
        'INT': 0,              'I': 0,
        'FLOAT': 1,            'F': 1,
        'UNSIGNED': 0,         'U': 0,
@@ -158,7 +155,6 @@ _ns = {
        'UNGROUPLETTERS': 256, 'UG': 256,
        'CAPITALFIRST': 256,   'C': 256,
        'NANLAST': 512,        'NL': 512,
-       'TYPESAFE': 2048,      'T': 2048,
        }
 # Populate the ns class with the _ns values.
 for x, y in _ns.items():

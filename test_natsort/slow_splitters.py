@@ -18,17 +18,16 @@ SplitElement = collections.namedtuple('SplitElement',
                                       ['isnum', 'val', 'isuni'])
 
 
-def int_splitter(iterable, signed, safe, sep):
+def int_splitter(iterable, signed, sep):
     """Alternate (slow) method to split a string into numbers."""
     split_by_digits = itertools.groupby(iterable, lambda a: a.isdigit())
     split_by_digits = refine_split_grouping(split_by_digits)
     split = int_splitter_iter(split_by_digits, signed)
-    if safe:
-        split = sep_inserter(split, sep)
+    split = sep_inserter(split, sep)
     return list(add_leading_space_if_first_is_num(split, sep))
 
 
-def float_splitter(iterable, signed, exp, safe, sep):
+def float_splitter(iterable, signed, exp, sep):
     """Alternate (slow) method to split a string into numbers."""
 
     def number_tester(x):
@@ -37,8 +36,7 @@ def float_splitter(iterable, signed, exp, safe, sep):
     split_by_digits = itertools.groupby(iterable, number_tester)
     split_by_digits = peekable(refine_split_grouping(split_by_digits))
     split = float_splitter_iter(split_by_digits, signed, exp)
-    if safe:
-        split = sep_inserter(split, sep)
+    split = sep_inserter(split, sep)
     return list(add_leading_space_if_first_is_num(split, sep))
 
 

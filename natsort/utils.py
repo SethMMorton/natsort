@@ -11,6 +11,7 @@ from __future__ import (
 )
 
 # Std. lib imports.
+import sys
 import re
 from warnings import warn
 from os import curdir as os_curdir, pardir as os_pardir
@@ -28,6 +29,8 @@ from natsort.compat.pathlib import PurePath, has_pathlib
 from natsort.compat.py23 import (
     py23_str,
     py23_zip,
+    py23_map,
+    py23_filter,
     PY_VERSION,
 )
 from natsort.compat.locale import (
@@ -41,11 +44,13 @@ from natsort.compat.fastnumbers import (
     isint,
     isfloat,
 )
+if sys.version[0] == '3':
+    long = int
 
 # Group algorithm types for easy extraction
 _NUMBER_ALGORITHMS = ns.FLOAT | ns.INT | ns.UNSIGNED | ns.SIGNED | ns.NOEXP
 _ALL_BUT_PATH = (ns.F | ns.I | ns.U | ns.S | ns.N | ns.L |
-                 ns.IC | ns.LF | ns.G | ns.UG | ns.TYPESAFE)
+                 ns.IC | ns.LF | ns.G | ns.UG)
 
 # The regex that locates floats - include Unicode numerals.
 _exp = r'(?:[eE][-+]?[0-9]+)?'
@@ -145,47 +150,31 @@ def _args_to_enum(**kwargs):
         msg += "please use 'alg=ns.PATH'."
         warn(msg, DeprecationWarning)
         alg |= (_ns['PATH'] * kwargs['as_path'])
-    if 'py3_safe' in kwargs and kwargs['py3_safe'] is not None:
-        msg = "The 'py3_safe' argument is deprecated as of 3.5.0, "
-        msg += "please use 'alg=ns.TYPESAFE'."
-        warn(msg, DeprecationWarning)
-        alg |= (_ns['TYPESAFE'] * kwargs['py3_safe'])
     return alg
 
 
-def _number_extracter(s, regex, numconv, py3_safe, use_locale, group_letters):
+def _number_extracter(s, regex, numconv, use_locale, group_letters):
     """Helper to separate the string input into numbers and strings."""
-    conv_check = (numconv, _conv_to_check[numconv])
 
-    # Split the input string by numbers.
+    # Split the input string by numbers, dropping empty strings.
     # If the input is not a string, TypeError is raised.
-    s = regex.split(s)
+    s = py23_filter(None, regex.split(s))
 
     # Now convert the numbers to numbers, and leave strings as strings.
     # Take into account locale if needed, and group letters if needed.
-    # Remove empty strings from the list.
+    # Remove empty strings from the list. Insert empty strings between
+    # adjascent numbers, or at the beginning of the iterable if it is
+    # a number.
     if use_locale and group_letters:
-        lc = partial(locale_convert, key=groupletters)
-        s = [numconv(x, key=lc) for x in s if x]
+        func = partial(numconv, key=partial(locale_convert, key=groupletters))
     elif use_locale:
-        s = [numconv(x, key=locale_convert) for x in s if x]
+        func = partial(numconv, key=locale_convert)
     elif group_letters:
-        s = [numconv(x, key=groupletters) for x in s if x]
+        func = partial(numconv, key=groupletters)
     else:
-        s = [numconv(x) for x in s if x]
-
-    # If the list begins with a number, lead with an empty string.
-    # This is used to get around the "unorderable types" issue.
-    if not s:  # Return empty list for empty results.
-        return []
-    elif conv_check[1](s[0], num_only=True):
-        s = [null_string if use_locale else ''] + s
-
-    # The _py3_safe function inserts "" between numbers in the list,
-    # and is used to get around "unorderable types" in complex cases.
-    # It is a separate function that needs to be requested specifically
-    # because it is expensive to call.
-    return _py3_safe(s, use_locale, conv_check[1]) if py3_safe else s
+        func = numconv
+    return list(_sep_inserter(py23_map(func, s),
+                              null_string if use_locale else ''))
 
 
 def _path_splitter(s, _d_match=re.compile(r'\.\d').match):
@@ -233,20 +222,28 @@ def _path_splitter(s, _d_match=re.compile(r'\.\d').match):
     return tuple(path_parts + base_parts)
 
 
-def _py3_safe(parsed_list, use_locale, check):
-    """Insert '' between two numbers."""
-    length = len(parsed_list)
-    if length < 2:
-        return parsed_list
-    else:
-        new_list = [parsed_list[0]]
-        nl_append = new_list.append
-        for before, after in py23_zip(islice(parsed_list, 0, length-1),
-                                      islice(parsed_list, 1, None)):
-            if check(before, num_only=True) and check(after, num_only=True):
-                nl_append(null_string if use_locale else '')
-            nl_append(after)
-        return new_list
+def _sep_inserter(iterable, sep):
+    """Insert '' between numbers."""
+
+    # Get the first element. If StopIteration is raised, that's OK.
+    types = (int, float, long)
+    first = next(iterable)
+    if type(first) in types:
+        yield sep
+    yield first
+
+    # Now, check if pair of elements are both numbers. If so, add ''.
+    second = next(iterable)
+    if type(first) in types and type(second) in types:
+        yield sep
+    yield second
+
+    # Now repeat in a loop.
+    for x in iterable:
+        first, second = second, x
+        if type(first) in types and type(second) in types:
+            yield sep
+        yield second
 
 
 def _fix_nan(ret, alg):
@@ -337,7 +334,6 @@ def _natsort_key(val, key, alg):
             ret = tuple(_number_extracter(val,
                                           regex,
                                           num_function,
-                                          alg & _ns['TYPESAFE'],
                                           use_locale,
                                           gl or (use_locale and dumb)))
             # Handle NaN.
