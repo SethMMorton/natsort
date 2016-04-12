@@ -16,8 +16,9 @@ try:
         isfloat,
     )
     import fastnumbers
+    # Require >= version 0.7.1.
     v = list(map(int, fastnumbers.__version__.split('.')))
-    if not (v[0] >= 0 and v[1] >= 5):  # Require >= version 0.5.0.
+    if not (v[0] >= 0 and v[1] >= 7 and v[2] >= 1):
         raise ImportError  # pragma: no cover
 except ImportError:
     from natsort.compat.fake_fastnumbers import (

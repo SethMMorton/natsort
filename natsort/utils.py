@@ -18,11 +18,12 @@ from os.path import split as path_split, splitext as path_splitext
 from itertools import islice
 from locale import localeconv
 from collections import deque
+from functools import partial
 
 # Local imports.
 from natsort.ns_enum import ns, _ns
 from natsort.unicode_numbers import digits, numeric
-from natsort.locale_help import locale_convert, grouper
+from natsort.locale_help import locale_convert, groupletters
 from natsort.compat.pathlib import PurePath, has_pathlib
 from natsort.compat.py23 import (
     py23_str,
@@ -163,10 +164,13 @@ def _number_extracter(s, regex, numconv, py3_safe, use_locale, group_letters):
     # Now convert the numbers to numbers, and leave strings as strings.
     # Take into account locale if needed, and group letters if needed.
     # Remove empty strings from the list.
-    if use_locale:
-        s = [locale_convert(x, conv_check, group_letters) for x in s if x]
+    if use_locale and group_letters:
+        lc = partial(locale_convert, key=groupletters)
+        s = [numconv(x, key=lc) for x in s if x]
+    elif use_locale:
+        s = [numconv(x, key=locale_convert) for x in s if x]
     elif group_letters:
-        s = [grouper(x, conv_check) for x in s if x]
+        s = [numconv(x, key=groupletters) for x in s if x]
     else:
         s = [numconv(x) for x in s if x]
 
