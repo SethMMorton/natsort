@@ -12,9 +12,10 @@ Natural sorting for python.
     - Source Code: https://github.com/SethMMorton/natsort
     - Downloads: https://pypi.python.org/pypi/natsort
     - Documentation: http://pythonhosted.org/natsort
+    - `Optional Dependencies`_
 
-Please see `Moving from older Natsort versions`_ to see if this update requires
-you to modify your ``natsort`` calls in your code (99% of users will not).
+      - `fastnumbers <https://pypi.python.org/pypi/fastnumbers>`_ >= 0.7.1
+      - `PyICU <https://pypi.python.org/pypi/PyICU>`_
 
 Quick Description
 -----------------
@@ -59,8 +60,9 @@ If you need to sort release candidates, please see
 `this useful hack <http://pythonhosted.org//natsort/examples.html#rc-sorting>`_ .
 
 You can also perform locale-aware sorting (or "human sorting"), where the
-non-numeric characters are ordered based on their meaning, not on their
-ordinal value; this can be achieved with the ``humansorted`` function:
+non-numeric characters are ordered based on their meaning (not on their
+ordinal value), and local-dependent decimal point and thousands separators
+are properly handled; this can be achieved with the ``humansorted`` function:
 
 .. code-block:: python
 
@@ -142,9 +144,8 @@ from the command line with ``python -m natsort``.
 Requirements
 ------------
 
-``natsort`` requires Python version 2.7 or greater or Python 3.2 or greater.
-
-.. _optional:
+``natsort`` requires Python version 2.6 or greater or Python 3.3 or greater.
+It may run on (but is not tested against) Python 3.2.
 
 Optional Dependencies
 ---------------------
@@ -153,11 +154,12 @@ fastnumbers
 '''''''''''
 
 The most efficient sorting can occur if you install the 
-`fastnumbers <https://pypi.python.org/pypi/fastnumbers>`_ package (it helps
-with the string to number conversions.)  ``natsort`` will still run (efficiently)
-without the package, but if you need to squeeze out that extra juice it is
-recommended you include this as a dependency.  ``natsort`` will not require (or
-check) that `fastnumbers <https://pypi.python.org/pypi/fastnumbers>`_ is installed
+`fastnumbers <https://pypi.python.org/pypi/fastnumbers>`_ package
+(version >=0.7.1); it helps with the string to number conversions.
+``natsort`` will still run (efficiently) without the package, but if you need
+to squeeze out that extra juice it is recommended you include this as a dependency.
+``natsort`` will not require (or check) that
+`fastnumbers <https://pypi.python.org/pypi/fastnumbers>`_ is installed
 at installation.
 
 PyICU
@@ -190,29 +192,6 @@ one can
 Note that the above solutions *should not* be required for Windows or
 Linux since in Linux-based systems and Windows systems ``locale`` *should* work
 just fine.
-
-.. _deprecate:
-
-Moving from older Natsort versions
-----------------------------------
-
-    - The default sorting algorithm for ``natsort`` has changed in version 4.0.0
-      from signed floats (with exponents) to unsigned integers. The motivation
-      for this change is that it will cause ``natsort`` to return results that
-      pass the "least astonishment" test for the most common use case, which is
-      sorting version numbers. If you relied on the default behavior
-      to be signed floats, add ``alg=ns.F | ns.S`` to your
-      ``natsort`` calls or switch to the new ``realsorted`` function which
-      behaves identically to the older ``natsorted`` with default values.
-      For 99% of users this change will not effect their code... it is only
-      expected that this will effect users using ``natsort`` for science and
-      engineering. 
-      This will also affect the default behavior of the ``natsort`` shell script.
-    - In ``natsort`` version 4.0.0, the ``number_type``, ``signed``, ``exp``,
-      ``as_path``, and ``py3_safe`` options have be removed from the (documented)
-      API in favor of the ``alg`` option and ``ns`` enum.
-    - In ``natsort`` version 4.0.0, the ``natsort_key`` function has been removed
-      from the public API.
 
 Author
 ------
