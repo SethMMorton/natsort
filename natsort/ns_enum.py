@@ -133,29 +133,28 @@ class ns(object):
     above) then you should not need to do this.
 
     """
-    pass
+    # Following were previously now options but are now defaults.
+    TYPESAFE         = T  = 0
+    INT              = I  = 0
+    VERSION          = V  = 0
+    DIGIT            = D  = 0
+    UNSIGNED         = U  = 0
 
+    # The below are options. The values are stored as powers of two
+    # so bitmasks can be used to extract the user's requested options.
+    FLOAT            = F  = 1<<0
+    SIGNED           = S  = 1<<1
+    REAL             = R  = FLOAT | SIGNED
+    NOEXP            = N  = 1<<2
+    PATH             = P  = 1<<3
+    LOCALE           = L  = 1<<4
+    IGNORECASE       = IC = 1<<5
+    LOWERCASEFIRST   = LF = 1<<6
+    GROUPLETTERS     = G  = 1<<7
+    UNGROUPLETTERS   = UG = 1<<8
+    CAPITALFIRST     = C  = UNGROUPLETTERS
+    NANLAST          = NL = 1<<9
 
-# Sort algorithm "enum" values.
-_ns = {
-       'TYPESAFE': 0,         'T': 0,
-       'INT': 0,              'I': 0,
-       'FLOAT': 1,            'F': 1,
-       'UNSIGNED': 0,         'U': 0,
-       'SIGNED': 2,           'S': 2,
-       'VERSION': 0,          'V': 0,  # Shortcut for INT | UNSIGNED
-       'DIGIT': 0,            'D': 0,  # Shortcut for INT | UNSIGNED
-       'REAL': 3,             'R': 3,  # Shortcut for FLOAT | SIGNED
-       'NOEXP': 4,            'N': 4,
-       'PATH': 8,             'P': 8,
-       'LOCALE': 16,          'L': 16,
-       'IGNORECASE': 32,      'IC': 32,
-       'LOWERCASEFIRST': 64,  'LF': 64,
-       'GROUPLETTERS': 128,   'G': 128,
-       'UNGROUPLETTERS': 256, 'UG': 256,
-       'CAPITALFIRST': 256,   'C': 256,
-       'NANLAST': 512,        'NL': 512,
-       }
-# Populate the ns class with the _ns values.
-for x, y in _ns.items():
-    setattr(ns, x, y)
+    # The below are private options for internal use only.
+    _NUMERIC_ONLY = REAL | NOEXP
+    _ALL_BUT_PATH = _NUMERIC_ONLY | L | IC | LF | G | UG | C | NL

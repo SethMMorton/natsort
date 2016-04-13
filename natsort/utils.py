@@ -22,7 +22,7 @@ from collections import deque
 from functools import partial
 
 # Local imports.
-from natsort.ns_enum import ns, _ns
+from natsort.ns_enum import ns
 from natsort.unicode_numbers import digits, numeric
 from natsort.locale_help import locale_convert, groupletters
 from natsort.compat.pathlib import PurePath, has_pathlib
@@ -46,11 +46,6 @@ from natsort.compat.fastnumbers import (
 )
 if sys.version[0] == '3':
     long = int
-
-# Group algorithm types for easy extraction
-_NUMBER_ALGORITHMS = ns.FLOAT | ns.INT | ns.UNSIGNED | ns.SIGNED | ns.NOEXP
-_ALL_BUT_PATH = (ns.F | ns.I | ns.U | ns.S | ns.N | ns.L |
-                 ns.IC | ns.LF | ns.G | ns.UG)
 
 # The regex that locates floats - include Unicode numerals.
 _exp = r'(?:[eE][-+]?[0-9]+)?'
@@ -132,24 +127,24 @@ def _args_to_enum(**kwargs):
         msg = "The 'number_type' argument is deprecated as of 3.5.0, "
         msg += "please use 'alg=ns.FLOAT', 'alg=ns.INT', or 'alg=ns.VERSION'"
         warn(msg, DeprecationWarning)
-        alg |= (_ns['FLOAT'] * bool(kwargs['number_type'] is float))
-        alg |= (_ns['INT'] * bool(kwargs['number_type'] in (int, None)))
-        alg |= (_ns['SIGNED'] * (kwargs['number_type'] not in (float, None)))
+        alg |= (ns.FLOAT * bool(kwargs['number_type'] is float))
+        alg |= (ns.INT * bool(kwargs['number_type'] in (int, None)))
+        alg |= (ns.SIGNED * (kwargs['number_type'] not in (float, None)))
     if 'signed' in kwargs and kwargs['signed'] is not None:
         msg = "The 'signed' argument is deprecated as of 3.5.0, "
         msg += "please use 'alg=ns.SIGNED'."
         warn(msg, DeprecationWarning)
-        alg |= (_ns['SIGNED'] * bool(kwargs['signed']))
+        alg |= (ns.SIGNED * bool(kwargs['signed']))
     if 'exp' in kwargs and kwargs['exp'] is not None:
         msg = "The 'exp' argument is deprecated as of 3.5.0, "
         msg += "please use 'alg=ns.NOEXP'."
         warn(msg, DeprecationWarning)
-        alg |= (_ns['NOEXP'] * (not kwargs['exp']))
+        alg |= (ns.NOEXP * (not kwargs['exp']))
     if 'as_path' in kwargs and kwargs['as_path'] is not None:
         msg = "The 'as_path' argument is deprecated as of 3.5.0, "
         msg += "please use 'alg=ns.PATH'."
         warn(msg, DeprecationWarning)
-        alg |= (_ns['PATH'] * kwargs['as_path'])
+        alg |= (ns.PATH * kwargs['as_path'])
     return alg
 
 
@@ -251,7 +246,7 @@ def _fix_nan(ret, alg):
     t = []
     for r in ret:
         if r != r:
-            if alg & _ns['NANLAST']:
+            if alg & ns.NANLAST:
                 t.append(float('+inf'))
             else:
                 t.append(float('-inf'))
@@ -283,8 +278,8 @@ def _natsort_key(val, key, alg):
 
     # Convert the arguments to the proper input tuple
     try:
-        use_locale = alg & _ns['LOCALE']
-        inp_options = (alg & _NUMBER_ALGORITHMS,
+        use_locale = alg & ns.LOCALE
+        inp_options = (alg & ns._NUMERIC_ONLY,
                        localeconv()['decimal_point'] if use_locale else '.')
     except TypeError:
         msg = "_natsort_key: 'alg' argument must be from the enum 'ns'"
@@ -308,7 +303,7 @@ def _natsort_key(val, key, alg):
         # If this is a path, convert it.
         # An AttrubuteError is raised if not a string.
         split_as_path = False
-        if alg & _ns['PATH']:
+        if alg & ns.PATH:
             try:
                 val = _path_splitter(val)
             except AttributeError:
@@ -322,15 +317,15 @@ def _natsort_key(val, key, alg):
         # Apply the string modification if needed.
         orig_val = val
         try:
-            lowfirst = alg & _ns['LOWERCASEFIRST']
+            lowfirst = alg & ns.LOWERCASEFIRST
             dumb = dumb_sort() if use_locale else False
             if use_locale and dumb and not lowfirst:  # pragma: no cover
                 val = val.swapcase()  # Compensate for bad locale lib.
             elif lowfirst and not (use_locale and dumb):
                 val = val.swapcase()
-            if alg & _ns['IGNORECASE']:
+            if alg & ns.IGNORECASE:
                 val = val.casefold() if PY_VERSION >= 3.3 else val.lower()
-            gl = alg & _ns['GROUPLETTERS']
+            gl = alg & ns.GROUPLETTERS
             ret = tuple(_number_extracter(val,
                                           regex,
                                           num_function,
@@ -342,7 +337,7 @@ def _natsort_key(val, key, alg):
             # For UNGROUPLETTERS, so the high level grouping can occur
             # based on the first letter of the string.
             # Do no locale transformation of the characters.
-            if use_locale and alg & _ns['UNGROUPLETTERS']:
+            if use_locale and alg & ns.UNGROUPLETTERS:
                 if not ret:
                     return (ret, ret)
                 elif ret[0] == null_string:
@@ -360,13 +355,13 @@ def _natsort_key(val, key, alg):
             # Check if it is a bytes type, and if so return as a
             # one element tuple.
             if type(val) in (bytes,):
-                return (val.lower(),) if alg & _ns['IGNORECASE'] else (val,)
+                return (val.lower(),) if alg & ns.IGNORECASE else (val,)
             # If not strings, assume it is an iterable that must
             # be parsed recursively. Do not apply the key recursively.
             # If this string was split as a path, turn off 'PATH'.
             try:
-                was_path = alg & _ns['PATH']
-                newalg = alg & _ALL_BUT_PATH
+                was_path = alg & ns.PATH
+                newalg = alg & ns._ALL_BUT_PATH
                 newalg |= (was_path * (not split_as_path))
                 return tuple([_natsort_key(x, None, newalg) for x in val])
             # If there is still an error, it must be a number.
@@ -375,4 +370,4 @@ def _natsort_key(val, key, alg):
                 n = null_string if use_locale else ''
                 if val != val:
                     val = _fix_nan([val], alg)[0]
-                return ((n, val,),) if alg & _ns['PATH'] else (n, val,)
+                return ((n, val,),) if alg & ns.PATH else (n, val,)
