@@ -7,7 +7,7 @@ import locale
 import pathlib
 import pytest
 import string
-from math import isnan
+from math import isnan, isinf
 from operator import itemgetter, neg as op_neg
 from itertools import chain
 from pytest import raises
@@ -28,6 +28,7 @@ from natsort.utils import (
     _fix_nan,
     _chain_functions,
     _pre_split_function,
+    _ungroupletters,
 )
 from natsort.locale_help import locale_convert
 from natsort.compat.py23 import py23_str
@@ -244,6 +245,40 @@ def test_pre_split_function_performs_swapcase_and_casefold_both_LOWERCASEFIRST_A
         assert _pre_split_function(ns.IGNORECASE | ns.LOWERCASEFIRST)(x) == x.swapcase().casefold()
     else:
         assert _pre_split_function(ns.IGNORECASE | ns.LOWERCASEFIRST)(x) == x.swapcase().lower()
+
+
+def test_ungroupletters_with_empty_tuple_returns_double_empty_tuple():
+    assert _ungroupletters((), '', 0) == ((), ())
+
+
+def test_ungroupletters_with_null_string_first_element_adds_empty_string_on_first_tuple_element():
+    assert _ungroupletters((null_string, 60), '', 0) == ((b'',) if use_pyicu else ('',), (null_string, 60))
+
+
+def test_ungroupletters_returns_first_element_in_first_tuple_element_example():
+    assert _ungroupletters(('this', 60), 'this60', 0) == (('t',), ('this', 60))
+
+
+@pytest.mark.skipif(not use_hypothesis, reason='requires python2.7 or greater')
+@given(x=text(), y=floats() | integers())
+def test_ungroupletters_returns_first_element_in_first_tuple_element(x, y):
+    assume(x)
+    assume(not isnan(y))
+    assume(not isinf(y))
+    assert _ungroupletters((x, y), ''.join(map(str, [x, y])), 0) == ((x[0],), (x, y))
+
+
+def test_ungroupletters_returns_first_element_in_first_tuple_element_caseswapped_with_DUMB_and_LOWERCASEFIRST_example():
+    assert _ungroupletters(('this', 60), 'this60', ns._DUMB | ns.LOWERCASEFIRST) == (('T',), ('this', 60))
+
+
+@pytest.mark.skipif(not use_hypothesis, reason='requires python2.7 or greater')
+@given(x=text(), y=floats() | integers())
+def test_ungroupletters_returns_first_element_in_first_tuple_element_caseswapped_with_DUMB_and_LOWERCASEFIRST(x, y):
+    assume(x)
+    assume(not isnan(y))
+    assume(not isinf(y))
+    assert _ungroupletters((x, y), ''.join(map(str, [x, y])), ns._DUMB | ns.LOWERCASEFIRST) == ((x[0].swapcase(),), (x, y))
 
 
 # Each test has an "example" version for demonstrative purposes,

@@ -180,21 +180,9 @@ def _natsort_key(val, key, alg):
             # Handle NaN.
             if any(x != x for x in ret):
                 ret = _fix_nan(ret, alg)
-            # For UNGROUPLETTERS, so the high level grouping can occur
-            # based on the first letter of the string.
-            # Do no locale transformation of the characters.
             if use_locale and alg & ns.UNGROUPLETTERS:
-                if not ret:
-                    return (ret, ret)
-                elif ret[0] == null_string:
-                    return ((b'' if use_pyicu else '',), ret)
-                elif dumb:  # pragma: no cover
-                    if lowfirst:
-                        return ((orig_val[0].swapcase(),), ret)
-                    else:
-                        return ((orig_val[0],), ret)
-                else:
-                    return ((val[0],), ret)
+                val = orig_val if (alg & ns._DUMB) else val
+                return _ungroupletters(ret, val, alg)
             else:
                 return ret
         except (TypeError, AttributeError):
@@ -272,8 +260,11 @@ def _pre_split_function(alg):
     Given a set of natsort algorithms, return the function to operate
     on the pre-split input string according to the user's request.
     """
+    # Shortcuts.
     lowfirst = alg & ns.LOWERCASEFIRST
     dumb = alg & ns._DUMB
+
+    # Build the chain of functions to execute in order.
     function_chain = []
     if (dumb and not lowfirst) or (lowfirst and not dumb):
         function_chain.append(methodcaller('swapcase'))
@@ -282,7 +273,26 @@ def _pre_split_function(alg):
             function_chain.append(methodcaller('casefold'))
         else:
             function_chain.append(methodcaller('lower'))
+
+    # Return the chained functions.
     return _chain_functions(function_chain)
+
+
+def _ungroupletters(split_val, val, alg):
+    """
+    Return a tuple with the first character of the first element
+    of the return value as the first element, and the return value
+    as the second element. This will be used to perform gross sorting
+    by the first letter.
+    """
+    if not split_val:
+        return ((), ())
+    elif split_val[0] == null_string:
+        return ((b'' if use_pyicu else '',), split_val)
+    elif alg & ns._DUMB and alg & ns.LOWERCASEFIRST:
+        return ((val[0].swapcase(),), split_val)
+    else:
+        return ((val[0],), split_val)
 
 
 def _chain_functions(functions):
