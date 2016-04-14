@@ -103,186 +103,6 @@ _regex_and_num_function_chooser = {
     (ns.I | ns.U | ns.N, ','): (_int_nosign_re, fast_int),
 }
 
-# Dict to select checker function from converter function
-_conv_to_check = {fast_float: isfloat, fast_int: isint}
-
-
-def _do_decoding(s, encoding):
-    """A function to decode a bytes string, or return the object as-is."""
-    try:
-        return s.decode(encoding)
-    except UnicodeError:
-        raise
-    except (AttributeError, TypeError):
-        return s
-
-
-def _args_to_enum(**kwargs):
-    """A function to convert input booleans to an enum-type argument."""
-    alg = 0
-    keys = ('number_type', 'signed', 'exp', 'as_path', 'py3_safe')
-    if any(x not in keys for x in kwargs):
-        x = set(kwargs) - set(keys)
-        raise TypeError('Invalid argument(s): ' + ', '.join(x))
-    if 'number_type' in kwargs and kwargs['number_type'] is not int:
-        msg = "The 'number_type' argument is deprecated as of 3.5.0, "
-        msg += "please use 'alg=ns.FLOAT', 'alg=ns.INT', or 'alg=ns.VERSION'"
-        warn(msg, DeprecationWarning)
-        alg |= (ns.FLOAT * bool(kwargs['number_type'] is float))
-        alg |= (ns.INT * bool(kwargs['number_type'] in (int, None)))
-        alg |= (ns.SIGNED * (kwargs['number_type'] not in (float, None)))
-    if 'signed' in kwargs and kwargs['signed'] is not None:
-        msg = "The 'signed' argument is deprecated as of 3.5.0, "
-        msg += "please use 'alg=ns.SIGNED'."
-        warn(msg, DeprecationWarning)
-        alg |= (ns.SIGNED * bool(kwargs['signed']))
-    if 'exp' in kwargs and kwargs['exp'] is not None:
-        msg = "The 'exp' argument is deprecated as of 3.5.0, "
-        msg += "please use 'alg=ns.NOEXP'."
-        warn(msg, DeprecationWarning)
-        alg |= (ns.NOEXP * (not kwargs['exp']))
-    if 'as_path' in kwargs and kwargs['as_path'] is not None:
-        msg = "The 'as_path' argument is deprecated as of 3.5.0, "
-        msg += "please use 'alg=ns.PATH'."
-        warn(msg, DeprecationWarning)
-        alg |= (ns.PATH * kwargs['as_path'])
-    return alg
-
-
-def _chain_functions(functions):
-    """Chain a list of single-argument functions together and return"""
-    def func(x, _functions=functions):
-        output = x
-        for f in _functions:
-            output = f(output)
-        return output
-    return func
-
-
-def _pre_split_function(alg):
-    """
-    Given a set of natsort algorithms, return the function to operate
-    on the pre-split input string according to the user's request.
-    """
-    lowfirst = alg & ns.LOWERCASEFIRST
-    dumb = alg & ns._DUMB
-    function_chain = []
-    if (dumb and not lowfirst) or (lowfirst and not dumb):
-        function_chain.append(methodcaller('swapcase'))
-    if alg & ns.IGNORECASE:
-        if PY_VERSION >= 3.3:
-            function_chain.append(methodcaller('casefold'))
-        else:
-            function_chain.append(methodcaller('lower'))
-    return _chain_functions(function_chain)
-
-
-def _number_extracter(s, regex, numconv, use_locale, group_letters):
-    """Helper to separate the string input into numbers and strings."""
-
-    # Split the input string by numbers, dropping empty strings.
-    # If the input is not a string, TypeError is raised.
-    s = py23_filter(None, regex.split(s))
-
-    # Now convert the numbers to numbers, and leave strings as strings.
-    # Take into account locale if needed, and group letters if needed.
-    # Remove empty strings from the list. Insert empty strings between
-    # adjascent numbers, or at the beginning of the iterable if it is
-    # a number.
-    if use_locale and group_letters:
-        func = partial(numconv, key=partial(locale_convert, key=groupletters))
-    elif use_locale:
-        func = partial(numconv, key=locale_convert)
-    elif group_letters:
-        func = partial(numconv, key=groupletters)
-    else:
-        func = numconv
-    return list(_sep_inserter(py23_map(func, s),
-                              null_string if use_locale else ''))
-
-
-def _path_splitter(s, _d_match=re.compile(r'\.\d').match):
-    """Split a string into its path components. Assumes a string is a path."""
-    # If a PathLib Object, use it's functionality to perform the split.
-    if has_pathlib and isinstance(s, PurePath):
-        path_parts = deque(s.parts)
-    else:
-        path_parts = deque()
-        p_appendleft = path_parts.appendleft
-        # Continue splitting the path from the back until we have reached
-        # '..' or '.', or until there is nothing left to split.
-        path_location = s
-        while path_location != os_curdir and path_location != os_pardir:
-            parent_path = path_location
-            path_location, child_path = path_split(parent_path)
-            if path_location == parent_path:
-                break
-            p_appendleft(child_path)
-
-        # This last append is the base path.
-        # Only append if the string is non-empty.
-        if path_location:
-            p_appendleft(path_location)
-
-    # Now, split off the file extensions using a similar method to above.
-    # Continue splitting off file extensions until we reach a decimal number
-    # or there are no more extensions.
-    # We are not using built-in functionality of PathLib here because of
-    # the recursive splitting up to a decimal.
-    base = path_parts.pop()
-    base_parts = deque()
-    b_appendleft = base_parts.appendleft
-    while True:
-        front = base
-        base, ext = path_splitext(front)
-        if _d_match(ext) or not ext:
-            # Reset base to before the split if the split is invalid.
-            base = front
-            break
-        b_appendleft(ext)
-    b_appendleft(base)
-
-    # Return the split parent paths and then the split basename.
-    return tuple(path_parts + base_parts)
-
-
-def _sep_inserter(iterable, sep):
-    """Insert '' between numbers."""
-
-    # Get the first element. If StopIteration is raised, that's OK.
-    types = (int, float, long)
-    first = next(iterable)
-    if type(first) in types:
-        yield sep
-    yield first
-
-    # Now, check if pair of elements are both numbers. If so, add ''.
-    second = next(iterable)
-    if type(first) in types and type(second) in types:
-        yield sep
-    yield second
-
-    # Now repeat in a loop.
-    for x in iterable:
-        first, second = second, x
-        if type(first) in types and type(second) in types:
-            yield sep
-        yield second
-
-
-def _fix_nan(ret, alg):
-    """Detect an NaN and replace or raise a ValueError."""
-    t = []
-    for r in ret:
-        if r != r:
-            if alg & ns.NANLAST:
-                t.append(float('+inf'))
-            else:
-                t.append(float('-inf'))
-        else:
-            t.append(r)
-    return tuple(t)
-
 
 def _natsort_key(val, key, alg):
     """\
@@ -397,3 +217,180 @@ def _natsort_key(val, key, alg):
                 if val != val:
                     val = _fix_nan([val], alg)[0]
                 return ((n, val,),) if alg & ns.PATH else (n, val,)
+
+
+def _number_extracter(s, regex, numconv, use_locale, group_letters):
+    """Helper to separate the string input into numbers and strings."""
+
+    # Split the input string by numbers, dropping empty strings.
+    # If the input is not a string, TypeError is raised.
+    s = py23_filter(None, regex.split(s))
+
+    # Now convert the numbers to numbers, and leave strings as strings.
+    # Take into account locale if needed, and group letters if needed.
+    # Remove empty strings from the list. Insert empty strings between
+    # adjascent numbers, or at the beginning of the iterable if it is
+    # a number.
+    if use_locale and group_letters:
+        func = partial(numconv, key=partial(locale_convert, key=groupletters))
+    elif use_locale:
+        func = partial(numconv, key=locale_convert)
+    elif group_letters:
+        func = partial(numconv, key=groupletters)
+    else:
+        func = numconv
+    return list(_sep_inserter(py23_map(func, s),
+                              null_string if use_locale else ''))
+
+
+def _sep_inserter(iterable, sep):
+    """Insert '' between numbers."""
+
+    # Get the first element. If StopIteration is raised, that's OK.
+    types = (int, float, long)
+    first = next(iterable)
+    if type(first) in types:
+        yield sep
+    yield first
+
+    # Now, check if pair of elements are both numbers. If so, add ''.
+    second = next(iterable)
+    if type(first) in types and type(second) in types:
+        yield sep
+    yield second
+
+    # Now repeat in a loop.
+    for x in iterable:
+        first, second = second, x
+        if type(first) in types and type(second) in types:
+            yield sep
+        yield second
+
+
+def _pre_split_function(alg):
+    """
+    Given a set of natsort algorithms, return the function to operate
+    on the pre-split input string according to the user's request.
+    """
+    lowfirst = alg & ns.LOWERCASEFIRST
+    dumb = alg & ns._DUMB
+    function_chain = []
+    if (dumb and not lowfirst) or (lowfirst and not dumb):
+        function_chain.append(methodcaller('swapcase'))
+    if alg & ns.IGNORECASE:
+        if PY_VERSION >= 3.3:
+            function_chain.append(methodcaller('casefold'))
+        else:
+            function_chain.append(methodcaller('lower'))
+    return _chain_functions(function_chain)
+
+
+def _chain_functions(functions):
+    """Chain a list of single-argument functions together and return"""
+    def func(x, _functions=functions):
+        output = x
+        for f in _functions:
+            output = f(output)
+        return output
+    return func
+
+
+def _fix_nan(ret, alg):
+    """Detect an NaN and replace or raise a ValueError."""
+    t = []
+    for r in ret:
+        if r != r:
+            if alg & ns.NANLAST:
+                t.append(float('+inf'))
+            else:
+                t.append(float('-inf'))
+        else:
+            t.append(r)
+    return tuple(t)
+
+
+def _do_decoding(s, encoding):
+    """A function to decode a bytes string, or return the object as-is."""
+    try:
+        return s.decode(encoding)
+    except UnicodeError:
+        raise
+    except (AttributeError, TypeError):
+        return s
+
+
+def _path_splitter(s, _d_match=re.compile(r'\.\d').match):
+    """Split a string into its path components. Assumes a string is a path."""
+    # If a PathLib Object, use it's functionality to perform the split.
+    if has_pathlib and isinstance(s, PurePath):
+        path_parts = deque(s.parts)
+    else:
+        path_parts = deque()
+        p_appendleft = path_parts.appendleft
+        # Continue splitting the path from the back until we have reached
+        # '..' or '.', or until there is nothing left to split.
+        path_location = s
+        while path_location != os_curdir and path_location != os_pardir:
+            parent_path = path_location
+            path_location, child_path = path_split(parent_path)
+            if path_location == parent_path:
+                break
+            p_appendleft(child_path)
+
+        # This last append is the base path.
+        # Only append if the string is non-empty.
+        if path_location:
+            p_appendleft(path_location)
+
+    # Now, split off the file extensions using a similar method to above.
+    # Continue splitting off file extensions until we reach a decimal number
+    # or there are no more extensions.
+    # We are not using built-in functionality of PathLib here because of
+    # the recursive splitting up to a decimal.
+    base = path_parts.pop()
+    base_parts = deque()
+    b_appendleft = base_parts.appendleft
+    while True:
+        front = base
+        base, ext = path_splitext(front)
+        if _d_match(ext) or not ext:
+            # Reset base to before the split if the split is invalid.
+            base = front
+            break
+        b_appendleft(ext)
+    b_appendleft(base)
+
+    # Return the split parent paths and then the split basename.
+    return tuple(path_parts + base_parts)
+
+
+def _args_to_enum(**kwargs):
+    """A function to convert input booleans to an enum-type argument."""
+    alg = 0
+    keys = ('number_type', 'signed', 'exp', 'as_path', 'py3_safe')
+    if any(x not in keys for x in kwargs):
+        x = set(kwargs) - set(keys)
+        raise TypeError('Invalid argument(s): ' + ', '.join(x))
+    if 'number_type' in kwargs and kwargs['number_type'] is not int:
+        msg = "The 'number_type' argument is deprecated as of 3.5.0, "
+        msg += "please use 'alg=ns.FLOAT', 'alg=ns.INT', or 'alg=ns.VERSION'"
+        warn(msg, DeprecationWarning)
+        alg |= (ns.FLOAT * bool(kwargs['number_type'] is float))
+        alg |= (ns.INT * bool(kwargs['number_type'] in (int, None)))
+        alg |= (ns.SIGNED * (kwargs['number_type'] not in (float, None)))
+    if 'signed' in kwargs and kwargs['signed'] is not None:
+        msg = "The 'signed' argument is deprecated as of 3.5.0, "
+        msg += "please use 'alg=ns.SIGNED'."
+        warn(msg, DeprecationWarning)
+        alg |= (ns.SIGNED * bool(kwargs['signed']))
+    if 'exp' in kwargs and kwargs['exp'] is not None:
+        msg = "The 'exp' argument is deprecated as of 3.5.0, "
+        msg += "please use 'alg=ns.NOEXP'."
+        warn(msg, DeprecationWarning)
+        alg |= (ns.NOEXP * (not kwargs['exp']))
+    if 'as_path' in kwargs and kwargs['as_path'] is not None:
+        msg = "The 'as_path' argument is deprecated as of 3.5.0, "
+        msg += "please use 'alg=ns.PATH'."
+        warn(msg, DeprecationWarning)
+        alg |= (ns.PATH * kwargs['as_path'])
+    return alg
