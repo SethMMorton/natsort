@@ -8,7 +8,7 @@ import pathlib
 import pytest
 import string
 from math import isnan
-from operator import itemgetter
+from operator import itemgetter, neg as op_neg
 from itertools import chain
 from pytest import raises
 from natsort.ns_enum import ns
@@ -26,6 +26,8 @@ from natsort.utils import (
     _do_decoding,
     _path_splitter,
     _fix_nan,
+    _chain_functions,
+    _pre_split_function,
 )
 from natsort.locale_help import locale_convert
 from natsort.compat.py23 import py23_str
@@ -153,6 +155,95 @@ def test_fix_nan_converts_nan_to_negative_infinity_without_NANLAST():
 def test_fix_nan_converts_nan_to_positive_infinity_with_NANLAST():
     assert _fix_nan((float('nan'),), ns.NANLAST) == (float('+inf'),)
     assert _fix_nan(('a', 'b', float('nan')), ns.NANLAST) == ('a', 'b', float('+inf'))
+
+
+def test_chain_functions_is_a_no_op_if_no_functions_are_given():
+    x = 2345
+    assert _chain_functions([])(x) is x
+
+
+def test_chain_functions_combines_functions_in_given_order():
+    x = 2345
+    assert _chain_functions([str, len, op_neg])(x) == -len(str(x))
+
+
+def test_pre_split_function_is_no_op_for_no_alg_options_examples():
+    x = 'feijGGAd'
+    assert _pre_split_function(0)(x) is x
+
+
+@pytest.mark.skipif(not use_hypothesis, reason='requires python2.7 or greater')
+@given(text())
+def test_pre_split_function_is_no_op_for_no_alg_options(x):
+    assert _pre_split_function(0)(x) is x
+
+
+def test_pre_split_function_performs_casefold_with_IGNORECASE_examples():
+    x = 'feijGGAd'
+    if sys.version_info[0:2] >= (3, 3):
+        assert _pre_split_function(ns.IGNORECASE)(x) == x.casefold()
+    else:
+        assert _pre_split_function(ns.IGNORECASE)(x) == x.lowercase()
+
+
+@pytest.mark.skipif(not use_hypothesis, reason='requires python2.7 or greater')
+@given(text())
+def test_pre_split_function_performs_casefold_with_IGNORECASE(x):
+    if sys.version_info[0:2] >= (3, 3):
+        assert _pre_split_function(ns.IGNORECASE)(x) == x.casefold()
+    else:
+        assert _pre_split_function(ns.IGNORECASE)(x) == x.lowercase()
+
+
+def test_pre_split_function_performs_swapcase_with_DUMB_examples():
+    x = 'feijGGAd'
+    assert _pre_split_function(ns._DUMB)(x) == x.swapcase()
+
+
+@pytest.mark.skipif(not use_hypothesis, reason='requires python2.7 or greater')
+@given(text())
+def test_pre_split_function_performs_swapcase_with_DUMB(x):
+    assert _pre_split_function(ns._DUMB)(x) == x.swapcase()
+
+
+def test_pre_split_function_performs_swapcase_with_LOWERCASEFIRST_example():
+    x = 'feijGGAd'
+    assert _pre_split_function(ns.LOWERCASEFIRST)(x) == x.swapcase()
+
+
+@pytest.mark.skipif(not use_hypothesis, reason='requires python2.7 or greater')
+@given(text())
+def test_pre_split_function_performs_swapcase_with_LOWERCASEFIRST(x):
+    x = 'feijGGAd'
+    assert _pre_split_function(ns.LOWERCASEFIRST)(x) == x.swapcase()
+
+
+def test_pre_split_function_is_no_op_with_both_LOWERCASEFIRST_AND_DUMB_example():
+    x = 'feijGGAd'
+    assert _pre_split_function(ns._DUMB | ns.LOWERCASEFIRST)(x) is x
+
+
+@pytest.mark.skipif(not use_hypothesis, reason='requires python2.7 or greater')
+@given(text())
+def test_pre_split_function_is_no_op_with_both_LOWERCASEFIRST_AND_DUMB(x):
+    assert _pre_split_function(ns._DUMB | ns.LOWERCASEFIRST)(x) is x
+
+
+def test_pre_split_function_performs_swapcase_and_casefold_both_LOWERCASEFIRST_AND_IGNORECASE_example():
+    x = 'feijGGAd'
+    if sys.version_info[0:2] >= (3, 3):
+        assert _pre_split_function(ns.IGNORECASE | ns.LOWERCASEFIRST)(x) == x.swapcase().casefold()
+    else:
+        assert _pre_split_function(ns.IGNORECASE | ns.LOWERCASEFIRST)(x) == x.swapcase().lower()
+
+
+@pytest.mark.skipif(not use_hypothesis, reason='requires python2.7 or greater')
+@given(text())
+def test_pre_split_function_performs_swapcase_and_casefold_both_LOWERCASEFIRST_AND_IGNORECASE(x):
+    if sys.version_info[0:2] >= (3, 3):
+        assert _pre_split_function(ns.IGNORECASE | ns.LOWERCASEFIRST)(x) == x.swapcase().casefold()
+    else:
+        assert _pre_split_function(ns.IGNORECASE | ns.LOWERCASEFIRST)(x) == x.swapcase().lower()
 
 
 # Each test has an "example" version for demonstrative purposes,

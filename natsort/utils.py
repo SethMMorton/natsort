@@ -20,6 +20,7 @@ from itertools import islice
 from locale import localeconv
 from collections import deque
 from functools import partial
+from operator import methodcaller
 
 # Local imports.
 from natsort.ns_enum import ns
@@ -146,6 +147,34 @@ def _args_to_enum(**kwargs):
         warn(msg, DeprecationWarning)
         alg |= (ns.PATH * kwargs['as_path'])
     return alg
+
+
+def _chain_functions(functions):
+    """Chain a list of single-argument functions together and return"""
+    def func(x, _functions=functions):
+        output = x
+        for f in _functions:
+            output = f(output)
+        return output
+    return func
+
+
+def _pre_split_function(alg):
+    """
+    Given a set of natsort algorithms, return the function to operate
+    on the pre-split input string according to the user's request.
+    """
+    lowfirst = alg & ns.LOWERCASEFIRST
+    dumb = alg & ns._DUMB
+    function_chain = []
+    if (dumb and not lowfirst) or (lowfirst and not dumb):
+        function_chain.append(methodcaller('swapcase'))
+    if alg & ns.IGNORECASE:
+        if PY_VERSION >= 3.3:
+            function_chain.append(methodcaller('casefold'))
+        else:
+            function_chain.append(methodcaller('lower'))
+    return _chain_functions(function_chain)
 
 
 def _number_extracter(s, regex, numconv, use_locale, group_letters):
@@ -317,14 +346,11 @@ def _natsort_key(val, key, alg):
         # Apply the string modification if needed.
         orig_val = val
         try:
+            if use_locale and dumb_sort():
+                alg |= ns._DUMB
             lowfirst = alg & ns.LOWERCASEFIRST
-            dumb = dumb_sort() if use_locale else False
-            if use_locale and dumb and not lowfirst:  # pragma: no cover
-                val = val.swapcase()  # Compensate for bad locale lib.
-            elif lowfirst and not (use_locale and dumb):
-                val = val.swapcase()
-            if alg & ns.IGNORECASE:
-                val = val.casefold() if PY_VERSION >= 3.3 else val.lower()
+            dumb = alg & ns._DUMB
+            val = _pre_split_function(alg)(val)
             gl = alg & ns.GROUPLETTERS
             ret = tuple(_number_extracter(val,
                                           regex,
