@@ -14,7 +14,8 @@ from __future__ import (
 # Std. lib imports.
 import sys
 import unicodedata
-if sys.version[0] != '2':
+is_py2 = sys.version[0] == '2'
+if not is_py2:
     long = int
 
 
@@ -35,9 +36,15 @@ def fast_float(x, key=lambda x: x, nan=None,
             x = float(x)
             return nan if nan is not None and x != x else x
         except ValueError:
-            return uni(x, key(x)) if len(x) == 1 else key(x)
+            if len(x) == 1 and not (is_py2 and not isinstance(x, unicode)):
+                return uni(x, key(x))
+            else:
+                return key(x)
     else:
-        return uni(x, key(x)) if len(x) == 1 else key(x)
+        if len(x) == 1 and not (is_py2 and not isinstance(x, unicode)):
+            return uni(x, key(x))
+        else:
+            return key(x)
 
 
 def fast_int(x, key=lambda x: x, nan=None, uni=unicodedata.digit):
@@ -50,6 +57,12 @@ def fast_int(x, key=lambda x: x, nan=None, uni=unicodedata.digit):
         try:
             return long(x)
         except ValueError:
-            return uni(x, key(x)) if len(x) == 1 else key(x)
+            if len(x) == 1 and not (is_py2 and not isinstance(x, unicode)):
+                return uni(x, key(x))
+            else:
+                return key(x)
     else:
-        return uni(x, key(x)) if len(x) == 1 else key(x)
+        if len(x) == 1 and not (is_py2 and not isinstance(x, unicode)):
+            return uni(x, key(x))
+        else:
+            return key(x)
