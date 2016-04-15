@@ -218,7 +218,7 @@ def _number_extracter(s, regex, numconv, use_locale, group_letters):
     # adjascent numbers, or at the beginning of the iterable if it is
     # a number.
     if use_locale and group_letters:
-        func = partial(numconv, key=partial(locale_convert, key=groupletters))
+        func = partial(numconv, key=lambda x: locale_convert(groupletters(x)))
     elif use_locale:
         func = partial(numconv, key=locale_convert)
     elif group_letters:

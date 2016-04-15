@@ -45,19 +45,6 @@ def test_groupeletters_returns_letters_with_lowercase_transform_of_letter(x):
     assert groupletters(x) == ''.join(chain.from_iterable([low(y), y] for y in x))
 
 
-def test_groupletters_returns_letters_with_lowercase_transform_of_letter_after_applying_key_example():
-    assert groupletters('HELLO', key=lambda x: x.lower()) == 'hheelllloo'
-    assert groupletters('hello', key=lambda x: x.lower()) == 'hheelllloo'
-
-
-@pytest.mark.skipif(not use_hypothesis, reason='requires python2.7 or greater')
-@given(text())
-def test_groupeletters_returns_letters_with_lowercase_transform_of_letter_after_applying_key(x):
-    assume(bool(x))
-    assume(type(fast_float(x)) is not float)
-    assert groupletters(x, key=lambda x: x.lower()) == ''.join(chain.from_iterable([low(y), y] for y in x.lower()))
-
-
 def test_locale_convert_transforms_string_to_strxfrm_string_example():
     load_locale('en_US')
     strxfrm = get_strxfrm()
@@ -75,24 +62,4 @@ def test_locale_convert_transforms_string_to_strxfrm_string(x):
     load_locale('en_US')
     strxfrm = get_strxfrm()
     assert locale_convert(x) == strxfrm(x)
-    locale.setlocale(locale.LC_NUMERIC, str(''))
-
-
-def test_locale_convert_with_groupletters_transforms_nonfloat_string_to_strxfrm_string_with_grouped_letters_example():
-    load_locale('en_US')
-    strxfrm = get_strxfrm()
-    assert locale_convert('hello', key=groupletters) == strxfrm('hheelllloo')
-    assert locale_convert('45,8', key=groupletters) == strxfrm('4455,,88')
-    locale.setlocale(locale.LC_NUMERIC, str(''))
-
-
-@pytest.mark.skipif(not use_hypothesis, reason='requires python2.7 or greater')
-@given(text())
-def test_locale_convert_with_groupletters_transforms_nonfloat_string_to_strxfrm_string_with_grouped_letters(x):
-    assume(bool(x))
-    assume(type(fast_float(x)) is not float)
-    assume(not any(i in bad_uni_chars for i in x))
-    load_locale('en_US')
-    strxfrm = get_strxfrm()
-    assert locale_convert(x, key=groupletters) == strxfrm(''.join(chain.from_iterable([low(y), y] for y in x)))
     locale.setlocale(locale.LC_NUMERIC, str(''))

@@ -22,18 +22,16 @@ else:
     from natsort.compat.locale import strxfrm
 
 
-def groupletters(x, key=None):
+def groupletters(x):
     """Double all characters, making doubled letters lowercase."""
-    if key is not None:
-        x = key(x)
     return ''.join(chain.from_iterable([_low(y), y] for y in x))
 
 
-def locale_convert(x, key=None):
+def locale_convert(x):
     """
     Use the appropriate locale tranformation function on the given input.
     """
     if use_pyicu:
-        return get_pyicu_transform(getlocale())(x if key is None else key(x))
+        return get_pyicu_transform(getlocale())(x)
     else:
-        return strxfrm(x if key is None else key(x))
+        return strxfrm(x)
