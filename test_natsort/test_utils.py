@@ -185,7 +185,7 @@ def test_pre_split_function_performs_casefold_with_IGNORECASE_examples():
     if sys.version_info[0:2] >= (3, 3):
         assert _pre_split_function(ns.IGNORECASE)(x) == x.casefold()
     else:
-        assert _pre_split_function(ns.IGNORECASE)(x) == x.lowercase()
+        assert _pre_split_function(ns.IGNORECASE)(x) == x.lower()
 
 
 @pytest.mark.skipif(not use_hypothesis, reason='requires python2.7 or greater')
@@ -194,7 +194,7 @@ def test_pre_split_function_performs_casefold_with_IGNORECASE(x):
     if sys.version_info[0:2] >= (3, 3):
         assert _pre_split_function(ns.IGNORECASE)(x) == x.casefold()
     else:
-        assert _pre_split_function(ns.IGNORECASE)(x) == x.lowercase()
+        assert _pre_split_function(ns.IGNORECASE)(x) == x.lower()
 
 
 def test_pre_split_function_performs_swapcase_with_DUMB_examples():
@@ -258,7 +258,7 @@ def test_post_split_function_returns_fast_int_example():
 @given(text() | floats() | integers())
 def test_post_split_function_returns_fast_int(x):
     assume(x)
-    assert _post_split_function(0)(str(x)) == fast_int(str(x))
+    assert _post_split_function(0)(py23_str(x)) == fast_int(py23_str(x))
 
 
 def test_post_split_function_with_FLOAT_returns_fast_float_example():
@@ -271,7 +271,7 @@ def test_post_split_function_with_FLOAT_returns_fast_float_example():
 @given(text() | floats() | integers())
 def test_post_split_function_with_FLOAT_returns_fast_float(x):
     assume(x)
-    assert _post_split_function(ns.FLOAT)(str(x)) == fast_float(str(x), nan=float('-inf'))
+    assert _post_split_function(ns.FLOAT)(py23_str(x)) == fast_float(py23_str(x), nan=float('-inf'))
 
 
 def test_post_split_function_with_FLOAT_returns_fast_float_with_neg_inf_replacing_nan():
@@ -344,7 +344,7 @@ def test_ungroupletters_returns_first_element_in_first_tuple_element(x, y):
     assume(x)
     assume(not isnan(y))
     assume(not isinf(y))
-    assert _ungroupletters((x, y), ''.join(map(str, [x, y])), 0) == ((x[0],), (x, y))
+    assert _ungroupletters((x, y), ''.join(map(py23_str, [x, y])), 0) == ((x[0],), (x, y))
 
 
 def test_ungroupletters_returns_first_element_in_first_tuple_element_caseswapped_with_DUMB_and_LOWERCASEFIRST_example():
@@ -357,7 +357,7 @@ def test_ungroupletters_returns_first_element_in_first_tuple_element_caseswapped
     assume(x)
     assume(not isnan(y))
     assume(not isinf(y))
-    assert _ungroupletters((x, y), ''.join(map(str, [x, y])), ns._DUMB | ns.LOWERCASEFIRST) == ((x[0].swapcase(),), (x, y))
+    assert _ungroupletters((x, y), ''.join(map(py23_str, [x, y])), ns._DUMB | ns.LOWERCASEFIRST) == ((x[0].swapcase(),), (x, y))
 
 
 # Each test has an "example" version for demonstrative purposes,

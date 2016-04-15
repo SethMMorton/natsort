@@ -53,14 +53,8 @@ def fast_int(x, key=None, nan=None, uni=unicodedata.digit):
     """
     if x[0] in '0123456789+-':
         try:
-            return int(x)
+            return long(x)
         except ValueError:
-            if key is not None:
-                return uni(x, key(x)) if len(x) == 1 else key(x)
-            else:
-                return uni(x, x) if len(x) == 1 else x
-    else:
-        if key is not None:
             return uni(x, key(x)) if len(x) == 1 else key(x)
-        else:
-            return uni(x, x) if len(x) == 1 else x
+    else:
+        return uni(x, key(x)) if len(x) == 1 else key(x)
