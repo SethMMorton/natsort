@@ -327,15 +327,15 @@ def test_post_split_function_with_LOCALE_and_DUMB_returns_fast_int_and_grouplett
 
 
 def test_ungroupletters_with_empty_tuple_returns_double_empty_tuple():
-    assert _ungroupletters((), '', 0) == ((), ())
+    assert _ungroupletters((), '', '', 0) == ((), ())
 
 
 def test_ungroupletters_with_null_string_first_element_adds_empty_string_on_first_tuple_element():
-    assert _ungroupletters((null_string, 60), '', 0) == ((b'',) if use_pyicu else ('',), (null_string, 60))
+    assert _ungroupletters(('', 60), '', '', 0) == ((b'',) if use_pyicu else ('',), ('', 60))
 
 
 def test_ungroupletters_returns_first_element_in_first_tuple_element_example():
-    assert _ungroupletters(('this', 60), 'this60', 0) == (('t',), ('this', 60))
+    assert _ungroupletters(('this', 60), 'this60', '', 0) == (('t',), ('this', 60))
 
 
 @pytest.mark.skipif(not use_hypothesis, reason='requires python2.7 or greater')
@@ -344,11 +344,11 @@ def test_ungroupletters_returns_first_element_in_first_tuple_element(x, y):
     assume(x)
     assume(not isnan(y))
     assume(not isinf(y))
-    assert _ungroupletters((x, y), ''.join(map(py23_str, [x, y])), 0) == ((x[0],), (x, y))
+    assert _ungroupletters((x, y), ''.join(map(py23_str, [x, y])), '', 0) == ((x[0],), (x, y))
 
 
 def test_ungroupletters_returns_first_element_in_first_tuple_element_caseswapped_with_DUMB_and_LOWERCASEFIRST_example():
-    assert _ungroupletters(('this', 60), 'this60', ns._DUMB | ns.LOWERCASEFIRST) == (('T',), ('this', 60))
+    assert _ungroupletters(('this', 60), 'this60', '', ns._DUMB | ns.LOWERCASEFIRST) == (('T',), ('this', 60))
 
 
 @pytest.mark.skipif(not use_hypothesis, reason='requires python2.7 or greater')
@@ -357,7 +357,7 @@ def test_ungroupletters_returns_first_element_in_first_tuple_element_caseswapped
     assume(x)
     assume(not isnan(y))
     assume(not isinf(y))
-    assert _ungroupletters((x, y), ''.join(map(py23_str, [x, y])), ns._DUMB | ns.LOWERCASEFIRST) == ((x[0].swapcase(),), (x, y))
+    assert _ungroupletters((x, y), ''.join(map(py23_str, [x, y])), '', ns._DUMB | ns.LOWERCASEFIRST) == ((x[0].swapcase(),), (x, y))
 
 
 # Each test has an "example" version for demonstrative purposes,

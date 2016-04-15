@@ -180,7 +180,7 @@ def _natsort_key(val, key, alg):
                 ret = _fix_nan(ret, alg)
             if use_locale and alg & ns.UNGROUPLETTERS:
                 val = orig_val if (alg & ns._DUMB) else val
-                return _ungroupletters(ret, val, alg)
+                return _ungroupletters(ret, val, null_string, alg)
             else:
                 return ret
         except (TypeError, AttributeError):
@@ -303,7 +303,7 @@ def _post_split_function(alg):
         return partial(fast_int, **kwargs)
 
 
-def _ungroupletters(split_val, val, alg):
+def _ungroupletters(split_val, val, sep, alg):
     """
     Return a tuple with the first character of the first element
     of the return value as the first element, and the return value
@@ -312,7 +312,7 @@ def _ungroupletters(split_val, val, alg):
     """
     if not split_val:
         return ((), ())
-    elif split_val[0] == null_string:
+    elif split_val[0] == sep:
         return ((b'' if use_pyicu else '',), split_val)
     elif alg & ns._DUMB and alg & ns.LOWERCASEFIRST:
         return ((val[0].swapcase(),), split_val)
