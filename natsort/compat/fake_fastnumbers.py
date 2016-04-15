@@ -29,10 +29,7 @@ def fast_float(x, key=None, nan=None, uni=unicodedata.numeric, nan_inf=nan_inf):
     We don't need to accept all input that the real fast_int accepts because
     the input will be controlled by the splitting algorithm.
     """
-    if type(x) in (int, long, float):
-        x = float(x)
-        return nan if nan is not None and x != x else x
-    elif x[0] in '0123456789+-.' or x.lstrip()[:3] in nan_inf:
+    if x[0] in '0123456789+-.' or x.lstrip()[:3] in nan_inf:
         try:
             x = float(x)
             return nan if nan is not None and x != x else x
@@ -54,9 +51,7 @@ def fast_int(x, key=None, nan=None, uni=unicodedata.digit):
     We don't need to accept all input that the real fast_int accepts because
     the input will be controlled by the splitting algorithm.
     """
-    if type(x) in (int, long, float):
-        return int(x)
-    elif x[0] in '0123456789+-':
+    if x[0] in '0123456789+-':
         try:
             return int(x)
         except ValueError:
@@ -69,13 +64,3 @@ def fast_int(x, key=None, nan=None, uni=unicodedata.digit):
             return uni(x, key(x)) if len(x) == 1 else key(x)
         else:
             return uni(x, x) if len(x) == 1 else x
-
-
-def isfloat(x, num_only=False):
-    """Returns true if the input is a float, false otherwise."""
-    return type(x) == float
-
-
-def isint(x, num_only=False):
-    """Returns true if the input is an int, false otherwise."""
-    return type(x) in set([int, long])

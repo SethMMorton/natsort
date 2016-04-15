@@ -42,8 +42,6 @@ from natsort.compat.locale import (
 from natsort.compat.fastnumbers import (
     fast_float,
     fast_int,
-    isint,
-    isfloat,
 )
 if sys.version[0] == '3':
     long = int

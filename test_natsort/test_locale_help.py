@@ -8,7 +8,7 @@ import locale
 import pytest
 from math import isnan
 from itertools import chain
-from natsort.compat.fake_fastnumbers import fast_float, isfloat
+from natsort.compat.fake_fastnumbers import fast_float
 from natsort.locale_help import groupletters, locale_convert
 from natsort.compat.py23 import py23_str
 from natsort.compat.locale import use_pyicu

@@ -12,8 +12,6 @@ try:
     from fastnumbers import (
         fast_float,
         fast_int,
-        isint,
-        isfloat,
     )
     import fastnumbers
     # Require >= version 0.7.1.
@@ -24,6 +22,4 @@ except ImportError:
     from natsort.compat.fake_fastnumbers import (
         fast_float,
         fast_int,
-        isint,
-        isfloat,
     )
