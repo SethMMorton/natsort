@@ -16,7 +16,7 @@ import re
 from warnings import warn
 from os import curdir as os_curdir, pardir as os_pardir
 from os.path import split as path_split, splitext as path_splitext
-from itertools import islice
+from itertools import islice, chain as ichain
 from locale import localeconv
 from collections import deque
 from functools import partial
@@ -331,7 +331,7 @@ def _path_splitter(s, _d_match=re.compile(r'\.\d').match):
     """Split a string into its path components. Assumes a string is a path."""
     # If a PathLib Object, use it's functionality to perform the split.
     if has_pathlib and isinstance(s, PurePath):
-        path_parts = deque(s.parts)
+        path_parts = list(s.parts)
     else:
         path_parts = deque()
         p_appendleft = path_parts.appendleft
@@ -369,7 +369,7 @@ def _path_splitter(s, _d_match=re.compile(r'\.\d').match):
     b_appendleft(base)
 
     # Return the split parent paths and then the split basename.
-    return tuple(path_parts + base_parts)
+    return tuple(ichain(path_parts, base_parts))
 
 
 def _args_to_enum(**kwargs):
