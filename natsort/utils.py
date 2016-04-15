@@ -276,6 +276,33 @@ def _pre_split_function(alg):
     return _chain_functions(function_chain)
 
 
+def _post_split_function(alg):
+    """
+    Given a set of natsort algorithms, return the function to operate
+    on the post-split strings according to the user's request.
+    """
+    # Shortcuts.
+    use_locale = alg & ns.LOCALE
+    dumb = alg & ns._DUMB
+    group_letters = (alg & ns.GROUPLETTERS) or (use_locale and dumb)
+    nan_val = float('+inf') if alg & ns.NANLAST else float('-inf')
+
+    # Build the chain of functions to execute in order.
+    func_chain = []
+    if group_letters:
+        func_chain.append(groupletters)
+    if use_locale:
+        func_chain.append(locale_convert)
+    kwargs = {'key': _chain_functions(func_chain)} if func_chain else {}
+
+    # Return the correct chained functions.
+    if alg & ns.FLOAT:
+        kwargs['nan'] = nan_val
+        return partial(fast_float, **kwargs)
+    else:
+        return partial(fast_int, **kwargs)
+
+
 def _ungroupletters(split_val, val, alg):
     """
     Return a tuple with the first character of the first element
