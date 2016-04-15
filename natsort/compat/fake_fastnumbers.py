@@ -23,7 +23,8 @@ nan_inf = set(['INF', 'INf', 'Inf', 'inF', 'iNF', 'InF', 'inf', 'iNf',
 nan_inf.update(['+'+x[:2] for x in nan_inf] + ['-'+x[:2] for x in nan_inf])
 
 
-def fast_float(x, key=None, nan=None, uni=unicodedata.numeric, nan_inf=nan_inf):
+def fast_float(x, key=lambda x: x, nan=None,
+               uni=unicodedata.numeric, nan_inf=nan_inf):
     """\
     Convert a string to a float quickly, return input as-is if not possible.
     We don't need to accept all input that the real fast_int accepts because
@@ -34,18 +35,12 @@ def fast_float(x, key=None, nan=None, uni=unicodedata.numeric, nan_inf=nan_inf):
             x = float(x)
             return nan if nan is not None and x != x else x
         except ValueError:
-            if key is not None:
-                return uni(x, key(x)) if len(x) == 1 else key(x)
-            else:
-                return uni(x, x) if len(x) == 1 else x
-    else:
-        if key is not None:
             return uni(x, key(x)) if len(x) == 1 else key(x)
-        else:
-            return uni(x, x) if len(x) == 1 else x
+    else:
+        return uni(x, key(x)) if len(x) == 1 else key(x)
 
 
-def fast_int(x, key=None, nan=None, uni=unicodedata.digit):
+def fast_int(x, key=lambda x: x, nan=None, uni=unicodedata.digit):
     """\
     Convert a string to a int quickly, return input as-is if not possible.
     We don't need to accept all input that the real fast_int accepts because
