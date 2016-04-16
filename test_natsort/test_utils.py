@@ -26,7 +26,7 @@ from natsort.utils import (
     _do_decoding,
     _path_splitter,
     _fix_nan,
-    _chain_functions,
+    chain_functions,
     _pre_split_function,
     _post_split_function,
     _ungroupletters,
@@ -161,12 +161,12 @@ def test_fix_nan_converts_nan_to_positive_infinity_with_NANLAST():
 
 def test_chain_functions_is_a_no_op_if_no_functions_are_given():
     x = 2345
-    assert _chain_functions([])(x) is x
+    assert chain_functions([])(x) is x
 
 
 def test_chain_functions_combines_functions_in_given_order():
     x = 2345
-    assert _chain_functions([str, len, op_neg])(x) == -len(str(x))
+    assert chain_functions([str, len, op_neg])(x) == -len(str(x))
 
 
 def test_pre_split_function_is_no_op_for_no_alg_options_examples():

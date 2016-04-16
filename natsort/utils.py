@@ -273,7 +273,7 @@ def _pre_split_function(alg):
             function_chain.append(methodcaller('lower'))
 
     # Return the chained functions.
-    return _chain_functions(function_chain)
+    return chain_functions(function_chain)
 
 
 def _post_split_function(alg):
@@ -293,7 +293,7 @@ def _post_split_function(alg):
         func_chain.append(groupletters)
     if use_locale:
         func_chain.append(locale_convert)
-    kwargs = {'key': _chain_functions(func_chain)} if func_chain else {}
+    kwargs = {'key': chain_functions(func_chain)} if func_chain else {}
 
     # Return the correct chained functions.
     if alg & ns.FLOAT:
@@ -320,7 +320,7 @@ def _ungroupletters(split_val, val, sep, alg):
         return ((val[0],), split_val)
 
 
-def _chain_functions(functions):
+def chain_functions(functions):
     """Chain a list of single-argument functions together and return"""
     def func(x, _functions=functions):
         output = x
