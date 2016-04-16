@@ -27,6 +27,7 @@ from natsort.utils import (
     _path_splitter,
     _fix_nan,
     chain_functions,
+    _parse_number_function,
     _pre_split_function,
     _post_split_function,
     _ungroupletters,
@@ -167,6 +168,10 @@ def test_chain_functions_is_a_no_op_if_no_functions_are_given():
 def test_chain_functions_combines_functions_in_given_order():
     x = 2345
     assert chain_functions([str, len, op_neg])(x) == -len(str(x))
+
+
+# Each test has an "example" version for demonstrative purposes,
+# and a test that uses the hypothesis module.
 
 
 def test_pre_split_function_is_no_op_for_no_alg_options_examples():
@@ -360,8 +365,28 @@ def test_ungroupletters_returns_first_element_in_first_tuple_element_caseswapped
     assert _ungroupletters((x, y), ''.join(map(py23_str, [x, y])), '', ns._DUMB | ns.LOWERCASEFIRST) == ((x[0].swapcase(),), (x, y))
 
 
-# Each test has an "example" version for demonstrative purposes,
-# and a test that uses the hypothesis module.
+def test_parse_number_function_makes_function_that_returns_tuple_example():
+    assert _parse_number_function(0, '')(57) == ('', 57)
+    assert _parse_number_function(0, '')(float('nan')) == ('', float('-inf'))
+    assert _parse_number_function(ns.NANLAST, '')(float('nan')) == ('', float('+inf'))
+
+
+@pytest.mark.skipif(not use_hypothesis, reason='requires python2.7 or greater')
+@given(floats() | integers())
+def test_parse_number_function_makes_function_that_returns_tuple(x):
+    assume(not isnan(x))
+    assert _parse_number_function(0, '')(x) == ('', x)
+
+
+def test_parse_number_function_with_PATH_makes_function_that_returns_nested_tuple_example():
+    assert _parse_number_function(ns.PATH, '')(57) == (('', 57), )
+
+
+@pytest.mark.skipif(not use_hypothesis, reason='requires python2.7 or greater')
+@given(floats() | integers())
+def test_parse_number_function_with_PATH_makes_function_that_returns_nested_tuple(x):
+    assume(not isnan(x))
+    assert _parse_number_function(ns.PATH, '')(x) == (('', x), )
 
 
 def test_sep_inserter_does_nothing_if_no_numbers_example():

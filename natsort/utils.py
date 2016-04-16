@@ -199,10 +199,9 @@ def _natsort_key(val, key, alg):
             # If there is still an error, it must be a number.
             # Return as-is, with a leading empty string.
             except TypeError:
-                n = null_string if use_locale else ''
-                if val != val:
-                    val = _fix_nan([val], alg)[0]
-                return ((n, val,),) if alg & ns.PATH else (n, val,)
+                sep = null_string if alg & ns.LOCALE else ''
+                f = _parse_number_function(alg, sep)
+                return f(val)
 
 
 def _number_extracter(s, regex, numconv, use_locale, group_letters):
@@ -227,6 +226,18 @@ def _number_extracter(s, regex, numconv, use_locale, group_letters):
         func = numconv
     return list(_sep_inserter(py23_map(func, s),
                               null_string if use_locale else ''))
+
+
+def _parse_number_function(alg, sep):
+    """Create a function that will properly format a number in a tuple."""
+    def func(val,
+             nan_replace=float('+inf') if alg & ns.NANLAST else float('-inf'),
+             sep=sep):
+        """Given a number, place it in a tuple with a leading null string."""
+        return (sep, nan_replace if val != val else val)
+
+    # Return the function, possibly wrapping in tuple if PATH is selected.
+    return (lambda x: (func(x),)) if alg & ns.PATH else func
 
 
 def _sep_inserter(iterable, sep):
