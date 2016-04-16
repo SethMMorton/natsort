@@ -36,14 +36,14 @@ def fast_float(x, key=lambda x: x, nan=None,
             x = float(x)
             return nan if nan is not None and x != x else x
         except ValueError:
-            if len(x) == 1 and not (is_py2 and not isinstance(x, unicode)):
-                return uni(x, key(x))
-            else:
+            try:
+                return uni(x, key(x)) if len(x) == 1 else key(x)
+            except TypeError:
                 return key(x)
     else:
-        if len(x) == 1 and not (is_py2 and not isinstance(x, unicode)):
-            return uni(x, key(x))
-        else:
+        try:
+            return uni(x, key(x)) if len(x) == 1 else key(x)
+        except TypeError:
             return key(x)
 
 
@@ -57,12 +57,12 @@ def fast_int(x, key=lambda x: x, nan=None, uni=unicodedata.digit):
         try:
             return long(x)
         except ValueError:
-            if len(x) == 1 and not (is_py2 and not isinstance(x, unicode)):
-                return uni(x, key(x))
-            else:
+            try:
+                return uni(x, key(x)) if len(x) == 1 else key(x)
+            except TypeError:
                 return key(x)
     else:
-        if len(x) == 1 and not (is_py2 and not isinstance(x, unicode)):
-            return uni(x, key(x))
-        else:
+        try:
+            return uni(x, key(x)) if len(x) == 1 else key(x)
+        except TypeError:
             return key(x)
