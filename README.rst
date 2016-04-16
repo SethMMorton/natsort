@@ -167,7 +167,7 @@ PyICU
 
 On BSD-based systems (this includes Mac OS X), the underlying ``locale`` library
 can be buggy (please see http://bugs.python.org/issue23195); ``locale`` is
-used for the ``ns.LOCALE`` option and ``humansorted`` function.. To remedy this,
+used for the ``ns.LOCALE`` option and ``humansorted`` function. To remedy this,
 one can 
 
     1. Use "\*.ISO8859-1" locale (i.e. 'en_US.ISO8859-1') rather than "\*.UTF-8"
