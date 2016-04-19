@@ -187,7 +187,7 @@ def _natsort_key(val, key, alg):
             # Check if it is a bytes type, and if so return as a
             # one element tuple.
             if type(val) in (bytes,):
-                return (val.lower(),) if alg & ns.IGNORECASE else (val,)
+                return _parse_bytes_function(alg)(val)
             # If not strings, assume it is an iterable that must
             # be parsed recursively. Do not apply the key recursively.
             # If this string was split as a path, turn off 'PATH'.
@@ -226,6 +226,18 @@ def _number_extracter(s, regex, numconv, use_locale, group_letters):
         func = numconv
     return list(_sep_inserter(py23_map(func, s),
                               null_string if use_locale else ''))
+
+
+def _parse_bytes_function(alg):
+    """Create a function that will properly format a bytes string in a tuple."""
+    if alg & ns.PATH and alg & ns.IGNORECASE:
+        return lambda x: ((x.lower(),),)
+    elif alg & ns.PATH:
+        return lambda x: ((x,),)
+    elif alg & ns.IGNORECASE:
+        return lambda x: (x.lower(),)
+    else:
+        return lambda x: (x,)
 
 
 def _parse_number_function(alg, sep):

@@ -21,6 +21,7 @@ if major_minor != (2, 6):
         tuples,
         lists,
         text,
+        binary,
     )
 # Otherwise mock these imports, because hypothesis
 # is incompatible with python 2.6.
