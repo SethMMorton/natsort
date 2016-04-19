@@ -817,7 +817,7 @@ def test__natsort_key_with_GROUPLETTERS_and_LOWERCASEFIRST_inverts_text_first_th
 def test__natsort_key_with_bytes_input_only_applies_LOWERCASEFIRST_or_IGNORECASE_and_returns_in_tuple():
     if sys.version[0] == '3':
         assert _natsort_key(b'Apple56', None, ns.I) == (b'Apple56',)
-        assert _natsort_key(b'Apple56', None, ns.LF) == (b'aPPLE56',)
+        assert _natsort_key(b'Apple56', None, ns.LF) == (b'Apple56',)
         assert _natsort_key(b'Apple56', None, ns.IC) == (b'apple56',)
         assert _natsort_key(b'Apple56', None, ns.G) == (b'Apple56',)
     else:
