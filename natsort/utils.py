@@ -178,11 +178,8 @@ def _natsort_key(val, key, alg):
             # Handle NaN.
             if any(x != x for x in ret):
                 ret = _fix_nan(ret, alg)
-            if use_locale and alg & ns.UNGROUPLETTERS:
-                val = orig_val if (alg & ns._DUMB) else val
-                return _ungroupletters(ret, val, null_string, alg)
-            else:
-                return ret
+            val = orig_val if (alg & ns._DUMB) else val
+            return _post_string_parse_function(alg, null_string)(ret, val)
         except (TypeError, AttributeError):
             # Check if it is a bytes type, and if so return as a
             # one element tuple.
@@ -326,21 +323,32 @@ def _post_split_function(alg):
         return partial(fast_int, **kwargs)
 
 
-def _ungroupletters(split_val, val, sep, alg):
+def _post_string_parse_function(alg, sep):
     """
-    Return a tuple with the first character of the first element
-    of the return value as the first element, and the return value
-    as the second element. This will be used to perform gross sorting
-    by the first letter.
+    Given a set of natsort algorithms, return the function to operate
+    on the post-parsed strings according to the user's request.
     """
-    if not split_val:
-        return ((), ())
-    elif split_val[0] == sep:
-        return ((b'' if use_pyicu else '',), split_val)
-    elif alg & ns._DUMB and alg & ns.LOWERCASEFIRST:
-        return ((val[0].swapcase(),), split_val)
+    if alg & ns.UNGROUPLETTERS and alg & ns.LOCALE:
+        swap = alg & ns._DUMB and alg & ns.LOWERCASEFIRST
+        def func(split_val,
+                 val,
+                 f=(lambda x: x.swapcase()) if swap else lambda x: x):
+            """
+            Return a tuple with the first character of the first element
+            of the return value as the first element, and the return value
+            as the second element. This will be used to perform gross sorting
+            by the first letter.
+            """
+            split_val = tuple(split_val)
+            if not split_val:
+                return ((), ())
+            elif split_val[0] == sep:
+                return ((b'' if use_pyicu else '',), split_val)
+            else:
+                return ((f(val[0]),), split_val)
+        return func
     else:
-        return ((val[0],), split_val)
+        return lambda split_val, val: tuple(split_val)
 
 
 def chain_functions(functions):

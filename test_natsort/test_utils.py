@@ -31,7 +31,7 @@ from natsort.utils import (
     _parse_bytes_function,
     _pre_split_function,
     _post_split_function,
-    _ungroupletters,
+    _post_string_parse_function,
 )
 from natsort.locale_help import locale_convert, groupletters
 from natsort.compat.py23 import py23_str
@@ -333,38 +333,48 @@ def test_post_split_function_with_LOCALE_and_DUMB_returns_fast_int_and_grouplett
             raise
 
 
-def test_ungroupletters_with_empty_tuple_returns_double_empty_tuple():
-    assert _ungroupletters((), '', '', 0) == ((), ())
+def test_post_string_parse_function_with_iterable_returns_tuple_with_no_options_example():
+    assert _post_string_parse_function(0, '')(iter([7]), '') == (7, )
 
 
-def test_ungroupletters_with_null_string_first_element_adds_empty_string_on_first_tuple_element():
-    assert _ungroupletters(('', 60), '', '', 0) == ((b'',) if use_pyicu else ('',), ('', 60))
+@pytest.mark.skipif(not use_hypothesis, reason='requires python2.7 or greater')
+@given(text())
+def test_post_string_parse_function_with_iterable_returns_tuple_with_no_options(x):
+    assert _post_string_parse_function(0, '')(iter([x]), '') == (x, )
 
 
-def test_ungroupletters_returns_first_element_in_first_tuple_element_example():
-    assert _ungroupletters(('this', 60), 'this60', '', 0) == (('t',), ('this', 60))
+def test_post_string_parse_function_with_empty_tuple_returns_double_empty_tuple():
+    assert _post_string_parse_function(ns.LOCALE | ns.UNGROUPLETTERS, '')((), '') == ((), ())
+
+
+def test_post_string_parse_function_with_null_string_first_element_adds_empty_string_on_first_tuple_element():
+    assert _post_string_parse_function(ns.LOCALE | ns.UNGROUPLETTERS, '')(('', 60), '') == ((b'',) if use_pyicu else ('',), ('', 60))
+
+
+def test_post_string_parse_function_returns_first_element_in_first_tuple_element_example():
+    assert _post_string_parse_function(ns.LOCALE | ns.UNGROUPLETTERS, '')(('this', 60), 'this60') == (('t',), ('this', 60))
 
 
 @pytest.mark.skipif(not use_hypothesis, reason='requires python2.7 or greater')
 @given(x=text(), y=floats() | integers())
-def test_ungroupletters_returns_first_element_in_first_tuple_element(x, y):
+def test_post_string_parse_function_returns_first_element_in_first_tuple_element(x, y):
     assume(x)
     assume(not isnan(y))
     assume(not isinf(y))
-    assert _ungroupletters((x, y), ''.join(map(py23_str, [x, y])), '', 0) == ((x[0],), (x, y))
+    assert _post_string_parse_function(ns.LOCALE | ns.UNGROUPLETTERS, '')((x, y), ''.join(map(py23_str, [x, y]))) == ((x[0],), (x, y))
 
 
-def test_ungroupletters_returns_first_element_in_first_tuple_element_caseswapped_with_DUMB_and_LOWERCASEFIRST_example():
-    assert _ungroupletters(('this', 60), 'this60', '', ns._DUMB | ns.LOWERCASEFIRST) == (('T',), ('this', 60))
+def test_post_string_parse_function_returns_first_element_in_first_tuple_element_caseswapped_with_DUMB_and_LOWERCASEFIRST_example():
+    assert _post_string_parse_function(ns.LOCALE | ns.UNGROUPLETTERS | ns._DUMB | ns.LOWERCASEFIRST, '')(('this', 60), 'this60') == (('T',), ('this', 60))
 
 
 @pytest.mark.skipif(not use_hypothesis, reason='requires python2.7 or greater')
 @given(x=text(), y=floats() | integers())
-def test_ungroupletters_returns_first_element_in_first_tuple_element_caseswapped_with_DUMB_and_LOWERCASEFIRST(x, y):
+def test_post_string_parse_function_returns_first_element_in_first_tuple_element_caseswapped_with_DUMB_and_LOWERCASEFIRST(x, y):
     assume(x)
     assume(not isnan(y))
     assume(not isinf(y))
-    assert _ungroupletters((x, y), ''.join(map(py23_str, [x, y])), '', ns._DUMB | ns.LOWERCASEFIRST) == ((x[0].swapcase(),), (x, y))
+    assert _post_string_parse_function(ns.LOCALE | ns.UNGROUPLETTERS | ns._DUMB | ns.LOWERCASEFIRST, '')((x, y), ''.join(map(py23_str, [x, y]))) == ((x[0].swapcase(),), (x, y))
 
 
 def test_parse_number_function_makes_function_that_returns_tuple_example():
