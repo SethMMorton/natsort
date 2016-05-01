@@ -16,7 +16,7 @@ import re
 from warnings import warn
 from os import curdir as os_curdir, pardir as os_pardir
 from os.path import split as path_split, splitext as path_splitext
-from itertools import islice, chain as ichain
+from itertools import chain as ichain
 from locale import localeconv
 from collections import deque
 from functools import partial
@@ -29,7 +29,6 @@ from natsort.locale_help import locale_convert, groupletters
 from natsort.compat.pathlib import PurePath, has_pathlib
 from natsort.compat.py23 import (
     py23_str,
-    py23_zip,
     py23_map,
     py23_filter,
     PY_VERSION,

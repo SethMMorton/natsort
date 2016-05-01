@@ -142,20 +142,20 @@ class ns(object):
 
     # The below are options. The values are stored as powers of two
     # so bitmasks can be used to extract the user's requested options.
-    FLOAT            = F  = 1<<0
-    SIGNED           = S  = 1<<1
+    FLOAT            = F  = 1 << 0
+    SIGNED           = S  = 1 << 1
     REAL             = R  = FLOAT | SIGNED
-    NOEXP            = N  = 1<<2
-    PATH             = P  = 1<<3
-    LOCALE           = L  = 1<<4
-    IGNORECASE       = IC = 1<<5
-    LOWERCASEFIRST   = LF = 1<<6
-    GROUPLETTERS     = G  = 1<<7
-    UNGROUPLETTERS   = UG = 1<<8
+    NOEXP            = N  = 1 << 2
+    PATH             = P  = 1 << 3
+    LOCALE           = L  = 1 << 4
+    IGNORECASE       = IC = 1 << 5
+    LOWERCASEFIRST   = LF = 1 << 6
+    GROUPLETTERS     = G  = 1 << 7
+    UNGROUPLETTERS   = UG = 1 << 8
     CAPITALFIRST     = C  = UNGROUPLETTERS
-    NANLAST          = NL = 1<<9
+    NANLAST          = NL = 1 << 9
 
     # The below are private options for internal use only.
     _NUMERIC_ONLY    = REAL | NOEXP
     _ALL_BUT_PATH    = _NUMERIC_ONLY | L | IC | LF | G | UG | C | NL
-    _DUMB            = 1<<31
+    _DUMB            = 1 << 31

@@ -28,10 +28,10 @@ class PyTest(TestCommand):
                             # '-s',
                             # '--failed',
                             # '-v',
-                            'test_natsort',
-                            'README.rst',
-                            'docs/source/intro.rst',
-                            'docs/source/examples.rst',
+                            # 'test_natsort',
+                            # 'README.rst',
+                            # 'docs/source/intro.rst',
+                            # 'docs/source/examples.rst',
                             ])
 
 

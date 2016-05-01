@@ -27,5 +27,5 @@ if major_minor != (2, 6):
 # is incompatible with python 2.6.
 else:
     example = sampled_from = assume = given = floats = integers = \
-        tuples = lists = text = compat.mock.MagicMock()
+        tuples = lists = text = binary = compat.mock.MagicMock()
     use_hypothesis = False
