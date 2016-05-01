@@ -26,6 +26,8 @@ from natsort.utils import (
     _do_decoding,
     _path_splitter,
     chain_functions,
+    _parse_string_function,
+    _parse_path_function,
     _parse_number_function,
     _parse_bytes_function,
     _pre_split_function,
@@ -453,9 +455,9 @@ def test_sep_inserter_inserts_separator_between_two_numbers(x):
 
 def test_path_splitter_splits_path_string_by_separator_example():
     z = '/this/is/a/path'
-    assert _path_splitter(z) == tuple(pathlib.Path(z).parts)
+    assert tuple(_path_splitter(z)) == tuple(pathlib.Path(z).parts)
     z = pathlib.Path('/this/is/a/path')
-    assert _path_splitter(z) == tuple(pathlib.Path(z).parts)
+    assert tuple(_path_splitter(z)) == tuple(pathlib.Path(z).parts)
 
 
 @pytest.mark.skipif(not use_hypothesis, reason='requires python2.7 or greater')
@@ -463,13 +465,13 @@ def test_path_splitter_splits_path_string_by_separator_example():
 def test_path_splitter_splits_path_string_by_separator(x):
     assume(all(x))
     z = py23_str(pathlib.Path(*x))
-    assert _path_splitter(z) == tuple(pathlib.Path(z).parts)
+    assert tuple(_path_splitter(z)) == tuple(pathlib.Path(z).parts)
 
 
 def test_path_splitter_splits_path_string_by_separator_and_removes_extension_example():
     z = '/this/is/a/path/file.exe'
     y = tuple(pathlib.Path(z).parts)
-    assert _path_splitter(z) == y[:-1] + (pathlib.Path(z).stem, pathlib.Path(z).suffix)
+    assert tuple(_path_splitter(z)) == y[:-1] + (pathlib.Path(z).stem, pathlib.Path(z).suffix)
 
 
 @pytest.mark.skipif(not use_hypothesis, reason='requires python2.7 or greater')
@@ -478,71 +480,33 @@ def test_path_splitter_splits_path_string_by_separator_and_removes_extension(x):
     assume(all(x))
     z = py23_str(pathlib.Path(*x[:-2])) + '.' + x[-1]
     y = tuple(pathlib.Path(z).parts)
-    assert _path_splitter(z) == y[:-1] + (pathlib.Path(z).stem, pathlib.Path(z).suffix)
+    assert tuple(_path_splitter(z)) == y[:-1] + (pathlib.Path(z).stem, pathlib.Path(z).suffix)
 
 
-def test_number_extracter_raises_TypeError_if_given_a_number_example():
+def no_op(x):
+    """A function that does nothing."""
+    return x
+
+
+def tuple2(x, dummy):
+    """Make the input a tuple."""
+    return tuple(x)
+
+
+def test_parse_string_function_raises_TypeError_if_given_a_number_example():
     with raises(TypeError):
-        assert _number_extracter(50.0, _float_sign_exp_re, *float_nolocale_nogroup)
+        assert _parse_string_function(0, '', _float_sign_exp_re.split, no_op, fast_float, tuple2)(50.0)
 
 
 @pytest.mark.skipif(not use_hypothesis, reason='requires python2.7 or greater')
 @given(floats())
-def test_number_extracter_raises_TypeError_if_given_a_number(x):
+def test_parse_string_function_raises_TypeError_if_given_a_number(x):
     with raises(TypeError):
-        assert _number_extracter(x, _float_sign_exp_re, *float_nolocale_nogroup)
+        assert _parse_string_function(0, '', _float_sign_exp_re.split, no_op, fast_float, tuple2)(x)
 
 
-def test_number_extracter_includes_plus_sign_and_exponent_in_float_definition_for_signed_exp_floats_example():
-    assert _number_extracter('a5+5.034e-1', _float_sign_exp_re, *float_nolocale_nogroup) == ['a', 5.0, '', 0.5034]
-
-
-@pytest.mark.skipif(not use_hypothesis, reason='requires python2.7 or greater')
-@given(lists(elements=floats() | text() | integers(), min_size=1, max_size=10))
-def test_number_extracter_includes_plus_sign_and_exponent_in_float_definition_for_signed_exp_floats(x):
-    assume(not any(type(y) == float and isnan(y) for y in x))
-    s = ''.join(repr(y) if type(y) in (float, long, int) else y for y in x)
-    assert _number_extracter(s, _float_sign_exp_re, *float_nolocale_nogroup) == float_splitter(s, True, True, '')
-
-
-def test_number_extracter_excludes_plus_sign_in_float_definition_but_includes_exponent_for_unsigned_exp_floats_example():
-    assert _number_extracter('a5+5.034e-1', _float_nosign_exp_re, *float_nolocale_nogroup) == ['a', 5.0, '+', 0.5034]
-
-
-@pytest.mark.skipif(not use_hypothesis, reason='requires python2.7 or greater')
-@given(lists(elements=floats() | text() | integers(), min_size=1, max_size=10))
-def test_number_extracter_excludes_plus_sign_in_float_definition_but_includes_exponent_for_unsigned_exp_floats(x):
-    assume(not any(type(y) == float and isnan(y) for y in x))
-    s = ''.join(repr(y) if type(y) in (float, long, int) else y for y in x)
-    assert _number_extracter(s, _float_nosign_exp_re, *float_nolocale_nogroup) == float_splitter(s, False, True, '')
-
-
-def test_number_extracter_includes_plus_and_minus_sign_in_float_definition_but_excludes_exponent_for_signed_noexp_floats_example():
-    assert _number_extracter('a5+5.034e-1', _float_sign_noexp_re, *float_nolocale_nogroup) == ['a', 5.0, '', 5.034, 'e', -1.0]
-
-
-@pytest.mark.skipif(not use_hypothesis, reason='requires python2.7 or greater')
-@given(lists(elements=floats() | text() | integers(), min_size=1, max_size=10))
-def test_number_extracter_includes_plus_and_minus_sign_in_float_definition_but_excludes_exponent_for_signed_noexp_floats(x):
-    assume(not any(type(y) == float and isnan(y) for y in x))
-    s = ''.join(repr(y) if type(y) in (float, long, int) else y for y in x)
-    assert _number_extracter(s, _float_sign_noexp_re, *float_nolocale_nogroup) == float_splitter(s, True, False, '')
-
-
-def test_number_extracter_excludes_plus_sign_and_exponent_in_float_definition_for_unsigned_noexp_floats_example():
-    assert _number_extracter('a5+5.034e-1', _float_nosign_noexp_re, *float_nolocale_nogroup) == ['a', 5.0, '+', 5.034, 'e-', 1.0]
-
-
-@pytest.mark.skipif(not use_hypothesis, reason='requires python2.7 or greater')
-@given(lists(elements=floats() | text() | integers(), min_size=1, max_size=10))
-def test_number_extracter_excludes_plus_sign_and_exponent_in_float_definition_for_unsigned_noexp_floats(x):
-    assume(not any(type(y) == float and isnan(y) for y in x))
-    s = ''.join(repr(y) if type(y) in (float, long, int) else y for y in x)
-    assert _number_extracter(s, _float_nosign_noexp_re, *float_nolocale_nogroup) == float_splitter(s, False, False, '')
-
-
-def test_number_extracter_excludes_plus_and_minus_sign_in_int_definition_for_unsigned_ints_example():
-    assert _number_extracter('a5+5.034e-1', _int_nosign_re, *int_nolocale_nogroup) == ['a', 5, '+', 5, '.', 34, 'e-', 1]
+def test_parse_string_function_only_parses_digits_with_nosign_int_example():
+    assert _parse_string_function(0, '', _int_nosign_re.split, no_op, fast_int, tuple2)('a5+5.034e-1') == ('a', 5, '+', 5, '.', 34, 'e-', 1)
 
 
 @pytest.mark.skipif(not use_hypothesis, reason='requires python2.7 or greater')
@@ -550,73 +514,84 @@ def test_number_extracter_excludes_plus_and_minus_sign_in_int_definition_for_uns
 @example([10000000000000000000000000000000000000000000000000000000000000000000000000,
           100000000000000000000000000000000000000000000000000000000000000000000000000,
           100000000000000000000000000000000000000000000000000000000000000000000000000])
-def test_number_extracter_excludes_plus_and_minus_sign_in_int_definition_for_unsigned_ints(x):
+def test_parse_string_function_only_parses_digits_with_nosign_int(x):
     s = ''.join(repr(y) if type(y) in (float, long, int) else y for y in x)
-    assert _number_extracter(s, _int_nosign_re, *int_nolocale_nogroup) == int_splitter(s, False, '')
+    assert _parse_string_function(0, '', _int_nosign_re.split, no_op, fast_int, tuple2)(s) == int_splitter(s, False, '')
 
 
-def test_number_extracter_includes_plus_and_minus_sign_in_int_definition_for_signed_ints_example():
-    assert _number_extracter('a5+5.034e-1', _int_sign_re, *int_nolocale_nogroup) == ['a', 5, '', 5, '.', 34, 'e', -1]
+def test_parse_string_function_parses_digit_with_sign_with_signed_int_example():
+    assert _parse_string_function(0, '', _int_sign_re.split, no_op, fast_int, tuple2)('a5+5.034e-1') == ('a', 5, '', 5, '.', 34, 'e', -1)
 
 
 @pytest.mark.skipif(not use_hypothesis, reason='requires python2.7 or greater')
 @given(lists(elements=floats() | text() | integers(), min_size=1, max_size=10))
-def test_number_extracter_includes_plus_and_minus_sign_in_int_definition_for_signed_ints(x):
+def test_parse_string_function_parses_digit_with_sign_with_signed_int(x):
     s = ''.join(repr(y) if type(y) in (float, long, int) else y for y in x)
-    assert _number_extracter(s, _int_sign_re, *int_nolocale_nogroup) == int_splitter(s, True, '')
+    assert _parse_string_function(0, '', _int_sign_re.split, no_op, fast_int, tuple2)(s) == int_splitter(s, True, '')
 
 
-def test_number_extracter_adds_leading_empty_string_if_input_begins_with_a_number_example():
-    assert _number_extracter('6a5+5.034e-1', _float_sign_exp_re, *float_nolocale_nogroup) == ['', 6.0, 'a', 5.0, '', 0.5034]
-
-
-def test_number_extracter_doubles_letters_with_lowercase_version_with_groupletters_for_float_example():
-    assert _number_extracter('A5+5.034E-1', _float_sign_exp_re, *float_nolocale_group) == ['aA', 5.0, '', 0.5034]
+def test_parse_string_function_only_parses_float_with_nosign_noexp_float_example():
+    assert _parse_string_function(0, '', _float_nosign_noexp_re.split, no_op, fast_float, tuple2)('a5+5.034e-1') == ('a', 5.0, '+', 5.034, 'e-', 1.0)
 
 
 @pytest.mark.skipif(not use_hypothesis, reason='requires python2.7 or greater')
 @given(lists(elements=floats() | text() | integers(), min_size=1, max_size=10))
-def test_number_extracter_doubles_letters_with_lowercase_version_with_groupletters_for_float(x):
+def test_parse_string_function_only_parses_float_with_nosign_noexp_float(x):
     assume(not any(type(y) == float and isnan(y) for y in x))
     s = ''.join(repr(y) if type(y) in (float, long, int) else y for y in x)
-    t = float_splitter(s, True, True, '')
-    t = [''.join([low(z) + z for z in y]) if type(y) != float else y for y in t]
-    assert _number_extracter(s, _float_sign_exp_re, *float_nolocale_group) == t
+    assert _parse_string_function(0, '', _float_nosign_noexp_re.split, no_op, fast_float, tuple2)(s) == float_splitter(s, False, False, '')
 
 
-def test_number_extracter_doubles_letters_with_lowercase_version_with_groupletters_for_int_example():
-    assert _number_extracter('A5+5.034E-1', _int_nosign_re, *int_nolocale_group) == ['aA', 5, '++', 5, '..', 34, 'eE--', 1]
-
-
-@pytest.mark.skipif(not use_hypothesis, reason='requires python2.7 or greater')
-@given(lists(elements=floats() | text() | integers(), min_size=1, max_size=10))
-def test_number_extracter_doubles_letters_with_lowercase_version_with_groupletters_for_int(x):
-    s = ''.join(repr(y) if type(y) in (float, long, int) else y for y in x)
-    t = int_splitter(s, False, '')
-    t = [''.join([low(z) + z for z in y]) if type(y) not in (int, long) else y for y in t]
-    assert _number_extracter(s, _int_nosign_re, *int_nolocale_group) == t
-
-
-def test_number_extracter_extracts_numbers_and_strxfrms_strings_with_use_locale_example():
-    load_locale('en_US')
-    strxfrm = get_strxfrm()
-    assert _number_extracter('A5+5.034E-1', _int_nosign_re, *int_locale_nogroup) == [strxfrm('A'), 5, strxfrm('+'), 5, strxfrm('.'), 34, strxfrm('E-'), 1]
-    locale.setlocale(locale.LC_NUMERIC, str(''))
+def test_parse_string_function_only_parses_float_with_exponent_with_nosign_exp_float_example():
+    assert _parse_string_function(0, '', _float_nosign_exp_re.split, no_op, fast_float, tuple2)('a5+5.034e-1') == ('a', 5.0, '+', 0.5034)
 
 
 @pytest.mark.skipif(not use_hypothesis, reason='requires python2.7 or greater')
 @given(lists(elements=floats() | text() | integers(), min_size=1, max_size=10))
-def test_number_extracter_extracts_numbers_and_strxfrms_strings_with_use_locale(x):
-    load_locale('en_US')
-    assume(not any(any(i in bad_uni_chars for i in y) for y in x if isinstance(y, py23_str)))
+def test_parse_string_function_only_parses_float_with_exponent_with_nosign_exp_float(x):
+    assume(not any(type(y) == float and isnan(y) for y in x))
     s = ''.join(repr(y) if type(y) in (float, long, int) else y for y in x)
-    t = int_splitter(s, False, null_string)
-    try:  # Account for locale bug on Python 3.2
-        t = [y if i == 0 and y is null_string else locale_convert(y) if not isinstance(y, (float, long, int)) else y for i, y in enumerate(t)]
-        assert _number_extracter(s, _int_nosign_re, *int_locale_nogroup) == t
-    except OverflowError:
-        pass
-    locale.setlocale(locale.LC_NUMERIC, str(''))
+    assert _parse_string_function(0, '', _float_nosign_exp_re.split, no_op, fast_float, tuple2)(s) == float_splitter(s, False, True, '')
+
+
+def test_parse_string_function_only_parses_float_with_sign_with_sign_noexp_float_example():
+    assert _parse_string_function(0, '', _float_sign_noexp_re.split, no_op, fast_float, tuple2)('a5+5.034e-1') == ('a', 5.0, '', 5.034, 'e', -1.0)
+
+
+@pytest.mark.skipif(not use_hypothesis, reason='requires python2.7 or greater')
+@given(lists(elements=floats() | text() | integers(), min_size=1, max_size=10))
+def test_parse_string_function_only_parses_float_with_sign_with_sign_noexp_float(x):
+    assume(not any(type(y) == float and isnan(y) for y in x))
+    s = ''.join(repr(y) if type(y) in (float, long, int) else y for y in x)
+    assert _parse_string_function(0, '', _float_sign_noexp_re.split, no_op, fast_float, tuple2)(s) == float_splitter(s, True, False, '')
+
+
+def test_parse_string_function_parses_float_with_sign_exp_float_example():
+    assert _parse_string_function(0, '', _float_sign_exp_re.split, no_op, fast_float, tuple2)('a5+5.034e-1') == ('a', 5.0, '', 0.5034)
+    assert _parse_string_function(0, '', _float_sign_exp_re.split, no_op, fast_float, tuple2)('6a5+5.034e-1') == ('', 6.0, 'a', 5.0, '', 0.5034)
+
+
+@pytest.mark.skipif(not use_hypothesis, reason='requires python2.7 or greater')
+@given(lists(elements=floats() | text() | integers(), min_size=1, max_size=10))
+def test_parse_string_function_parses_float_with_sign_exp_float(x):
+    assume(not any(type(y) == float and isnan(y) for y in x))
+    s = ''.join(repr(y) if type(y) in (float, long, int) else y for y in x)
+    assert _parse_string_function(0, '', _float_sign_exp_re.split, no_op, fast_float, tuple2)(s) == float_splitter(s, True, True, '')
+
+
+def test_parse_string_function_selects_pre_function_value_if_not_dumb():
+    def tuple2(x, orig):
+        """Make the input a tuple."""
+        return (orig[0], tuple(x))
+    assert _parse_string_function(0, '', _int_nosign_re.split, str.upper, fast_float, tuple2)('a5+5.034e-1') == ('A', ('A', 5, '+', 5, '.', 34, 'E-', 1))
+    assert _parse_string_function(ns._DUMB, '', _int_nosign_re.split, str.upper, fast_float, tuple2)('a5+5.034e-1') == ('A', ('A', 5, '+', 5, '.', 34, 'E-', 1))
+    assert _parse_string_function(ns.LOCALE, '', _int_nosign_re.split, str.upper, fast_float, tuple2)('a5+5.034e-1') == ('A', ('A', 5, '+', 5, '.', 34, 'E-', 1))
+    assert _parse_string_function(ns.LOCALE | ns._DUMB, '', _int_nosign_re.split, str.upper, fast_float, tuple2)('a5+5.034e-1') == ('a', ('A', 5, '+', 5, '.', 34, 'E-', 1))
+
+
+def test_parse_path_function_parses_string_as_path_then_as_string():
+    splt = _parse_string_function(0, '', _float_sign_exp_re.split, no_op, fast_float, tuple2)
+    assert _parse_path_function(splt)('/p/Folder (10)/file34.5nm (2).tar.gz') == (('/',), ('p', ), ('Folder (', 10.0, ')',), ('file', 34.5, 'nm (', 2.0, ')'), ('.tar',), ('.gz',))
 
 
 def test__natsort_key_with_nan_input_transforms_nan_to_negative_inf():

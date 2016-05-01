@@ -146,39 +146,21 @@ def _natsort_key(val, key, alg):
         if key is not None:
             val = key(val)
 
-        # If this is a path, convert it.
-        # An AttrubuteError is raised if not a string.
-        split_as_path = False
-        if alg & ns.PATH:
-            try:
-                val = _path_splitter(val)
-            except AttributeError:
-                pass
-            else:
-                # Record that this string was split as a path so that
-                # we don't set PATH in the recursive call.
-                split_as_path = True
-
         # Assume the input are strings, which is the most common case.
-        # Apply the string modification if needed.
-        orig_val = val
         try:
             if use_locale and dumb_sort():
                 alg |= ns._DUMB
-            lowfirst = alg & ns.LOWERCASEFIRST
-            dumb = alg & ns._DUMB
-            val = _pre_split_function(alg)(val)
-            gl = alg & ns.GROUPLETTERS
-            ret = tuple(_number_extracter(val,
-                                          regex,
-                                          num_function,
-                                          use_locale,
-                                          gl or (use_locale and dumb)))
-            # Handle NaN.
-            if any(x != x for x in ret):
-                ret = _fix_nan(ret, alg)
-            val = orig_val if (alg & ns._DUMB) else val
-            return _post_string_parse_function(alg, null_string)(ret, val)
+            split = _parse_string_function(
+                alg,
+                null_string if use_locale else '',
+                regex.split,
+                _pre_split_function(alg),
+                _post_split_function(alg),
+                _post_string_parse_function(alg, null_string)
+            )
+            if alg & ns.PATH:
+                split = _parse_path_function(split)
+            return split(val)
         except (TypeError, AttributeError):
             # Check if it is a bytes type, and if so return as a
             # one element tuple.
@@ -186,12 +168,8 @@ def _natsort_key(val, key, alg):
                 return _parse_bytes_function(alg)(val)
             # If not strings, assume it is an iterable that must
             # be parsed recursively. Do not apply the key recursively.
-            # If this string was split as a path, turn off 'PATH'.
             try:
-                was_path = alg & ns.PATH
-                newalg = alg & ns._ALL_BUT_PATH
-                newalg |= (was_path * (not split_as_path))
-                return tuple([_natsort_key(x, None, newalg) for x in val])
+                return tuple([_natsort_key(x, None, alg) for x in val])
             # If there is still an error, it must be a number.
             # Return as-is, with a leading empty string.
             except TypeError:
@@ -225,7 +203,7 @@ def _number_extracter(s, regex, numconv, use_locale, group_letters):
 
 
 def _parse_bytes_function(alg):
-    """Create a function that will properly format a bytes string in a tuple."""
+    """Create a function that will format a bytes string in a tuple."""
     if alg & ns.PATH and alg & ns.IGNORECASE:
         return lambda x: ((x.lower(),),)
     elif alg & ns.PATH:
@@ -246,6 +224,26 @@ def _parse_number_function(alg, sep):
 
     # Return the function, possibly wrapping in tuple if PATH is selected.
     return (lambda x: (func(x),)) if alg & ns.PATH else func
+
+
+def _parse_string_function(alg, sep, splitter, pre, post, after):
+    """Create a function that will properly split and format a string."""
+    def func(x, not_dumb=not (alg & ns._DUMB and alg & ns.LOCALE)):
+        original = x
+        x = pre(x)                 # Apply pre-splitting function
+        if not_dumb:
+            original = x
+        x = splitter(x)            # Split the string on numbers
+        x = py23_filter(None, x)   # Remove empty strings.
+        x = py23_map(post, x)      # Apply post-splitting function
+        x = _sep_inserter(x, sep)  # Insert empty strings between numbers
+        return after(x, original)  # Apply final manipulation
+    return func
+
+
+def _parse_path_function(str_split):
+    """Create a function that will properly split and format a path."""
+    return lambda x: tuple(py23_map(str_split, _path_splitter(x)))
 
 
 def _sep_inserter(iterable, sep):
@@ -329,6 +327,7 @@ def _post_string_parse_function(alg, sep):
     """
     if alg & ns.UNGROUPLETTERS and alg & ns.LOCALE:
         swap = alg & ns._DUMB and alg & ns.LOWERCASEFIRST
+
         def func(split_val,
                  val,
                  f=(lambda x: x.swapcase()) if swap else lambda x: x):
@@ -411,7 +410,7 @@ def _path_splitter(s, _d_match=re.compile(r'\.\d').match):
     b_appendleft(base)
 
     # Return the split parent paths and then the split basename.
-    return tuple(ichain(path_parts, base_parts))
+    return ichain(path_parts, base_parts)
 
 
 def _args_to_enum(**kwargs):

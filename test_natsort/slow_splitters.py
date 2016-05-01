@@ -24,7 +24,7 @@ def int_splitter(iterable, signed, sep):
     split_by_digits = refine_split_grouping(split_by_digits)
     split = int_splitter_iter(split_by_digits, signed)
     split = sep_inserter(split, sep)
-    return list(add_leading_space_if_first_is_num(split, sep))
+    return tuple(add_leading_space_if_first_is_num(split, sep))
 
 
 def float_splitter(iterable, signed, exp, sep):
@@ -37,7 +37,7 @@ def float_splitter(iterable, signed, exp, sep):
     split_by_digits = peekable(refine_split_grouping(split_by_digits))
     split = float_splitter_iter(split_by_digits, signed, exp)
     split = sep_inserter(split, sep)
-    return list(add_leading_space_if_first_is_num(split, sep))
+    return tuple(add_leading_space_if_first_is_num(split, sep))
 
 
 def refine_split_grouping(iterable):
