@@ -360,20 +360,6 @@ def chain_functions(functions):
     return func
 
 
-def _fix_nan(ret, alg):
-    """Detect an NaN and replace or raise a ValueError."""
-    t = []
-    for r in ret:
-        if r != r:
-            if alg & ns.NANLAST:
-                t.append(float('+inf'))
-            else:
-                t.append(float('-inf'))
-        else:
-            t.append(r)
-    return tuple(t)
-
-
 def _do_decoding(s, encoding):
     """A function to decode a bytes string, or return the object as-is."""
     try:

@@ -25,7 +25,6 @@ from natsort.utils import (
     _int_sign_re,
     _do_decoding,
     _path_splitter,
-    _fix_nan,
     chain_functions,
     _parse_number_function,
     _parse_bytes_function,
@@ -150,16 +149,6 @@ int_locale_group = (fast_int, True, True)
 int_locale_nogroup = (fast_int, True, False)
 int_nolocale_group = (fast_int, False, True)
 int_nolocale_nogroup = (fast_int, False, False)
-
-
-def test_fix_nan_converts_nan_to_negative_infinity_without_NANLAST():
-    assert _fix_nan((float('nan'),), 0) == (float('-inf'),)
-    assert _fix_nan(('a', 'b', float('nan')), 0) == ('a', 'b', float('-inf'))
-
-
-def test_fix_nan_converts_nan_to_positive_infinity_with_NANLAST():
-    assert _fix_nan((float('nan'),), ns.NANLAST) == (float('+inf'),)
-    assert _fix_nan(('a', 'b', float('nan')), ns.NANLAST) == ('a', 'b', float('+inf'))
 
 
 def test_chain_functions_is_a_no_op_if_no_functions_are_given():
