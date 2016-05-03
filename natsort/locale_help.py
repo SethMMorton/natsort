@@ -27,11 +27,11 @@ def groupletters(x):
     return ''.join(chain.from_iterable([_low(y), y] for y in x))
 
 
-def locale_convert(x):
+def locale_convert_function():
     """
-    Use the appropriate locale tranformation function on the given input.
+    Return a function that will use the appropriate locale tranformation.
     """
     if use_pyicu:
-        return get_pyicu_transform(getlocale())(x)
+        return get_pyicu_transform(getlocale())
     else:
-        return strxfrm(x)
+        return strxfrm

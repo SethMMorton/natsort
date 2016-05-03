@@ -9,7 +9,7 @@ import pytest
 from math import isnan
 from itertools import chain
 from natsort.compat.fake_fastnumbers import fast_float
-from natsort.locale_help import groupletters, locale_convert
+from natsort.locale_help import groupletters, locale_convert_function
 from natsort.compat.py23 import py23_str
 from natsort.compat.locale import use_pyicu
 from compat.locale import (
@@ -48,8 +48,8 @@ def test_groupeletters_returns_letters_with_lowercase_transform_of_letter(x):
 def test_locale_convert_transforms_string_to_strxfrm_string_example():
     load_locale('en_US')
     strxfrm = get_strxfrm()
-    assert locale_convert('45,8') == strxfrm('45,8')
-    assert locale_convert('hello') == strxfrm('hello')
+    assert locale_convert_function()('45,8') == strxfrm('45,8')
+    assert locale_convert_function()('hello') == strxfrm('hello')
     locale.setlocale(locale.LC_NUMERIC, str(''))
 
 
@@ -61,5 +61,5 @@ def test_locale_convert_transforms_string_to_strxfrm_string(x):
     assume(not any(i in bad_uni_chars for i in x))
     load_locale('en_US')
     strxfrm = get_strxfrm()
-    assert locale_convert(x) == strxfrm(x)
+    assert locale_convert_function()(x) == strxfrm(x)
     locale.setlocale(locale.LC_NUMERIC, str(''))

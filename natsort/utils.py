@@ -25,7 +25,7 @@ from operator import methodcaller
 # Local imports.
 from natsort.ns_enum import ns
 from natsort.unicode_numbers import digits, numeric
-from natsort.locale_help import locale_convert, groupletters
+from natsort.locale_help import locale_convert_function, groupletters
 from natsort.compat.pathlib import PurePath, has_pathlib
 from natsort.compat.py23 import (
     py23_str,
@@ -317,7 +317,7 @@ def _post_split_function(alg):
     if group_letters:
         func_chain.append(groupletters)
     if use_locale:
-        func_chain.append(locale_convert)
+        func_chain.append(locale_convert_function())
     kwargs = {'key': chain_functions(func_chain)} if func_chain else {}
 
     # Return the correct chained functions.
