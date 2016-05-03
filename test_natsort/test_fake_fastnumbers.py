@@ -4,6 +4,7 @@ Test the fake fastnumbers module.
 """
 from __future__ import unicode_literals
 
+import sys
 import pytest
 import unicodedata
 from math import isnan
@@ -19,6 +20,9 @@ from compat.hypothesis import (
     text,
     use_hypothesis,
 )
+
+if sys.version[0] == '3':
+    long = int
 
 
 def is_float(x):
@@ -37,7 +41,7 @@ def is_float(x):
 
 def is_int(x):
     try:
-        int(x)
+        long(x)
     except ValueError:
         try:
             unicodedata.digit(x)
@@ -47,6 +51,7 @@ def is_int(x):
             return True
     else:
         return True
+
 
 # Each test has an "example" version for demonstrative purposes,
 # and a test that uses the hypothesis module.
