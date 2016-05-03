@@ -228,16 +228,24 @@ def _parse_number_function(alg, sep):
 
 def _parse_string_function(alg, sep, splitter, pre, post, after):
     """Create a function that will properly split and format a string."""
-    def func(x, not_dumb=not (alg & ns._DUMB and alg & ns.LOCALE)):
-        original = x
-        x = pre(x)                 # Apply pre-splitting function
-        if not_dumb:
+    if not (alg & ns._DUMB and alg & ns.LOCALE):
+        def func(x):
+            x = pre(x)                 # Apply pre-splitting function
             original = x
-        x = splitter(x)            # Split the string on numbers
-        x = py23_filter(None, x)   # Remove empty strings.
-        x = py23_map(post, x)      # Apply post-splitting function
-        x = _sep_inserter(x, sep)  # Insert empty strings between numbers
-        return after(x, original)  # Apply final manipulation
+            x = splitter(x)            # Split the string on numbers
+            x = py23_filter(None, x)   # Remove empty strings.
+            x = py23_map(post, x)      # Apply post-splitting function
+            x = _sep_inserter(x, sep)  # Insert empty strings between numbers
+            return after(x, original)  # Apply final manipulation
+    else:
+        def func(x):
+            original = x
+            x = pre(x)                 # Apply pre-splitting function
+            x = splitter(x)            # Split the string on numbers
+            x = py23_filter(None, x)   # Remove empty strings.
+            x = py23_map(post, x)      # Apply post-splitting function
+            x = _sep_inserter(x, sep)  # Insert empty strings between numbers
+            return after(x, original)  # Apply final manipulation
     return func
 
 
