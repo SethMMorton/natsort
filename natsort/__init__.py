@@ -24,6 +24,7 @@ from natsort.natsort import (
     as_utf8,
     ns,
 )
+from natsort.utils import chain_functions
 from natsort._version import __version__
 
 __all__ = [
@@ -42,4 +43,5 @@ __all__ = [
     'as_ascii',
     'as_utf8',
     'ns',
+    'chain_functions',
 ]

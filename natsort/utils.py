@@ -350,7 +350,31 @@ def _post_string_parse_function(alg, sep):
 
 
 def chain_functions(functions):
-    """Chain a list of single-argument functions together and return"""
+    """
+    Chain a list of single-argument functions together and return.
+
+    The functions are applied in list order, and the output of the
+    previous functions is passed to the next function.
+
+    Parameters
+    ----------
+    functions : list
+        A list of single-argument functions to chain together.
+
+    Returns
+    -------
+    A single argument function.
+
+    Examples
+    --------
+    Chain several functions together!
+
+        >>> funcs = [lambda x: x * 4, len, lambda x: x + 5]
+        >>> func = chain_functions(funcs)
+        >>> func('hey')
+        17
+
+    """
     def func(x, _functions=functions):
         output = x
         for f in _functions:

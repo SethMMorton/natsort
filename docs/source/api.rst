@@ -21,3 +21,4 @@ natsort API
    order_by_index.rst
    ns_class.rst
    bytes.rst
+   chain.rst
