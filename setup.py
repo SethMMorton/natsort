@@ -20,22 +20,22 @@ class PyTest(TestCommand):
 
     def run_tests(self):
         # import here, cause outside the eggs aren't loaded
-        if sys.version[:3] == '2.6':
-            flakes_pep8 = []
-        else:
-            flakes_pep8 = ['--flakes', '--pep8']
         import pytest
-        return pytest.main(flakes_pep8 +
-                           ['--cov', 'natsort',
-                            '--cov-report', 'term-missing',
-                            # '-s',
-                            # '--failed',
-                            # '-v',
-                            # 'test_natsort',
-                            # 'README.rst',
-                            # 'docs/source/intro.rst',
-                            # 'docs/source/examples.rst',
-                            ])
+        if sys.version[:3] == '2.6':
+            return pytest.main()
+        else:
+            return pytest.main(['--cov', 'natsort',
+                                '--cov-report', 'term-missing',
+                                '--flakes',
+                                '--pep8',
+                                # '-s',
+                                # '--failed',
+                                # '-v',
+                                # 'test_natsort',
+                                # 'README.rst',
+                                # 'docs/source/intro.rst',
+                                # 'docs/source/examples.rst',
+                                ])
 
 
 # Read the natsort.py file for the module version number
