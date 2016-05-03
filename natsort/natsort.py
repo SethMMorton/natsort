@@ -235,21 +235,8 @@ def natsorted(seq, key=None, reverse=False, alg=0, **_kwargs):
         [{u}'num2', {u}'num3', {u}'num5']
 
     """
-    alg = _args_to_enum(**_kwargs) | alg
-    try:
-        return sorted(seq, reverse=reverse, key=natsort_keygen(key, alg=alg))
-    except TypeError as e:  # pragma: no cover
-        # In the event of an unresolved "unorderable types" error
-        # for string to number type comparisons (not str/bytes),
-        # attempt to sort again, being careful to prevent this error.
-        r = re.compile(r'(?:str|bytes)\(\) [<>] (?:str|bytes)\(\)')
-        if 'unorderable types' in str(e) and not r.search(str(e)):
-            return sorted(seq, reverse=reverse,
-                          key=natsort_keygen(key,
-                                             alg=alg | ns.TYPESAFE))
-        else:
-            # Re-raise if the problem was not "unorderable types"
-            raise
+    natsort_key = natsort_keygen(key, alg, **_kwargs)
+    return sorted(seq, reverse=reverse, key=natsort_key)
 
 
 @u_format
@@ -463,7 +450,6 @@ def index_natsorted(seq, key=None, reverse=False, alg=0, **_kwargs):
         [{u}'baz', {u}'foo', {u}'bar']
 
     """
-    alg = _args_to_enum(**_kwargs) | alg
     if key is None:
         newkey = itemgetter(1)
     else:
@@ -471,19 +457,8 @@ def index_natsorted(seq, key=None, reverse=False, alg=0, **_kwargs):
             return key(itemgetter(1)(x))
     # Pair the index and sequence together, then sort by element
     index_seq_pair = [[x, y] for x, y in enumerate(seq)]
-    try:
-        index_seq_pair.sort(reverse=reverse,
-                            key=natsort_keygen(newkey, alg=alg))
-    except TypeError as e:  # pragma: no cover
-        # In the event of an unresolved "unorderable types" error
-        # attempt to sort again, being careful to prevent this error.
-        if 'unorderable types' in str(e):
-            index_seq_pair.sort(reverse=reverse,
-                                key=natsort_keygen(newkey,
-                                                   alg=alg | ns.TYPESAFE))
-        else:
-            # Re-raise if the problem was not "unorderable types"
-            raise
+    index_seq_pair.sort(reverse=reverse,
+                        key=natsort_keygen(newkey, alg, **_kwargs))
     return [x for x, _ in index_seq_pair]
 
 
