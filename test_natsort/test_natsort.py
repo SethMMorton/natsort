@@ -57,7 +57,7 @@ def test_natsort_key_public_raises_DeprecationWarning_when_called():
     # But it raises a deprecation warning
     with warnings.catch_warnings(record=True) as w:
         warnings.simplefilter("always")
-        assert natsort_key('a-5.034e2') == _natsort_key('a-5.034e2', key=None, alg=ns.I)
+        assert natsort_key('a-5.034e2') == ('a-', 5, '.', 34, 'e', 2)
         assert len(w) == 1
         assert "natsort_key is deprecated as of 3.4.0, please use natsort_keygen" in str(w[-1].message)
     # It is called for each element in a list when sorting
@@ -68,19 +68,17 @@ def test_natsort_key_public_raises_DeprecationWarning_when_called():
         assert len(w) == 7
 
 
-def test_natsort_keygen_returns_natsort_key_with_alg_option():
+def test_natsort_keygen_with_invalid_alg_input_raises_ValueError():
+    # Invalid arguments give the correct response
+    with raises(ValueError) as err:
+        natsort_keygen(None, '1')
+    assert str(err.value) == "natsort_keygen: 'alg' argument must be from the enum 'ns', got 1"
+
+
+def test_natsort_keygen_returns_natsort_key_that_parses_input():
     a = 'a-5.034e1'
-    assert natsort_keygen()(a) == _natsort_key(a, None, ns.I)
-    assert natsort_keygen(alg=ns.F | ns.S)(a) == _natsort_key(a, None, ns.F | ns.S)
-
-
-def test_natsort_keygen_with_key_returns_same_result_as_nested_lambda_with_bare_natsort_key():
-    a = 'a-5.034e1'
-    f1 = natsort_keygen(key=lambda x: x.upper())
-
-    def f2(x):
-        return _natsort_key(x, lambda y: y.upper(), ns.I)
-    assert f1(a) == f2(a)
+    assert natsort_keygen()(a) == ('a-', 5, '.', 34, 'e', 1)
+    assert natsort_keygen(alg=ns.F | ns.S)(a) == ('a', -50.34)
 
 
 def test_natsort_keygen_returns_key_that_can_be_used_to_sort_list_in_place_with_same_result_as_natsorted():
@@ -300,12 +298,12 @@ def test_natsorted_with_LOCALE_and_en_setting_returns_results_sorted_by_en_langu
     locale.setlocale(locale.LC_ALL, str(''))
 
 
-@pytest.mark.skipif(not has_locale_de_DE, reason='requires de_DE locale')
-def test_natsorted_with_LOCALE_and_de_setting_returns_results_sorted_by_de_language():
-    load_locale('de_DE')
-    a = ['c', 'ä', 'b', 'a5,6', 'a5,50']
-    assert natsorted(a, alg=ns.LOCALE | ns.F) == ['a5,50', 'a5,6', 'ä', 'b', 'c']
-    locale.setlocale(locale.LC_ALL, str(''))
+# @pytest.mark.skipif(not has_locale_de_DE, reason='requires de_DE locale')
+# def test_natsorted_with_LOCALE_and_de_setting_returns_results_sorted_by_de_language():
+#     load_locale('de_DE')
+#     a = ['c', 'ä', 'b', 'a5,6', 'a5,50']
+#     assert natsorted(a, alg=ns.LOCALE | ns.F) == ['a5,50', 'a5,6', 'ä', 'b', 'c']
+#     locale.setlocale(locale.LC_ALL, str(''))
 
 
 def test_natsorted_with_LOCALE_and_mixed_input_returns_sorted_results_without_error():

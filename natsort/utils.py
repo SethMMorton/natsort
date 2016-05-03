@@ -17,7 +17,6 @@ from warnings import warn
 from os import curdir as os_curdir, pardir as os_pardir
 from os.path import split as path_split, splitext as path_splitext
 from itertools import chain as ichain
-from locale import localeconv
 from collections import deque
 from functools import partial
 from operator import methodcaller
@@ -33,11 +32,7 @@ from natsort.compat.py23 import (
     py23_filter,
     PY_VERSION,
 )
-from natsort.compat.locale import (
-    dumb_sort,
-    use_pyicu,
-    null_string,
-)
+from natsort.compat.locale import use_pyicu
 from natsort.compat.fastnumbers import (
     fast_float,
     fast_int,
@@ -48,7 +43,6 @@ if sys.version[0] == '3':
 # The regex that locates floats - include Unicode numerals.
 _exp = r'(?:[eE][-+]?[0-9]+)?'
 _num = r'(?:[0-9]+\.?[0-9]*|\.[0-9]+)'
-_num_c = r'(?:[0-9]+[.,]?[0-9]*|[.,][0-9]+)'
 _float_sign_exp_re = r'([-+]?{0}{1}|[{2}])'
 _float_sign_exp_re = _float_sign_exp_re.format(_num, _exp, numeric)
 _float_sign_exp_re = re.compile(_float_sign_exp_re, flags=re.U)
@@ -61,18 +55,6 @@ _float_sign_noexp_re = re.compile(_float_sign_noexp_re, flags=re.U)
 _float_nosign_noexp_re = r'({0}|[{1}])'
 _float_nosign_noexp_re = _float_nosign_noexp_re.format(_num, numeric)
 _float_nosign_noexp_re = re.compile(_float_nosign_noexp_re, flags=re.U)
-_float_sign_exp_re_c = r'([-+]?{0}{1}|[{2}])'
-_float_sign_exp_re_c = _float_sign_exp_re_c.format(_num_c, _exp, numeric)
-_float_sign_exp_re_c = re.compile(_float_sign_exp_re_c, flags=re.U)
-_float_nosign_exp_re_c = r'({0}{1}|[{2}])'
-_float_nosign_exp_re_c = _float_nosign_exp_re_c.format(_num_c, _exp, numeric)
-_float_nosign_exp_re_c = re.compile(_float_nosign_exp_re_c, flags=re.U)
-_float_sign_noexp_re_c = r'([-+]?{0}|[{1}])'
-_float_sign_noexp_re_c = _float_sign_noexp_re_c.format(_num_c, numeric)
-_float_sign_noexp_re_c = re.compile(_float_sign_noexp_re_c, flags=re.U)
-_float_nosign_noexp_re_c = r'({0}|[{1}])'
-_float_nosign_noexp_re_c = _float_nosign_noexp_re_c.format(_num_c, numeric)
-_float_nosign_noexp_re_c = re.compile(_float_nosign_noexp_re_c, flags=re.U)
 
 # Integer regexes - include Unicode digits.
 _int_nosign_re = r'([0-9]+|[{0}])'.format(digits)
@@ -81,27 +63,19 @@ _int_sign_re = r'([-+]?[0-9]+|[{0}])'.format(digits)
 _int_sign_re = re.compile(_int_sign_re, flags=re.U)
 
 # This dict will help select the correct regex and number conversion function.
-_regex_and_num_function_chooser = {
-    (ns.F | ns.S, '.'):        (_float_sign_exp_re,     fast_float),
-    (ns.F | ns.S | ns.N, '.'): (_float_sign_noexp_re,   fast_float),
-    (ns.F | ns.U, '.'):        (_float_nosign_exp_re,   fast_float),
-    (ns.F | ns.U | ns.N, '.'): (_float_nosign_noexp_re, fast_float),
-    (ns.I | ns.S, '.'):        (_int_sign_re,   fast_int),
-    (ns.I | ns.S | ns.N, '.'): (_int_sign_re,   fast_int),
-    (ns.I | ns.U, '.'):        (_int_nosign_re, fast_int),
-    (ns.I | ns.U | ns.N, '.'): (_int_nosign_re, fast_int),
-    (ns.F | ns.S, ','):        (_float_sign_exp_re_c,     fast_float),
-    (ns.F | ns.S | ns.N, ','): (_float_sign_noexp_re_c,   fast_float),
-    (ns.F | ns.U, ','):        (_float_nosign_exp_re_c,   fast_float),
-    (ns.F | ns.U | ns.N, ','): (_float_nosign_noexp_re_c, fast_float),
-    (ns.I | ns.S, ','):        (_int_sign_re,   fast_int),
-    (ns.I | ns.S | ns.N, ','): (_int_sign_re,   fast_int),
-    (ns.I | ns.U, ','):        (_int_nosign_re, fast_int),
-    (ns.I | ns.U | ns.N, ','): (_int_nosign_re, fast_int),
+_regex_chooser = {
+    (ns.F | ns.S):        _float_sign_exp_re,
+    (ns.F | ns.S | ns.N): _float_sign_noexp_re,
+    (ns.F | ns.U):        _float_nosign_exp_re,
+    (ns.F | ns.U | ns.N): _float_nosign_noexp_re,
+    (ns.I | ns.S):        _int_sign_re,
+    (ns.I | ns.S | ns.N): _int_sign_re,
+    (ns.I | ns.U):        _int_nosign_re,
+    (ns.I | ns.U | ns.N): _int_nosign_re,
 }
 
 
-def _natsort_key(val, key, alg):
+def _natsort_key(val, key, string_func, bytes_func, num_func):
     """\
     Key to sort strings and numbers naturally.
 
@@ -122,84 +96,26 @@ def _natsort_key(val, key, alg):
 
     """
 
-    # Convert the arguments to the proper input tuple
-    try:
-        use_locale = alg & ns.LOCALE
-        inp_options = (alg & ns._NUMERIC_ONLY,
-                       localeconv()['decimal_point'] if use_locale else '.')
-    except TypeError:
-        msg = "_natsort_key: 'alg' argument must be from the enum 'ns'"
-        raise ValueError(msg+', got {0}'.format(py23_str(alg)))
+    # Apply key if needed
+    if key is not None:
+        val = key(val)
 
-    # Get the proper regex and conversion function.
+    # Assume the input are strings, which is the most commong case
     try:
-        regex, num_function = _regex_and_num_function_chooser[inp_options]
-    except KeyError:  # pragma: no cover
-        if inp_options[1] not in ('.', ','):
-            raise ValueError("_natsort_key: currently natsort only supports "
-                             "the decimal separators '.' and ','. "
-                             "Please file a bug report.")
-        else:
-            raise
-    else:
-        # Apply key if needed.
-        if key is not None:
-            val = key(val)
-
-        # Assume the input are strings, which is the most common case.
+        return string_func(val)
+    except (TypeError, AttributeError):
+        # If bytes type, use the bytes_func
+        if type(val) in (bytes,):
+            return bytes_func(val)
+        # Otherwise, assume it is an iterable that must be parser recursively.
+        # Do not apply the key recursively.
         try:
-            if use_locale and dumb_sort():
-                alg |= ns._DUMB
-            split = _parse_string_function(
-                alg,
-                null_string if use_locale else '',
-                regex.split,
-                _pre_split_function(alg),
-                _post_split_function(alg),
-                _post_string_parse_function(alg, null_string)
-            )
-            if alg & ns.PATH:
-                split = _parse_path_function(split)
-            return split(val)
-        except (TypeError, AttributeError):
-            # Check if it is a bytes type, and if so return as a
-            # one element tuple.
-            if type(val) in (bytes,):
-                return _parse_bytes_function(alg)(val)
-            # If not strings, assume it is an iterable that must
-            # be parsed recursively. Do not apply the key recursively.
-            try:
-                return tuple([_natsort_key(x, None, alg) for x in val])
-            # If there is still an error, it must be a number.
-            # Return as-is, with a leading empty string.
-            except TypeError:
-                sep = null_string if alg & ns.LOCALE else ''
-                f = _parse_number_function(alg, sep)
-                return f(val)
-
-
-def _number_extracter(s, regex, numconv, use_locale, group_letters):
-    """Helper to separate the string input into numbers and strings."""
-
-    # Split the input string by numbers, dropping empty strings.
-    # If the input is not a string, TypeError is raised.
-    s = py23_filter(None, regex.split(s))
-
-    # Now convert the numbers to numbers, and leave strings as strings.
-    # Take into account locale if needed, and group letters if needed.
-    # Remove empty strings from the list. Insert empty strings between
-    # adjascent numbers, or at the beginning of the iterable if it is
-    # a number.
-    if use_locale and group_letters:
-        func = partial(numconv, key=lambda x: locale_convert(groupletters(x)))
-    elif use_locale:
-        func = partial(numconv, key=locale_convert)
-    elif group_letters:
-        func = partial(numconv, key=groupletters)
-    else:
-        func = numconv
-    return list(_sep_inserter(py23_map(func, s),
-                              null_string if use_locale else ''))
+            return tuple(_natsort_key(
+                x, None, string_func, bytes_func, num_func
+            ) for x in val)
+        # If that failed, it must be a number.
+        except TypeError:
+            return num_func(val)
 
 
 def _parse_bytes_function(alg):

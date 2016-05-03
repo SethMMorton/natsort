@@ -11,7 +11,7 @@ import sys
 
 # Local imports.
 from natsort.natsort import natsorted, ns
-from natsort.utils import _regex_and_num_function_chooser
+from natsort.utils import _regex_chooser
 from natsort._version import __version__
 from natsort.compat.py23 import py23_str
 
@@ -171,27 +171,26 @@ def sort_and_print_entries(entries, args):
     if do_filter or args.exclude:
         inp_options = (ns.FLOAT * is_float |
                        ns.SIGNED * signed |
-                       ns.NOEXP * (not args.exp),
-                       '.'
+                       ns.NOEXP * (not args.exp)
                        )
-        regex, num_function = _regex_and_num_function_chooser[inp_options]
+        regex = _regex_chooser[inp_options]
         if args.filter is not None:
             lows, highs = ([f[0] for f in args.filter],
                            [f[1] for f in args.filter])
             entries = [entry for entry in entries
                        if keep_entry_range(entry, lows, highs,
-                                           num_function, regex)]
+                                           float, regex)]
         if args.reverse_filter is not None:
             lows, highs = ([f[0] for f in args.reverse_filter],
                            [f[1] for f in args.reverse_filter])
             entries = [entry for entry in entries
                        if not keep_entry_range(entry, lows, highs,
-                                               num_function, regex)]
+                                               float, regex)]
         if args.exclude:
             exclude = set(args.exclude)
             entries = [entry for entry in entries
                        if exclude_entry(entry, exclude,
-                                        num_function, regex)]
+                                        float, regex)]
 
     # Print off the sorted results
     for entry in natsorted(entries, reverse=args.reverse, alg=alg):

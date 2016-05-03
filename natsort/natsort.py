@@ -18,18 +18,32 @@ from __future__ import (
 )
 
 # Std lib. imports.
-import re
 from operator import itemgetter
 from functools import partial
 from warnings import warn
 
 # Local imports.
 from natsort.ns_enum import ns
-from natsort.compat.py23 import u_format
+from natsort.compat.py23 import (
+    u_format,
+    py23_str,
+)
+from natsort.compat.locale import (
+    null_string,
+    dumb_sort,
+)
 from natsort.utils import (
     _natsort_key,
     _args_to_enum,
     _do_decoding,
+    _regex_chooser,
+    _parse_string_function,
+    _parse_path_function,
+    _parse_number_function,
+    _parse_bytes_function,
+    _pre_split_function,
+    _post_split_function,
+    _post_string_parse_function,
 )
 
 # Make sure the doctest works for either python2 or python3
@@ -132,7 +146,7 @@ def natsort_key(val, key=None, alg=0, **_kwargs):
     """Undocumented, kept for backwards-compatibility."""
     msg = "natsort_key is deprecated as of 3.4.0, please use natsort_keygen"
     warn(msg, DeprecationWarning)
-    return _natsort_key(val, key, _args_to_enum(**_kwargs) | alg)
+    return natsort_keygen(key, alg, **_kwargs)(val)
 
 
 @u_format
@@ -183,7 +197,43 @@ def natsort_keygen(key=None, alg=0, **_kwargs):
         [{u}'num-3', {u}'num2', {u}'num5.10', {u}'num5.3']
 
     """
-    return partial(_natsort_key, key=key, alg=_args_to_enum(**_kwargs) | alg)
+    # Transform old arguments to the ns enum.
+    try:
+        alg = _args_to_enum(**_kwargs) | alg
+    except TypeError:
+        msg = "natsort_keygen: 'alg' argument must be from the enum 'ns'"
+        raise ValueError(msg+', got {0}'.format(py23_str(alg)))
+
+    # Add the _DUMB option if the locale library is broken.
+    if alg & ns.LOCALE and dumb_sort():
+        alg |= ns._DUMB
+
+    # Set some variable that will be passed to the factory functions
+    sep = null_string if alg & ns.LOCALE else ''
+    regex = _regex_chooser[alg & ns._NUMERIC_ONLY]
+
+    # Create the functions that will be used to split strings.
+    pre = _pre_split_function(alg)
+    post = _post_split_function(alg)
+    after = _post_string_parse_function(alg, sep)
+
+    # Create the high-level parsing functions for strings, bytes, and numbers.
+    string_func = _parse_string_function(
+        alg, sep, regex.split, pre, post, after
+    )
+    if alg & ns.PATH:
+        string_func = _parse_path_function(string_func)
+    bytes_func = _parse_bytes_function(alg)
+    num_func = _parse_number_function(alg, sep)
+
+    # Return the natsort key with the parsing path pre-chosen.
+    return partial(
+        _natsort_key,
+        key=key,
+        string_func=string_func,
+        bytes_func=bytes_func,
+        num_func=num_func
+    )
 
 
 @u_format
