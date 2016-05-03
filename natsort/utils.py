@@ -338,7 +338,8 @@ def _post_string_parse_function(alg, sep):
 
         def func(split_val,
                  val,
-                 f=(lambda x: x.swapcase()) if swap else lambda x: x):
+                 f=(lambda x: x.swapcase()) if swap else lambda x: x,
+                 null_sep=b'' if use_pyicu else ''):
             """
             Return a tuple with the first character of the first element
             of the return value as the first element, and the return value
@@ -349,7 +350,7 @@ def _post_string_parse_function(alg, sep):
             if not split_val:
                 return ((), ())
             elif split_val[0] == sep:
-                return ((b'' if use_pyicu else '',), split_val)
+                return ((null_sep,), split_val)
             else:
                 return ((f(val[0]),), split_val)
         return func
