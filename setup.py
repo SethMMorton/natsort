@@ -20,11 +20,14 @@ class PyTest(TestCommand):
 
     def run_tests(self):
         # import here, cause outside the eggs aren't loaded
+        if sys.version[:3] == '2.6':
+            flakes_pep8 = []
+        else:
+            flakes_pep8 = ['--flakes', '--pep8']
         import pytest
-        return pytest.main(['--cov', 'natsort',
+        return pytest.main(flakes_pep8 +
+                           ['--cov', 'natsort',
                             '--cov-report', 'term-missing',
-                            '--flakes',
-                            '--pep8',
                             # '-s',
                             # '--failed',
                             # '-v',
