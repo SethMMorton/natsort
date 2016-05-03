@@ -157,5 +157,4 @@ class ns(object):
 
     # The below are private options for internal use only.
     _NUMERIC_ONLY    = REAL | NOEXP
-    _ALL_BUT_PATH    = _NUMERIC_ONLY | L | IC | LF | G | UG | C | NL
     _DUMB            = 1 << 31
