@@ -34,8 +34,8 @@ Notice that it has the order ('1', '10', '2') - this is because the list is
 being sorted in lexicographical order, which sorts numbers like you would
 letters (i.e. 'b', 'ba', 'c').
 
-``natsort`` provides a function ``natsorted`` that helps sort lists "naturally",
-either as real numbers (i.e. signed/unsigned floats or ints), or as versions.
+``natsort`` provides a function ``natsorted`` that helps sort lists "naturally";
+you can choose unsigned or signed ints or floats (it defaults to unsigned ints).
 Using ``natsorted`` is simple:
 
 .. code-block:: python
