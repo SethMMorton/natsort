@@ -104,7 +104,7 @@ def float_splitter_iter(iterable, signed, exp):
             for x in try_to_read_float_correctly(iterable, isnum, val):
                 if isinstance(x, list):
                     yield float(''.join(x))
-                elif x.lower().strip(' \t\n') in weird_check:
+                elif x.lower().strip(' \t\n\r\f\v') in weird_check:
                     yield float(x)
                 else:
                     yield x

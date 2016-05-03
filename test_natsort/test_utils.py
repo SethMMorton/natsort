@@ -69,6 +69,17 @@ if sys.version[0] == '3':
     long = int
 
 
+def whitespace_check(x):
+    """Simplifies testing"""
+    try:
+        if x.isspace():
+            return x in ' \t\n\r\f\v'
+        else:
+            return True
+    except (AttributeError, TypeError):
+        return True
+
+
 def test_do_decoding_decodes_bytes_string_to_unicode():
     assert type(_do_decoding(b'bytes', 'ascii')) is py23_str
     assert _do_decoding(b'bytes', 'ascii') == 'bytes'
@@ -555,6 +566,7 @@ def test_parse_string_function_only_parses_digits_with_nosign_int_example():
           100000000000000000000000000000000000000000000000000000000000000000000000000,
           100000000000000000000000000000000000000000000000000000000000000000000000000])
 def test_parse_string_function_only_parses_digits_with_nosign_int(x):
+    assume(all(whitespace_check(y) for y in x))
     s = ''.join(repr(y) if type(y) in (float, long, int) else y for y in x)
     assert _parse_string_function(0, '', _int_nosign_re.split, no_op, fast_int, tuple2)(s) == int_splitter(s, False, '')
 
@@ -566,6 +578,7 @@ def test_parse_string_function_parses_digit_with_sign_with_signed_int_example():
 @pytest.mark.skipif(not use_hypothesis, reason='requires python2.7 or greater')
 @given(lists(elements=floats() | text() | integers(), min_size=1, max_size=10))
 def test_parse_string_function_parses_digit_with_sign_with_signed_int(x):
+    assume(all(whitespace_check(y) for y in x))
     s = ''.join(repr(y) if type(y) in (float, long, int) else y for y in x)
     assert _parse_string_function(0, '', _int_sign_re.split, no_op, fast_int, tuple2)(s) == int_splitter(s, True, '')
 
@@ -578,6 +591,7 @@ def test_parse_string_function_only_parses_float_with_nosign_noexp_float_example
 @given(lists(elements=floats() | text() | integers(), min_size=1, max_size=10))
 def test_parse_string_function_only_parses_float_with_nosign_noexp_float(x):
     assume(not any(type(y) == float and isnan(y) for y in x))
+    assume(all(whitespace_check(y) for y in x))
     s = ''.join(repr(y) if type(y) in (float, long, int) else y for y in x)
     assert _parse_string_function(0, '', _float_nosign_noexp_re.split, no_op, fast_float, tuple2)(s) == float_splitter(s, False, False, '')
 
@@ -590,6 +604,7 @@ def test_parse_string_function_only_parses_float_with_exponent_with_nosign_exp_f
 @given(lists(elements=floats() | text() | integers(), min_size=1, max_size=10))
 def test_parse_string_function_only_parses_float_with_exponent_with_nosign_exp_float(x):
     assume(not any(type(y) == float and isnan(y) for y in x))
+    assume(all(whitespace_check(y) for y in x))
     s = ''.join(repr(y) if type(y) in (float, long, int) else y for y in x)
     assert _parse_string_function(0, '', _float_nosign_exp_re.split, no_op, fast_float, tuple2)(s) == float_splitter(s, False, True, '')
 
@@ -602,6 +617,7 @@ def test_parse_string_function_only_parses_float_with_sign_with_sign_noexp_float
 @given(lists(elements=floats() | text() | integers(), min_size=1, max_size=10))
 def test_parse_string_function_only_parses_float_with_sign_with_sign_noexp_float(x):
     assume(not any(type(y) == float and isnan(y) for y in x))
+    assume(all(whitespace_check(y) for y in x))
     s = ''.join(repr(y) if type(y) in (float, long, int) else y for y in x)
     assert _parse_string_function(0, '', _float_sign_noexp_re.split, no_op, fast_float, tuple2)(s) == float_splitter(s, True, False, '')
 
@@ -615,6 +631,7 @@ def test_parse_string_function_parses_float_with_sign_exp_float_example():
 @given(lists(elements=floats() | text() | integers(), min_size=1, max_size=10))
 def test_parse_string_function_parses_float_with_sign_exp_float(x):
     assume(not any(type(y) == float and isnan(y) for y in x))
+    assume(all(whitespace_check(y) for y in x))
     s = ''.join(repr(y) if type(y) in (float, long, int) else y for y in x)
     assert _parse_string_function(0, '', _float_sign_exp_re.split, no_op, fast_float, tuple2)(s) == float_splitter(s, True, True, '')
 
