@@ -246,7 +246,7 @@ for a in numeric_hex:
     except ValueError:  # pragma: no cover
         break
     if unicodedata.numeric(l, None) is None:
-        continue
+        continue  # pragma: no cover
     numeric_chars.append(l)
 
 # The digit characters are a subset of the numerals.
