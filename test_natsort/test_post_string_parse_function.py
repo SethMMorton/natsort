@@ -30,6 +30,9 @@ def test_post_string_parse_function_with_iterable_returns_tuple_with_no_options_
 @given(text())
 def test_post_string_parse_function_with_iterable_returns_tuple_with_no_options(x):
     assert _post_string_parse_function(0, '')(iter([x]), '') == (x, )
+    # UNGROUPLETTERS without LOCALE does nothing, as does LOCALE without UNGROUPLETTERS
+    assert _post_string_parse_function(ns.UNGROUPLETTERS, '')(iter([x]), '') == _post_string_parse_function(0, '')(iter([x]), '')
+    assert _post_string_parse_function(ns.LOCALE, '')(iter([x]), '') == _post_string_parse_function(0, '')(iter([x]), '')
 
 
 def test_post_string_parse_function_with_empty_tuple_returns_double_empty_tuple():
