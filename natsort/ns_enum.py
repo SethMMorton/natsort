@@ -29,6 +29,10 @@ class ns(object):
                  `PyICU <https://pypi.python.org/pypi/PyICU>`_ before
                  filing a bug report to ``natsort``.
 
+    .. warning:: It is recommended that you recreate your key with
+                 :func:`natsort_keygen` each time you change locale
+                 if you use the ``ns.LOCALE`` option.
+
     Attributes
     ----------
     INT, I (default)
@@ -43,14 +47,6 @@ class ns(object):
         Tell `natsort` to take into account any sign (i.e. "-" or "+")
         to the immediate left of a number.  It is the same as setting
         the old `signed` option to `True`.
-    VERSION, V
-        This is a shortcut for ``ns.INT | ns.UNSIGNED``, which is useful
-        when attempting to sort version numbers.  It is the same as
-        setting the old `number_type` option to `None`.  Since
-        ``ns.INT | ns.UNSIGNED`` is default, this is is
-        unnecessary.
-    DIGIT, D
-        Same as `VERSION` above.
     REAL, R
         This is a shortcut for ``ns.FLOAT | ns.SIGNED``, which is useful
         when attempting to sort real numbers.
@@ -112,6 +108,11 @@ class ns(object):
     TYPESAFE, T
         Deprecated as of `natsort` version 5.0.0; this option is now
         a no-op because it is always true.
+    VERSION, V
+        Deprecated as of `natsort` version 5.0.0; this option is now
+        a no-op because it is the default.
+    DIGIT, D
+        Same as `VERSION` above.
 
     Notes
     -----

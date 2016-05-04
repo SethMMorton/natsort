@@ -120,6 +120,8 @@ def _natsort_key(val, key, string_func, bytes_func, num_func):
 
 def _parse_bytes_function(alg):
     """Create a function that will format a bytes string in a tuple."""
+    # We don't worry about ns.UNGROUPLETTERS | ns.LOCALE because
+    # bytes cannot be compared to strings.
     if alg & ns.PATH and alg & ns.IGNORECASE:
         return lambda x: ((x.lower(),),)
     elif alg & ns.PATH:
@@ -139,7 +141,15 @@ def _parse_number_function(alg, sep):
         return (sep, nan_replace if val != val else val)
 
     # Return the function, possibly wrapping in tuple if PATH is selected.
-    return (lambda x: (func(x),)) if alg & ns.PATH else func
+    null_sep = b'' if use_pyicu else ''
+    if alg & ns.PATH and alg & ns.UNGROUPLETTERS and alg & ns.LOCALE:
+        return lambda x: (((null_sep,), func(x)),)
+    elif alg & ns.UNGROUPLETTERS and alg & ns.LOCALE:
+        return lambda x: ((null_sep,), func(x))
+    elif alg & ns.PATH:
+        return lambda x: (func(x),)
+    else:
+        return func
 
 
 def _parse_string_function(alg, sep, splitter, pre, post, after):

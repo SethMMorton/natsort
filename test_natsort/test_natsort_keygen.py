@@ -84,7 +84,7 @@ def test_natsort_keygen_splits_input_with_locale():
 def test_natsort_keygen_splits_input_with_locale_and_capitalfirst():
     strxfrm = get_strxfrm()
     with patch('natsort.compat.locale.dumb_sort', return_value=False):
-        assert natsort_keygen(alg=ns.L | ns.C)(INPUT) == (((null_string,), (null_string, 6, strxfrm('A-'), 5, strxfrm('.'), 34, strxfrm('e+'), 1)), (('/',), (strxfrm('/Folder ('), 1, strxfrm(')/Foo'))), (null_string, 56.7))
+        assert natsort_keygen(alg=ns.L | ns.C)(INPUT) == (((null_string,), (null_string, 6, strxfrm('A-'), 5, strxfrm('.'), 34, strxfrm('e+'), 1)), (('/',), (strxfrm('/Folder ('), 1, strxfrm(')/Foo'))), ((null_string,), (null_string, 56.7)))
     if IS_PY3: assert natsort_keygen(alg=ns.L | ns.C)(b'6A-5.034e+1') == (b'6A-5.034e+1',)
 
 
