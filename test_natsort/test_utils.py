@@ -155,6 +155,11 @@ def test_chain_functions_is_a_no_op_if_no_functions_are_given():
     assert chain_functions([])(x) is x
 
 
+def test_chain_functions_does_one_function_if_one_function_is_given():
+    x = '2345'
+    assert chain_functions([len])(x) == 4
+
+
 def test_chain_functions_combines_functions_in_given_order():
     x = 2345
     assert chain_functions([str, len, op_neg])(x) == -len(str(x))

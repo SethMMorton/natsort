@@ -28,6 +28,7 @@ from natsort.locale_help import locale_convert_function, groupletters
 from natsort.compat.pathlib import PurePath, has_pathlib
 from natsort.compat.py23 import (
     py23_str,
+    py23_range,
     py23_map,
     py23_filter,
     PY_VERSION,
@@ -310,12 +311,16 @@ def chain_functions(functions):
         17
 
     """
-    def func(x, _functions=functions):
-        output = x
-        for f in _functions:
-            output = f(output)
-        return output
-    return func
+    if not functions:
+        return lambda x: x
+    elif len(functions) == 1:
+        return functions[0]
+    else:
+        func = 'x'
+        for i in py23_range(len(functions)):
+            func = '_f[{:d}]({})'.format(i, func)
+        func = 'lambda x, _f=functions: ' + func
+        return eval(func, None, {'functions': functions})
 
 
 def _do_decoding(s, encoding):
