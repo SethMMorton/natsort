@@ -23,14 +23,11 @@ from functools import partial
 from warnings import warn
 
 # Local imports.
+import natsort.compat.locale
 from natsort.ns_enum import ns
 from natsort.compat.py23 import (
     u_format,
     py23_str,
-)
-from natsort.compat.locale import (
-    null_string,
-    dumb_sort,
 )
 from natsort.utils import (
     _natsort_key,
@@ -205,11 +202,11 @@ def natsort_keygen(key=None, alg=0, **_kwargs):
         raise ValueError(msg+', got {0}'.format(py23_str(alg)))
 
     # Add the _DUMB option if the locale library is broken.
-    if alg & ns.LOCALE and dumb_sort():
+    if alg & ns.LOCALE and natsort.compat.locale.dumb_sort():
         alg |= ns._DUMB
 
     # Set some variable that will be passed to the factory functions
-    sep = null_string if alg & ns.LOCALE else ''
+    sep = natsort.compat.locale.null_string if alg & ns.LOCALE else ''
     regex = _regex_chooser[alg & ns._NUMERIC_ONLY]
 
     # Create the functions that will be used to split strings.

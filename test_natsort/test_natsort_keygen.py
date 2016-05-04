@@ -4,6 +4,8 @@ Here are a collection of examples of how this module can be used.
 See the README or the natsort homepage for more details.
 """
 from __future__ import unicode_literals, print_function
+
+import sys
 import warnings
 from pytest import raises
 from natsort import (
@@ -12,11 +14,15 @@ from natsort import (
     natsort_keygen,
     ns,
 )
-# from natsort.utils import _natsort_key
+from natsort.compat.locale import null_string
+from compat.locale import get_strxfrm
+from compat.mock import patch
+
+IS_PY3 = sys.version[0] == '3'
+INPUT = ['6A-5.034e+1', '/Folder (1)/Foo', 56.7]
 
 
 def test_natsort_key_public_raises_DeprecationWarning_when_called():
-    # Identical to _natsort_key
     # But it raises a deprecation warning
     with warnings.catch_warnings(record=True) as w:
         warnings.simplefilter("always")
@@ -49,3 +55,44 @@ def test_natsort_keygen_returns_key_that_can_be_used_to_sort_list_in_place_with_
     b = a[:]
     a.sort(key=natsort_keygen(alg=ns.F))
     assert a == natsorted(b, alg=ns.F)
+
+
+def test_natsort_keygen_splits_input_with_defaults():
+    assert natsort_keygen()(INPUT) == (('', 6, 'A-', 5, '.', 34, 'e+', 1), ('/Folder (', 1, ')/Foo'), ('', 56.7))
+    if IS_PY3: assert natsort_keygen()(b'6A-5.034e+1') == (b'6A-5.034e+1',)
+
+
+def test_natsort_keygen_splits_input_with_real():
+    assert natsort_keygen(alg=ns.R)(INPUT) == (('', 6.0, 'A', -50.34), ('/Folder (', 1.0, ')/Foo'), ('', 56.7))
+    if IS_PY3: assert natsort_keygen(alg=ns.R)(b'6A-5.034e+1') == (b'6A-5.034e+1',)
+
+
+def test_natsort_keygen_splits_input_with_lowercasefirst_noexp_float():
+    assert natsort_keygen(alg=ns.LF | ns.F | ns.N)(INPUT) == (('', 6.0, 'a-', 5.034, 'E+', 1.0), ('/fOLDER (', 1.0, ')/fOO'), ('', 56.7))
+    if IS_PY3: assert natsort_keygen(alg=ns.LF | ns.F | ns.N)(b'6A-5.034e+1') == (b'6A-5.034e+1',)
+
+
+def test_natsort_keygen_splits_input_with_locale():
+    strxfrm = get_strxfrm()
+    with patch('natsort.compat.locale.dumb_sort', return_value=False):
+        assert natsort_keygen(alg=ns.L)(INPUT) == ((null_string, 6, strxfrm('A-'), 5, strxfrm('.'), 34, strxfrm('e+'), 1), (strxfrm('/Folder ('), 1, strxfrm(')/Foo')), (null_string, 56.7))
+    with patch('natsort.compat.locale.dumb_sort', return_value=True):
+        assert natsort_keygen(alg=ns.L)(INPUT) == ((null_string, 6, strxfrm('aa--'), 5, strxfrm('..'), 34, strxfrm('eE++'), 1), (strxfrm('//ffoOlLdDeErR  (('), 1, strxfrm('))//ffoOoO')), (null_string, 56.7))
+    if IS_PY3: assert natsort_keygen(alg=ns.L)(b'6A-5.034e+1') == (b'6A-5.034e+1',)
+
+
+def test_natsort_keygen_splits_input_with_locale_and_capitalfirst():
+    strxfrm = get_strxfrm()
+    with patch('natsort.compat.locale.dumb_sort', return_value=False):
+        assert natsort_keygen(alg=ns.L | ns.C)(INPUT) == (((null_string,), (null_string, 6, strxfrm('A-'), 5, strxfrm('.'), 34, strxfrm('e+'), 1)), (('/',), (strxfrm('/Folder ('), 1, strxfrm(')/Foo'))), (null_string, 56.7))
+    if IS_PY3: assert natsort_keygen(alg=ns.L | ns.C)(b'6A-5.034e+1') == (b'6A-5.034e+1',)
+
+
+def test_natsort_keygen_splits_input_with_path():
+    assert natsort_keygen(alg=ns.P | ns.G)(INPUT) == ((('', 6, 'aA--', 5, '..', 34, 'ee++', 1),), (('//',), ('fFoollddeerr  ((', 1, '))'), ('fFoooo',)), (('', 56.7),))
+    if IS_PY3: assert natsort_keygen(alg=ns.P | ns.G)(b'6A-5.034e+1') == ((b'6A-5.034e+1',),)
+
+
+def test_natsort_keygen_splits_input_with_ignorecase():
+    assert natsort_keygen(alg=ns.IC)(INPUT) == (('', 6, 'a-', 5, '.', 34, 'e+', 1), ('/folder (', 1, ')/foo'), ('', 56.7))
+    if IS_PY3: assert natsort_keygen(alg=ns.IC)(b'6A-5.034e+1') == (b'6a-5.034e+1',)
