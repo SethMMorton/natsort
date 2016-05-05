@@ -115,7 +115,6 @@ def _natsort_key(val, key, string_func, bytes_func, num_func):
             ) for x in val)
         # If that failed, it must be a number.
         except TypeError:
-            print('num', num_func(val))
             return num_func(val)
 
 

@@ -15,8 +15,7 @@ matrix:
     - python: pypy
       env: WITH_OPTIONS=true
 before_install:
-- sudo apt-get update
-- sudo locale-gen de_DE.UTF-8
+- if [[ $WITH_OPTIONS == true ]]; then sudo locale-gen de_DE.UTF-8; fi
 - sudo apt-get install bc
 install:
 - pip install -U pip
