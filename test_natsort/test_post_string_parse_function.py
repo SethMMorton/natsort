@@ -7,7 +7,6 @@ from math import isnan, isinf
 from natsort.ns_enum import ns
 from natsort.utils import _post_string_parse_function
 from natsort.compat.py23 import py23_str
-from natsort.compat.locale import use_pyicu
 from compat.hypothesis import (
     assume,
     given,
@@ -40,7 +39,7 @@ def test_post_string_parse_function_with_empty_tuple_returns_double_empty_tuple(
 
 
 def test_post_string_parse_function_with_null_string_first_element_adds_empty_string_on_first_tuple_element():
-    assert _post_string_parse_function(ns.LOCALE | ns.UNGROUPLETTERS, '')(('', 60), '') == ((b'',) if use_pyicu else ('',), ('', 60))
+    assert _post_string_parse_function(ns.LOCALE | ns.UNGROUPLETTERS, '')(('', 60), '') == (('',), ('', 60))
 
 
 def test_post_string_parse_function_returns_first_element_in_first_tuple_element_example():

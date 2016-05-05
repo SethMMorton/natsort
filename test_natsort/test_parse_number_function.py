@@ -6,7 +6,6 @@ import pytest
 from math import isnan
 from natsort.ns_enum import ns
 from natsort.utils import _parse_number_function
-from natsort.compat.locale import use_pyicu
 from compat.hypothesis import (
     assume,
     given,
@@ -45,26 +44,22 @@ def test_parse_number_function_with_PATH_makes_function_that_returns_nested_tupl
 
 
 def test_parse_number_function_with_UNGROUPLETTERS_LOCALE_makes_function_that_returns_nested_tuple_example():
-    null_sep = b'' if use_pyicu else ''
-    assert _parse_number_function(ns.UNGROUPLETTERS | ns.LOCALE, '')(57) == ((null_sep,), ('', 57))
+    assert _parse_number_function(ns.UNGROUPLETTERS | ns.LOCALE, '')(57) == (('',), ('', 57))
 
 
 @pytest.mark.skipif(not use_hypothesis, reason='requires python2.7 or greater')
 @given(floats() | integers())
 def test_parse_number_function_with_UNGROUPLETTERS_LOCALE_makes_function_that_returns_nested_tuple(x):
     assume(not isnan(x))
-    null_sep = b'' if use_pyicu else ''
-    assert _parse_number_function(ns.UNGROUPLETTERS | ns.LOCALE, '')(x) == ((null_sep,), ('', x))
+    assert _parse_number_function(ns.UNGROUPLETTERS | ns.LOCALE, '')(x) == (('',), ('', x))
 
 
 def test_parse_number_function_with_PATH_UNGROUPLETTERS_LOCALE_makes_function_that_returns_nested_tuple_example():
-    null_sep = b'' if use_pyicu else ''
-    assert _parse_number_function(ns.PATH | ns.UNGROUPLETTERS | ns.LOCALE, '')(57) == (((null_sep,), ('', 57)),)
+    assert _parse_number_function(ns.PATH | ns.UNGROUPLETTERS | ns.LOCALE, '')(57) == ((('',), ('', 57)),)
 
 
 @pytest.mark.skipif(not use_hypothesis, reason='requires python2.7 or greater')
 @given(floats() | integers())
 def test_parse_number_function_with_PATH_UNGROUPLETTERS_LOCALE_makes_function_that_returns_nested_tuple(x):
     assume(not isnan(x))
-    null_sep = b'' if use_pyicu else ''
-    assert _parse_number_function(ns.PATH | ns.UNGROUPLETTERS | ns.LOCALE, '')(x) == (((null_sep,), ('', x)),)
+    assert _parse_number_function(ns.PATH | ns.UNGROUPLETTERS | ns.LOCALE, '')(x) == ((('',), ('', x)),)

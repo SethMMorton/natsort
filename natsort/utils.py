@@ -33,7 +33,6 @@ from natsort.compat.py23 import (
     py23_filter,
     PY_VERSION,
 )
-from natsort.compat.locale import use_pyicu
 from natsort.compat.fastnumbers import (
     fast_float,
     fast_int,
@@ -116,6 +115,7 @@ def _natsort_key(val, key, string_func, bytes_func, num_func):
             ) for x in val)
         # If that failed, it must be a number.
         except TypeError:
+            print('num', num_func(val))
             return num_func(val)
 
 
@@ -142,11 +142,10 @@ def _parse_number_function(alg, sep):
         return (sep, nan_replace if val != val else val)
 
     # Return the function, possibly wrapping in tuple if PATH is selected.
-    null_sep = b'' if use_pyicu else ''
     if alg & ns.PATH and alg & ns.UNGROUPLETTERS and alg & ns.LOCALE:
-        return lambda x: (((null_sep,), func(x)),)
+        return lambda x: ((('',), func(x)),)
     elif alg & ns.UNGROUPLETTERS and alg & ns.LOCALE:
-        return lambda x: ((null_sep,), func(x))
+        return lambda x: (('',), func(x))
     elif alg & ns.PATH:
         return lambda x: (func(x),)
     else:
@@ -265,8 +264,7 @@ def _post_string_parse_function(alg, sep):
 
         def func(split_val,
                  val,
-                 f=(lambda x: x.swapcase()) if swap else lambda x: x,
-                 null_sep=b'' if use_pyicu else ''):
+                 f=(lambda x: x.swapcase()) if swap else lambda x: x):
             """
             Return a tuple with the first character of the first element
             of the return value as the first element, and the return value
@@ -277,7 +275,7 @@ def _post_string_parse_function(alg, sep):
             if not split_val:
                 return ((), ())
             elif split_val[0] == sep:
-                return ((null_sep,), split_val)
+                return (('',), split_val)
             else:
                 return ((f(val[0]),), split_val)
         return func
