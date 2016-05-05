@@ -316,7 +316,7 @@ def chain_functions(functions):
     else:
         func = 'x'
         for i in py23_range(len(functions)):
-            func = '_f[{:d}]({})'.format(i, func)
+            func = '_f[{0:d}]({1})'.format(i, func)
         func = 'lambda x, _f=functions: ' + func
         return eval(func, None, {'functions': functions})
 
