@@ -2,10 +2,10 @@
 """These test the utils.py functions."""
 from __future__ import unicode_literals
 
-import sys
 import pytest
 from natsort.ns_enum import ns
 from natsort.utils import _pre_split_function
+from natsort.compat.py23 import NEWPY
 from compat.hypothesis import (
     given,
     text,
@@ -30,7 +30,7 @@ def test_pre_split_function_is_no_op_for_no_alg_options(x):
 
 def test_pre_split_function_performs_casefold_with_IGNORECASE_examples():
     x = 'feijGGAd'
-    if sys.version_info[0:2] >= (3, 3):
+    if NEWPY:
         assert _pre_split_function(ns.IGNORECASE)(x) == x.casefold()
     else:
         assert _pre_split_function(ns.IGNORECASE)(x) == x.lower()
@@ -39,7 +39,7 @@ def test_pre_split_function_performs_casefold_with_IGNORECASE_examples():
 @pytest.mark.skipif(not use_hypothesis, reason='requires python2.7 or greater')
 @given(text())
 def test_pre_split_function_performs_casefold_with_IGNORECASE(x):
-    if sys.version_info[0:2] >= (3, 3):
+    if NEWPY:
         assert _pre_split_function(ns.IGNORECASE)(x) == x.casefold()
     else:
         assert _pre_split_function(ns.IGNORECASE)(x) == x.lower()
@@ -81,7 +81,7 @@ def test_pre_split_function_is_no_op_with_both_LOWERCASEFIRST_AND_DUMB(x):
 
 def test_pre_split_function_performs_swapcase_and_casefold_both_LOWERCASEFIRST_AND_IGNORECASE_example():
     x = 'feijGGAd'
-    if sys.version_info[0:2] >= (3, 3):
+    if NEWPY:
         assert _pre_split_function(ns.IGNORECASE | ns.LOWERCASEFIRST)(x) == x.swapcase().casefold()
     else:
         assert _pre_split_function(ns.IGNORECASE | ns.LOWERCASEFIRST)(x) == x.swapcase().lower()
@@ -90,7 +90,7 @@ def test_pre_split_function_performs_swapcase_and_casefold_both_LOWERCASEFIRST_A
 @pytest.mark.skipif(not use_hypothesis, reason='requires python2.7 or greater')
 @given(text())
 def test_pre_split_function_performs_swapcase_and_casefold_both_LOWERCASEFIRST_AND_IGNORECASE(x):
-    if sys.version_info[0:2] >= (3, 3):
+    if NEWPY:
         assert _pre_split_function(ns.IGNORECASE | ns.LOWERCASEFIRST)(x) == x.swapcase().casefold()
     else:
         assert _pre_split_function(ns.IGNORECASE | ns.LOWERCASEFIRST)(x) == x.swapcase().lower()

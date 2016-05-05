@@ -5,8 +5,8 @@ See the README or the natsort homepage for more details.
 """
 from __future__ import unicode_literals, print_function
 import pytest
-import sys
 import locale
+from natsort.compat.py23 import PY_VERSION
 from operator import itemgetter
 from pytest import raises
 from natsort import (
@@ -98,7 +98,7 @@ def test_natsorted_with_nan_input_returns_sorted_results_with_nan_first_without_
 
 
 def test_natsorted_with_mixed_input_raises_TypeError_if_bytes_type_is_involved_on_Python3():
-    if sys.version[0] == '3':
+    if PY_VERSION >= 3:
         with raises(TypeError) as e:
             assert natsorted(['ä', b'b'])
         assert 'bytes' in str(e.value)

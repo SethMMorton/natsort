@@ -5,6 +5,7 @@ from __future__ import unicode_literals
 import pathlib
 import pytest
 import string
+from itertools import chain
 from operator import neg as op_neg
 from pytest import raises
 from natsort.ns_enum import ns
@@ -20,6 +21,7 @@ from natsort.utils import (
     _int_sign_re,
     _do_decoding,
     _path_splitter,
+    _groupletters,
     chain_functions,
 )
 from natsort.compat.py23 import py23_str
@@ -28,6 +30,7 @@ from slow_splitters import (
     sep_inserter,
     add_leading_space_if_first_is_num,
 )
+from compat.locale import low
 from compat.hypothesis import (
     assume,
     given,
@@ -167,6 +170,17 @@ def test_chain_functions_combines_functions_in_given_order():
 
 # Each test has an "example" version for demonstrative purposes,
 # and a test that uses the hypothesis module.
+
+def test_groupletters_returns_letters_with_lowercase_transform_of_letter_example():
+    assert _groupletters('HELLO') == 'hHeElLlLoO'
+    assert _groupletters('hello') == 'hheelllloo'
+
+
+@pytest.mark.skipif(not use_hypothesis, reason='requires python2.7 or greater')
+@given(text())
+def test_groupeletters_returns_letters_with_lowercase_transform_of_letter(x):
+    assume(bool(x))
+    assert _groupletters(x) == ''.join(chain.from_iterable([low(y), y] for y in x))
 
 
 def test_sep_inserter_does_nothing_if_no_numbers_example():

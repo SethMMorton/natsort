@@ -5,13 +5,11 @@ from __future__ import (
     unicode_literals,
     absolute_import
 )
-import sys
 import compat.mock
-
-major_minor = sys.version_info[:2]
+from natsort.compat.py23 import PY_VERSION
 
 # Use hypothesis if not on python 2.6.
-if major_minor != (2, 6):
+if PY_VERSION > 2.6:
     use_hypothesis = True
     from hypothesis import assume, given, example
     from hypothesis.strategies import (

@@ -4,10 +4,10 @@ Test the fake fastnumbers module.
 """
 from __future__ import unicode_literals
 
-import sys
 import pytest
 import unicodedata
 from math import isnan
+from natsort.compat.py23 import PY_VERSION
 from natsort.compat.fake_fastnumbers import (
     fast_float,
     fast_int,
@@ -21,7 +21,7 @@ from compat.hypothesis import (
     use_hypothesis,
 )
 
-if sys.version[0] == '3':
+if PY_VERSION >= 3:
     long = int
 
 

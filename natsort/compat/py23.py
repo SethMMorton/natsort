@@ -16,6 +16,7 @@ import sys
 
 # Numeric form of version
 PY_VERSION = float(sys.version[:3])
+NEWPY = PY_VERSION >= 3.3
 
 # Assume all strings are Unicode in Python 2
 py23_str = str if sys.version[0] == '3' else unicode

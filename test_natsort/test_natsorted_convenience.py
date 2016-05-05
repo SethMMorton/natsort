@@ -4,8 +4,8 @@ Here are a collection of examples of how this module can be used.
 See the README or the natsort homepage for more details.
 """
 from __future__ import unicode_literals, print_function
-import sys
 from operator import itemgetter
+from natsort.compat.py23 import PY_VERSION
 from natsort import (
     natsorted,
     index_natsorted,
@@ -29,7 +29,7 @@ def test_decoder_returns_function_that_can_decode_bytes_but_return_non_bytes_as_
     b = 14
     assert f(b'bytes') == a
     assert f(b) is b  # returns as-is, same object ID
-    if sys.version[0] == '3':
+    if PY_VERSION >= 3:
         assert f(a) is a  # same object returned on Python3 b/c only bytes has decode
     else:
         assert f(a) is not a

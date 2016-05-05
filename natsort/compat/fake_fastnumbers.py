@@ -14,8 +14,8 @@ from __future__ import (
 # Std. lib imports.
 import sys
 import unicodedata
-is_py2 = sys.version[0] == '2'
-if not is_py2:
+from natsort.compat.py23 import PY_VERSION
+if PY_VERSION >= 3:
     long = int
 
 

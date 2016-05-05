@@ -6,9 +6,6 @@ from __future__ import (
     absolute_import
 )
 
-# Std. lib imports
-import sys
-
 # Local imports.
 from natsort.compat.py23 import PY_VERSION, cmp_to_key
 
@@ -45,7 +42,7 @@ try:
 
 except ImportError:
     import locale
-    if sys.version[0] == '2':
+    if PY_VERSION < 3:
         from locale import strcoll
         strxfrm = cmp_to_key(strcoll)
         null_string = strxfrm('')
@@ -64,11 +61,3 @@ except ImportError:
     # order. We will try to detect this and compensate.
     def dumb_sort():
         return strxfrm('A') < strxfrm('a')
-
-
-if PY_VERSION >= 3.3:
-    def _low(x):
-        return x.casefold()
-else:
-    def _low(x):
-        return x.lower()

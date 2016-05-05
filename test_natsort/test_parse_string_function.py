@@ -2,7 +2,6 @@
 """These test the utils.py functions."""
 from __future__ import unicode_literals
 
-import sys
 import pytest
 from math import isnan
 from pytest import raises
@@ -17,7 +16,7 @@ from natsort.utils import (
     _parse_string_function,
     _parse_path_function,
 )
-from natsort.compat.py23 import py23_str
+from natsort.compat.py23 import py23_str, PY_VERSION
 from natsort.compat.fastnumbers import (
     fast_float,
     fast_int,
@@ -37,7 +36,7 @@ from compat.hypothesis import (
     use_hypothesis,
 )
 
-if sys.version[0] == '3':
+if PY_VERSION >= 3:
     long = int
 
 

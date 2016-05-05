@@ -11,20 +11,12 @@ from __future__ import (
     absolute_import
 )
 
-# Std. lib imports.
-from itertools import chain
-
 # Local imports.
-from natsort.compat.locale import use_pyicu, _low
+from natsort.compat.locale import use_pyicu
 if use_pyicu:
     from natsort.compat.locale import get_pyicu_transform
 else:
     from natsort.compat.locale import strxfrm
-
-
-def groupletters(x):
-    """Double all characters, making doubled letters lowercase."""
-    return ''.join(chain.from_iterable([_low(y), y] for y in x))
 
 
 def locale_convert_function():

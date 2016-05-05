@@ -11,7 +11,6 @@ from __future__ import (
 )
 
 # Std. lib imports.
-import sys
 import re
 from warnings import warn
 from os import curdir as os_curdir, pardir as os_pardir
@@ -24,7 +23,7 @@ from operator import methodcaller
 # Local imports.
 from natsort.ns_enum import ns
 from natsort.unicode_numbers import digits, numeric
-from natsort.locale_help import locale_convert_function, groupletters
+from natsort.locale_help import locale_convert_function
 from natsort.compat.pathlib import PurePath, has_pathlib
 from natsort.compat.locale import (
     get_thousands_sep,
@@ -36,12 +35,13 @@ from natsort.compat.py23 import (
     py23_map,
     py23_filter,
     PY_VERSION,
+    NEWPY,
 )
 from natsort.compat.fastnumbers import (
     fast_float,
     fast_int,
 )
-if sys.version[0] == '3':
+if PY_VERSION >= 3:
     long = int
 
 # The regex that locates floats - include Unicode numerals.
@@ -236,7 +236,7 @@ def _pre_split_function(alg):
     if (dumb and not lowfirst) or (lowfirst and not dumb):
         function_chain.append(methodcaller('swapcase'))
     if alg & ns.IGNORECASE:
-        if PY_VERSION >= 3.3:
+        if NEWPY:
             function_chain.append(methodcaller('casefold'))
         else:
             function_chain.append(methodcaller('lower'))
@@ -263,7 +263,7 @@ def _post_split_function(alg):
     # Build the chain of functions to execute in order.
     func_chain = []
     if group_letters:
-        func_chain.append(groupletters)
+        func_chain.append(_groupletters)
     if use_locale:
         func_chain.append(locale_convert_function())
     kwargs = {'key': chain_functions(func_chain)} if func_chain else {}
@@ -303,6 +303,11 @@ def _post_string_parse_function(alg, sep):
         return func
     else:
         return lambda split_val, val: tuple(split_val)
+
+
+def _groupletters(x, _low=methodcaller('casefold' if NEWPY else 'lower')):
+    """Double all characters, making doubled letters lowercase."""
+    return ''.join(ichain.from_iterable((_low(y), y) for y in x))
 
 
 def chain_functions(functions):
