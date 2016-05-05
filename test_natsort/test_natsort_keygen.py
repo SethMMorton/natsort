@@ -14,8 +14,10 @@ from natsort import (
     ns,
 )
 from natsort.compat.py23 import PY_VERSION
-from natsort.compat.locale import null_string
-from compat.locale import get_strxfrm
+from natsort.compat.locale import (
+    null_string,
+    get_strxfrm,
+)
 from compat.mock import patch
 
 INPUT = ['6A-5.034e+1', '/Folder (1)/Foo', 56.7]

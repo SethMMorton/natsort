@@ -16,7 +16,6 @@ try:
     import PyICU
     from locale import getlocale
 
-    use_pyicu = True
     null_string = b''
 
     # If using PyICU, get the locale from the current global locale,
@@ -26,7 +25,7 @@ try:
         except TypeError:  # pragma: no cover
             return PyICU.Locale()
 
-    def get_pyicu_transform():
+    def get_strxfrm():
         return PyICU.Collator.createInstance(get_icu_locale()).getSortKey
 
     def get_thousands_sep():
@@ -49,7 +48,9 @@ except ImportError:
     else:
         from locale import strxfrm
         null_string = ''
-    use_pyicu = False
+
+    def get_strxfrm():
+        return strxfrm
 
     def get_thousands_sep():
         return locale.localeconv()['thousands_sep']

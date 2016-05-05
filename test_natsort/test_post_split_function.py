@@ -8,8 +8,8 @@ from natsort.utils import (
     _post_split_function,
     _groupletters,
 )
-from natsort.locale_help import locale_convert_function
 from natsort.compat.py23 import py23_str
+from natsort.compat.locale import get_strxfrm
 from natsort.compat.fastnumbers import (
     fast_float,
     fast_int,
@@ -77,7 +77,7 @@ def test_post_split_function_with_GROUPLETTERS_returns_fast_int_and_groupletters
 
 def test_post_split_function_with_LOCALE_returns_fast_int_and_groupletters_example():
     x = 'hello'
-    assert _post_split_function(ns.LOCALE)(x) == fast_int(x, key=locale_convert_function())
+    assert _post_split_function(ns.LOCALE)(x) == fast_int(x, key=get_strxfrm())
 
 
 @pytest.mark.skipif(not use_hypothesis, reason='requires python2.7 or greater')
@@ -85,12 +85,12 @@ def test_post_split_function_with_LOCALE_returns_fast_int_and_groupletters_examp
 def test_post_split_function_with_LOCALE_returns_fast_int_and_groupletters(x):
     assume(x)
     assume(not any(y in bad_uni_chars for y in x))
-    assert _post_split_function(ns.LOCALE)(x) == fast_int(x, key=locale_convert_function())
+    assert _post_split_function(ns.LOCALE)(x) == fast_int(x, key=get_strxfrm())
 
 
 def test_post_split_function_with_LOCALE_and_GROUPLETTERS_returns_fast_int_and_groupletters_and_locale_convert_example():
     x = 'hello'
-    assert _post_split_function(ns.GROUPLETTERS | ns.LOCALE)(x) == fast_int(x, key=lambda x: locale_convert_function()(_groupletters(x)))
+    assert _post_split_function(ns.GROUPLETTERS | ns.LOCALE)(x) == fast_int(x, key=lambda x: get_strxfrm()(_groupletters(x)))
 
 
 @pytest.mark.skipif(not use_hypothesis, reason='requires python2.7 or greater')
@@ -98,7 +98,7 @@ def test_post_split_function_with_LOCALE_and_GROUPLETTERS_returns_fast_int_and_g
 def test_post_split_function_with_LOCALE_and_GROUPLETTERS_returns_fast_int_and_groupletters_and_locale_convert(x):
     assume(x)
     try:
-        assert _post_split_function(ns.GROUPLETTERS | ns.LOCALE)(x) == fast_int(x, key=lambda x: locale_convert_function()(_groupletters(x)))
+        assert _post_split_function(ns.GROUPLETTERS | ns.LOCALE)(x) == fast_int(x, key=lambda x: get_strxfrm()(_groupletters(x)))
     except ValueError as e:  # handle broken locale lib on BSD.
         if 'is not in range' not in str(e):
             raise
@@ -106,7 +106,7 @@ def test_post_split_function_with_LOCALE_and_GROUPLETTERS_returns_fast_int_and_g
 
 def test_post_split_function_with_LOCALE_and_DUMB_returns_fast_int_and_groupletters_and_locale_convert_example():
     x = 'hello'
-    assert _post_split_function(ns._DUMB | ns.LOCALE)(x) == fast_int(x, key=lambda x: locale_convert_function()(_groupletters(x)))
+    assert _post_split_function(ns._DUMB | ns.LOCALE)(x) == fast_int(x, key=lambda x: get_strxfrm()(_groupletters(x)))
 
 
 @pytest.mark.skipif(not use_hypothesis, reason='requires python2.7 or greater')
@@ -114,7 +114,7 @@ def test_post_split_function_with_LOCALE_and_DUMB_returns_fast_int_and_grouplett
 def test_post_split_function_with_LOCALE_and_DUMB_returns_fast_int_and_groupletters_and_locale_convert(x):
     assume(x)
     try:
-        assert _post_split_function(ns._DUMB | ns.LOCALE)(x) == fast_int(x, key=lambda x: locale_convert_function()(_groupletters(x)))
+        assert _post_split_function(ns._DUMB | ns.LOCALE)(x) == fast_int(x, key=lambda x: get_strxfrm()(_groupletters(x)))
     except ValueError as e:  # handle broken locale lib on BSD.
         if 'is not in range' not in str(e):
             raise

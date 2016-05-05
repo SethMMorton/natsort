@@ -7,7 +7,6 @@ import collections
 import itertools
 import functools
 from natsort.compat.py23 import PY_VERSION, py23_zip
-# from natsort.compat.py23 import PY_VERSION, py23_zip, py23_map
 
 if PY_VERSION >= 3.0:
     long = int

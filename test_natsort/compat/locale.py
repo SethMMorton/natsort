@@ -10,7 +10,6 @@ from __future__ import (
 import locale
 
 # Local imports
-from natsort.locale_help import use_pyicu
 from natsort.compat.py23 import py23_str, py23_unichr, py23_range
 
 
@@ -27,19 +26,6 @@ try:
     has_locale_de_DE = True
 except locale.Error:
     has_locale_de_DE = False
-
-# Make a function that will return the appropriate
-# strxfrm for the current locale.
-if use_pyicu:
-    from natsort.locale_help import get_pyicu_transform
-
-    def get_strxfrm():
-        return get_pyicu_transform()
-else:
-    from natsort.locale_help import strxfrm
-
-    def get_strxfrm():
-        return strxfrm
 
 # Depending on the python version, use lower or casefold
 # to make a string lowercase.
