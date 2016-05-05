@@ -4,7 +4,7 @@ Here are a collection of examples of how this module can be used.
 See the README or the natsort homepage for more details.
 """
 from __future__ import unicode_literals, print_function
-# import pytest
+import pytest
 import sys
 import locale
 from operator import itemgetter
@@ -13,9 +13,10 @@ from natsort import (
     natsorted,
     ns,
 )
+from natsort.compat.locale import dumb_sort
 from compat.locale import (
     load_locale,
-    # has_locale_de_DE,
+    has_locale_de_DE,
 )
 
 
@@ -224,17 +225,17 @@ def test_natsorted_with_LOCALE_and_CAPITALFIRST_and_LOWERCASE_returns_results_so
 
 def test_natsorted_with_LOCALE_and_en_setting_returns_results_sorted_by_en_language():
     load_locale('en_US')
-    a = ['c', 'ä', 'b', 'a5,6', 'a5,50']
-    assert natsorted(a, alg=ns.LOCALE | ns.F) == ['a5,6', 'a5,50', 'ä', 'b', 'c']
+    a = ['c', 'a5,467.86', 'ä', 'b', 'a5367.86', 'a5,6', 'a5,50']
+    assert natsorted(a, alg=ns.LOCALE | ns.F) == ['a5,6', 'a5,50', 'a5367.86', 'a5,467.86', 'ä', 'b', 'c']
     locale.setlocale(locale.LC_ALL, str(''))
 
 
-# @pytest.mark.skipif(not has_locale_de_DE, reason='requires de_DE locale')
-# def test_natsorted_with_LOCALE_and_de_setting_returns_results_sorted_by_de_language():
-#     load_locale('de_DE')
-#     a = ['c', 'ä', 'b', 'a5,6', 'a5,50']
-#     assert natsorted(a, alg=ns.LOCALE | ns.F) == ['a5,50', 'a5,6', 'ä', 'b', 'c']
-#     locale.setlocale(locale.LC_ALL, str(''))
+@pytest.mark.skipif(not has_locale_de_DE or dumb_sort(), reason='requires de_DE locale and working locale')
+def test_natsorted_with_LOCALE_and_de_setting_returns_results_sorted_by_de_language():
+    load_locale('de_DE')
+    a = ['c', 'a5.467,86', 'ä', 'b', 'a5367.86', 'a5,6', 'a5,50']
+    assert natsorted(a, alg=ns.LOCALE | ns.F) == ['a5,50', 'a5,6', 'a5367.86', 'a5.467,86', 'ä', 'b', 'c']
+    locale.setlocale(locale.LC_ALL, str(''))
 
 
 def test_natsorted_with_LOCALE_and_mixed_input_returns_sorted_results_without_error():

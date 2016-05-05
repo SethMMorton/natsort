@@ -17,7 +17,7 @@ from itertools import chain
 # Local imports.
 from natsort.compat.locale import use_pyicu, _low
 if use_pyicu:
-    from natsort.compat.locale import get_pyicu_transform, getlocale
+    from natsort.compat.locale import get_pyicu_transform
 else:
     from natsort.compat.locale import strxfrm
 
@@ -32,6 +32,6 @@ def locale_convert_function():
     Return a function that will use the appropriate locale tranformation.
     """
     if use_pyicu:
-        return get_pyicu_transform(getlocale())
+        return get_pyicu_transform()
     else:
         return strxfrm

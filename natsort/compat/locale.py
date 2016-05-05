@@ -19,23 +19,32 @@ try:
     import PyICU
     from locale import getlocale
 
-    # If using PyICU, get the locale from the current global locale,
-    # then create a sort key from that
-    def get_pyicu_transform(l, _d={}):
-        if l not in _d:
-            if l == (None, None):  # pragma: no cover
-                c = PyICU.Collator.createInstance(PyICU.Locale())
-            else:
-                loc = '.'.join(l)
-                c = PyICU.Collator.createInstance(PyICU.Locale(loc))
-            _d[l] = c.getSortKey
-        return _d[l]
     use_pyicu = True
     null_string = b''
 
+    # If using PyICU, get the locale from the current global locale,
+    def get_icu_locale():
+        try:
+            return PyICU.Locale('.'.join(getlocale()))
+        except TypeError:  # pragma: no cover
+            return PyICU.Locale()
+
+    def get_pyicu_transform():
+        return PyICU.Collator.createInstance(get_icu_locale()).getSortKey
+
+    def get_thousands_sep():
+        sep = PyICU.DecimalFormatSymbols.kGroupingSeparatorSymbol
+        return PyICU.DecimalFormatSymbols(get_icu_locale()).getSymbol(sep)
+
+    def get_decimal_point():
+        sep = PyICU.DecimalFormatSymbols.kDecimalSeparatorSymbol
+        return PyICU.DecimalFormatSymbols(get_icu_locale()).getSymbol(sep)
+
     def dumb_sort():
         return False
+
 except ImportError:
+    import locale
     if sys.version[0] == '2':
         from locale import strcoll
         strxfrm = cmp_to_key(strcoll)
@@ -44,6 +53,12 @@ except ImportError:
         from locale import strxfrm
         null_string = ''
     use_pyicu = False
+
+    def get_thousands_sep():
+        return locale.localeconv()['thousands_sep']
+
+    def get_decimal_point():
+        return locale.localeconv()['decimal_point']
 
     # On some systems, locale is broken and does not sort in the expected
     # order. We will try to detect this and compensate.

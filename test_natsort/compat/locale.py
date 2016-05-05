@@ -32,10 +32,9 @@ except locale.Error:
 # strxfrm for the current locale.
 if use_pyicu:
     from natsort.locale_help import get_pyicu_transform
-    from locale import getlocale
 
     def get_strxfrm():
-        return get_pyicu_transform(getlocale())
+        return get_pyicu_transform()
 else:
     from natsort.locale_help import strxfrm
 

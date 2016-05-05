@@ -26,6 +26,10 @@ from natsort.ns_enum import ns
 from natsort.unicode_numbers import digits, numeric
 from natsort.locale_help import locale_convert_function, groupletters
 from natsort.compat.pathlib import PurePath, has_pathlib
+from natsort.compat.locale import (
+    get_thousands_sep,
+    get_decimal_point,
+)
 from natsort.compat.py23 import (
     py23_str,
     py23_range,
@@ -212,6 +216,21 @@ def _pre_split_function(alg):
     lowfirst = alg & ns.LOWERCASEFIRST
     dumb = alg & ns._DUMB
 
+    # Create a regular expression that will change the decimal point to
+    # a period if not already a period.
+    decimal = get_decimal_point()
+
+    switch_decimal = r'(?<=[0-9]){decimal}|{decimal}(?=[0-9])'
+    switch_decimal = switch_decimal.format(decimal=decimal)
+    switch_decimal = re.compile(switch_decimal)
+
+    # Create a regular expression that will remove thousands seprarators.
+    thousands = get_thousands_sep()
+    strip_thousands = (r'(?<![0-9]{{4}})(?<=[0-9]{{1}})'
+                       r'{thousands}(?=[0-9]{{3}}([^0-9]|$))')
+    strip_thousands = strip_thousands.format(thousands=thousands)
+    strip_thousands = re.compile(strip_thousands)
+
     # Build the chain of functions to execute in order.
     function_chain = []
     if (dumb and not lowfirst) or (lowfirst and not dumb):
@@ -221,6 +240,10 @@ def _pre_split_function(alg):
             function_chain.append(methodcaller('casefold'))
         else:
             function_chain.append(methodcaller('lower'))
+    if alg & ns.LOCALE:
+        function_chain.append(partial(strip_thousands.sub, ''))
+        if decimal != '.':
+            function_chain.append(partial(switch_decimal.sub, '.'))
 
     # Return the chained functions.
     return chain_functions(function_chain)
