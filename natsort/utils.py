@@ -228,17 +228,33 @@ def _pre_split_function(alg):
 
     if alg & ns.LOCALENUM:
         # Create a regular expression that will remove thousands seprarators.
-        thousands = get_thousands_sep()
-        strip_thousands = (r'(?<![0-9]{{4}})(?<=[0-9]{{1}})'
-                           r'{thousands}(?=[0-9]{{3}}([^0-9]|$))')
-        strip_thousands = strip_thousands.format(thousands=thousands)
-        strip_thousands = re.compile(strip_thousands)
+        strip_thousands = r'''
+            (?<=[0-9]{{1}})  # At least 1 number
+            (?<![0-9]{{4}})  # No more than 3 numbers
+            {nodecimal}      # Cannot follow decimal
+            {thou}           # The thousands separator
+            (?=[0-9]{{3}}    # Three numbers must follow
+             ([^0-9]|$)      # But a non-number after that
+            )
+        '''
+        nodecimal = r''
+        if alg & ns.FLOAT:
+            # Make a regular expression component that will ensure no
+            # separators are removed after a decimal point.
+            d = get_decimal_point()
+            d = r'\.' if d == r'.' else d
+            nodecimal += r'(?<!' + d + r'[0-9])'
+            nodecimal += r'(?<!' + d + r'[0-9]{2})'
+            nodecimal += r'(?<!' + d + r'[0-9]{3})'
+        strip_thousands = strip_thousands.format(thou=get_thousands_sep(),
+                                                 nodecimal=nodecimal)
+        strip_thousands = re.compile(strip_thousands, flags=re.VERBOSE)
         function_chain.append(partial(strip_thousands.sub, ''))
 
         # Create a regular expression that will change the decimal point to
         # a period if not already a period.
         decimal = get_decimal_point()
-        if decimal != '.':
+        if alg & ns.FLOAT and decimal != '.':
             switch_decimal = r'(?<=[0-9]){decimal}|{decimal}(?=[0-9])'
             switch_decimal = switch_decimal.format(decimal=decimal)
             switch_decimal = re.compile(switch_decimal)

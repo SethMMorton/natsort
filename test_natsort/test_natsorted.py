@@ -13,7 +13,6 @@ from natsort import (
     natsorted,
     ns,
 )
-from natsort.compat.locale import dumb_sort
 from compat.locale import (
     load_locale,
     has_locale_de_DE,
@@ -230,7 +229,7 @@ def test_natsorted_with_LOCALE_and_en_setting_returns_results_sorted_by_en_langu
     locale.setlocale(locale.LC_ALL, str(''))
 
 
-@pytest.mark.skipif(not has_locale_de_DE or dumb_sort(), reason='requires de_DE locale and working locale')
+@pytest.mark.skipif(not has_locale_de_DE, reason='requires de_DE locale and working locale')
 def test_natsorted_with_LOCALE_and_de_setting_returns_results_sorted_by_de_language():
     load_locale('de_DE')
     a = ['c', 'a5.467,86', 'ä', 'b', 'a5367.86', 'a5,6', 'a5,50']
