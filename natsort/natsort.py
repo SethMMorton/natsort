@@ -202,11 +202,11 @@ def natsort_keygen(key=None, alg=0, **_kwargs):
         raise ValueError(msg+', got {0}'.format(py23_str(alg)))
 
     # Add the _DUMB option if the locale library is broken.
-    if alg & ns.LOCALE and natsort.compat.locale.dumb_sort():
+    if alg & ns.LOCALEALPHA and natsort.compat.locale.dumb_sort():
         alg |= ns._DUMB
 
     # Set some variable that will be passed to the factory functions
-    sep = natsort.compat.locale.null_string if alg & ns.LOCALE else ''
+    sep = natsort.compat.locale.null_string if alg & ns.LOCALEALPHA else ''
     regex = _regex_chooser[alg & ns._NUMERIC_ONLY]
 
     # Create the functions that will be used to split strings.

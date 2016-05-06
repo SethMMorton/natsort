@@ -65,12 +65,18 @@ class ns(object):
         front. It is the same as setting the old `as_path` option to
         `True`.
     LOCALE, L
-        Tell `natsort` to be locale-aware when sorting strings (everything
-        that was not converted to a number).  Your sorting results will vary
-        depending on your current locale. Generally, the `GROUPLETTERS`
-        option is not needed with `LOCALE` because the `locale` library
-        groups the letters in the same manner (although you may still
-        need `GROUPLETTERS` if there are numbers in your strings).
+        Tell `natsort` to be locale-aware when sorting. This includes both
+        proper sorting of alphabetical characters as well as proper
+        handling of locale-dependent decimal separators and thousands
+        separators. This is a shortcut for
+        ``ns.LOCALEALPHA | ns.LOCALENUM``.
+        Your sorting results will vary depending on your current locale.
+    LOCALEALPHA, LA
+        Tell `natsort` to be locale-aware when sorting, but only for
+        alphabetical characters.
+    LOCALENUM, LN
+        Tell `natsort` to be locale-aware when sorting, but only for
+        decimal separators and thousands separators.
     IGNORECASE, IC
         Tell `natsort` to ignore case when sorting.  For example,
         ``['Banana', 'apple', 'banana', 'Apple']`` would be sorted as
@@ -93,7 +99,8 @@ class ns(object):
         ``['Banana', 'apple', 'banana', 'Apple']`` would be sorted as
         ``['Apple', 'apple', 'Banana', 'banana']``.
         Useless when used with `IGNORECASE`; use with `LOWERCASEFIRST`
-        to reverse the order of upper and lower case.
+        to reverse the order of upper and lower case. Generally not
+        needed with `LOCALE`.
     CAPITALFIRST, C
         Only used when `LOCALE` is enabled. Tell `natsort` to put all
         capitalized words before non-capitalized words. This is essentially
@@ -148,13 +155,15 @@ class ns(object):
     REAL             = R  = FLOAT | SIGNED
     NOEXP            = N  = 1 << 2
     PATH             = P  = 1 << 3
-    LOCALE           = L  = 1 << 4
-    IGNORECASE       = IC = 1 << 5
-    LOWERCASEFIRST   = LF = 1 << 6
-    GROUPLETTERS     = G  = 1 << 7
-    UNGROUPLETTERS   = UG = 1 << 8
+    LOCALEALPHA      = LA = 1 << 4
+    LOCALENUM        = LN = 1 << 5
+    LOCALE           = L  = LOCALEALPHA | LOCALENUM
+    IGNORECASE       = IC = 1 << 6
+    LOWERCASEFIRST   = LF = 1 << 7
+    GROUPLETTERS     = G  = 1 << 8
+    UNGROUPLETTERS   = UG = 1 << 9
     CAPITALFIRST     = C  = UNGROUPLETTERS
-    NANLAST          = NL = 1 << 9
+    NANLAST          = NL = 1 << 10
 
     # The below are private options for internal use only.
     _NUMERIC_ONLY    = REAL | NOEXP

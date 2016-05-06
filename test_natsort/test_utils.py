@@ -139,6 +139,8 @@ def test_ns_enum_values_have_are_as_expected():
     assert ns.SIGNED == ns.S
     assert ns.NOEXP == ns.N
     assert ns.PATH == ns.P
+    assert ns.LOCALEALPHA == ns.LA
+    assert ns.LOCALENUM == ns.LN
     assert ns.LOCALE == ns.L
     assert ns.IGNORECASE == ns.IC
     assert ns.LOWERCASEFIRST == ns.LF
@@ -149,6 +151,7 @@ def test_ns_enum_values_have_are_as_expected():
     assert ns.NANLAST == ns.NL
 
     # Convenience
+    assert ns.LOCALE == ns.LOCALEALPHA | ns.LOCALENUM
     assert ns.REAL == ns.FLOAT | ns.SIGNED
     assert ns._NUMERIC_ONLY == ns.REAL | ns.NOEXP
 

@@ -124,7 +124,7 @@ def _natsort_key(val, key, string_func, bytes_func, num_func):
 
 def _parse_bytes_function(alg):
     """Create a function that will format a bytes string in a tuple."""
-    # We don't worry about ns.UNGROUPLETTERS | ns.LOCALE because
+    # We don't worry about ns.UNGROUPLETTERS | ns.LOCALEALPHA because
     # bytes cannot be compared to strings.
     if alg & ns.PATH and alg & ns.IGNORECASE:
         return lambda x: ((x.lower(),),)
@@ -145,9 +145,9 @@ def _parse_number_function(alg, sep):
         return (sep, nan_replace if val != val else val)
 
     # Return the function, possibly wrapping in tuple if PATH is selected.
-    if alg & ns.PATH and alg & ns.UNGROUPLETTERS and alg & ns.LOCALE:
+    if alg & ns.PATH and alg & ns.UNGROUPLETTERS and alg & ns.LOCALEALPHA:
         return lambda x: ((('',), func(x)),)
-    elif alg & ns.UNGROUPLETTERS and alg & ns.LOCALE:
+    elif alg & ns.UNGROUPLETTERS and alg & ns.LOCALEALPHA:
         return lambda x: (('',), func(x))
     elif alg & ns.PATH:
         return lambda x: (func(x),)
@@ -157,7 +157,7 @@ def _parse_number_function(alg, sep):
 
 def _parse_string_function(alg, sep, splitter, pre, post, after):
     """Create a function that will properly split and format a string."""
-    if not (alg & ns._DUMB and alg & ns.LOCALE):
+    if not (alg & ns._DUMB and alg & ns.LOCALEALPHA):
         def func(x):
             x = pre(x)                 # Apply pre-splitting function
             original = x
@@ -216,21 +216,6 @@ def _pre_split_function(alg):
     lowfirst = alg & ns.LOWERCASEFIRST
     dumb = alg & ns._DUMB
 
-    # Create a regular expression that will change the decimal point to
-    # a period if not already a period.
-    decimal = get_decimal_point()
-
-    switch_decimal = r'(?<=[0-9]){decimal}|{decimal}(?=[0-9])'
-    switch_decimal = switch_decimal.format(decimal=decimal)
-    switch_decimal = re.compile(switch_decimal)
-
-    # Create a regular expression that will remove thousands seprarators.
-    thousands = get_thousands_sep()
-    strip_thousands = (r'(?<![0-9]{{4}})(?<=[0-9]{{1}})'
-                       r'{thousands}(?=[0-9]{{3}}([^0-9]|$))')
-    strip_thousands = strip_thousands.format(thousands=thousands)
-    strip_thousands = re.compile(strip_thousands)
-
     # Build the chain of functions to execute in order.
     function_chain = []
     if (dumb and not lowfirst) or (lowfirst and not dumb):
@@ -240,9 +225,23 @@ def _pre_split_function(alg):
             function_chain.append(methodcaller('casefold'))
         else:
             function_chain.append(methodcaller('lower'))
-    if alg & ns.LOCALE:
+
+    if alg & ns.LOCALENUM:
+        # Create a regular expression that will remove thousands seprarators.
+        thousands = get_thousands_sep()
+        strip_thousands = (r'(?<![0-9]{{4}})(?<=[0-9]{{1}})'
+                           r'{thousands}(?=[0-9]{{3}}([^0-9]|$))')
+        strip_thousands = strip_thousands.format(thousands=thousands)
+        strip_thousands = re.compile(strip_thousands)
         function_chain.append(partial(strip_thousands.sub, ''))
+
+        # Create a regular expression that will change the decimal point to
+        # a period if not already a period.
+        decimal = get_decimal_point()
         if decimal != '.':
+            switch_decimal = r'(?<=[0-9]){decimal}|{decimal}(?=[0-9])'
+            switch_decimal = switch_decimal.format(decimal=decimal)
+            switch_decimal = re.compile(switch_decimal)
             function_chain.append(partial(switch_decimal.sub, '.'))
 
     # Return the chained functions.
@@ -255,7 +254,7 @@ def _post_split_function(alg):
     on the post-split strings according to the user's request.
     """
     # Shortcuts.
-    use_locale = alg & ns.LOCALE
+    use_locale = alg & ns.LOCALEALPHA
     dumb = alg & ns._DUMB
     group_letters = (alg & ns.GROUPLETTERS) or (use_locale and dumb)
     nan_val = float('+inf') if alg & ns.NANLAST else float('-inf')
@@ -281,7 +280,7 @@ def _post_string_parse_function(alg, sep):
     Given a set of natsort algorithms, return the function to operate
     on the post-parsed strings according to the user's request.
     """
-    if alg & ns.UNGROUPLETTERS and alg & ns.LOCALE:
+    if alg & ns.UNGROUPLETTERS and alg & ns.LOCALEALPHA:
         swap = alg & ns._DUMB and alg & ns.LOWERCASEFIRST
 
         def func(split_val,
