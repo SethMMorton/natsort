@@ -74,11 +74,13 @@ version < 4.0.0. Use the ``realsorted`` function:
 
 .. code-block:: python
 
-    >>> from natsort import realsorted
+    >>> from natsort import realsorted, ns
     >>> a = ['num5.10', 'num-3', 'num5.3', 'num2']
     >>> natsorted(a)
     ['num2', 'num5.3', 'num5.10', 'num-3']
-    >>> realsorted(a)
+    >>> natsorted(a, alg=ns.REAL)
+    ['num-3', 'num2', 'num5.10', 'num5.3']
+    >>> realsorted(a)  # shortcut for natsorted with alg=ns.REAL
     ['num-3', 'num2', 'num5.10', 'num5.3']
 
 Locale-Aware Sorting (or "Human Sorting")
@@ -97,8 +99,10 @@ This can be achieved with the `humansorted`` function:
     >>> import locale
     >>> locale.setlocale(locale.LC_ALL, 'en_US.UTF-8')
     'en_US.UTF-8'
+    >>> natsorted(a, alg=ns.LOCALE)
+    ['apple15', 'apple14,689', 'Apple', 'banana', 'Banana']
     >>> from natsort import humansorted
-    >>> humansorted(a)
+    >>> humansorted(a)  # shortcut for natsorted with alg=ns.LOCALE
     ['apple15', 'apple14,689', 'Apple', 'banana', 'Banana']
 
 You may find you need to explicitly set the locale to get this to work

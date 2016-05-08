@@ -82,10 +82,12 @@ version < 4.0.0. Use the :func:`~realsorted` function:
 
 .. code-block:: python
 
-    >>> from natsort import realsorted
+    >>> from natsort import realsorted, ns
     >>> a = ['num5.10', 'num-3', 'num5.3', 'num2']
     >>> natsorted(a)
     ['num2', 'num5.3', 'num5.10', 'num-3']
+    >>> natsorted(a, alg=ns.REAL)
+    ['num-3', 'num2', 'num5.10', 'num5.3']
     >>> realsorted(a)
     ['num-3', 'num2', 'num5.10', 'num5.3']
 
@@ -105,6 +107,8 @@ This can be achieved with the :func:`~humansorted` function:
     >>> import locale
     >>> locale.setlocale(locale.LC_ALL, 'en_US.UTF-8')
     'en_US.UTF-8'
+    >>> natsorted(a, alg=ns.LOCALE)
+    ['apple15', 'apple14,689', 'Apple', 'banana', 'Banana']
     >>> from natsort import humansorted
     >>> humansorted(a)
     ['apple15', 'apple14,689', 'Apple', 'banana', 'Banana']
@@ -198,7 +202,7 @@ If you want to build this documentation, enter::
 
     python setup.py build_sphinx
 
-:mod:`natsort` requires Python version 2.7 or greater or Python 3.2 or greater.
+:mod:`natsort` requires Python version 2.6 or greater or Python 3.2 or greater.
 
 The most efficient sorting can occur if you install the 
 `fastnumbers <https://pypi.python.org/pypi/fastnumbers>`_ package (it helps

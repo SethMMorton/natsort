@@ -15,7 +15,9 @@ class ns(object):
     This class acts like an enum to control the `natsort` algorithm. The
     user may select several options simultaneously by or'ing the options
     together.  For example, to choose ``ns.INT``, ``ns.PATH``, and
-    ``ns.LOCALE``, you could do ``ns.INT | ns.LOCALE | ns.PATH``.
+    ``ns.LOCALE``, you could do ``ns.INT | ns.LOCALE | ns.PATH``. Each
+    function in the :mod:`natsort` package has an `alg` option that accepts
+    this enum to allow fine control over how your input is sorted.
 
     Each option has a shortened 1- or 2-letter form.
 
