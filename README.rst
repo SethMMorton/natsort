@@ -211,6 +211,28 @@ History
 These are the last three entries of the changelog.  See the package documentation
 for the complete `changelog <http://pythonhosted.org//natsort/changelog.html>`_.
 
+05-08-2014 v. 5.0.0
++++++++++++++++++++
+
+    - ``ns.LOCALE``/``humansorted`` now accounts for thousands separators.
+    - Refactored entire codebase to be more functional (as in use functions as
+      units). Previously, the code was rather monolithic and difficult to follow. The
+      goal is that with the code existing in smaller units contributing will
+      be easier.
+    - Deprecated ``ns.TYPESAFE`` option as it is now always on (due to a new
+      iterator-based algorithm, the typesafe function is now cheap).
+    - Increased speed of execution (came for free with the new functional approach
+      because the new factory function paradigm eliminates most ``if`` branches
+      during execution).
+
+      - For the most cases, the code is 30-40% faster than version 4.0.4.
+      - If using ``ns.LOCALE`` or ``humansorted``, the code is 1100% faster than
+        version 4.0.4.
+
+    - Improved clarity of documentaion with regards to locale-aware sorting.
+    - Added a new ``chain_functions`` function for convenience in creating
+      a complex user-given ``key`` from several existing functions.
+
 11-01-2015 v. 4.0.4
 +++++++++++++++++++
 
@@ -222,10 +244,3 @@ for the complete `changelog <http://pythonhosted.org//natsort/changelog.html>`_.
 +++++++++++++++++++
 
     - Fixed bad install on last release (sorry guys!).
-
-06-24-2015 v. 4.0.2
-+++++++++++++++++++
-
-    - Added back Python 2.6 and Python 3.2 compatibility. Unit testing is now
-      performed for these versions.
-    - Consolidated under-the-hood compatibility functionality.
