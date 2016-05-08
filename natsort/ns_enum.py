@@ -19,19 +19,7 @@ class ns(object):
 
     Each option has a shortened 1- or 2-letter form.
 
-    .. warning:: On BSD-based systems (like Mac OS X), the underlying
-                 C library that Python's locale module uses is broken.
-                 On these systems it is recommended that you install
-                 `PyICU <https://pypi.python.org/pypi/PyICU>`_
-                 if you wish to use ``LOCALE``, especially if you need
-                 to handle non-ASCII characters. If you are on one of
-                 systems and get unexpected results, please try using
-                 `PyICU <https://pypi.python.org/pypi/PyICU>`_ before
-                 filing a bug report to ``natsort``.
-
-    .. warning:: It is recommended that you recreate your key with
-                 :func:`natsort_keygen` each time you change locale
-                 if you use the ``ns.LOCALE`` option.
+    .. note:: Please read :ref:`locale_issues` before using ``ns.LOCALE``.
 
     Attributes
     ----------
@@ -120,25 +108,6 @@ class ns(object):
         a no-op because it is the default.
     DIGIT, D
         Same as `VERSION` above.
-
-    Notes
-    -----
-    If using `LOCALE`, you may find that if you do not explicitly set
-    the locale your results may not be as you expect... I have found that
-    it depends on the system you are on. To do this is straightforward
-    (in the below example I use 'en_US.UTF-8', but you should use your
-    locale)::
-
-        >>> import locale
-        >>> # The 'str' call is only to get around a bug on Python 2.x
-        >>> # where 'setlocale' does not expect unicode strings (ironic,
-        >>> # right?)
-        >>> locale.setlocale(locale.LC_ALL, str('en_US.UTF-8'))
-        'en_US.UTF-8'
-
-    It is preferred that you do this before importing `natsort`.
-    If you use `PyICU <https://pypi.python.org/pypi/PyICU>`_ (see warning
-    above) then you should not need to do this.
 
     """
     # Following were previously now options but are now defaults.

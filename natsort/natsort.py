@@ -313,16 +313,6 @@ def humansorted(seq, key=None, reverse=False, alg=0):
     in a locale-aware fashion (a.k.a "human sorting"). This is a
     wrapper around ``natsorted(seq, alg=ns.LOCALE)``.
 
-    .. warning:: On BSD-based systems (like Mac OS X), the underlying
-                 C library that Python's locale module uses is broken.
-                 On these systems it is recommended that you install
-                 `PyICU <https://pypi.python.org/pypi/PyICU>`_
-                 if you wish to use ``humansorted``, especially if you need
-                 to handle non-ASCII characters.  If you are on
-                 one of systems and get unexpected results, please try
-                 using `PyICU <https://pypi.python.org/pypi/PyICU>`_
-                 before filing a bug report to `natsort`.
-
     Parameters
     ----------
     seq : iterable
@@ -353,23 +343,7 @@ def humansorted(seq, key=None, reverse=False, alg=0):
 
     Notes
     -----
-    You may find that if you do not explicitly set
-    the locale your results may not be as you expect, although
-    as of ``natsort`` version 4.0.0 the sorting algorithm has been
-    updated to account for a buggy ``locale`` installation.
-    In the below example 'en_US.UTF-8' is used, but you should use your
-    locale::
-
-        >>> import locale
-        >>> # The 'str' call is only to get around a bug on Python 2.x
-        >>> # where 'setlocale' does not expect unicode strings (ironic,
-        >>> # right?)
-        >>> locale.setlocale(locale.LC_ALL, str('en_US.UTF-8'))
-        'en_US.UTF-8'
-
-    It is preferred that you do this before importing `natsort`.
-    If you use `PyICU <https://pypi.python.org/pypi/PyICU>`_ (see warning
-    above) then you should not need to do explicitly set a locale.
+    Please read :ref:`locale_issues` before using `humansorted`.
 
     Examples
     --------
@@ -540,8 +514,6 @@ def index_humansorted(seq, key=None, reverse=False, alg=0):
     of the given sequence.
 
     This is a wrapper around ``index_natsorted(seq, alg=ns.LOCALE)``.
-    Please see the ``humansorted`` documentation for caveats of
-    using ``index_humansorted``.
 
     Parameters
     ----------
@@ -574,23 +546,7 @@ def index_humansorted(seq, key=None, reverse=False, alg=0):
 
     Notes
     -----
-    You may find that if you do not explicitly set
-    the locale your results may not be as you expect, although
-    as of ``natsort`` version 4.0.0 the sorting algorithm has been
-    updated to account for a buggy ``locale`` installation.
-    In the below example 'en_US.UTF-8' is used, but you should use your
-    locale::
-
-        >>> import locale
-        >>> # The 'str' call is only to get around a bug on Python 2.x
-        >>> # where 'setlocale' does not expect unicode strings (ironic,
-        >>> # right?)
-        >>> locale.setlocale(locale.LC_ALL, str('en_US.UTF-8'))
-        'en_US.UTF-8'
-
-    It is preferred that you do this before importing `natsort`.
-    If you use `PyICU <https://pypi.python.org/pypi/PyICU>`_ (see warning
-    above) then you should not need to explicitly set a locale.
+    Please read :ref:`locale_issues` before using `humansorted`.
 
     Examples
     --------

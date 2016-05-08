@@ -4,32 +4,32 @@ Changelog
 ---------
 
 11-01-2015 v. 4.0.4
-'''''''''''''''''''
++++++++++++++++++++
 
     - Improved coverage of unit tests.
     - Unit tests use new and improved hypothesis library.
     - Fixed compatibility issues with Python 3.5
 
 06-25-2015 v. 4.0.3
-'''''''''''''''''''
++++++++++++++++++++
 
     - Fixed bad install on last release (sorry guys!).
 
 06-24-2015 v. 4.0.2
-'''''''''''''''''''
++++++++++++++++++++
 
     - Added back Python 2.6 and Python 3.2 compatibility. Unit testing is now
       performed for these versions.
     - Consolidated under-the-hood compatibility functionality.
 
 06-04-2015 v. 4.0.1
-'''''''''''''''''''
++++++++++++++++++++
 
     - Added support for sorting NaN by internally converting to -Infinity
       or +Infinity
 
 05-17-2015 v. 4.0.0
-'''''''''''''''''''
++++++++++++++++++++
 
     - Made default behavior of 'natsort' search for unsigned ints,
       rather than signed floats. This is a backwards-incompatible
@@ -40,7 +40,7 @@ Changelog
     - Greatly improved all unit tests by adding the hypothesis library.
 
 04-06-2015 v. 3.5.6
-'''''''''''''''''''
++++++++++++++++++++
 
     - Added 'UNGROUPLETTERS' algorithm to get the case-grouping behavior of
       an ordinal sort when using 'LOCALE'.
@@ -48,20 +48,20 @@ Changelog
       dealing with bytes types.
 
 04-04-2015 v. 3.5.5
-'''''''''''''''''''
++++++++++++++++++++
 
     - Added 'realsorted' and 'index_realsorted' functions for
       forward-compatibility with >= 4.0.0.
     - Made explanation of when to use "TYPESAFE" more clear in the docs.
 
 04-02-2015 v. 3.5.4
-'''''''''''''''''''
++++++++++++++++++++
 
     - Fixed bug where a 'TypeError' was raised if a string containing a leading
       number was sorted with alpha-only strings when 'LOCALE' is used.
 
 03-26-2015 v. 3.5.3
-'''''''''''''''''''
++++++++++++++++++++
 
     - Fixed bug where '--reverse-filter' option in shell script was not
       getting checked for correctness.
@@ -70,13 +70,13 @@ Changelog
     - Internal improvements, including making test suite more granular.
 
 01-13-2015 v. 3.5.2
-'''''''''''''''''''
++++++++++++++++++++
 
     - Enhancement that will convert a 'pathlib.Path' object to a 'str' if
       'ns.PATH' is enabled.
 
 09-25-2014 v. 3.5.1
-'''''''''''''''''''
++++++++++++++++++++
 
     - Fixed bug that caused list/tuples to fail when using 'ns.LOWECASEFIRST'
       or 'ns.IGNORECASE'.
@@ -86,7 +86,7 @@ Changelog
 
 
 09-02-2014 v. 3.5.0
-'''''''''''''''''''
++++++++++++++++++++
 
     - Added the 'alg' argument to the 'natsort' functions.  This argument
       accepts an enum that is used to indicate the options the user wishes
@@ -104,7 +104,7 @@ Changelog
     - Updated shell script with locale functionality.
 
 08-12-2014 v. 3.4.1
-'''''''''''''''''''
++++++++++++++++++++
 
     - 'natsort' will now use the 'fastnumbers' module if it is installed. This
       gives up to an extra 30% boost in speed over the previous performance
@@ -113,7 +113,7 @@ Changelog
       new example in the examples section.
 
 07-19-2014 v. 3.4.0
-'''''''''''''''''''
++++++++++++++++++++
 
     - Fixed a bug that caused user's options to the 'natsort_key' to not be
       passed on to recursive calls of 'natsort_key'.
@@ -142,7 +142,7 @@ Changelog
     - Entire codebase is now PyFlakes and PEP8 compliant.
 
 06-28-2014 v. 3.3.0
-'''''''''''''''''''
++++++++++++++++++++
 
     - Added a 'versorted' method for more convenient sorting of versions.
     - Updated command-line tool --number_type option with 'version' and 'ver'
@@ -157,13 +157,13 @@ Changelog
     - Connected natsort development to Travis-CI to help ensure quality releases.
 
 06-20-2014 v. 3.2.1
-'''''''''''''''''''
++++++++++++++++++++
 
     - Re-"Fixed" unorderable types issue on Python 3.x - this workaround
       is for when the problem occurs in the middle of the string.
 
 05-07-2014 v. 3.2.0
-'''''''''''''''''''
++++++++++++++++++++
 
     - "Fixed" unorderable types issue on Python 3.x with a workaround that
       attempts to replicate the Python 2.x behavior by putting all the numbers
@@ -172,19 +172,19 @@ Changelog
       to MANIFEST.in.
 
 05-05-2014 v. 3.1.2
-'''''''''''''''''''
++++++++++++++++++++
 
     - Added setup.cfg to support universal wheels.
     - Added Python 3.0 and Python 3.1 as requiring the argparse module.
 
 03-01-2014 v. 3.1.1
-'''''''''''''''''''
++++++++++++++++++++
 
     - Added ability to sort lists of lists.
     - Cleaned up import statements.
 
 01-20-2014 v. 3.1.0
-'''''''''''''''''''
++++++++++++++++++++
 
     - Added the ``signed`` and ``exp`` options to allow finer tuning of the sorting
     - Entire codebase now works for both Python 2 and Python 3 without needing to run
@@ -204,28 +204,28 @@ Changelog
           to filter by.
 
 10-01-2013 v. 3.0.2
-'''''''''''''''''''
++++++++++++++++++++
 
     - Made float, int, and digit searching algorithms all share the same base function.
     - Fixed some outdated comments.
     - Made the ``__version__`` variable available when importing the module.
 
 8-15-2013 v. 3.0.1
-''''''''''''''''''
+++++++++++++++++++
 
     - Added support for unicode strings.
     - Removed extraneous ``string2int`` function.
     - Fixed empty string removal function.
 
 7-13-2013 v. 3.0.0
-''''''''''''''''''
+++++++++++++++++++
 
     - Added a ``number_type`` argument to the sorting functions to specify how
       liberal to be when deciding what a number is.
     - Reworked the documentation.
 
 6-25-2013 v. 2.2.0
-''''''''''''''''''
+++++++++++++++++++
 
     - Added ``key`` attribute to ``natsorted`` and ``index_natsorted`` so that
       it mimics the functionality of the built-in ``sorted``
@@ -233,7 +233,7 @@ Changelog
       how to get similar functionality using ``natsort_key``.
 
 12-5-2012 v. 2.1.0
-''''''''''''''''''
+++++++++++++++++++
 
     - Reorganized package.
     - Now using a platform independent shell script generator (entry_points
@@ -242,20 +242,20 @@ Changelog
       as well.
 
 11-30-2012 v. 2.0.2
-'''''''''''''''''''
++++++++++++++++++++
 
     - Added the use_2to3 option to setup.py.
     - Added distribute_setup.py to the distribution.
     - Added dependency to the argparse module (for python2.6).
 
 11-21-2012 v. 2.0.1
-'''''''''''''''''''
++++++++++++++++++++
 
     - Reorganized directory structure.
     - Added tests into the natsort.py file iteself.
 
 11-16-2012, v. 2.0.0
-''''''''''''''''''''
++++++++++++++++++++
 
     - Updated sorting algorithm to support floats (including exponentials) and
       basic version number support.

@@ -56,6 +56,8 @@ modify the above recipe::
 Please see `this issue <https://github.com/SethMMorton/natsort/issues/13>`_ to
 see why this works.
 
+.. _path_sort:
+
 Sort OS-Generated Paths
 -----------------------
 
@@ -74,6 +76,10 @@ you may need to use the ``ns.PATH`` option::
 
 Locale-Aware Sorting (Human Sorting)
 ------------------------------------
+
+.. note:: 
+    Please read :ref:`locale_issues` before using ``ns.LOCALE``, :func:`humansorted`,
+    or :func:`index_humansorted`.
 
 You can instruct :mod:`natsort` to use locale-aware sorting with the
 ``ns.LOCALE`` option. In addition to making this understand non-ASCII
@@ -96,44 +102,7 @@ be as you expect... I have found that it depends on the system you are on.
 If you use `PyICU <https://pypi.python.org/pypi/PyICU>`_ (see below) then
 you should not need to do this.
 
-.. _bug_note:
-
-Known Bugs When Using Locale-Aware Sorting On BSD-Based OSs (Including Mac OS X)
-++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-
-If you find that ``ns.LOCALE`` (or :func:`~humansorted`) does not give
-the results you expect, before filing a bug report please try to first install
-`PyICU <https://pypi.python.org/pypi/PyICU>`_; this *especially* applies
-to users on BSD-based systems (like Mac OS X).  There are some known bugs
-with the ``locale`` module from the standard library that are solved when
-using `PyICU <https://pypi.python.org/pypi/PyICU>`_; you can read about
-them here: http://bugs.python.org/issue23195.
-
-If you have problems with ``ns.LOCALE`` (or :func:`~humansorted`),
-especially on BSD-based systems, you can try the following:
-
-    1. Use "\*.ISO8859-1" locale (i.e. 'en_US.ISO8859-1') rather than "\*.UTF-8"
-       locale. These locales do not suffer from as many problems as "UTF-8"
-       and thus should give expected results.
-    2. Use `PyICU <https://pypi.python.org/pypi/PyICU>`_.  If
-       `PyICU <https://pypi.python.org/pypi/PyICU>`_ is installed, ``natsort``
-       will use it under the hood; this will give more
-       reliable cross-platform results in the long run. ``natsort`` will not
-       require (or check) that `PyICU <https://pypi.python.org/pypi/PyICU>`_
-       is installed at installation. Please visit
-       https://github.com/SethMMorton/natsort/issues/21 for more details and
-       how to install on Mac OS X. **Please note** that using
-       `PyICU <https://pypi.python.org/pypi/PyICU>`_ is the only way to
-       guarantee correct results for all input on BSD-based systems, since
-       every other suggestion is a workaround.
-    3. Do nothing. As of ``natsort`` version 4.0.0, ``natsort`` is configured
-       to compensate for a broken ``locale`` library in terms of case-handling;
-       if you do not need to be able to properly handle non-ASCII characters
-       then this may be the best option for you. 
-
-Note that the above solutions *should not* be required for Windows or
-Linux since in Linux-based systems and Windows systems ``locale`` *should* work
-just fine.
+.. _case_sort:
 
 Controlling Case When Sorting
 -----------------------------
@@ -204,6 +173,8 @@ version < 4.0.0::
     >>> from natsort import realsorted
     >>> realsorted(a)
     ['a50', 'a+50.300', 'a5.034e1', 'a+50.4', 'a51.']
+
+.. _custom_sort:
 
 Using a Custom Sorting Key
 --------------------------

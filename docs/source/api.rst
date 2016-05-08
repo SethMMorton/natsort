@@ -22,3 +22,4 @@ natsort API
    ns_class.rst
    bytes.rst
    chain.rst
+   locale_issues.rst
