@@ -63,7 +63,10 @@ except ImportError:
         # characters are incorrectly blank. Here is a lookup table of the
         # corrections I am aware of.
         if dumb_sort():
-            loc = '.'.join(locale.getlocale())
+            try:
+                loc = '.'.join(locale.getlocale())
+            except TypeError:  # No locale loaded, default to ','
+                return ','
             return {'de_DE.ISO8859-15': '.',
                     'es_ES.ISO8859-1': '.',
                     'de_AT.ISO8859-1': '.',
