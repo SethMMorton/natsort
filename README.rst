@@ -221,7 +221,7 @@ for the complete `changelog <http://pythonhosted.org//natsort/changelog.html>`_.
     - ``ns.LOCALE``/``humansorted`` now accounts for thousands separators.
     - Refactored entire codebase to be more functional (as in use functions as
       units). Previously, the code was rather monolithic and difficult to follow. The
-      goal is that with the code existing in smaller units contributing will
+      goal is that with the code existing in smaller units, contributing will
       be easier.
     - Deprecated ``ns.TYPESAFE`` option as it is now always on (due to a new
       iterator-based algorithm, the typesafe function is now cheap).
