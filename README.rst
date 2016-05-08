@@ -89,7 +89,7 @@ Locale-Aware Sorting (or "Human Sorting")
 This is where the non-numeric characters are ordered based on their meaning,
 not on their ordinal value, and a locale-dependent thousands separator
 is accounted for in the number.
-This can be achieved with the `humansorted`` function:
+This can be achieved with the ``humansorted`` function:
 
 .. code-block:: python
 
@@ -108,7 +108,7 @@ This can be achieved with the `humansorted`` function:
 You may find you need to explicitly set the locale to get this to work
 (as shown in the example).
 Please see http://pythonhosted.org/natsort/locale_issues.html and the Installation section 
-below before using the `humansorted`` function.
+below before using the ``humansorted`` function.
 
 Sorting Mixed Types
 +++++++++++++++++++
