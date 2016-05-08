@@ -5,7 +5,6 @@ inputs and different settings.
 """
 from __future__ import print_function
 import cProfile
-import random
 import sys
 
 sys.path.insert(0, '.')
