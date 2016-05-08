@@ -11,9 +11,9 @@ from natsort.compat.py23 import PY_VERSION, cmp_to_key
 
 # Make the strxfrm function from strcoll on Python2
 # It can be buggy (especially on BSD-based systems),
-# so prefer PyICU if available.
+# so prefer icu if available.
 try:
-    import PyICU
+    import icu
     from locale import getlocale
 
     null_string = b''
@@ -21,23 +21,23 @@ try:
     def dumb_sort():
         return False
 
-    # If using PyICU, get the locale from the current global locale,
+    # If using icu, get the locale from the current global locale,
     def get_icu_locale():
         try:
-            return PyICU.Locale('.'.join(getlocale()))
+            return icu.Locale('.'.join(getlocale()))
         except TypeError:  # pragma: no cover
-            return PyICU.Locale()
+            return icu.Locale()
 
     def get_strxfrm():
-        return PyICU.Collator.createInstance(get_icu_locale()).getSortKey
+        return icu.Collator.createInstance(get_icu_locale()).getSortKey
 
     def get_thousands_sep():
-        sep = PyICU.DecimalFormatSymbols.kGroupingSeparatorSymbol
-        return PyICU.DecimalFormatSymbols(get_icu_locale()).getSymbol(sep)
+        sep = icu.DecimalFormatSymbols.kGroupingSeparatorSymbol
+        return icu.DecimalFormatSymbols(get_icu_locale()).getSymbol(sep)
 
     def get_decimal_point():
-        sep = PyICU.DecimalFormatSymbols.kDecimalSeparatorSymbol
-        return PyICU.DecimalFormatSymbols(get_icu_locale()).getSymbol(sep)
+        sep = icu.DecimalFormatSymbols.kDecimalSeparatorSymbol
+        return icu.DecimalFormatSymbols(get_icu_locale()).getSymbol(sep)
 
 except ImportError:
     import locale
