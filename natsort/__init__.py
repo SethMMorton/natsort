@@ -31,7 +31,7 @@ __all__ = [
     'natsort_key',
     'natsort_keygen',
     'natsorted',
-    'versorted'
+    'versorted',
     'humansorted',
     'realsorted',
     'index_natsorted',
