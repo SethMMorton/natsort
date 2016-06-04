@@ -90,7 +90,8 @@ def _modify_str_or_docstring(str_change_func):
             func = func_or_str
             doc = func.__doc__
 
-        doc = str_change_func(doc)
+        if doc is not None:
+            doc = str_change_func(doc)
 
         if func:
             func.__doc__ = doc
