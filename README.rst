@@ -166,9 +166,9 @@ Other Useful Things
 +++++++++++++++++++
 
  - recursively descend into lists of lists
- - controlling the case-sensitivity (see http://pythonhosted.org//natsort/examples.html#case-sort)
- - sorting file paths correctly (see http://pythonhosted.org//natsort/examples.html#path-sort)
- - allow custom sorting keys (see http://pythonhosted.org//natsort/examples.html#custom-sort)
+ - `controlling the case-sensitivity <http://pythonhosted.org//natsort/examples.html#case-sort>`_
+ - `sorting file paths correctly <http://pythonhosted.org//natsort/examples.html#path-sort>`_
+ - `allow custom sorting keys <http://pythonhosted.org//natsort/examples.html#custom-sort>`_
 
 Shell script
 ------------
