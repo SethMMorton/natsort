@@ -111,6 +111,18 @@ class ns(object):
     DIGIT, D
         Same as `VERSION` above.
 
+    Notes
+    -----
+    If you prefer to use `import natsort as ns` as opposed to
+    `from natsort import natsorted, ns`, the `ns` options are
+    available as top-level imports.
+
+        >>> import natsort as ns
+        >>> a = ['num5.10', 'num-3', 'num5.3', 'num2']
+        >>> # Which is more natural to write?
+        >>> ns.natsorted(a, alg=ns.REAL) == ns.natsorted(a, alg=ns.ns.REAL)
+        True
+
     """
     # Following were previously now options but are now defaults.
     TYPESAFE         = T  = 0
