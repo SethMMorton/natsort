@@ -3,7 +3,15 @@
 Changelog
 ---------
 
-05-08-2014 v. 5.0.0
+06-04-2016 v. 5.0.1
++++++++++++++++++++
+
+    - The ``ns`` enum attributes can now be imported from the top-level
+      namespace.
+    - Fixed a bug with the ``from natsort import *`` mechanism.
+    - Fixed bug with using ``natsort`` with ``python -OO``.
+
+05-08-2016 v. 5.0.0
 +++++++++++++++++++
 
     - ``ns.LOCALE``/``humansorted`` now accounts for thousands separators.

@@ -215,7 +215,15 @@ History
 These are the last three entries of the changelog.  See the package documentation
 for the complete `changelog <http://pythonhosted.org//natsort/changelog.html>`_.
 
-05-08-2014 v. 5.0.0
+06-04-2016 v. 5.0.1
++++++++++++++++++++
+
+    - The ``ns`` enum attributes can now be imported from the top-level
+      namespace.
+    - Fixed a bug with the ``from natsort import *`` mechanism.
+    - Fixed bug with using ``natsort`` with ``python -OO``.
+
+05-08-2016 v. 5.0.0
 +++++++++++++++++++
 
     - ``ns.LOCALE``/``humansorted`` now accounts for thousands separators.
@@ -243,8 +251,3 @@ for the complete `changelog <http://pythonhosted.org//natsort/changelog.html>`_.
     - Improved coverage of unit tests.
     - Unit tests use new and improved hypothesis library.
     - Fixed compatibility issues with Python 3.5
-
-06-25-2015 v. 4.0.3
-+++++++++++++++++++
-
-    - Fixed bad install on last release (sorry guys!).
