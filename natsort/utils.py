@@ -142,7 +142,7 @@ def _parse_number_function(alg, sep):
              nan_replace=float('+inf') if alg & ns.NANLAST else float('-inf'),
              sep=sep):
         """Given a number, place it in a tuple with a leading null string."""
-        return (sep, nan_replace if val != val else val)
+        return sep, nan_replace if val != val else val
 
     # Return the function, possibly wrapping in tuple if PATH is selected.
     if alg & ns.PATH and alg & ns.UNGROUPLETTERS and alg & ns.LOCALEALPHA:
@@ -310,11 +310,11 @@ def _post_string_parse_function(alg, sep):
             """
             split_val = tuple(split_val)
             if not split_val:
-                return ((), ())
+                return (), ()
             elif split_val[0] == sep:
-                return (('',), split_val)
+                return ('',), split_val
             else:
-                return ((f(val[0]),), split_val)
+                return (f(val[0]),), split_val
         return func
     else:
         return lambda split_val, val: tuple(split_val)
@@ -351,6 +351,7 @@ def chain_functions(functions):
         17
 
     """
+    functions = list(functions)
     if not functions:
         return lambda x: x
     elif len(functions) == 1:
