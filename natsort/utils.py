@@ -89,9 +89,11 @@ def _natsort_key(val, key, string_func, bytes_func, num_func):
 
     Parameters
     ----------
-    val : {str, unicode}
-    key : callable
-    alg : ns enum
+    val : str | unicode
+    key : callable | None
+    string_func : callable
+    bytes_func : callable
+    num_func : callable
 
     Returns
     -------
