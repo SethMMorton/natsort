@@ -26,12 +26,12 @@ install:
 - if [[ 1 -eq $(echo "$TRAVIS_PYTHON_VERSION < 3.4" | bc -l) ]]; then pip install pathlib; fi
 - if [[ $TRAVIS_PYTHON_VERSION == '2.6' ]]; then pip install argparse; fi
 - if [[ $(echo "$TRAVIS_PYTHON_VERSION < 3.3" | bc -l) ]]; then pip install mock; fi
-- pip install pytest-cov pytest-flakes pytest-pep8 hypothesis
+- if [[ $TRAVIS_PYTHON_VERSION != '2.6' ]]; pip install pytest-cov pytest-flakes pytest-pep8 hypothesis; fi
 - pip install coveralls
 script:
-- python -m pytest README.rst docs/source/intro.rst docs/source/examples.rst
-- python -m pytest --doctest-modules natsort
-- if [[ $TRAVIS_PYTHON_VERSION == '2.6' ]]; then python -m pytest; fi
+- if [[ $TRAVIS_PYTHON_VERSION == '2.6' ]]; then python -m doctest README.rst docs/source/intro.rst docs/source/examples.rst; fi
+- if [[ $TRAVIS_PYTHON_VERSION != '2.6' ]]; python -m pytest README.rst docs/source/intro.rst docs/source/examples.rst; fi
+- if [[ $TRAVIS_PYTHON_VERSION != '2.6' ]]; python -m pytest --doctest-modules natsort; fi
 - if [[ $TRAVIS_PYTHON_VERSION != '2.6' ]]; then python -m pytest --cov natsort --flakes --pep8; fi
 after_success:
   coveralls
