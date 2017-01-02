@@ -23,7 +23,7 @@ install:
 - if [[ $WITH_OPTIONS == true ]]; then sudo apt-get install libicu-dev; fi
 - if [[ $WITH_OPTIONS == true ]]; then pip install fastnumbers; fi
 - if [[ $WITH_OPTIONS == true && $TRAVIS_PYTHON_VERSION != '2.6' ]]; then pip install PyICU; fi
-- if [[ $WITH_OPTIONS == true && $TRAVIS_PYTHON_VERSION == '2.6' ]]; then pip install git:git@github.com:ovalhub/pyicu.git@ce6072f08b5b385f6075da8edba784e452e0c79c; fi
+- if [[ $WITH_OPTIONS == true && $TRAVIS_PYTHON_VERSION == '2.6' ]]; then pip install git+git://github.com:ovalhub/pyicu.git@ce6072f08b5b385f6075da8edba784e452e0c79c; fi
 - if [[ 1 -eq $(echo "$TRAVIS_PYTHON_VERSION < 3.4" | bc -l) ]]; then pip install pathlib; fi
 - if [[ $TRAVIS_PYTHON_VERSION == '2.6' ]]; then pip install argparse; fi
 - if [[ $(echo "$TRAVIS_PYTHON_VERSION < 3.3" | bc -l) ]]; then pip install mock; fi
