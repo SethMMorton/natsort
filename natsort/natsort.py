@@ -78,12 +78,12 @@ def decoder(encoding):
         True
         >>> f(12345) == 12345
         True
+        >>> # On Python 3, without decoder this would return [b'a10', b'a2']
         >>> natsorted([b'a10', b'a2'], key=decoder('utf8')) == [b'a2', b'a10']
         True
-        >>> # On Python 3, without decoder this would return [b'a10', b'a2']
+        >>> # On Python 3, without decoder this would raise a TypeError.
         >>> natsorted([b'a10', 'a2'], key=decoder('utf8')) == ['a2', b'a10']
         True
-        >>> # On Python 3, without decoder this would raise a TypeError.
 
     """
     return partial(_do_decoding, encoding=encoding)
@@ -157,7 +157,7 @@ def natsort_keygen(key=None, alg=0, **_kwargs):
 
     The user may customize the generated function with the
     arguments to `natsort_keygen`, including an optional
-    `key` function which will be called before the `natsort_key`.
+    `key` function.
 
     Parameters
     ----------
@@ -174,7 +174,7 @@ def natsort_keygen(key=None, alg=0, **_kwargs):
     Returns
     -------
     out : function
-        A wrapped version of the `natsort_key` function that is
+        A function that parses input for natural sorting that is
         suitable for passing as the `key` argument to functions
         such as `sorted`.
 
@@ -185,8 +185,7 @@ def natsort_keygen(key=None, alg=0, **_kwargs):
     Examples
     --------
     `natsort_keygen` is a convenient way to create a custom key
-    to sort lists in-place (for example). Calling with no objects
-    will return a plain `natsort_key` instance::
+    to sort lists in-place (for example).::
 
         >>> a = ['num5.10', 'num-3', 'num5.3', 'num2']
         >>> a.sort(key=natsort_keygen(alg=ns.REAL))
@@ -205,7 +204,7 @@ def natsort_keygen(key=None, alg=0, **_kwargs):
     if alg & ns.LOCALEALPHA and natsort.compat.locale.dumb_sort():
         alg |= ns._DUMB
 
-    # Set some variable that will be passed to the factory functions
+    # Set some variables that will be passed to the factory functions
     sep = natsort.compat.locale.null_string if alg & ns.LOCALEALPHA else ''
     regex = _regex_chooser[alg & ns._NUMERIC_ONLY]
 
@@ -293,8 +292,6 @@ def versorted(seq, key=None, reverse=False, alg=0, **_kwargs):
 
     This function exists for backwards compatibility with `natsort`
     version < 4.0.0. Future development should use :func:`natsorted`.
-
-    Please see the :func:`natsorted` documentation for use.
 
     See Also
     --------
@@ -623,7 +620,7 @@ def order_by_index(seq, index, iter=False):
     """\
     Order a given sequence by an index sequence.
 
-    The output of `index_natsorted` and `index_versorted` is a
+    The output of `index_natsorted` is a
     sequence of integers (index) that correspond to how its input
     sequence **would** be sorted. The idea is that this index can
     be used to reorder multiple sequences by the sorted order of the
@@ -632,29 +629,28 @@ def order_by_index(seq, index, iter=False):
 
     Parameters
     ----------
-    seq : iterable
+    seq : sequence
         The sequence to order.
 
     index : iterable
-        The sequence that indicates how to order `seq`.
+        The iterable that indicates how to order `seq`.
         It should be the same length as `seq` and consist
         of integers only.
 
     iter : {{True, False}}, optional
         If `True`, the ordered sequence is returned as a
-        generator expression; otherwise it is returned as a
+        iterator; otherwise it is returned as a
         list. The default is `False`.
 
     Returns
     -------
-    out : {{list, generator}}
-        The sequence ordered by `index`, as a `list` or as a
-        generator expression (depending on the value of `iter`).
+    out : {{list, iterator}}
+        The sequence ordered by `index`, as a `list` or as an
+        iterator (depending on the value of `iter`).
 
     See Also
     --------
     index_natsorted
-    index_versorted
     index_humansorted
     index_realsorted
 
@@ -662,7 +658,7 @@ def order_by_index(seq, index, iter=False):
     --------
 
     `order_by_index` is a convenience function that helps you apply
-    the result of `index_natsorted` or `index_versorted`::
+    the result of `index_natsorted`::
 
         >>> a = ['num3', 'num5', 'num2']
         >>> b = ['foo', 'bar', 'baz']

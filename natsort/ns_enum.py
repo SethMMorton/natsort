@@ -31,20 +31,17 @@ class ns(object):
         Tell `natsort` to parse numbers as floats.
     UNSIGNED, U (default)
         Tell `natsort` to ignore any sign (i.e. "-" or "+") to the immediate
-        left of a number.  It is the same as setting the old `signed` option
-        to `False`. This is the default.
+        left of a number.  This is the default.
     SIGNED, S
         Tell `natsort` to take into account any sign (i.e. "-" or "+")
-        to the immediate left of a number.  It is the same as setting
-        the old `signed` option to `True`.
+        to the immediate left of a number.
     REAL, R
         This is a shortcut for ``ns.FLOAT | ns.SIGNED``, which is useful
         when attempting to sort real numbers.
     NOEXP, N
         Tell `natsort` to not search for exponents as part of the number.
         For example, with `NOEXP` the number "5.6E5" would be interpreted
-        as `5.6`, `"E"`, and `5`.  It is the same as setting the old
-        `exp` option to `False`.
+        as `5.6`, `"E"`, and `5` instead of `560000`.
     PATH, P
         Tell `natsort` to interpret strings as filesystem paths, so they
         will be split according to the filesystem separator
@@ -119,7 +116,6 @@ class ns(object):
 
         >>> import natsort as ns
         >>> a = ['num5.10', 'num-3', 'num5.3', 'num2']
-        >>> # Which is more natural to write?
         >>> ns.natsorted(a, alg=ns.REAL) == ns.natsorted(a, alg=ns.ns.REAL)
         True
 

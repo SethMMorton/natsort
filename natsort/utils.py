@@ -110,15 +110,18 @@ def _natsort_key(val, key, string_func, bytes_func, num_func):
     try:
         return string_func(val)
     except (TypeError, AttributeError):
+
         # If bytes type, use the bytes_func
         if type(val) in (bytes,):
             return bytes_func(val)
+
         # Otherwise, assume it is an iterable that must be parser recursively.
         # Do not apply the key recursively.
         try:
             return tuple(_natsort_key(
                 x, None, string_func, bytes_func, num_func
             ) for x in val)
+
         # If that failed, it must be a number.
         except TypeError:
             return num_func(val)
