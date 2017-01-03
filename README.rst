@@ -50,26 +50,24 @@ Using ``natsorted`` is simple:
     >>> natsorted(a)
     ['1 ft 5 in', '2 ft 7 in', '2 ft 11 in', '7 ft 6 in', '10 ft 2 in']
 
-.. note::
+**Note**: ``natsorted`` is designed to be a drop-in replacement for the built-in
+``sorted`` function. Like ``sorted``, ``natsorted`` `does not sort in-place`.
+To sort a list and assign the output to the same variable, you must
+explicitly assign the output to a variable:
 
-    ``natsorted`` is designed to be a drop-in replacement for the built-in
-    ``sorted`` function. Like ``sorted``, ``natsorted`` `does not sort in-place`.
-    To sort a list and assign the output to the same variable, you must
-    explicitly assign the output to a variable:
+.. code-block:: python
 
-    .. code-block:: python
+    >>> a = ['2 ft 7 in', '1 ft 5 in', '10 ft 2 in', '2 ft 11 in', '7 ft 6 in']
+    >>> natsorted(a)
+    ['1 ft 5 in', '2 ft 7 in', '2 ft 11 in', '7 ft 6 in', '10 ft 2 in']
+    >>> print(a)  # 'a' was not not sorted
+    ['2 ft 7 in', '1 ft 5 in', '10 ft 2 in', '2 ft 11 in', '7 ft 6 in']
+    >>> a = natsorted(a)  # Now 'a' will be sorted
+    >>> print(a)
+    ['1 ft 5 in', '2 ft 7 in', '2 ft 11 in', '7 ft 6 in', '10 ft 2 in']
 
-        >>> a = ['2 ft 7 in', '1 ft 5 in', '10 ft 2 in', '2 ft 11 in', '7 ft 6 in']
-        >>> natsorted(a)
-        ['1 ft 5 in', '2 ft 7 in', '2 ft 11 in', '7 ft 6 in', '10 ft 2 in']
-        >>> print(a)  # 'a' was not not sorted
-        ['2 ft 7 in', '1 ft 5 in', '10 ft 2 in', '2 ft 11 in', '7 ft 6 in']
-        >>> a = natsorted(a)  # Now 'a' will be sorted
-        >>> print(a)
-        ['1 ft 5 in', '2 ft 7 in', '2 ft 11 in', '7 ft 6 in', '10 ft 2 in']
-
-    Please see `Generating a Reusable Sorting Key and Sorting In-Place`_ for
-    an alternate way to sort in-place naturally.
+Please see `Generating a Reusable Sorting Key and Sorting In-Place`_ for
+an alternate way to sort in-place naturally.
 
 ``natsorted`` identifies numbers anywhere in a string and sorts them
 naturally. Below are some other things you can do with ``natsort``
