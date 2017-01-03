@@ -12,6 +12,10 @@ Natural sorting for python.
     - Source Code: https://github.com/SethMMorton/natsort
     - Downloads: https://pypi.python.org/pypi/natsort
     - Documentation: http://pythonhosted.org/natsort
+
+      - `Examples and Recipes <http://pythonhosted.org//natsort/examples.html>`_
+      - `API <http://pythonhosted.org//natsort/api.html>`_
+
     - `Optional Dependencies`_
 
       - `fastnumbers <https://pypi.python.org/pypi/fastnumbers>`_ >= 0.7.1
@@ -26,30 +30,52 @@ expect:
 
 .. code-block:: python
 
-    >>> a = ['a2', 'a9', 'a1', 'a4', 'a10']
+    >>> a = ['2 ft 7 in', '1 ft 5 in', '10 ft 2 in', '2 ft 11 in', '7 ft 6 in']
     >>> sorted(a)
-    ['a1', 'a10', 'a2', 'a4', 'a9']
+    ['1 ft 5 in', '10 ft 2 in', '2 ft 11 in', '2 ft 7 in', '7 ft 6 in']
 
 Notice that it has the order ('1', '10', '2') - this is because the list is
 being sorted in lexicographical order, which sorts numbers like you would
 letters (i.e. 'b', 'ba', 'c').
 
 ``natsort`` provides a function ``natsorted`` that helps sort lists
-"naturally", either as real numbers (i.e. signed/unsigned floats or ints),
-or as versions.  Using ``natsorted`` is simple:
+"naturally" - "naturally" is rather ill-defined, but in general it means
+sorting based on meaning and not computer code point.
+Using ``natsorted`` is simple:
 
 .. code-block:: python
 
     >>> from natsort import natsorted
-    >>> a = ['a2', 'a9', 'a1', 'a4', 'a10']
+    >>> a = ['2 ft 7 in', '1 ft 5 in', '10 ft 2 in', '2 ft 11 in', '7 ft 6 in']
     >>> natsorted(a)
-    ['a1', 'a2', 'a4', 'a9', 'a10']
+    ['1 ft 5 in', '2 ft 7 in', '2 ft 11 in', '7 ft 6 in', '10 ft 2 in']
+
+.. note::
+
+    ``natsorted`` is designed to be a drop-in replacement for the built-in
+    ``sorted`` function. Like ``sorted``, ``natsorted`` `does not sort in-place`.
+    To sort a list and assign the output to the same variable, you must
+    explicitly assign the output to a variable:
+
+    .. code-block:: python
+
+        >>> a = ['2 ft 7 in', '1 ft 5 in', '10 ft 2 in', '2 ft 11 in', '7 ft 6 in']
+        >>> natsorted(a)
+        ['1 ft 5 in', '2 ft 7 in', '2 ft 11 in', '7 ft 6 in', '10 ft 2 in']
+        >>> print(a)  # 'a' was not not sorted
+        ['2 ft 7 in', '1 ft 5 in', '10 ft 2 in', '2 ft 11 in', '7 ft 6 in']
+        >>> a = natsorted(a)  # Now 'a' will be sorted
+        >>> print(a)
+        ['1 ft 5 in', '2 ft 7 in', '2 ft 11 in', '7 ft 6 in', '10 ft 2 in']
+
+    Please see `Generating a Reusable Sorting Key and Sorting In-Place`_ for
+    an alternate way to sort in-place naturally.
 
 ``natsorted`` identifies numbers anywhere in a string and sorts them
-naturally. Here are some other things you can do with ``natsort``
-(please see the `examples <http://pythonhosted.org//natsort/examples.html>`_
+naturally. Below are some other things you can do with ``natsort``
+(also see the `examples <http://pythonhosted.org//natsort/examples.html>`_
 for a quick start guide, or the
-`api <http://pythonhosted.org//natsort/api.html>`_ for more details).
+`api <http://pythonhosted.org//natsort/api.html>`_ for complete details).
 
 Sorting Versions
 ++++++++++++++++
@@ -75,18 +101,18 @@ version < 4.0.0. Use the ``realsorted`` function:
 .. code-block:: python
 
     >>> from natsort import realsorted, ns
-    >>> a = ['num5.10', 'num-3', 'num5.3', 'num2']
+    >>> a = ['position5.10.data', 'position-3.data', 'position5.3.data', 'position2.data']
     >>> natsorted(a)
-    ['num2', 'num5.3', 'num5.10', 'num-3']
+    ['position2.data', 'position5.3.data', 'position5.10.data', 'position-3.data']
     >>> natsorted(a, alg=ns.REAL)
-    ['num-3', 'num2', 'num5.10', 'num5.3']
+    ['position-3.data', 'position2.data', 'position5.10.data', 'position5.3.data']
     >>> realsorted(a)  # shortcut for natsorted with alg=ns.REAL
-    ['num-3', 'num2', 'num5.10', 'num5.3']
+    ['position-3.data', 'position2.data', 'position5.10.data', 'position5.3.data']
 
 Locale-Aware Sorting (or "Human Sorting")
 +++++++++++++++++++++++++++++++++++++++++
 
-This is where the non-numeric characters are ordered based on their meaning,
+This is where the non-numeric characters are also ordered based on their meaning,
 not on their ordinal value, and a locale-dependent thousands separator
 is accounted for in the number.
 This can be achieved with the ``humansorted`` function:
@@ -144,21 +170,26 @@ convenience functions are provided that help you decode to `str` first:
     >>> natsorted(a, key=as_utf8) == [b'a5', b'a6', b'a40', b'a56']
     True
 
-Generating a Reusable Sorting Key
-+++++++++++++++++++++++++++++++++
+Generating a Reusable Sorting Key and Sorting In-Place
+++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
-All of the ``*sorted`` functions from the ``natsort`` are convenience functions
-around the something similar to the following:
+Under the hood, ``natsorted`` works by generating a custom sorting
+key using ``natsort_keygen`` and then passes that to the built-in
+``sorted``. You can use the ``natsort_keygen`` function yourself to
+generate a custom sorting key to sort in-place using the ``list.sort``
+method.
 
 .. code-block:: python
 
     >>> from natsort import natsort_keygen
     >>> natsort_key = natsort_keygen()
-    >>> a = ['a2', 'a9', 'a1', 'a4', 'a10']
+    >>> a = ['2 ft 7 in', '1 ft 5 in', '10 ft 2 in', '2 ft 11 in', '7 ft 6 in']
     >>> natsorted(a) == sorted(a, key=natsort_key)
     True
+    >>> a.sort(key=natsort_key)
+    >>> a
+    ['1 ft 5 in', '2 ft 7 in', '2 ft 11 in', '7 ft 6 in', '10 ft 2 in']
 
-You can use this key for your own use (such as passing to ``list.sort``).
 You can also customize the key with the ``ns`` enum
 (see `the ns enum <http://pythonhosted.org//natsort/ns_class.html>`_).
 

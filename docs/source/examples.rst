@@ -15,12 +15,12 @@ Basic Usage
 In the most basic use case, simply import :func:`~natsorted` and use
 it as you would :func:`sorted`::
 
-    >>> a = ['a2', 'a9', 'a1', 'a4', 'a10']
+    >>> a = ['2 ft 7 in', '1 ft 5 in', '10 ft 2 in', '2 ft 11 in', '7 ft 6 in']
     >>> sorted(a)
-    ['a1', 'a10', 'a2', 'a4', 'a9']
+    ['1 ft 5 in', '10 ft 2 in', '2 ft 11 in', '2 ft 7 in', '7 ft 6 in']
     >>> from natsort import natsorted, ns
     >>> natsorted(a)
-    ['a1', 'a2', 'a4', 'a9', 'a10']
+    ['1 ft 5 in', '2 ft 7 in', '2 ft 11 in', '7 ft 6 in', '10 ft 2 in']
 
 Sort Version Numbers
 --------------------
