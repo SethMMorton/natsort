@@ -60,6 +60,11 @@ Using :func:`~natsorted` is simple:
     >>> natsorted(a)
     ['1 ft 5 in', '2 ft 7 in', '2 ft 11 in', '7 ft 6 in', '10 ft 2 in']
 
+:func:`~natsorted` identifies numbers anywhere in a string and sorts them
+naturally. Below are some other things you can do with :mod:`natsort`
+(please see the :ref:`examples` for a quick start guide, or the :ref:`api`
+for more details).
+
 .. note::
 
     :func:`~natsorted` is designed to be a drop-in replacement for the built-in
@@ -80,11 +85,6 @@ Using :func:`~natsorted` is simple:
 
     Please see `Generating a Reusable Sorting Key and Sorting In-Place`_ for
     an alternate way to sort in-place naturally.
-
-:func:`~natsorted` identifies numbers anywhere in a string and sorts them
-naturally. Below are some other things you can do with :mod:`natsort`
-(please see the :ref:`examples` for a quick start guide, or the :ref:`api`
-for more details).
 
 Sorting Versions
 ++++++++++++++++

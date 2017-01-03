@@ -50,6 +50,12 @@ Using ``natsorted`` is simple:
     >>> natsorted(a)
     ['1 ft 5 in', '2 ft 7 in', '2 ft 11 in', '7 ft 6 in', '10 ft 2 in']
 
+``natsorted`` identifies numbers anywhere in a string and sorts them
+naturally. Below are some other things you can do with ``natsort``
+(also see the `examples <http://pythonhosted.org//natsort/examples.html>`_
+for a quick start guide, or the
+`api <http://pythonhosted.org//natsort/api.html>`_ for complete details).
+
 **Note**: ``natsorted`` is designed to be a drop-in replacement for the built-in
 ``sorted`` function. Like ``sorted``, ``natsorted`` `does not sort in-place`.
 To sort a list and assign the output to the same variable, you must
@@ -68,12 +74,6 @@ explicitly assign the output to a variable:
 
 Please see `Generating a Reusable Sorting Key and Sorting In-Place`_ for
 an alternate way to sort in-place naturally.
-
-``natsorted`` identifies numbers anywhere in a string and sorts them
-naturally. Below are some other things you can do with ``natsort``
-(also see the `examples <http://pythonhosted.org//natsort/examples.html>`_
-for a quick start guide, or the
-`api <http://pythonhosted.org//natsort/api.html>`_ for complete details).
 
 Sorting Versions
 ++++++++++++++++
