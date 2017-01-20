@@ -18,8 +18,14 @@ Natural sorting for python.
       - `fastnumbers <https://pypi.python.org/pypi/fastnumbers>`_ >= 0.7.1
       - `PyICU <https://pypi.python.org/pypi/PyICU>`_ >= 1.0.0
 
+:mod:`natsort` is a general utility for sorting lists *naturally*; the definition
+of "naturally" is not well-defined, but the most common definition is that numbers
+contained within the string should be sorted as numbers and not as you would
+other characters. If you need to present sorted output to a user, you probably
+want to sort it naturally.
+
 :mod:`natsort` was initially created for sorting scientific output filenames that
-contained floating point numbers in the names. There was a serious lack of
+contained signed floating point numbers in the names. There was a lack of
 algorithms out there that could perform a natural sort on `floats` but
 plenty for `ints`; check out
 `this StackOverflow question <http://stackoverflow.com/q/4836710/1399279>`_
@@ -27,9 +33,8 @@ and its answers and links therein,
 `this ActiveState forum <http://code.activestate.com/recipes/285264-natural-string-sorting/>`_,
 and of course `this great article on natural sorting <http://blog.codinghorror.com/sorting-for-humans-natural-sort-order/>`_
 from CodingHorror.com for examples of what I mean.
-:mod:`natsort` was created to fill in this gap.  It has since grown
-and can now sort version numbers (which seems to be the
-most common use case based on user feedback) as well as some other nice features.
+:mod:`natsort` was created to fill in this gap, but has since expanded to handle
+just about any definition of a number, as well as other sorting customizations.
 
 Quick Description
 -----------------
@@ -49,8 +54,8 @@ being sorted in lexicographical order, which sorts numbers like you would
 letters (i.e. 'b', 'ba', 'c').
 
 :mod:`natsort` provides a function :func:`~natsorted` that helps sort lists
-"naturally" - "naturally" is rather ill-defined, but in general it means
-sorting based on meaning and not computer code point.
+"naturally" ("naturally" is rather ill-defined, but in general it means
+sorting based on meaning and not computer code point)..
 Using :func:`~natsorted` is simple:
 
 .. code-block:: python
@@ -77,9 +82,9 @@ for more details).
         >>> a = ['2 ft 7 in', '1 ft 5 in', '10 ft 2 in', '2 ft 11 in', '7 ft 6 in']
         >>> natsorted(a)
         ['1 ft 5 in', '2 ft 7 in', '2 ft 11 in', '7 ft 6 in', '10 ft 2 in']
-        >>> print(a)  # 'a' was not not sorted
+        >>> print(a)  # 'a' was not sorted; "natsorted" simply returned a sorted list
         ['2 ft 7 in', '1 ft 5 in', '10 ft 2 in', '2 ft 11 in', '7 ft 6 in']
-        >>> a = natsorted(a)  # Now 'a' will be sorted
+        >>> a = natsorted(a)  # Now 'a' will be sorted because the sorted list was assigned to 'a'
         >>> print(a)
         ['1 ft 5 in', '2 ft 7 in', '2 ft 11 in', '7 ft 6 in', '10 ft 2 in']
 
@@ -110,6 +115,8 @@ version < 4.0.0. Use the :func:`~realsorted` function:
 .. code-block:: python
 
     >>> from natsort import realsorted, ns
+    >>> # Note that when interpreting as signed floats, the below numbers are
+    >>> #            +5.10,                -3.00,            +5.30,              +2.00
     >>> a = ['position5.10.data', 'position-3.data', 'position5.3.data', 'position2.data']
     >>> natsorted(a)
     ['position2.data', 'position5.3.data', 'position5.10.data', 'position-3.data']
@@ -122,8 +129,8 @@ Locale-Aware Sorting (or "Human Sorting")
 +++++++++++++++++++++++++++++++++++++++++
 
 This is where the non-numeric characters are ordered based on their meaning,
-not on their ordinal value, and a locale-dependent thousands separator
-is accounted for in the number.
+not on their ordinal value, and a locale-dependent thousands separator and decimal
+separator is accounted for in the number.
 This can be achieved with the :func:`~humansorted` function:
 
 .. code-block:: python

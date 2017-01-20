@@ -106,7 +106,7 @@ def _natsort_key(val, key, string_func, bytes_func, num_func):
     if key is not None:
         val = key(val)
 
-    # Assume the input are strings, which is the most commong case
+    # Assume the input are strings, which is the most common case
     try:
         return string_func(val)
     except (TypeError, AttributeError):
@@ -115,7 +115,7 @@ def _natsort_key(val, key, string_func, bytes_func, num_func):
         if type(val) in (bytes,):
             return bytes_func(val)
 
-        # Otherwise, assume it is an iterable that must be parser recursively.
+        # Otherwise, assume it is an iterable that must be parses recursively.
         # Do not apply the key recursively.
         try:
             return tuple(_natsort_key(
@@ -192,6 +192,8 @@ def _sep_inserter(iterable, sep):
     """Insert '' between numbers."""
 
     # Get the first element. If StopIteration is raised, that's OK.
+    # Since we are controlling the types of the input, 'type' is used
+    # instead of 'isinstance' for the small speed advantage it offers.
     types = (int, float, long)
     first = next(iterable)
     if type(first) in types:

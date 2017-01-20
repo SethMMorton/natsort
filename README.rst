@@ -39,8 +39,8 @@ being sorted in lexicographical order, which sorts numbers like you would
 letters (i.e. 'b', 'ba', 'c').
 
 ``natsort`` provides a function ``natsorted`` that helps sort lists
-"naturally" - "naturally" is rather ill-defined, but in general it means
-sorting based on meaning and not computer code point.
+"naturally" ("naturally" is rather ill-defined, but in general it means
+sorting based on meaning and not computer code point).
 Using ``natsorted`` is simple:
 
 .. code-block:: python
@@ -66,9 +66,9 @@ explicitly assign the output to a variable:
     >>> a = ['2 ft 7 in', '1 ft 5 in', '10 ft 2 in', '2 ft 11 in', '7 ft 6 in']
     >>> natsorted(a)
     ['1 ft 5 in', '2 ft 7 in', '2 ft 11 in', '7 ft 6 in', '10 ft 2 in']
-    >>> print(a)  # 'a' was not not sorted
+    >>> print(a)  # 'a' was not sorted; "natsorted" simply returned a sorted list
     ['2 ft 7 in', '1 ft 5 in', '10 ft 2 in', '2 ft 11 in', '7 ft 6 in']
-    >>> a = natsorted(a)  # Now 'a' will be sorted
+    >>> a = natsorted(a)  # Now 'a' will be sorted because the sorted list was assigned to 'a'
     >>> print(a)
     ['1 ft 5 in', '2 ft 7 in', '2 ft 11 in', '7 ft 6 in', '10 ft 2 in']
 
@@ -87,7 +87,7 @@ This is handled properly by default (as of ``natsort`` version >= 4.0.0):
     ['version-1.9', 'version-1.10', 'version-1.11', 'version-2.0']
 
 If you need to sort release candidates, please see
-http://pythonhosted.org//natsort/examples.html#rc-sorting for a useful hack.
+`this useful hack <http://pythonhosted.org//natsort/examples.html#rc-sorting>`_.
 
 Sorting by Real Numbers (i.e. Signed Floats)
 ++++++++++++++++++++++++++++++++++++++++++++
@@ -99,6 +99,8 @@ version < 4.0.0. Use the ``realsorted`` function:
 .. code-block:: python
 
     >>> from natsort import realsorted, ns
+    >>> # Note that when interpreting as signed floats, the below numbers are
+    >>> #            +5.10,                -3.00,            +5.30,              +2.00
     >>> a = ['position5.10.data', 'position-3.data', 'position5.3.data', 'position2.data']
     >>> natsorted(a)
     ['position2.data', 'position5.3.data', 'position5.10.data', 'position-3.data']
@@ -111,8 +113,8 @@ Locale-Aware Sorting (or "Human Sorting")
 +++++++++++++++++++++++++++++++++++++++++
 
 This is where the non-numeric characters are also ordered based on their meaning,
-not on their ordinal value, and a locale-dependent thousands separator
-is accounted for in the number.
+not on their ordinal value, and a locale-dependent thousands separator and decimal
+separator is accounted for in the number.
 This can be achieved with the ``humansorted`` function:
 
 .. code-block:: python
@@ -131,8 +133,8 @@ This can be achieved with the ``humansorted`` function:
 
 You may find you need to explicitly set the locale to get this to work
 (as shown in the example).
-Please see http://pythonhosted.org/natsort/locale_issues.html and the Installation section 
-below before using the ``humansorted`` function.
+Please see `locale issues <http://pythonhosted.org/natsort/locale_issues.html>`_ and the
+`Optional Dependencies`_ section below before using the ``humansorted`` function.
 
 Sorting Mixed Types
 +++++++++++++++++++
