@@ -162,24 +162,18 @@ def _parse_number_function(alg, sep):
 
 def _parse_string_function(alg, sep, splitter, pre, post, after):
     """Create a function that will properly split and format a string."""
-    if not (alg & ns._DUMB and alg & ns.LOCALEALPHA):
-        def func(x):
-            x = pre(x)                 # Apply pre-splitting function
-            original = x
-            x = splitter(x)            # Split the string on numbers
-            x = py23_filter(None, x)   # Remove empty strings.
-            x = py23_map(post, x)      # Apply post-splitting function
-            x = _sep_inserter(x, sep)  # Insert empty strings between numbers
-            return after(x, original)  # Apply final manipulation
-    else:
-        def func(x):
-            original = x
-            x = pre(x)                 # Apply pre-splitting function
-            x = splitter(x)            # Split the string on numbers
-            x = py23_filter(None, x)   # Remove empty strings.
-            x = py23_map(post, x)      # Apply post-splitting function
-            x = _sep_inserter(x, sep)  # Insert empty strings between numbers
-            return after(x, original)  # Apply final manipulation
+    orignal_after_pre = not (alg & ns._DUMB and alg & ns.LOCALEALPHA)
+    original_func = pre if orignal_after_pre else lambda x: x
+    def func(x):
+        # Apply pre-splitting function and return to x.
+        # Original function is usually a no-op, but some algorithms require it
+        # to also be the pre-spliting function.
+        x, original = pre(x), original_func(x)
+        x = splitter(x)            # Split the string on numbers
+        x = py23_filter(None, x)   # Remove empty strings.
+        x = py23_map(post, x)      # Apply post-splitting function
+        x = _sep_inserter(x, sep)  # Insert empty strings between numbers
+        return after(x, original)  # Apply final manipulation
     return func
 
 
