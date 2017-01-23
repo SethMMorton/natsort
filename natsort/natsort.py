@@ -40,7 +40,7 @@ from natsort.utils import (
     _parse_bytes_function,
     _input_string_transform_factory,
     _string_component_transform_factory,
-    _post_string_parse_function,
+    _final_data_transform_factory,
 )
 
 # Make sure the doctest works for either python2 or python3
@@ -211,11 +211,11 @@ def natsort_keygen(key=None, alg=0, **_kwargs):
     # Create the functions that will be used to split strings.
     input_transform = _input_string_transform_factory(alg)
     component_transform = _string_component_transform_factory(alg)
-    after = _post_string_parse_function(alg, sep)
+    final_transform = _final_data_transform_factory(alg, sep)
 
     # Create the high-level parsing functions for strings, bytes, and numbers.
     string_func = _parse_string_function(
-        alg, sep, regex.split, input_transform, component_transform, after
+        alg, sep, regex.split, input_transform, component_transform, final_transform
     )
     if alg & ns.PATH:
         string_func = _parse_path_function(string_func)

@@ -15,7 +15,7 @@ from natsort.utils import (
     _parse_bytes_function,
     _input_string_transform_factory,
     _string_component_transform_factory,
-    _post_string_parse_function,
+    _final_data_transform_factory,
 )
 from compat.hypothesis import (
     assume,
@@ -35,7 +35,7 @@ if PY_VERSION >= 3:
 regex = _regex_chooser[ns.INT]
 pre = _input_string_transform_factory(ns.INT)
 post = _string_component_transform_factory(ns.INT)
-after = _post_string_parse_function(ns.INT, '')
+after = _final_data_transform_factory(ns.INT, '')
 string_func = _parse_string_function(ns.INT, '', regex.split, pre, post, after)
 bytes_func = _parse_bytes_function(ns.INT)
 num_func = _parse_number_function(ns.INT, '')

@@ -160,7 +160,7 @@ def _parse_number_function(alg, sep):
         return func
 
 
-def _parse_string_function(alg, sep, splitter, input_transform, component_transform, after):
+def _parse_string_function(alg, sep, splitter, input_transform, component_transform, final_transform):
     """Create a function that will properly split and format a string."""
     # Sometimes we store the "original" input before transformation, sometimes after.
     orignal_after_transform = not (alg & ns._DUMB and alg & ns.LOCALEALPHA)
@@ -175,7 +175,7 @@ def _parse_string_function(alg, sep, splitter, input_transform, component_transf
         x = py23_filter(None, x)              # Remove empty strings.
         x = py23_map(component_transform, x)  # Apply transformation on string components
         x = _sep_inserter(x, sep)             # Insert empty strings between numbers
-        return after(x, original)             # Apply final manipulation
+        return final_transform(x, original)   # Apply final transformation
 
     return func
 
@@ -295,7 +295,7 @@ def _string_component_transform_factory(alg):
         return partial(fast_int, **kwargs)
 
 
-def _post_string_parse_function(alg, sep):
+def _final_data_transform_factory(alg, sep):
     """
     Given a set of natsort algorithms, return the function to operate
     on the post-parsed strings according to the user's request.
