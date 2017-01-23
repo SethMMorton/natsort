@@ -2,6 +2,40 @@
 """
 Utilities and definitions for natsort, mostly all used to define
 the _natsort_key function.
+
+SOME CONVENTIONS USED IN THIS FILE.
+
+1 - Factory Functions
+
+Most of the logic of natsort revolves around factory functions
+that create branchless transformation functions. For example, rather
+than making a string transformation function that has an if
+statement to determine whether or not to perform .lowercase() at
+runtime for each element to transform, there is a string transformation
+factory function that will return a function that either calls
+.lowercase() or does nothing. In this way, all the branches and
+decisions are taken care of once, up front. In addition to a slight
+speed improvement, this provides a more extensible infrastructure.
+
+Each of these factory functions will end with the suffix "_factory"
+to indicate that they themselves return a function.
+
+2 - Keyword Parameters As Logic
+
+Many of the closures that are created by the factory functions
+have signatures similar to the following
+
+    >>> def factory(parameter):
+    ...     def closure(x, val='yes' if parameter else 'no'):
+    ...          return '{} {}'.format(val, x)
+    ...     return closure
+    ...
+
+Rather than having "val" determined outside the scope of "closure",
+it is determined as part of the signature. This is a micro-optimization
+that ensures "val" is a local variable instead of global variable
+and thus has a slightly improved performance at runtime.
+
 """
 from __future__ import (
     print_function,
@@ -127,7 +161,7 @@ def _natsort_key(val, key, string_func, bytes_func, num_func):
             return num_func(val)
 
 
-def _parse_bytes_function(alg):
+def _parse_bytes_factory(alg):
     """Create a function that will format a bytes string in a tuple."""
     # We don't worry about ns.UNGROUPLETTERS | ns.LOCALEALPHA because
     # bytes cannot be compared to strings.
@@ -141,7 +175,7 @@ def _parse_bytes_function(alg):
         return lambda x: (x,)
 
 
-def _parse_number_function(alg, sep):
+def _parse_number_factory(alg, sep):
     """Create a function that will properly format a number in a tuple."""
     def func(val,
              nan_replace=float('+inf') if alg & ns.NANLAST else float('-inf'),
@@ -160,13 +194,13 @@ def _parse_number_function(alg, sep):
         return func
 
 
-def _parse_string_function(alg, sep, splitter, input_transform, component_transform, final_transform):
+def _parse_string_factory(alg, sep, splitter,
+                          input_transform, component_transform, final_transform):
     """Create a function that will properly split and format a string."""
     # Sometimes we store the "original" input before transformation, sometimes after.
     orignal_after_transform = not (alg & ns._DUMB and alg & ns.LOCALEALPHA)
-    original_func = input_transform if orignal_after_transform else lambda x: x
 
-    def func(x):
+    def func(x, original_func=input_transform if orignal_after_transform else lambda x: x):
         # Apply string input transformation function and return to x.
         # Original function is usually a no-op, but some algorithms require it
         # to also be the transformation function.
@@ -180,7 +214,7 @@ def _parse_string_function(alg, sep, splitter, input_transform, component_transf
     return func
 
 
-def _parse_path_function(str_split):
+def _parse_path_factory(str_split):
     """Create a function that will properly split and format a path."""
     return lambda x: tuple(py23_map(str_split, _path_splitter(x)))
 

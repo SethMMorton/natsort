@@ -34,10 +34,10 @@ from natsort.utils import (
     _args_to_enum,
     _do_decoding,
     _regex_chooser,
-    _parse_string_function,
-    _parse_path_function,
-    _parse_number_function,
-    _parse_bytes_function,
+    _parse_string_factory,
+    _parse_path_factory,
+    _parse_number_factory,
+    _parse_bytes_factory,
     _input_string_transform_factory,
     _string_component_transform_factory,
     _final_data_transform_factory,
@@ -214,13 +214,13 @@ def natsort_keygen(key=None, alg=0, **_kwargs):
     final_transform = _final_data_transform_factory(alg, sep)
 
     # Create the high-level parsing functions for strings, bytes, and numbers.
-    string_func = _parse_string_function(
+    string_func = _parse_string_factory(
         alg, sep, regex.split, input_transform, component_transform, final_transform
     )
     if alg & ns.PATH:
-        string_func = _parse_path_function(string_func)
-    bytes_func = _parse_bytes_function(alg)
-    num_func = _parse_number_function(alg, sep)
+        string_func = _parse_path_factory(string_func)
+    bytes_func = _parse_bytes_factory(alg)
+    num_func = _parse_number_factory(alg, sep)
 
     # Return the natsort key with the parsing path pre-chosen.
     return partial(
