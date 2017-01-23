@@ -38,7 +38,7 @@ from natsort.utils import (
     _parse_path_function,
     _parse_number_function,
     _parse_bytes_function,
-    _pre_split_function,
+    _input_string_transform_factory,
     _post_split_function,
     _post_string_parse_function,
 )
@@ -209,13 +209,13 @@ def natsort_keygen(key=None, alg=0, **_kwargs):
     regex = _regex_chooser[alg & ns._NUMERIC_ONLY]
 
     # Create the functions that will be used to split strings.
-    pre = _pre_split_function(alg)
+    transform = _input_string_transform_factory(alg)
     post = _post_split_function(alg)
     after = _post_string_parse_function(alg, sep)
 
     # Create the high-level parsing functions for strings, bytes, and numbers.
     string_func = _parse_string_function(
-        alg, sep, regex.split, pre, post, after
+        alg, sep, regex.split, transform, post, after
     )
     if alg & ns.PATH:
         string_func = _parse_path_function(string_func)

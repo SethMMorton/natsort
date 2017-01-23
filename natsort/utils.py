@@ -160,16 +160,17 @@ def _parse_number_function(alg, sep):
         return func
 
 
-def _parse_string_function(alg, sep, splitter, pre, post, after):
+def _parse_string_function(alg, sep, splitter, transform, post, after):
     """Create a function that will properly split and format a string."""
-    orignal_after_pre = not (alg & ns._DUMB and alg & ns.LOCALEALPHA)
-    original_func = pre if orignal_after_pre else lambda x: x
+    # Sometimes we store the "original" input before transformation, sometimes after.
+    orignal_after_transform = not (alg & ns._DUMB and alg & ns.LOCALEALPHA)
+    original_func = transform if orignal_after_transform else lambda x: x
 
     def func(x):
-        # Apply pre-splitting function and return to x.
+        # Apply string input transformation function and return to x.
         # Original function is usually a no-op, but some algorithms require it
-        # to also be the pre-spliting function.
-        x, original = pre(x), original_func(x)
+        # to also be the transformation function.
+        x, original = transform(x), original_func(x)
         x = splitter(x)            # Split the string on numbers
         x = py23_filter(None, x)   # Remove empty strings.
         x = py23_map(post, x)      # Apply post-splitting function
@@ -210,7 +211,7 @@ def _sep_inserter(iterable, sep):
         yield second
 
 
-def _pre_split_function(alg):
+def _input_string_transform_factory(alg):
     """
     Given a set of natsort algorithms, return the function to operate
     on the pre-split input string according to the user's request.

@@ -13,7 +13,7 @@ from natsort.utils import (
     _parse_path_function,
     _parse_number_function,
     _parse_bytes_function,
-    _pre_split_function,
+    _input_string_transform_factory,
     _post_split_function,
     _post_string_parse_function,
 )
@@ -33,7 +33,7 @@ if PY_VERSION >= 3:
 
 
 regex = _regex_chooser[ns.INT]
-pre = _pre_split_function(ns.INT)
+pre = _input_string_transform_factory(ns.INT)
 post = _post_split_function(ns.INT)
 after = _post_string_parse_function(ns.INT, '')
 string_func = _parse_string_function(ns.INT, '', regex.split, pre, post, after)
