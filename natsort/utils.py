@@ -113,6 +113,11 @@ _regex_chooser = {
 }
 
 
+def _no_op(x):
+    """A function that does nothing."""
+    return x
+
+
 def _natsort_key(val, key, string_func, bytes_func, num_func):
     """\
     Key to sort strings and numbers naturally.
@@ -195,21 +200,24 @@ def _parse_number_factory(alg, sep):
 
 
 def _parse_string_factory(alg, sep, splitter,
-                          input_transform, component_transform, final_transform):
+                          input_transform,
+                          component_transform,
+                          final_transform):
     """Create a function that will properly split and format a string."""
-    # Sometimes we store the "original" input before transformation, sometimes after.
-    orignal_after_transform = not (alg & ns._DUMB and alg & ns.LOCALEALPHA)
+    # Sometimes we store the "original" input before transformation,
+    # sometimes after.
+    orig_after_xfrm = not (alg & ns._DUMB and alg & ns.LOCALEALPHA)
 
-    def func(x, original_func=input_transform if orignal_after_transform else lambda x: x):
+    def func(x, original_func=input_transform if orig_after_xfrm else _no_op):
         # Apply string input transformation function and return to x.
         # Original function is usually a no-op, but some algorithms require it
         # to also be the transformation function.
         x, original = input_transform(x), original_func(x)
-        x = splitter(x)                       # Split the string into components
+        x = splitter(x)                       # Split string into components.
         x = py23_filter(None, x)              # Remove empty strings.
-        x = py23_map(component_transform, x)  # Apply transformation on string components
-        x = _sep_inserter(x, sep)             # Insert empty strings between numbers
-        return final_transform(x, original)   # Apply final transformation
+        x = py23_map(component_transform, x)  # Apply transform on components.
+        x = _sep_inserter(x, sep)             # Insert '' between numbers.
+        return final_transform(x, original)   # Apply the final transform.
 
     return func
 
@@ -339,7 +347,7 @@ def _final_data_transform_factory(alg, sep):
 
         def func(split_val,
                  val,
-                 f=(lambda x: x.swapcase()) if swap else lambda x: x):
+                 f=(lambda x: x.swapcase()) if swap else _no_op):
             """
             Return a tuple with the first character of the first element
             of the return value as the first element, and the return value
@@ -391,7 +399,7 @@ def chain_functions(functions):
     """
     functions = list(functions)
     if not functions:
-        return lambda x: x
+        return _no_op
     elif len(functions) == 1:
         return functions[0]
     else:

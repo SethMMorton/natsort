@@ -215,7 +215,8 @@ def natsort_keygen(key=None, alg=0, **_kwargs):
 
     # Create the high-level parsing functions for strings, bytes, and numbers.
     string_func = _parse_string_factory(
-        alg, sep, regex.split, input_transform, component_transform, final_transform
+        alg, sep, regex.split,
+        input_transform, component_transform, final_transform
     )
     if alg & ns.PATH:
         string_func = _parse_path_factory(string_func)
