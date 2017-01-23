@@ -152,6 +152,30 @@ You may find you need to explicitly set the locale to get this to work
 Please see :ref:`locale_issues` and the Installation section 
 below before using the :func:`~humansorted` function.
 
+Further Customizing Natsort
++++++++++++++++++++++++++++
+
+If you need to combine multiple algorithm modifiers (such as ``ns.REAL``,
+``ns.LOCALE``, and ``ns.IGNORECASE``), you can combine the options using the
+bitwise OR operator (``|``). For example,
+
+.. code-block:: python
+
+    >>> a = ['Apple', 'apple15', 'Banana', 'apple14,689', 'banana']
+    >>> natsorted(a, alg=ns.REAL | ns.LOCALE | ns.IGNORECASE)
+    ['Apple', 'apple15', 'apple14,689', 'Banana', 'banana']
+    >>> # You can also customize the convenience functions, too.
+    >>> # The ns enum provides long and short forms for each option.
+    >>> ns.LOCALE == ns.L
+    True
+    >>> natsorted(a, alg=ns.REAL | ns.LOCALE | ns.IGNORECASE) == realsorted(a, alg=ns.L | ns.IC)
+    True
+    >>> natsorted(a, alg=ns.REAL | ns.LOCALE | ns.IGNORECASE) == humansorted(a, alg=ns.R | ns.IC)
+    True
+
+All of the available customizations can be found in the documentation for
+the ``ns`` enum :class:`~natsort.ns`.
+
 Sorting Mixed Types
 +++++++++++++++++++
 
@@ -206,7 +230,8 @@ method.
     >>> a
     ['1 ft 5 in', '2 ft 7 in', '2 ft 11 in', '7 ft 6 in', '10 ft 2 in']
 
-You can also customize the key with the ``ns`` enum (see :class:`~natsort.ns`).
+All of the algorithm customizations mentioned in the `Further Customizing Natsort`_
+section can also be applied to :func:`~natsort_keygen` through the *alg* keyword option.
 
 Other Useful Things
 +++++++++++++++++++
