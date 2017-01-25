@@ -164,9 +164,10 @@ bitwise OR operator (``|``). For example,
     >>> a = ['Apple', 'apple15', 'Banana', 'apple14,689', 'banana']
     >>> natsorted(a, alg=ns.REAL | ns.LOCALE | ns.IGNORECASE)
     ['Apple', 'apple15', 'apple14,689', 'Banana', 'banana']
-    >>> # You can also customize the convenience functions, too.
     >>> # The ns enum provides long and short forms for each option.
     >>> ns.LOCALE == ns.L
+    True
+    >>> # You can also customize the convenience functions, too.
     True
     >>> natsorted(a, alg=ns.REAL | ns.LOCALE | ns.IGNORECASE) == realsorted(a, alg=ns.L | ns.IC)
     True

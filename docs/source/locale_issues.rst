@@ -9,7 +9,7 @@ Possible Issues with :func:`~natsort.humansorted` or ``ns.LOCALE``
 Being Locale-Aware Means Both Numbers and Non-Numbers
 -----------------------------------------------------
 
-In addition modifying how characters are sorted, ``ns.LOCALE`` will take into
+In addition to modifying how characters are sorted, ``ns.LOCALE`` will take into
 account locale-dependent thousands separators (and locale-dependent decimal
 separators if ``ns.FLOAT`` is enabled). This means that if you are in a
 locale that uses commas as the thousands separator, a number like
@@ -24,7 +24,7 @@ Regenerate Key With :func:`~natsort.natsort_keygen` After Changing Locale
 When :func:`~natsort.natsort_keygen` is called it returns a key function that
 hard-codes the provided settings. This means that the key returned when
 ``ns.LOCALE`` is used contins the settings specifed by the locale
-`loaded at the time the key is generated`. If you change the locale,
+*loaded at the time the key is generated*. If you change the locale,
 you should regenerate the key to account for the new locale.
 
 Corollary: Do Not Reuse :func:`~natsort.natsort_keygen` After Changing Locale
