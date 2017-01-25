@@ -13,6 +13,7 @@ Contents:
    :numbered:
 
    intro.rst
+   howitworks.rst
    examples.rst
    api.rst
    shell.rst

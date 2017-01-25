@@ -14,6 +14,7 @@ Natural sorting for python.
     - Documentation: http://pythonhosted.org/natsort
 
       - `Examples and Recipes <http://pythonhosted.org//natsort/examples.html>`_
+      - `How Does Natsort Work? <http://pythonhosted.org//natsort/howitworks.html>`_
       - `API <http://pythonhosted.org//natsort/api.html>`_
 
     - `Optional Dependencies`_
