@@ -213,10 +213,11 @@ Here are some timing results run on my machine:
 
 What can we learn from this? The ``try: except`` method (arguably the most "pythonic"
 of the solutions) is best for numeric input, but performs over 5X slower for non-numeric
-input. Conversely, the regular expression method, though slower than ``try: except`` for both input types,
-is more efficient for non-numeric input than for input that can be converted to an ``int``. Further, even though
-the regular expression method is slower for both input types, it is always at least
-twice as fast as the worst case for the ``try: except``.
+input. Conversely, the regular expression method, though slower than ``try: except`` for
+both input types, is more efficient for non-numeric input than for input that can be
+converted to an ``int``. Further, even though the regular expression method is slower
+for both input types, it is always at least twice as fast as the worst case for the
+``try: except``.
 
 Why do I care? Shouldn't I just pick a method and not worry about it? Probably. However,
 I am very conscious about the performance of :mod:`natsort`, and want it to be a true

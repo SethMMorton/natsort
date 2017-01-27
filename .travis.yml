@@ -6,7 +6,7 @@ python:
 - 3.4
 - 3.5
 - 3.6
-- nightly  # inspect.ArgSpec fails on Python3.6
+- nightly
 - pypy
 env:
 - WITH_OPTIONS=true
@@ -32,7 +32,8 @@ install:
 - pip install coveralls
 script:
 - if [[ $TRAVIS_PYTHON_VERSION == '2.6' ]]; then python -m doctest README.rst docs/source/intro.rst docs/source/examples.rst; fi
-- if [[ $TRAVIS_PYTHON_VERSION != '2.6' ]]; then python -m pytest README.rst docs/source/intro.rst docs/source/examples.rst; fi
+- if [[ $TRAVIS_PYTHON_VERSION == '2.7' ]]; then python -m pytest README.rst docs/source/intro.rst docs/source/examples.rst; fi
+- if [[ $(echo "$TRAVIS_PYTHON_VERSION >= 3.0 " | bc -l) ]]; then python -m pytest README.rst docs/source/intro.rst docs/source/examples.rst docs/source/howitworks.rst; fi
 - if [[ $TRAVIS_PYTHON_VERSION != '2.6' ]]; then python -m pytest --doctest-modules natsort; fi
 - if [[ $TRAVIS_PYTHON_VERSION != '2.6' ]]; then python -m pytest --cov natsort --flakes --pep8; fi
 after_success:
