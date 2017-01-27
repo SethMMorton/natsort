@@ -433,7 +433,7 @@ Comparing Different Types on Python 3
 `The second major special case I encountered was sorting of different types`_.
 If you are on Python 2 (i.e. legacy Python), this mostly doesn't matter *too*
 much since it uses an arbitrary heuristic to allow traditionally un-comparable
-types to be compared (such as comparing ``'a'`` to ``1``. However, on Python 3
+types to be compared (such as comparing ``'a'`` to ``1``). However, on Python 3
 (i.e. Python) it simply won't let you perform such nonsense, raising a
 :exc:`TypeError` instead.
 
@@ -514,8 +514,8 @@ Let's take a look at how this works out.
     >>> sorted(['12 apples', 'apples'], key=natsort_key_with_good_real_number_support)
     ['12 apples', 'apples']
     >>>
-    >>> sorted(['version5-3', 'version5-a'], key=natsort_key_with_good_real_number_support)
-    ['version5-3', 'version5-a']
+    >>> sorted(['version5.3.0', 'version5.3rc1'], key=natsort_key_with_good_real_number_support)
+    ['version5.3.0', 'version5.3rc1']
 
 How the "good" version works will be given in `TL;DR 2 - Handling Crappy, Real-World Input`_.
 
