@@ -806,8 +806,8 @@ transformation function :func:`locale.strxfrm`.
 .. code-block:: python
 
     >>> import locale, sys
-    >>> locale.setlocale(locale.LC_ALL, 'en_US')
-    'en_US'
+    >>> locale.setlocale(locale.LC_ALL, 'en_US.UTF-8')
+    'en_US.UTF-8'
     >>> a = ['a', 'b', 'ä']
     >>> sorted(a)
     ['a', 'b', 'ä']
