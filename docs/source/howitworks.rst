@@ -817,7 +817,7 @@ transformation function :func:`locale.strxfrm`.
     ['a', 'ä', 'b']
     >>>
     >>> a = ['apple', 'Banana', 'banana', 'Apple']
-    >>> sorted(a, key=locale.stfxfrm) if not is_osx else ['apple', 'Apple', 'banana', 'Banana']
+    >>> sorted(a, key=locale.strxfrm) if not is_osx else ['apple', 'Apple', 'banana', 'Banana']
     ['apple', 'Apple', 'banana', 'Banana']
 
 It turns out that locale-aware sorting groups numbers in the same
