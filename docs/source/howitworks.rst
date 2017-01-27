@@ -47,11 +47,15 @@ is false?  Here is how it is performing the comparison::
 a value is less than another it is placed first, so in our above example
 '2 ft 11 in' would end up before '2 ft 7 in', which is not correct. What to do?
 
-The beauty of Python is that it handles a lot of things automatically out-of-the-box,
-and one of those things is comparisons of sequences of sequences by recursively
-comparing each element in order till one is found that differs. Suppose I broke
-the above strings into sub-components of numbers and non-numbers, and actually
-stored the numbers as numeric types. We would get the following translations::
+The best way to handle this is to break the string into sub-components
+of numbers and non-numbers, and then convert the numeric parts into
+:func:`float` or :func:`int` types. This will force Python to
+actually understand the context of what it is sorting and then "do the
+right thing." Luckily, it handles sorting lists of strings right out-of-the-box,
+so the only hard part is actually making this string-to-list transformation
+and then Python will handle the rest.
+
+::
 
     '2 ft 7 in'  ==> (2, ' ft ', 7,  ' in')
     '2 ft 11 in' ==> (2, ' ft ', 11, ' in')
@@ -209,8 +213,8 @@ Here are some timing results run on my machine:
 
 What can we learn from this? The ``try: except`` method (arguably the most "pythonic"
 of the solutions) is best for numeric input, but performs over 5X slower for non-numeric
-input. Conversely, the regular expression method is more efficient for non-numeric input,
-but is slower for input that can be converted to an ``int``. Further, even though
+input. Conversely, the regular expression method, though slower than ``try: except`` for both input types,
+is more efficient for non-numeric input than for input that can be converted to an ``int``. Further, even though
 the regular expression method is slower for both input types, it is always at least
 twice as fast as the worst case for the ``try: except``.
 
@@ -273,7 +277,7 @@ During development of :mod:`natsort`, I wanted to ensure that using it did not
 get in the way of a user's program by introducing a performance penalty to their code.
 To that end, I do not feel like my adventures down the rabbit hole of optimization
 of coercion functions was a waste; I can confidently look users in the eye and
-say I took every option to ensure :mod:`natsort` is as performant as possible.
+say I considered every option in ensuring :mod:`natsort` is as efficient as possible.
 This is why if `fastnumbers`_ is installed it will be used for this step,
 and otherwise the hybrid method will be used.
 
@@ -316,7 +320,7 @@ At this point, our :mod:`natsort` algorithm is essentially the following:
 
 I have written the above for clarity and not performance.
 This pretty much matches `most natural sort solutions for python on Stack Overflow`_
-(except the above includes customization of the definiation of a number).
+(except the above includes customization of the definition of a number).
 
 Special Cases Everywhere!
 -------------------------
@@ -354,7 +358,7 @@ system:
     ['/p/Folder (1)/file (1).tar.gz', '/p/Folder (1)/file.tar.gz', '/p/Folder (10)/file.tar.gz', '/p/Folder/file.tar.gz']
 
 Well that's not right! What is ``'/p/Folder/file.tar.gz'`` doing at the end?
-Well, it has to do with the numerical ASCII code assigned to the space and
+It has to do with the numerical ASCII code assigned to the space and
 ``/`` characters in the `ASCII table`_. According to the `ASCII table`_, the
 space character (number 32) comes before the ``/`` character (number 47). If
 we remove the common prefix in all of the above strings (``'/p/Folder'``), we
@@ -378,7 +382,7 @@ with the `Path.parts`_ method from :mod:`pathlib`:
     ['/p/Folder/file.tar.gz', '/p/Folder (1)/file (1).tar.gz', '/p/Folder (1)/file.tar.gz', '/p/Folder (10)/file.tar.gz']
 
 Almost! It seems like there is some funny business going on in the final
-filename component as well. We can solve that nice and quick with `Path.suffixes`_
+filename component as well. We can solve that nicely and quickly with `Path.suffixes`_
 and `Path.stem`_.
 
 .. code-block:: python
@@ -429,7 +433,7 @@ Comparing Different Types on Python 3
 If you are on Python 2 (i.e. legacy Python), this mostly doesn't matter *too*
 much since it uses an arbitrary heuristic to allow traditionally un-comparable
 types to be compared (such as comparing ``'a'`` to ``1``. However, on Python 3
-(i.e. Python) it simply won't let you perform such non-sense, raising a
+(i.e. Python) it simply won't let you perform such nonsense, raising a
 :exc:`TypeError` instead.
 
 You can imagine that a module that breaks strings into tuples of numbers and
@@ -481,11 +485,10 @@ in a "special case" manner, meaning only respond and do something different
 if these problems are detected. But a less error-prone method is to ensure
 that the data is correct-by-construction, and this can be done by ensuring
 that the returned tuples *always* start with a string, and then alternate
-in a string-number-string-number-string patter; this can be achieved by
+in a string-number-string-number-string patter;n this can be achieved by
 adding an empty string wherever the pattern is not followed [#f3]_. This ends
 up working out pretty nicely because empty strings are always "less" than
-any non-empty string, and we typically want numbers to come before strings
-so things work out nicely.
+any non-empty string, and we typically want numbers to come before strings.
 
 Let's take a look at how this works out.
 
@@ -581,9 +584,7 @@ TL;DR 2 - Handling Crappy, Real-World Input
 
 Let's see how our elegant key function from :ref:`TL;DR 1 <tldr1>` has
 become bastardized in order to support handling mixed real-world data
-and user customizations. In this example, I will explicitly show some
-user customization support over number definition and whether or not to
-assume the inputs are paths.
+and user customizations.
 
     >>> def natsort_key(x, as_float=False, signed=False, as_path=False):
     ...     if as_float:
@@ -616,7 +617,7 @@ assume the inputs are paths.
 
 And this doesn't even show handling :class:`bytes` type!  Notice that we have
 to do non-obvious things like modify the return form of numbers when ``as_path``
-is given, just to avoid comparing strings and numbers in the case a user provides
+is given, just to avoid comparing strings and numbers for the case in which a user provides
 input like ``['/home/me', 42]``.
 
 Let's take it out for a spin!
@@ -666,14 +667,14 @@ These can be summed up as follows:
    library, so if *that* is broken (like it is on BSD and OSX) then
    :mod:`locale` is broken in Python.
 #. Because of a bug in legacy Python (i.e. Python 2), there is no uniform way to use
-   the :mod:`locale` sorting functionality between legacy Python and Python.
+   the :mod:`locale` sorting functionality between legacy Python and Python 3.
 #. People have differing opinions of how capitalization should affect word order.
 #. There is no built-in way to handle locale-dependent thousands separators
    and decimal points *robustly*.
 #. Proper handling of Unicode is complicated.
 #. Proper handling of :mod:`locale` is complicated.
 
-Easily over half of the the code in :mod:`natsort` in some way dealing with some
+Easily over half of the the code in :mod:`natsort` is in some way dealing with some
 aspect of :mod:`locale` or basic case handling. It would have been
 impossible to get right without a `really good`_ `testing strategy`_.
 
@@ -687,11 +688,11 @@ Let's see how we can handle some of the dragons, one-by-one.
 Basic Case Control Support
 ++++++++++++++++++++++++++
 
-Without even thinking about that mess that is adding :mod:`locale` support,
+Without even thinking about the mess that is adding :mod:`locale` support,
 :mod:`natsort` can introduce support for controlling how case is interpreted.
 
-First, let's take a look at how it is sorted by default (because of
-where characters lie on the `ASCII table`_.
+First, let's take a look at how it is sorted by default (due to
+where characters lie on the `ASCII table`_).
 
 .. code-block:: python
 
@@ -716,10 +717,12 @@ easy... just call the :meth:`str.swapcase` method on the input.
     ['apple', 'banana', 'corn', 'Apple', 'Banana', 'Corn']
 
 The last (i call it *IGNORECASE*) should be super easy, right?
-Simply call :meth:`str.lowercase` on the input. Well, in Python 3.3
-:meth:`str.casefold` was introduced that does a better job of removing
-all case information from unicode characters from
-non-latin alphabets, so that should probably be used if it is available.
+Simply call :meth:`str.lowercase` on the input. This will work but may
+not always give the correct answer on non-latin character sets. It's
+a good thing that in Python 3.3
+:meth:`str.casefold` was introduced, which does a better job of removing
+all case information from unicode characters in
+non-latin alphabets.
 
 .. code-block:: python
 
@@ -749,7 +752,7 @@ with its lowercase version and then the original character.
     >>> sorted(a, key=groupletters)
     ['Apple', 'apple', 'Banana', 'banana', 'Corn', 'corn']
 
-The effect of this is that all both ``'Apple'`` and ``'apple'`` are
+The effect of this is that both ``'Apple'`` and ``'apple'`` are
 placed adjacent to each other because their transformations both begin
 with ``'a'``, and then the second character can be used to order them
 appropriately with respect to each other.
@@ -818,8 +821,8 @@ transformation function :func:`locale.strxfrm`.
 
 It turns out that locale-aware sorting groups numbers in the same
 way as turning on *GROUPLETTERS* and *LOWERCASEFIRST*.
-The trick is you have to apply :func:`locale.strxfrm` only to non-numeric
-characters otherwise numbers won't be parsed properly, so it must
+The trick is that you have to apply :func:`locale.strxfrm` only to non-numeric
+characters; otherwise, numbers won't be parsed properly. Therefore, it must
 be applied as part of the :func:`coerce_to_int`/:func:`coerce_to_float`
 functions in a manner similar to :func:`groupletters`.
 
@@ -827,9 +830,9 @@ As you might have guessed, there is a small problem.
 It turns out the there is a bug in the legacy Python implementation of
 :func:`locale.strxfrm` that causes it to outright fail for :func:`unicode`
 input (https://bugs.python.org/issue2481). :func:`locale.strcoll` works,
-but is intended for use with ``cmp`` which does not exist in current Python
+but is intended for use with ``cmp``, which does not exist in current Python
 implementations. Luckily, the :func:`functools.cmp_to_key` function
-make :func:`locale.strcoll` behave like :func:`locale.strxfrm` (of course,
+makes :func:`locale.strcoll` behave like :func:`locale.strxfrm` (that is, of course,
 unless you are on Python 2.6 where :func:`functools.cmp_to_key` doesn't exist,
 in which case you simply copy-paste the implementation from Python 2.7
 directly into your code ☹).
@@ -861,7 +864,7 @@ into the *locale* game kicking and screaming. *<deep breath>*.
 
 So, how to deal with this situation? There are two ways to do so.
 
-#.  Detect if :mod:`locale` is sorting incorrectly (i.e. dumb) by seeing
+#.  Detect if :mod:`locale` is sorting incorrectly (i.e. ``dumb``) by seeing
     if ``'A'`` is sorted before ``'a'`` (incorrect) or not.
 
     .. code-block:: python
@@ -872,7 +875,7 @@ So, how to deal with this situation? There are two ways to do so.
         ...     return locale.strxfrm('A') < locale.strxfrm('a')
         ...
 
-    If a "dumb" *locale* implementation is found, then automatically
+    If a ``dumb`` *locale* implementation is found, then automatically
     turn on *LOWERCASEFIRST* and *GROUPLETTERS*.
 #.  Use an alternate library if installed. `ICU <http://site.icu-project.org/>`_
     is a great and powerful library that has a pretty decent Python port
@@ -885,7 +888,7 @@ So, how to deal with this situation? There are two ways to do so.
 
 Let me tell you, this little complication really makes a challenge of testing
 the code, since one must set up different environments on different operating
-systems in order to test all possible code paths. Not to mentions that
+systems in order to test all possible code paths. Not to mention that
 certain checks *will* fail for certain operating systems and environments
 so one must be diligent in either writing the tests not to fail, or ignoring
 those tests when on offending environments.
@@ -894,8 +897,8 @@ Handling Locale-Aware Numbers
 +++++++++++++++++++++++++++++
 
 `Thousands separator support`_ is a problem that I knew would someday be
-requested but had decided to push off till a rainy day. One day it finally
-rained and I decided to tackle the problem.
+requested but had decided to push off until a rainy day. One day it finally
+rained, and I decided to tackle the problem.
 
 So what is the problem? Consider the number ``1,234,567`` (assuming the
 ``','`` is the thousands separator). Try to run that through :func:`int`
@@ -907,8 +910,8 @@ separators must be removed.
     >>> float('1,234,567'.replace(',', ''))
     1234567.0
 
-What if in our current locale the thousands separator is ``'.'`` and
-the ``','`` is the decimal separator (like for the German locale *de_DE*?)
+What if, in our current locale, the thousands separator is ``'.'`` and
+the ``','`` is the decimal separator (like for the German locale *de_DE*)?
 
 .. code-block:: python
 
@@ -930,16 +933,16 @@ Well, let's take a look at what would happen if we send some possible
     >>> natsort_key('Sir, €1.234,50 please.'.replace('.', '').replace(',', '.'), as_float=True)
     ('Sir. €', 1234.5, ' please')
 
-Any character matching the thousands separator was dropped, and and anything
+Any character matching the thousands separator was dropped, and anything
 matching the decimal separator was changed to ``'.'``! If these characters
 were critical to how your data was ordered, this would break :mod:`natsort`.
 
 The first solution one might consider would be to first decompose the
-input into sub-components first (like we did for the *GROUPLETTERS* method
-above) and then only apply these transformations on the number components,
-but this is a chicken-and-egg problem because *we cannot appropriately
+input into sub-components (like we did for the *GROUPLETTERS* method
+above) and then only apply these transformations on the number components.
+This is a chicken-and-egg problem, though, because *we cannot appropriately
 separate out the numbers because of the thousands separators and
-non-``'.'`` decimal separators* (well, at least not without making multiple
+non-'.' decimal separators* (well, at least not without making multiple
 passes over the data which I do not consider to be a valid option).
 
 Regular expressions to the rescue! With regular expressions, we can
@@ -952,7 +955,6 @@ Beware, these regular expressions will make your eyes bleed.
 
 .. code-block:: python
 
-    >>> from natsort.compat.locale import get_thousands_sep, get_decimal_point
     >>> decimal = ','  # Assume German locale, so decimal separator is ','
     >>> # Look-behind assertions cannot accept range modifiers, so instead of i.e.
     >>> # (?<!\.[0-9]{1,3}) I have to repeat the look-behind for 1, 2, and 3.
