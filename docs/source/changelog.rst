@@ -3,6 +3,14 @@
 Changelog
 ---------
 
+01-02-2017 v. 5.0.2
++++++++++++++++++++
+
+    - Added additional unicode number support for Python 3.6.
+    - Renamed several internal functions and variables to improve clarity.
+    - Improved documentation examples.
+    - Added a "how does it work?" section to the documentation.
+
 06-04-2016 v. 5.0.1
 +++++++++++++++++++
 

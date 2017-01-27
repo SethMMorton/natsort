@@ -272,6 +272,14 @@ History
 These are the last three entries of the changelog.  See the package documentation
 for the complete `changelog <http://pythonhosted.org//natsort/changelog.html>`_.
 
+01-02-2017 v. 5.0.2
++++++++++++++++++++
+
+    - Added additional unicode number support for Python 3.6.
+    - Renamed several internal functions and variables to improve clarity.
+    - Improved documentation examples.
+    - Added a "how does it work?" section to the documentation.
+
 06-04-2016 v. 5.0.1
 +++++++++++++++++++
 
@@ -301,10 +309,3 @@ for the complete `changelog <http://pythonhosted.org//natsort/changelog.html>`_.
     - Improved clarity of documentaion with regards to locale-aware sorting.
     - Added a new ``chain_functions`` function for convenience in creating
       a complex user-given ``key`` from several existing functions.
-
-11-01-2015 v. 4.0.4
-+++++++++++++++++++
-
-    - Improved coverage of unit tests.
-    - Unit tests use new and improved hypothesis library.
-    - Fixed compatibility issues with Python 3.5
