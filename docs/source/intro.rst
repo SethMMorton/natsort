@@ -169,7 +169,6 @@ bitwise OR operator (``|``). For example,
     >>> ns.LOCALE == ns.L
     True
     >>> # You can also customize the convenience functions, too.
-    True
     >>> natsorted(a, alg=ns.REAL | ns.LOCALE | ns.IGNORECASE) == realsorted(a, alg=ns.L | ns.IC)
     True
     >>> natsorted(a, alg=ns.REAL | ns.LOCALE | ns.IGNORECASE) == humansorted(a, alg=ns.R | ns.IC)
