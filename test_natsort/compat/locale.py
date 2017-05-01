@@ -17,7 +17,7 @@ def load_locale(x):
     """ Convenience to load a locale, trying ISO8859-1 first."""
     try:
         locale.setlocale(locale.LC_ALL, str('{0}.ISO8859-1'.format(x)))
-    except:
+    except locale.Error:
         locale.setlocale(locale.LC_ALL, str('{0}.UTF-8'.format(x)))
 
 # Check if de_DE is installed.

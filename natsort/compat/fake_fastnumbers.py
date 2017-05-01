@@ -12,16 +12,16 @@ from __future__ import (
 )
 
 # Std. lib imports.
-import sys
 import unicodedata
 from natsort.compat.py23 import PY_VERSION
 if PY_VERSION >= 3:
     long = int
 
 
-nan_inf = set(['INF', 'INf', 'Inf', 'inF', 'iNF', 'InF', 'inf', 'iNf',
-               'NAN', 'nan', 'NaN', 'nAn', 'naN', 'NAn', 'nAN', 'Nan'])
-nan_inf.update(['+'+x[:2] for x in nan_inf] + ['-'+x[:2] for x in nan_inf])
+nan_inf = ['INF', 'INf', 'Inf', 'inF', 'iNF', 'InF', 'inf', 'iNf',
+           'NAN', 'nan', 'NaN', 'nAn', 'naN', 'NAn', 'nAN', 'Nan']
+nan_inf.extend(['+'+x[:2] for x in nan_inf] + ['-'+x[:2] for x in nan_inf])
+nan_inf = frozenset(nan_inf)
 
 
 def fast_float(x, key=lambda x: x, nan=None,

@@ -68,8 +68,8 @@ def test_main_passes_arguments_with_all_command_line_options():
 
 class Args:
     """A dummy class to simulate the argparse Namespace object"""
-    def __init__(self, filter, reverse_filter, exclude, as_path, reverse):
-        self.filter = filter
+    def __init__(self, filt, reverse_filter, exclude, as_path, reverse):
+        self.filter = filt
         self.reverse_filter = reverse_filter
         self.exclude = exclude
         self.reverse = reverse

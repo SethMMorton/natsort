@@ -62,7 +62,7 @@ def refine_split_grouping(iterable):
             yield SplitElement(False, val, False)
 
 
-def group_unicode_and_ascii_numbers(iterable, ascii_digits=set('0123456789')):
+def group_unicode_and_ascii_numbers(iterable, ascii_digits=frozenset('0123456789')):
     """
     Use groupby to group ASCII and unicode numeric characters.
     Assumes all input is already all numeric characters.
@@ -294,7 +294,7 @@ def add_leading_space_if_first_is_num(iterable, sep):
     return z
 
 
-def sep_inserter(iterable, sep, t=set((int, long, float))):
+def sep_inserter(iterable, sep, t=frozenset((int, long, float))):
     """Simulates the py3_safe function."""
     pairs = pairwise(iterable)
 
