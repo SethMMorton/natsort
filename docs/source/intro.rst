@@ -8,11 +8,11 @@ Natural sorting for python.
 
     - Source Code: https://github.com/SethMMorton/natsort
     - Downloads: https://pypi.python.org/pypi/natsort
-    - Documentation: http://pythonhosted.org/natsort
+    - Documentation: http://natsort.readthedocs.io/
 
-      - `Examples and Recipes <http://pythonhosted.org//natsort/examples.html>`_
-      - `How Does Natsort Work? <http://pythonhosted.org//natsort/howitworks.html>`_
-      - `API <http://pythonhosted.org//natsort/api.html>`_
+      - :ref:`Examples and Recipes <examples>`
+      - :ref:`How Does Natsort Work? <howitworks>`
+      - :ref:`API <api>`
 
     - Optional Dependencies:
 

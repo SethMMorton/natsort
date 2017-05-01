@@ -23,11 +23,11 @@ Simple yet flexible natural sorting in Python.
 
     - Source Code: https://github.com/SethMMorton/natsort
     - Downloads: https://pypi.python.org/pypi/natsort
-    - Documentation: http://pythonhosted.org/natsort
+    - Documentation: http://natsort.readthedocs.io/
 
-      - `Examples and Recipes <http://pythonhosted.org//natsort/examples.html>`_
-      - `How Does Natsort Work? <http://pythonhosted.org//natsort/howitworks.html>`_
-      - `API <http://pythonhosted.org//natsort/api.html>`_
+      - `Examples and Recipes <http://natsort.readthedocs.io/en/stable/examples.html>`_
+      - `How Does Natsort Work? <http://natsort.readthedocs.io/en/stable/howitworks.html>`_
+      - `API <http://natsort.readthedocs.io/en/stable/api.html>`_
 
     - `Optional Dependencies`_
 
@@ -65,9 +65,9 @@ Using ``natsorted`` is simple:
 
 ``natsorted`` identifies numbers anywhere in a string and sorts them
 naturally. Below are some other things you can do with ``natsort``
-(also see the `examples <http://pythonhosted.org//natsort/examples.html>`_
+(also see the `examples <http://natsort.readthedocs.io/en/stable/examples.html>`_
 for a quick start guide, or the
-`api <http://pythonhosted.org//natsort/api.html>`_ for complete details).
+`api <http://natsort.readthedocs.io/en/stable/api.html>`_ for complete details).
 
 **Note**: ``natsorted`` is designed to be a drop-in replacement for the built-in
 ``sorted`` function. Like ``sorted``, ``natsorted`` `does not sort in-place`.
@@ -100,7 +100,7 @@ This is handled properly by default (as of ``natsort`` version >= 4.0.0):
     ['version-1.9', 'version-1.10', 'version-1.11', 'version-2.0']
 
 If you need to sort release candidates, please see
-`this useful hack <http://pythonhosted.org//natsort/examples.html#rc-sorting>`_.
+`this useful hack <http://natsort.readthedocs.io/en/stable/examples.html#rc-sorting>`_.
 
 Sorting by Real Numbers (i.e. Signed Floats)
 ++++++++++++++++++++++++++++++++++++++++++++
@@ -146,7 +146,7 @@ This can be achieved with the ``humansorted`` function:
 
 You may find you need to explicitly set the locale to get this to work
 (as shown in the example).
-Please see `locale issues <http://pythonhosted.org/natsort/locale_issues.html>`_ and the
+Please see `locale issues <http://natsort.readthedocs.io/en/stable/locale_issues.html>`_ and the
 `Optional Dependencies`_ section below before using the ``humansorted`` function.
 
 Further Customizing Natsort
@@ -171,7 +171,7 @@ bitwise OR operator (``|``). For example,
     True
 
 All of the available customizations can be found in the documentation for
-`the ns enum <http://pythonhosted.org//natsort/ns_class.html>`_.
+`the ns enum <http://natsort.readthedocs.io/en/stable/ns_class.html>`_.
 
 Sorting Mixed Types
 +++++++++++++++++++
@@ -234,9 +234,9 @@ Other Useful Things
 +++++++++++++++++++
 
  - recursively descend into lists of lists
- - `controlling the case-sensitivity <http://pythonhosted.org//natsort/examples.html#case-sort>`_
- - `sorting file paths correctly <http://pythonhosted.org//natsort/examples.html#path-sort>`_
- - `allow custom sorting keys <http://pythonhosted.org//natsort/examples.html#custom-sort>`_
+ - `controlling the case-sensitivity <http://natsort.readthedocs.io/en/stable/examples.html#case-sort>`_
+ - `sorting file paths correctly <http://natsort.readthedocs.io/en/stable/examples.html#path-sort>`_
+ - `allow custom sorting keys <http://natsort.readthedocs.io/en/stable/examples.html#custom-sort>`_
 
 Shell script
 ------------
@@ -270,7 +270,7 @@ PyICU
 
 It is recommended that you install `PyICU <https://pypi.python.org/pypi/PyICU>`_
 if you wish to sort in a locale-dependent manner, see
-http://pythonhosted.org/natsort/locale_issues.html for an explanation why.
+http://natsort.readthedocs.io/en/stable/locale_issues.html for an explanation why.
 
 Author
 ------
@@ -281,7 +281,7 @@ History
 -------
 
 These are the last three entries of the changelog.  See the package documentation
-for the complete `changelog <http://pythonhosted.org//natsort/changelog.html>`_.
+for the complete `changelog <http://natsort.readthedocs.io/en/stable/changelog.html>`_.
 
 01-02-2017 v. 5.0.2
 +++++++++++++++++++
