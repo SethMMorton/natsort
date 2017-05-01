@@ -1,40 +1,40 @@
 language: python
 python:
-- 2.6
-- 2.7
-- 3.3
-- 3.4
-- 3.5
-- 3.6
-- nightly
-- pypy
+- "2.6"
+- "2.7"
+- "3.3"
+- "3.4"
+- "3.5"
+- "3.6"
+- "pypy"
+
 env:
 - WITH_OPTIONS=true
 - WITH_OPTIONS=false
+
 matrix:
   exclude:
     - python: pypy
       env: WITH_OPTIONS=true
     - python: 2.6
       env: WITH_OPTIONS=true
-before_install:
-- if [[ $WITH_OPTIONS == true ]]; then sudo locale-gen de_DE.UTF-8; fi
-- sudo apt-get install bc
+
+addons:
+  apt:
+    packages:
+    - libicu-dev
+    - language-pack-de
+    - language-pack-en
+
 install:
 - pip install -U pip
-- if [[ $WITH_OPTIONS == true ]]; then sudo apt-get install libicu-dev; fi
-- if [[ $WITH_OPTIONS == true ]]; then pip install fastnumbers; fi
-- if [[ $WITH_OPTIONS == true ]]; then pip install PyICU; fi
-- if [[ 1 -eq $(echo "$TRAVIS_PYTHON_VERSION < 3.4" | bc -l) ]]; then pip install pathlib; fi
-- if [[ $TRAVIS_PYTHON_VERSION == '2.6' ]]; then pip install argparse; fi
-- if [[ $(echo "$TRAVIS_PYTHON_VERSION < 3.3" | bc -l) ]]; then pip install mock; fi
-- if [[ $TRAVIS_PYTHON_VERSION != '2.6' ]]; then pip install pytest-cov pytest-flakes pytest-pep8 hypothesis; fi
-- pip install coveralls
+- pip install -rrequirements.txt -rtesting-requirements.txt
+- if [[ $TRAVIS_PYTHON_VERSION != 'pypy' ]]; then pip install -rcpython-testing-requirements.txt; fi
+- if [[ $WITH_OPTIONS == true ]]; then pip install -roptional-requirements.txt; fi
+- pip install tox-travis coveralls
+
 script:
-- if [[ $TRAVIS_PYTHON_VERSION == '2.6' ]]; then python -m doctest README.rst docs/source/intro.rst docs/source/examples.rst; fi
-- if [[ $TRAVIS_PYTHON_VERSION == '2.7' ]]; then python -m pytest README.rst docs/source/intro.rst docs/source/examples.rst; fi
-- if [[ 1 -eq $(echo "$TRAVIS_PYTHON_VERSION >= 3.0" | bc -l) ]]; then python -m pytest README.rst docs/source/intro.rst docs/source/examples.rst docs/source/howitworks.rst; fi
-- if [[ $TRAVIS_PYTHON_VERSION != '2.6' ]]; then python -m pytest --doctest-modules natsort; fi
-- if [[ $TRAVIS_PYTHON_VERSION != '2.6' ]]; then python -m pytest --cov natsort --flakes --pep8; fi
+- tox
+
 after_success:
   coveralls
