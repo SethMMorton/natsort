@@ -283,6 +283,12 @@ History
 These are the last three entries of the changelog.  See the package documentation
 for the complete `changelog <http://natsort.readthedocs.io/en/stable/changelog.html>`_.
 
+04-30-2017 v. 5.0.3
++++++++++++++++++++
+
+    - Improved development infrastructure.
+    - Migrated documentation to ReadTheDocs.
+
 01-02-2017 v. 5.0.2
 +++++++++++++++++++
 
@@ -298,25 +304,3 @@ for the complete `changelog <http://natsort.readthedocs.io/en/stable/changelog.h
       namespace.
     - Fixed a bug with the ``from natsort import *`` mechanism.
     - Fixed bug with using ``natsort`` with ``python -OO``.
-
-05-08-2016 v. 5.0.0
-+++++++++++++++++++
-
-    - ``ns.LOCALE``/``humansorted`` now accounts for thousands separators.
-    - Refactored entire codebase to be more functional (as in use functions as
-      units). Previously, the code was rather monolithic and difficult to follow. The
-      goal is that with the code existing in smaller units, contributing will
-      be easier.
-    - Deprecated ``ns.TYPESAFE`` option as it is now always on (due to a new
-      iterator-based algorithm, the typesafe function is now cheap).
-    - Increased speed of execution (came for free with the new functional approach
-      because the new factory function paradigm eliminates most ``if`` branches
-      during execution).
-
-      - For the most cases, the code is 30-40% faster than version 4.0.4.
-      - If using ``ns.LOCALE`` or ``humansorted``, the code is 1100% faster than
-        version 4.0.4.
-
-    - Improved clarity of documentaion with regards to locale-aware sorting.
-    - Added a new ``chain_functions`` function for convenience in creating
-      a complex user-given ``key`` from several existing functions.

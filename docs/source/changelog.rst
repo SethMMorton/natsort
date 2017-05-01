@@ -3,6 +3,12 @@
 Changelog
 ---------
 
+04-30-2017 v. 5.0.3
++++++++++++++++++++
+
+    - Improved development infrastructure.
+    - Migrated documentation to ReadTheDocs.
+
 01-02-2017 v. 5.0.2
 +++++++++++++++++++
 
