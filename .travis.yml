@@ -11,15 +11,15 @@ python:
 sudo: false
 
 env:
-- WITH_OPTIONS=true
-- WITH_OPTIONS=false
+- WITH_OPTIONS="optional-"
+- WITH_OPTIONS=""
 
 matrix:
   exclude:
     - python: "pypy"
-      env: WITH_OPTIONS=true
+      env: WITH_OPTIONS="optional-"
     - python: "2.6"
-      env: WITH_OPTIONS=true
+      env: WITH_OPTIONS="optional-"
 
 addons:
   apt:
@@ -30,9 +30,6 @@ addons:
 
 install:
 - pip install -U pip
-- pip install -rrequirements.txt -rtesting-requirements.txt
-- if [[ $TRAVIS_PYTHON_VERSION != 'pypy' ]]; then pip install -rcpython-testing-requirements.txt; fi
-- if [[ $WITH_OPTIONS == true ]]; then pip install -roptional-requirements.txt; fi
 - pip install tox-travis codacy-coverage codecov
 
 script:
