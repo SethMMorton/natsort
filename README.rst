@@ -1,6 +1,10 @@
 natsort
 =======
 
+.. image:: https://api.codacy.com/project/badge/Grade/f2bf04b1fc5d4792bf546f6e497cf4b8
+   :alt: Codacy Badge
+   :target: https://www.codacy.com/app/SethMMorton/natsort?utm_source=github.com&utm_medium=referral&utm_content=SethMMorton/natsort&utm_campaign=badger
+
 .. image:: https://travis-ci.org/SethMMorton/natsort.svg?branch=master
     :target: https://travis-ci.org/SethMMorton/natsort
 
