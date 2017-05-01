@@ -18,14 +18,14 @@ if PY_VERSION >= 3:
     long = int
 
 
-nan_inf = ['INF', 'INf', 'Inf', 'inF', 'iNF', 'InF', 'inf', 'iNf',
+NAN_INF = ['INF', 'INf', 'Inf', 'inF', 'iNF', 'InF', 'inf', 'iNf',
            'NAN', 'nan', 'NaN', 'nAn', 'naN', 'NAn', 'nAN', 'Nan']
-nan_inf.extend(['+'+x[:2] for x in nan_inf] + ['-'+x[:2] for x in nan_inf])
-nan_inf = frozenset(nan_inf)
+NAN_INF.extend(['+'+x[:2] for x in NAN_INF] + ['-'+x[:2] for x in NAN_INF])
+NAN_INF = frozenset(NAN_INF)
 
 
 def fast_float(x, key=lambda x: x, nan=None,
-               uni=unicodedata.numeric, nan_inf=nan_inf):
+               uni=unicodedata.numeric, nan_inf=NAN_INF):
     """\
     Convert a string to a float quickly, return input as-is if not possible.
     We don't need to accept all input that the real fast_int accepts because

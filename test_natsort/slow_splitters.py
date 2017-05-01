@@ -295,7 +295,7 @@ def add_leading_space_if_first_is_num(iterable, sep):
     return z
 
 
-def sep_inserter(iterable, sep, t=frozenset((int, long, float))):
+def sep_inserter(iterable, sep, types=frozenset((int, long, float))):
     """Simulates the py3_safe function."""
     pairs = pairwise(iterable)
 
@@ -303,7 +303,7 @@ def sep_inserter(iterable, sep, t=frozenset((int, long, float))):
     first, second = next(pairs)
     if second is None:  # Only one element
         yield first
-    elif type(first) in t and type(second) in t:
+    elif type(first) in types and type(second) in types:
         yield first
         yield sep
         yield second
@@ -313,7 +313,7 @@ def sep_inserter(iterable, sep, t=frozenset((int, long, float))):
 
     # Handle all remaining pairs in loop.
     for first, second in pairs:
-        if type(first) in t and type(second) in t:
+        if type(first) in types and type(second) in types:
             yield sep
         yield second
 
