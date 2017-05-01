@@ -7,6 +7,9 @@ natsort
 .. image:: https://coveralls.io/repos/SethMMorton/natsort/badge.png?branch=master
     :target: https://coveralls.io/r/SethMMorton/natsort?branch=master
 
+.. image:: https://api.codacy.com/project/badge/Grade/f2bf04b1fc5d4792bf546f6e497cf4b8
+    :target: https://www.codacy.com/app/SethMMorton/natsort
+
 .. image:: https://img.shields.io/pypi/pyversions/natsort.svg
     :target: https://pypi.python.org/pypi/natsort
 
