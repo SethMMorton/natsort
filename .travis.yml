@@ -33,10 +33,11 @@ install:
 - pip install -rrequirements.txt -rtesting-requirements.txt
 - if [[ $TRAVIS_PYTHON_VERSION != 'pypy' ]]; then pip install -rcpython-testing-requirements.txt; fi
 - if [[ $WITH_OPTIONS == true ]]; then pip install -roptional-requirements.txt; fi
-- pip install tox-travis coveralls
+- pip install tox-travis codacy-coverage
 
 script:
 - tox
 
 after_success:
-  coveralls
+- coverage xml
+- python-codacy-coverage -r coverage.xml
