@@ -4,7 +4,7 @@
 The :mod:`natsort` module
 =========================
 
-Natural sorting for python. 
+Simple yet flexible natural sorting in Python.
 
     - Source Code: https://github.com/SethMMorton/natsort
     - Downloads: https://pypi.python.org/pypi/natsort
