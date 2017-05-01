@@ -4,8 +4,8 @@ natsort
 .. image:: https://img.shields.io/travis/SethMMorton/natsort/master.svg?label=travis-ci
     :target: https://travis-ci.org/SethMMorton/fastnumbers
 
-.. image:: https://coveralls.io/repos/SethMMorton/natsort/badge.png?branch=master
-    :target: https://coveralls.io/r/SethMMorton/natsort?branch=master
+.. image:: https://codecov.io/gh/SethMMorton/natsort/branch/master/graph/badge.svg
+    :target: https://codecov.io/gh/SethMMorton/natsort
 
 .. image:: https://api.codacy.com/project/badge/Grade/f2bf04b1fc5d4792bf546f6e497cf4b8
     :target: https://www.codacy.com/app/SethMMorton/natsort
