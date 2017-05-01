@@ -8,15 +8,17 @@ python:
 - "3.6"
 - "pypy"
 
+sudo: false
+
 env:
 - WITH_OPTIONS=true
 - WITH_OPTIONS=false
 
 matrix:
   exclude:
-    - python: pypy
+    - python: "pypy"
       env: WITH_OPTIONS=true
-    - python: 2.6
+    - python: "2.6"
       env: WITH_OPTIONS=true
 
 addons:
