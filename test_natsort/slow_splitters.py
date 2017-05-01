@@ -62,7 +62,8 @@ def refine_split_grouping(iterable):
             yield SplitElement(False, val, False)
 
 
-def group_unicode_and_ascii_numbers(iterable, ascii_digits=frozenset('0123456789')):
+def group_unicode_and_ascii_numbers(iterable,
+                                    ascii_digits=frozenset('0123456789')):
     """
     Use groupby to group ASCII and unicode numeric characters.
     Assumes all input is already all numeric characters.

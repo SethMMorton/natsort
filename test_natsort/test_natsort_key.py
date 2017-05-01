@@ -17,15 +17,16 @@ from natsort.utils import (
     _string_component_transform_factory,
     _final_data_transform_factory,
 )
-from compat.hypothesis import (
+from hypothesis import (
     assume,
     given,
+)
+from hypothesis.strategies import (
     lists,
     text,
     floats,
     integers,
     binary,
-    use_hypothesis,
 )
 
 if PY_VERSION >= 3:
@@ -72,7 +73,6 @@ def test__natsort_key_with_tuple_of_paths_and_PATH_returns_triply_nested_tuple()
 # They only confirm that _natsort_key uses the above building blocks.
 
 
-@pytest.mark.skipif(not use_hypothesis, reason='requires python2.7 or greater')
 @given(floats() | integers())
 def test__natsort_key_with_numeric_input_takes_number_path(x):
     assume(not isnan(x))
@@ -80,14 +80,12 @@ def test__natsort_key_with_numeric_input_takes_number_path(x):
 
 
 @pytest.mark.skipif(PY_VERSION < 3, reason='only valid on python3')
-@pytest.mark.skipif(not use_hypothesis, reason='requires python2.7 or greater')
 @given(binary())
 def test__natsort_key_with_bytes_input_takes_bytes_path(x):
     assume(x)
     assert _natsort_key(x, None, string_func, bytes_func, num_func) == bytes_func(x)
 
 
-@pytest.mark.skipif(not use_hypothesis, reason='requires python2.7 or greater')
 @given(lists(elements=floats() | text() | integers(), min_size=1, max_size=10))
 def test__natsort_key_with_text_input_takes_string_path(x):
     assume(not any(type(y) == float and isnan(y) for y in x))
@@ -95,13 +93,11 @@ def test__natsort_key_with_text_input_takes_string_path(x):
     assert _natsort_key(s, None, string_func, bytes_func, num_func) == string_func(s)
 
 
-@pytest.mark.skipif(not use_hypothesis, reason='requires python2.7 or greater')
 @given(lists(elements=text(), min_size=1, max_size=10))
 def test__natsort_key_with_nested_input_takes_nested_path(x):
     assert _natsort_key(x, None, string_func, bytes_func, num_func) == tuple(string_func(s) for s in x)
 
 
-@pytest.mark.skipif(not use_hypothesis, reason='requires python2.7 or greater')
 @given(text())
 def test__natsort_key_with_key_argument_applies_key_before_processing(x):
     assert _natsort_key(x, len, string_func, bytes_func, num_func) == num_func(len(x))

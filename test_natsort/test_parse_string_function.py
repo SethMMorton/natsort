@@ -2,7 +2,6 @@
 """These test the utils.py functions."""
 from __future__ import unicode_literals
 
-import pytest
 from math import isnan
 from pytest import raises
 from natsort.ns_enum import ns
@@ -25,15 +24,16 @@ from slow_splitters import (
     int_splitter,
     float_splitter,
 )
-from compat.hypothesis import (
+from hypothesis import (
     assume,
     given,
     example,
+)
+from hypothesis.strategies import (
     lists,
     text,
     floats,
     integers,
-    use_hypothesis,
 )
 
 if PY_VERSION >= 3:
@@ -70,7 +70,6 @@ def test_parse_string_factory_raises_TypeError_if_given_a_number_example():
         assert _parse_string_factory(0, '', _float_sign_exp_re.split, no_op, fast_float, tuple2)(50.0)
 
 
-@pytest.mark.skipif(not use_hypothesis, reason='requires python2.7 or greater')
 @given(floats())
 def test_parse_string_factory_raises_TypeError_if_given_a_number(x):
     with raises(TypeError):
@@ -81,7 +80,6 @@ def test_parse_string_factory_only_parses_digits_with_nosign_int_example():
     assert _parse_string_factory(0, '', _int_nosign_re.split, no_op, fast_int, tuple2)('a5+5.034e-1') == ('a', 5, '+', 5, '.', 34, 'e-', 1)
 
 
-@pytest.mark.skipif(not use_hypothesis, reason='requires python2.7 or greater')
 @given(lists(elements=floats() | text() | integers(), min_size=1, max_size=10))
 @example([10000000000000000000000000000000000000000000000000000000000000000000000000,
           100000000000000000000000000000000000000000000000000000000000000000000000000,
@@ -96,7 +94,6 @@ def test_parse_string_factory_parses_digit_with_sign_with_signed_int_example():
     assert _parse_string_factory(0, '', _int_sign_re.split, no_op, fast_int, tuple2)('a5+5.034e-1') == ('a', 5, '', 5, '.', 34, 'e', -1)
 
 
-@pytest.mark.skipif(not use_hypothesis, reason='requires python2.7 or greater')
 @given(lists(elements=floats() | text() | integers(), min_size=1, max_size=10))
 def test_parse_string_factory_parses_digit_with_sign_with_signed_int(x):
     assume(all(whitespace_check(y) for y in x))
@@ -108,7 +105,6 @@ def test_parse_string_factory_only_parses_float_with_nosign_noexp_float_example(
     assert _parse_string_factory(0, '', _float_nosign_noexp_re.split, no_op, fast_float, tuple2)('a5+5.034e-1') == ('a', 5.0, '+', 5.034, 'e-', 1.0)
 
 
-@pytest.mark.skipif(not use_hypothesis, reason='requires python2.7 or greater')
 @given(lists(elements=floats() | text() | integers(), min_size=1, max_size=10))
 def test_parse_string_factory_only_parses_float_with_nosign_noexp_float(x):
     assume(not any(type(y) == float and isnan(y) for y in x))
@@ -121,7 +117,6 @@ def test_parse_string_factory_only_parses_float_with_exponent_with_nosign_exp_fl
     assert _parse_string_factory(0, '', _float_nosign_exp_re.split, no_op, fast_float, tuple2)('a5+5.034e-1') == ('a', 5.0, '+', 0.5034)
 
 
-@pytest.mark.skipif(not use_hypothesis, reason='requires python2.7 or greater')
 @given(lists(elements=floats() | text() | integers(), min_size=1, max_size=10))
 def test_parse_string_factory_only_parses_float_with_exponent_with_nosign_exp_float(x):
     assume(not any(type(y) == float and isnan(y) for y in x))
@@ -134,7 +129,6 @@ def test_parse_string_factory_only_parses_float_with_sign_with_sign_noexp_float_
     assert _parse_string_factory(0, '', _float_sign_noexp_re.split, no_op, fast_float, tuple2)('a5+5.034e-1') == ('a', 5.0, '', 5.034, 'e', -1.0)
 
 
-@pytest.mark.skipif(not use_hypothesis, reason='requires python2.7 or greater')
 @given(lists(elements=floats() | text() | integers(), min_size=1, max_size=10))
 def test_parse_string_factory_only_parses_float_with_sign_with_sign_noexp_float(x):
     assume(not any(type(y) == float and isnan(y) for y in x))
@@ -148,7 +142,6 @@ def test_parse_string_factory_parses_float_with_sign_exp_float_example():
     assert _parse_string_factory(0, '', _float_sign_exp_re.split, no_op, fast_float, tuple2)('6a5+5.034e-1') == ('', 6.0, 'a', 5.0, '', 0.5034)
 
 
-@pytest.mark.skipif(not use_hypothesis, reason='requires python2.7 or greater')
 @given(lists(elements=floats() | text() | integers(), min_size=1, max_size=10))
 def test_parse_string_factory_parses_float_with_sign_exp_float(x):
     assume(not any(type(y) == float and isnan(y) for y in x))

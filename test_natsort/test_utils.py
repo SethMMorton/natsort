@@ -3,7 +3,6 @@
 from __future__ import unicode_literals
 
 import pathlib
-import pytest
 import string
 from itertools import chain
 from operator import neg as op_neg
@@ -31,14 +30,15 @@ from slow_splitters import (
     add_leading_space_if_first_is_num,
 )
 from compat.locale import low
-from compat.hypothesis import (
+from hypothesis import (
     assume,
     given,
+)
+from hypothesis.strategies import (
     sampled_from,
     lists,
     text,
     integers,
-    use_hypothesis,
 )
 
 
@@ -179,7 +179,6 @@ def test_groupletters_returns_letters_with_lowercase_transform_of_letter_example
     assert _groupletters('hello') == 'hheelllloo'
 
 
-@pytest.mark.skipif(not use_hypothesis, reason='requires python2.7 or greater')
 @given(text())
 def test_groupeletters_returns_letters_with_lowercase_transform_of_letter(x):
     assume(bool(x))
@@ -200,7 +199,6 @@ def test_sep_inserter_inserts_separator_string_between_two_numbers_example():
     assert list(_sep_inserter(iter([5, 9]), null_string)) == [null_string, 5, null_string, 9]
 
 
-@pytest.mark.skipif(not use_hypothesis, reason='requires python2.7 or greater')
 @given(lists(elements=text() | integers()))
 def test_sep_inserter_inserts_separator_between_two_numbers(x):
     assume(bool(x))
@@ -214,7 +212,6 @@ def test_path_splitter_splits_path_string_by_separator_example():
     assert tuple(_path_splitter(z)) == tuple(pathlib.Path(z).parts)
 
 
-@pytest.mark.skipif(not use_hypothesis, reason='requires python2.7 or greater')
 @given(lists(sampled_from(string.ascii_letters), min_size=2))
 def test_path_splitter_splits_path_string_by_separator(x):
     assume(all(x))
@@ -228,7 +225,6 @@ def test_path_splitter_splits_path_string_by_separator_and_removes_extension_exa
     assert tuple(_path_splitter(z)) == y[:-1] + (pathlib.Path(z).stem, pathlib.Path(z).suffix)
 
 
-@pytest.mark.skipif(not use_hypothesis, reason='requires python2.7 or greater')
 @given(lists(sampled_from(string.ascii_letters), min_size=3))
 def test_path_splitter_splits_path_string_by_separator_and_removes_extension(x):
     assume(all(x))

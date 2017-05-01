@@ -2,7 +2,6 @@
 """These test the utils.py functions."""
 from __future__ import unicode_literals
 
-import pytest
 from natsort.ns_enum import ns
 from natsort.utils import (
     _string_component_transform_factory,
@@ -14,13 +13,14 @@ from natsort.compat.fastnumbers import (
     fast_float,
     fast_int,
 )
-from compat.hypothesis import (
+from hypothesis import (
     assume,
     given,
+)
+from hypothesis.strategies import (
     text,
     floats,
     integers,
-    use_hypothesis,
 )
 from compat.locale import bad_uni_chars
 
@@ -35,7 +35,6 @@ def test_string_component_transform_factory_returns_fast_int_example():
     assert _string_component_transform_factory(0)('5007') == fast_int('5007')
 
 
-@pytest.mark.skipif(not use_hypothesis, reason='requires python2.7 or greater')
 @given(text() | floats() | integers())
 def test_string_component_transform_factory_returns_fast_int(x):
     assume(x)
@@ -48,7 +47,6 @@ def test_string_component_transform_factory_with_FLOAT_returns_fast_float_exampl
     assert _string_component_transform_factory(ns.FLOAT)('5007') == fast_float('5007')
 
 
-@pytest.mark.skipif(not use_hypothesis, reason='requires python2.7 or greater')
 @given(text() | floats() | integers())
 def test_string_component_transform_factory_with_FLOAT_returns_fast_float(x):
     assume(x)
@@ -68,7 +66,6 @@ def test_string_component_transform_factory_with_GROUPLETTERS_returns_fast_int_a
     assert _string_component_transform_factory(ns.GROUPLETTERS)(x) == fast_int(x, key=_groupletters)
 
 
-@pytest.mark.skipif(not use_hypothesis, reason='requires python2.7 or greater')
 @given(text())
 def test_string_component_transform_factory_with_GROUPLETTERS_returns_fast_int_and_groupletters(x):
     assume(x)
@@ -80,7 +77,6 @@ def test_string_component_transform_factory_with_LOCALE_returns_fast_int_and_gro
     assert _string_component_transform_factory(ns.LOCALE)(x) == fast_int(x, key=get_strxfrm())
 
 
-@pytest.mark.skipif(not use_hypothesis, reason='requires python2.7 or greater')
 @given(text())
 def test_string_component_transform_factory_with_LOCALE_returns_fast_int_and_groupletters(x):
     assume(x)
@@ -93,7 +89,6 @@ def test_string_component_transform_factory_with_LOCALE_and_GROUPLETTERS_returns
     assert _string_component_transform_factory(ns.GROUPLETTERS | ns.LOCALE)(x) == fast_int(x, key=lambda x: get_strxfrm()(_groupletters(x)))
 
 
-@pytest.mark.skipif(not use_hypothesis, reason='requires python2.7 or greater')
 @given(text())
 def test_string_component_transform_factory_with_LOCALE_and_GROUPLETTERS_returns_fast_int_and_groupletters_and_locale_convert(x):
     assume(x)
@@ -109,7 +104,6 @@ def test_string_component_transform_factory_with_LOCALE_and_DUMB_returns_fast_in
     assert _string_component_transform_factory(ns._DUMB | ns.LOCALE)(x) == fast_int(x, key=lambda x: get_strxfrm()(_groupletters(x)))
 
 
-@pytest.mark.skipif(not use_hypothesis, reason='requires python2.7 or greater')
 @given(text())
 def test_string_component_transform_factory_with_LOCALE_and_DUMB_returns_fast_int_and_groupletters_and_locale_convert(x):
     assume(x)

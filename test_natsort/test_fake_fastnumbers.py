@@ -4,7 +4,6 @@ Test the fake fastnumbers module.
 """
 from __future__ import unicode_literals
 
-import pytest
 import unicodedata
 from math import isnan
 from natsort.compat.py23 import PY_VERSION
@@ -12,13 +11,14 @@ from natsort.compat.fake_fastnumbers import (
     fast_float,
     fast_int,
 )
-from compat.hypothesis import (
+from hypothesis import (
     assume,
     given,
+)
+from hypothesis.strategies import (
     floats,
     integers,
     text,
-    use_hypothesis,
 )
 
 if PY_VERSION >= 3:
@@ -70,7 +70,6 @@ def test_fast_float_converts_float_string_to_float_example():
     assert isnan(fast_float('-NaN'))
 
 
-@pytest.mark.skipif(not use_hypothesis, reason='requires python2.7 or greater')
 @given(floats())
 def test_fast_float_converts_float_string_to_float(x):
     assume(not isnan(x))  # But inf is included
@@ -81,7 +80,6 @@ def test_fast_float_leaves_string_as_is_example():
     assert fast_float('invalid') == 'invalid'
 
 
-@pytest.mark.skipif(not use_hypothesis, reason='requires python2.7 or greater')
 @given(text())
 def test_fast_float_leaves_string_as_is(x):
     assume(not is_float(x))
@@ -93,7 +91,6 @@ def test_fast_float_with_key_applies_to_string_example():
     assert fast_float('invalid', key=len) == len('invalid')
 
 
-@pytest.mark.skipif(not use_hypothesis, reason='requires python2.7 or greater')
 @given(text())
 def test_fast_float_with_key_applies_to_string(x):
     assume(not is_float(x))
@@ -107,7 +104,6 @@ def test_fast_int_leaves_float_string_as_is_example():
     assert fast_int('inf') == 'inf'
 
 
-@pytest.mark.skipif(not use_hypothesis, reason='requires python2.7 or greater')
 @given(floats())
 def test_fast_int_leaves_float_string_as_is(x):
     assume(not x.is_integer())
@@ -128,7 +124,6 @@ def test_fast_int_leaves_string_as_is_example():
     assert fast_int('invalid') == 'invalid'
 
 
-@pytest.mark.skipif(not use_hypothesis, reason='requires python2.7 or greater')
 @given(text())
 def test_fast_int_leaves_string_as_is(x):
     assume(not is_int(x))
@@ -140,7 +135,6 @@ def test_fast_int_with_key_applies_to_string_example():
     assert fast_int('invalid', key=len) == len('invalid')
 
 
-@pytest.mark.skipif(not use_hypothesis, reason='requires python2.7 or greater')
 @given(text())
 def test_fast_int_with_key_applies_to_string(x):
     assume(not is_int(x))

@@ -12,12 +12,13 @@ from compat.locale import (
     load_locale,
     has_locale_de_DE,
 )
-from compat.hypothesis import (
+from hypothesis import (
     given,
+)
+from hypothesis.strategies import (
     text,
     integers,
     lists,
-    use_hypothesis,
 )
 
 
@@ -30,7 +31,6 @@ def test_input_string_transform_factory_is_no_op_for_no_alg_options_examples():
     assert _input_string_transform_factory(0)(x) is x
 
 
-@pytest.mark.skipif(not use_hypothesis, reason='requires python2.7 or greater')
 @given(text())
 def test_input_string_transform_factory_is_no_op_for_no_alg_options(x):
     assert _input_string_transform_factory(0)(x) is x
@@ -44,7 +44,6 @@ def test_input_string_transform_factory_performs_casefold_with_IGNORECASE_exampl
         assert _input_string_transform_factory(ns.IGNORECASE)(x) == x.lower()
 
 
-@pytest.mark.skipif(not use_hypothesis, reason='requires python2.7 or greater')
 @given(text())
 def test_input_string_transform_factory_performs_casefold_with_IGNORECASE(x):
     if NEWPY:
@@ -58,7 +57,6 @@ def test_input_string_transform_factory_performs_swapcase_with_DUMB_examples():
     assert _input_string_transform_factory(ns._DUMB)(x) == x.swapcase()
 
 
-@pytest.mark.skipif(not use_hypothesis, reason='requires python2.7 or greater')
 @given(text())
 def test_input_string_transform_factory_performs_swapcase_with_DUMB(x):
     assert _input_string_transform_factory(ns._DUMB)(x) == x.swapcase()
@@ -69,7 +67,6 @@ def test_input_string_transform_factory_performs_swapcase_with_LOWERCASEFIRST_ex
     assert _input_string_transform_factory(ns.LOWERCASEFIRST)(x) == x.swapcase()
 
 
-@pytest.mark.skipif(not use_hypothesis, reason='requires python2.7 or greater')
 @given(text())
 def test_input_string_transform_factory_performs_swapcase_with_LOWERCASEFIRST(x):
     x = 'feijGGAd'
@@ -81,7 +78,6 @@ def test_input_string_transform_factory_is_no_op_with_both_LOWERCASEFIRST_AND_DU
     assert _input_string_transform_factory(ns._DUMB | ns.LOWERCASEFIRST)(x) is x
 
 
-@pytest.mark.skipif(not use_hypothesis, reason='requires python2.7 or greater')
 @given(text())
 def test_input_string_transform_factory_is_no_op_with_both_LOWERCASEFIRST_AND_DUMB(x):
     assert _input_string_transform_factory(ns._DUMB | ns.LOWERCASEFIRST)(x) is x
@@ -95,7 +91,6 @@ def test_input_string_transform_factory_performs_swapcase_and_casefold_both_LOWE
         assert _input_string_transform_factory(ns.IGNORECASE | ns.LOWERCASEFIRST)(x) == x.swapcase().lower()
 
 
-@pytest.mark.skipif(not use_hypothesis, reason='requires python2.7 or greater')
 @given(text())
 def test_input_string_transform_factory_performs_swapcase_and_casefold_both_LOWERCASEFIRST_AND_IGNORECASE(x):
     if NEWPY:
@@ -113,7 +108,6 @@ def test_input_string_transform_factory_removes_thousands_separator_with_LOCALE_
     locale.setlocale(locale.LC_ALL, str(''))
 
 
-@pytest.mark.skipif(not use_hypothesis, reason='requires python2.7 or greater')
 @given(lists(elements=integers(), min_size=4, max_size=20))
 def test_input_string_transform_factory_removes_thousands_separator_with_LOCALE(x):
     load_locale('en_US')
@@ -132,7 +126,6 @@ def test_input_string_transform_factory_removes_thousands_separator_and_is_float
     assert _input_string_transform_factory(ns.LOCALE | ns.FLOAT)(x) == '12543642642.534,534980'
 
 
-@pytest.mark.skipif(not use_hypothesis, reason='requires python2.7 or greater')
 @given(lists(elements=integers(), min_size=4, max_size=20), lists(elements=integers(), min_size=4, max_size=20))
 def test_input_string_transform_factory_removes_thousands_separator_and_is_float_aware_with_LOCALE_and_FLOAT(x, y):
     load_locale('en_US')
