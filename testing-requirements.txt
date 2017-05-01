@@ -1,0 +1,12 @@
+# These packages are needed for testing.
+pathlib;             python_version < '3.4'
+mock;                python_version < '3.3'
+coverage
+
+# "Modern" testing on Python 2.6 is rather poor...
+pytest;              python_version > '2.6'
+pytest-cache;        python_version > '2.6'
+pytest-cov;          python_version > '2.6'
+pytest-flakes;       python_version > '2.6'
+pytest-pep8;         python_version > '2.6'
+hypothesis>=3.8.0;   python_version > '2.6'

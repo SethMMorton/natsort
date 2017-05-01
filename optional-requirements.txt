@@ -1,0 +1,6 @@
+# These requirements are optional!
+# Install only if you want.
+
+pathlib;              python_version < '3.4'
+fastnumbers >= 0.7.1; python_version > '2.6'
+PyICU >= 1.0.0

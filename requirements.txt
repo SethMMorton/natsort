@@ -1,0 +1,2 @@
+# Only Python 2.6 has a requirement.
+argparse; python_version == '2.6'
