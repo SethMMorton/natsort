@@ -20,19 +20,20 @@ speed improvement, this provides a more extensible infrastructure.
 Each of these factory functions will end with the suffix "_factory"
 to indicate that they themselves return a function.
 
-2 - Keyword Parameters As Logic
+2 - Keyword Parameters For Local Scope
 
 Many of the closures that are created by the factory functions
 have signatures similar to the following
 
     >>> def factory(parameter):
-    ...     def closure(x, val='yes' if parameter else 'no'):
+    ...     val = 'yes' if parameter else 'no'
+    ...     def closure(x, val=val):
     ...          return '{} {}'.format(val, x)
     ...     return closure
     ...
 
-Rather than having "val" determined outside the scope of "closure",
-it is determined as part of the signature. This is a micro-optimization
+The variable value is passed as the default to a keyword argument.
+This is a micro-optimization
 that ensures "val" is a local variable instead of global variable
 and thus has a slightly improved performance at runtime.
 
@@ -181,9 +182,9 @@ def _parse_bytes_factory(alg):
 
 def _parse_number_factory(alg, sep):
     """Create a function that will properly format a number in a tuple."""
-    def func(val,
-             nan_replace=float('+inf') if alg & ns.NANLAST else float('-inf'),
-             sep=sep):
+    nan_replace = float('+inf') if alg & ns.NANLAST else float('-inf')
+
+    def func(val, nan_replace=nan_replace, sep=sep):
         """Given a number, place it in a tuple with a leading null string."""
         return sep, nan_replace if val != val else val
 
@@ -206,8 +207,9 @@ def _parse_string_factory(alg, sep, splitter,
     # Sometimes we store the "original" input before transformation,
     # sometimes after.
     orig_after_xfrm = not (alg & ns._DUMB and alg & ns.LOCALEALPHA)
+    original_func = input_transform if orig_after_xfrm else _no_op
 
-    def func(x, original_func=input_transform if orig_after_xfrm else _no_op):
+    def func(x, original_func=original_func):
         # Apply string input transformation function and return to x.
         # Original function is usually a no-op, but some algorithms require it
         # to also be the transformation function.
@@ -272,7 +274,7 @@ def _input_string_transform_factory(alg):
             function_chain.append(methodcaller('lower'))
 
     if alg & ns.LOCALENUM:
-        # Create a regular expression that will remove thousands seprarators.
+        # Create a regular expression that will remove thousands separators.
         strip_thousands = r'''
             (?<=[0-9]{{1}})  # At least 1 number
             (?<![0-9]{{4}})  # No more than 3 numbers
@@ -343,10 +345,9 @@ def _final_data_transform_factory(alg, sep):
     """
     if alg & ns.UNGROUPLETTERS and alg & ns.LOCALEALPHA:
         swap = alg & ns._DUMB and alg & ns.LOWERCASEFIRST
+        transform = methodcaller('swapcase') if swap else _no_op
 
-        def func(split_val,
-                 val,
-                 f=(lambda x: x.swapcase()) if swap else _no_op):
+        def func(split_val, val, transform=transform):
             """
             Return a tuple with the first character of the first element
             of the return value as the first element, and the return value
@@ -359,7 +360,7 @@ def _final_data_transform_factory(alg, sep):
             elif split_val[0] == sep:
                 return ('',), split_val
             else:
-                return (f(val[0]),), split_val
+                return (transform(val[0]),), split_val
         return func
     else:
         return lambda split_val, val: tuple(split_val)
