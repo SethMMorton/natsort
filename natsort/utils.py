@@ -51,7 +51,7 @@ from os import curdir as os_curdir, pardir as os_pardir
 from os.path import split as path_split, splitext as path_splitext
 from itertools import chain as ichain
 from collections import deque
-from functools import partial
+from functools import partial, reduce
 from operator import methodcaller
 
 # Local imports.
@@ -65,7 +65,6 @@ from natsort.compat.locale import (
 )
 from natsort.compat.py23 import (
     py23_str,
-    py23_range,
     py23_map,
     py23_filter,
     PY_VERSION,
@@ -403,11 +402,8 @@ def chain_functions(functions):
     elif len(functions) == 1:
         return functions[0]
     else:
-        func = 'x'
-        for i in py23_range(len(functions)):
-            func = '_f[{0:d}]({1})'.format(i, func)
-        func = 'lambda x, _f=functions: ' + func
-        return eval(func, None, {'functions': functions})
+        # See https://stackoverflow.com/a/39123400/1399279
+        return partial(reduce, lambda res, f: f(res), functions)
 
 
 def _do_decoding(s, encoding):
