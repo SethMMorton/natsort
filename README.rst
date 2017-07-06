@@ -2,7 +2,7 @@ natsort
 =======
 
 .. image:: https://img.shields.io/travis/SethMMorton/natsort/master.svg?label=travis-ci
-    :target: https://travis-ci.org/SethMMorton/fastnumbers
+    :target: https://travis-ci.org/SethMMorton/natsort
 
 .. image:: https://codecov.io/gh/SethMMorton/natsort/branch/master/graph/badge.svg
     :target: https://codecov.io/gh/SethMMorton/natsort
