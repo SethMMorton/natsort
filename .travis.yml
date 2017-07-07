@@ -6,7 +6,7 @@ python:
 - "3.4"
 - "3.5"
 - "3.6"
-- "pypy"
+- "pypy-5.8"
 
 sudo: false
 dist: trusty
