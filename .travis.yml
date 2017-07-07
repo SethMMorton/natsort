@@ -33,7 +33,7 @@ install:
 - pip install tox-travis codacy-coverage codecov
 
 script:
-- tox
+- tox -vv
 
 after_success:
 - coverage xml
