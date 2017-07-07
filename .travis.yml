@@ -9,6 +9,7 @@ python:
 - "pypy"
 
 sudo: false
+dist: trusty
 
 env:
 - WITH_OPTIONS="optional-"
