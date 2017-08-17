@@ -234,24 +234,29 @@ def _sep_inserter(iterable, sep):
     # Get the first element. If StopIteration is raised, that's OK.
     # Since we are controlling the types of the input, 'type' is used
     # instead of 'isinstance' for the small speed advantage it offers.
-    types = (int, float, long)
-    first = next(iterable)
-    if type(first) in types:
-        yield sep
-    yield first
+    try:
+        types = (int, float, long)
+        first = next(iterable)
+        if type(first) in types:
+            yield sep
+        yield first
 
-    # Now, check if pair of elements are both numbers. If so, add ''.
-    second = next(iterable)
-    if type(first) in types and type(second) in types:
-        yield sep
-    yield second
-
-    # Now repeat in a loop.
-    for x in iterable:
-        first, second = second, x
+        # Now, check if pair of elements are both numbers. If so, add ''.
+        second = next(iterable)
         if type(first) in types and type(second) in types:
             yield sep
         yield second
+
+        # Now repeat in a loop.
+        for x in iterable:
+            first, second = second, x
+            if type(first) in types and type(second) in types:
+                yield sep
+            yield second
+    except StopIteration:
+        # Catch StopIteration per deprecation in PEP 479:
+        # "Change StopIteration handling inside generators"
+        return
 
 
 def _input_string_transform_factory(alg):
