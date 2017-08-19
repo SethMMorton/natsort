@@ -7,7 +7,7 @@ The :mod:`natsort` module
 Simple yet flexible natural sorting in Python.
 
     - Source Code: https://github.com/SethMMorton/natsort
-    - Downloads: https://pypi.python.org/pypi/natsort
+    - Downloads: https://pypi.org/project/natsort/
     - Documentation: http://natsort.readthedocs.io/
 
       - :ref:`Examples and Recipes <examples>`
@@ -16,8 +16,8 @@ Simple yet flexible natural sorting in Python.
 
     - Optional Dependencies:
 
-      - `fastnumbers <https://pypi.python.org/pypi/fastnumbers>`_ >= 0.7.1
-      - `PyICU <https://pypi.python.org/pypi/PyICU>`_ >= 1.0.0
+      - `fastnumbers <https://pypi.org/project/fastnumbers>`_ >= 0.7.1
+      - `PyICU <https://pypi.org/project/PyICU>`_ >= 1.0.0
 
 :mod:`natsort` is a general utility for sorting lists *naturally*; the definition
 of "naturally" is not well-defined, but the most common definition is that numbers
@@ -250,7 +250,7 @@ command line::
 
     pip install natsort
 
-You can also download the source from http://pypi.python.org/pypi/natsort,
+You can also download the source from https://pypi.org/project/natsort/,
 or browse the git repository at https://github.com/SethMMorton/natsort.
 
 If you choose to install from source, you can unzip the source archive and
@@ -269,13 +269,13 @@ If you want to build this documentation, enter::
 :mod:`natsort` requires Python version 2.6 or greater or Python 3.2 or greater.
 
 The most efficient sorting can occur if you install the 
-`fastnumbers <https://pypi.python.org/pypi/fastnumbers>`_ package (it helps
+`fastnumbers <https://pypi.org/project/fastnumbers>`_ package (it helps
 with the string to number conversions.)  ``natsort`` will still run (efficiently)
 without the package, but if you need to squeeze out that extra juice it is
 recommended you include this as a dependency.  ``natsort`` will not require (or
-check) that `fastnumbers <https://pypi.python.org/pypi/fastnumbers>`_ is installed.
+check) that `fastnumbers <https://pypi.org/project/fastnumbers>`_ is installed.
 
-It is recommended that you install `PyICU <https://pypi.python.org/pypi/PyICU>`_
+It is recommended that you install `PyICU <https://pypi.org/project/PyICU>`_
 if you wisht to sort in a locale-dependent manner, see :ref:`locale_issues` for
 an explanation why.
 

@@ -114,7 +114,7 @@ the :func:`humansorted` function:
 
 You may find that if you do not explicitly set the locale your results may not
 be as you expect... I have found that it depends on the system you are on.
-If you use `PyICU <https://pypi.python.org/pypi/PyICU>`_ (see below) then
+If you use `PyICU <https://pypi.org/project/PyICU>`_ (see below) then
 you should not need to do this.
 
 .. _case_sort:

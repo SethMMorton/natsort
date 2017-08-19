@@ -11,10 +11,10 @@ natsort
     :target: https://www.codacy.com/app/SethMMorton/natsort
 
 .. image:: https://img.shields.io/pypi/pyversions/natsort.svg
-    :target: https://pypi.python.org/pypi/natsort
+    :target: https://pypi.org/project/natsort/
 
 .. image:: https://img.shields.io/pypi/format/natsort.svg
-    :target: https://pypi.python.org/pypi/natsort
+    :target: https://pypi.org/project/natsort/
 
 .. image:: https://img.shields.io/pypi/l/natsort.svg
     :target: https://github.com/SethMMorton/natsort/blob/master/LICENSE
@@ -22,7 +22,7 @@ natsort
 Simple yet flexible natural sorting in Python.
 
     - Source Code: https://github.com/SethMMorton/natsort
-    - Downloads: https://pypi.python.org/pypi/natsort
+    - Downloads: https://pypi.org/project/natsort/
     - Documentation: http://natsort.readthedocs.io/
 
       - `Examples and Recipes <http://natsort.readthedocs.io/en/stable/examples.html>`_
@@ -31,8 +31,8 @@ Simple yet flexible natural sorting in Python.
 
     - `Optional Dependencies`_
 
-      - `fastnumbers <https://pypi.python.org/pypi/fastnumbers>`_ >= 0.7.1
-      - `PyICU <https://pypi.python.org/pypi/PyICU>`_ >= 1.0.0
+      - `fastnumbers <https://pypi.org/project/fastnumbers>`_ >= 0.7.1
+      - `PyICU <https://pypi.org/project/PyICU>`_ >= 1.0.0
 
 Quick Description
 -----------------
@@ -257,19 +257,19 @@ Optional Dependencies
 fastnumbers
 +++++++++++
 
-The most efficient sorting can occur if you install the 
-`fastnumbers <https://pypi.python.org/pypi/fastnumbers>`_ package
+The most efficient sorting can occur if you install the
+`fastnumbers <https://pypi.org/project/fastnumbers>`_ package
 (version >=0.7.1); it helps with the string to number conversions.
 ``natsort`` will still run (efficiently) without the package, but if you need
 to squeeze out that extra juice it is recommended you include this as a dependency.
 ``natsort`` will not require (or check) that
-`fastnumbers <https://pypi.python.org/pypi/fastnumbers>`_ is installed
+`fastnumbers <https://pypi.org/project/fastnumbers>`_ is installed
 at installation.
 
 PyICU
 +++++
 
-It is recommended that you install `PyICU <https://pypi.python.org/pypi/PyICU>`_
+It is recommended that you install `PyICU <https://pypi.org/project/PyICU>`_
 if you wish to sort in a locale-dependent manner, see
 http://natsort.readthedocs.io/en/stable/locale_issues.html for an explanation why.
 

@@ -45,11 +45,11 @@ locale and use ``ns.LOCALE`` then you should discard the old key.
 The `locale <https://docs.python.org/3.5/library/locale.html>`_ Module From the StdLib Has Issues
 -------------------------------------------------------------------------------------------------
 
-:mod:`natsort` will use `PyICU <https://pypi.python.org/pypi/PyICU>`_ for
+:mod:`natsort` will use `PyICU <https://pypi.org/project/PyICU>`_ for
 :func:`~natsort.humansorted` or ``ns.LOCALE`` if it is installed. If not,
 it will fall back on the `locale <https://docs.python.org/3.5/library/locale.html>`_
 library from the Python stdlib. If you do not have
-`PyICU <https://pypi.python.org/pypi/PyICU>`_ installed, please keep the
+`PyICU <https://pypi.org/project/PyICU>`_ installed, please keep the
 following known problems and issues in mind.
 
 .. note:: Remember, if you have `PyICU <https://pypi.python.org/pypi/PyICU>`_
@@ -81,7 +81,7 @@ It's not Python's fault, but the OS... the locale library for BSD-based systems
   - http://stackoverflow.com/questions/33459384/unicode-character-not-in-range-when-calling-locale-strxfrm
   - https://github.com/SethMMorton/natsort/issues/34
 
-Of course, installing `PyICU <https://pypi.python.org/pypi/PyICU>`_ fixes this,
+Of course, installing `PyICU <https://pypi.org/project/PyICU>`_ fixes this,
 but if you don't want to or cannot install this there is some hope.
 
     1. As of ``natsort`` version 4.0.0, ``natsort`` is configured
