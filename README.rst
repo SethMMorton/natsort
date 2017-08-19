@@ -234,6 +234,7 @@ Other Useful Things
 +++++++++++++++++++
 
  - recursively descend into lists of lists
+ - automatic unicode normalization of input data
  - `controlling the case-sensitivity <http://natsort.readthedocs.io/en/stable/examples.html#case-sort>`_
  - `sorting file paths correctly <http://natsort.readthedocs.io/en/stable/examples.html#path-sort>`_
  - `allow custom sorting keys <http://natsort.readthedocs.io/en/stable/examples.html#custom-sort>`_

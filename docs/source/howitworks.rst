@@ -655,12 +655,14 @@ StdLib there can't be too many dragons, right?
     - https://github.com/SethMMorton/natsort/issues/22
     - https://github.com/SethMMorton/natsort/issues/23
     - https://github.com/SethMMorton/natsort/issues/36
+    - https://github.com/SethMMorton/natsort/issues/44
     - https://bugs.python.org/issue2481
     - https://bugs.python.org/issue23195
-    - http://stackoverflow.com/questions/3412933/python-not-sorting-unicode-properly-strcoll-doesnt-help
-    - http://stackoverflow.com/questions/22203550/sort-dictionary-by-key-using-locale-collation
-    - http://stackoverflow.com/questions/33459384/unicode-character-not-in-range-when-calling-locale-strxfrm
-    - http://stackoverflow.com/questions/36431810/sort-numeric-lines-with-thousand-separators
+    - https://stackoverflow.com/questions/3412933/python-not-sorting-unicode-properly-strcoll-doesnt-help
+    - https://stackoverflow.com/questions/22203550/sort-dictionary-by-key-using-locale-collation
+    - https://stackoverflow.com/questions/33459384/unicode-character-not-in-range-when-calling-locale-strxfrm
+    - https://stackoverflow.com/questions/36431810/sort-numeric-lines-with-thousand-separators
+    - https://stackoverflow.com/questions/45734562/how-can-i-get-a-reasonable-string-sorting-with-python
 
 These can be summed up as follows:
 
@@ -786,6 +788,84 @@ the ``else:`` block of :func:`coerce_to_int`/:func:`coerce_to_float`.
 
 Of course, applying both *LOWERCASEFIRST* and *GROUPLETTERS* is just
 a matter of turning on both functions.
+
+Basic Unicode Support
++++++++++++++++++++++
+
+Unicode is hard and complicated. Here's an example.
+
+.. code-block:: python
+
+    >>> b = [b'\x66', b'\x65', b'\xc3\xa9', b'\x65\xcc\x81', b'\x61', b'\x7a']
+    >>> a = [x.decode('utf8') for x in b]
+    >>> a  # doctest: +SKIP
+    ['f', 'e', 'é', 'é', 'a', 'z']
+    >>> sorted(a)  # doctest: +SKIP
+    ['a', 'e', 'é', 'f', 'z', 'é']
+
+
+There are more than one way to represent the character 'é' in Unicode.
+In fact, many characters have multiple representations. This is a challenge
+because comparing the two representations would return ``False`` even though
+they *look* the same.
+
+.. code-block:: python
+
+    >>> a[2] == a[3]
+    False
+
+Alas, since characters are compared based on the numerical value of their
+representation, sorting Unicode often gives unexpected results (like seeing
+'é' come both *before* and *after* 'z').
+
+The original approach that :mod:`natsort` took with respect to non-ASCII
+Unicode characters was to say "just use
+the :mod:`locale` or :mod:`PyICU` library" and then cross it's fingers
+and hope those libraries take care of it. As you will find in the following
+sections, that comes with its own baggage, and turned out to not always work anyway
+(see https://stackoverflow.com/q/45734562/1399279). A more robust approach is to
+handle the Unicode out-of-the-box without invoking a heavy-handed library
+like :mod:`locale` or :mod:`PyICU`. To do this, we must use *normalization*.
+
+To fully understand Unicode normalization, `check out some official Unicode documentation`_.
+Just kidding... that's too much text. The following StackOverflow answers do
+a good job at explaining Unicode normalization in simple terms:
+https://stackoverflow.com/a/7934397/1399279 and
+https://stackoverflow.com/a/7931547/1399279. Put simply, normalization
+ensures that Unicode characters with multiple representations are in
+some canonical and consistent representation so that (for example) comparisons
+of the characters can be performed in a sane way. The following discussion
+assumes you at least read the StackOverflow answers.
+
+Looking back at our 'é' example, we can see that the two versions were
+constructed with the byte strings ``b'\xc3\xa9'`` and ``b'\x65\xcc\x81'``.
+The former representation is actually
+`LATIN SMALL LETTER E WITH ACUTE <http://www.fileformat.info/info/unicode/char/e9/index.htm>`_
+and is a single character in the Unicode standard. This is known as the
+*compressed form* and corresponds to the 'NFC' normalization scheme.
+The latter representation is actually the letter 'e' followed by
+`COMBINING ACUTE ACCENT <http://www.fileformat.info/info/unicode/char/0301/index.htm>`_
+and so is two characters in the Unicode standard. This is known as the
+*decompressed form* and corresponds to the 'NFD' normalization scheme.
+Since the first character in the decompressed form is actually the letter 'e',
+when compared to other ASCII characters it fits where you might expect.
+Unfortunately, all Unicode compressed form characters come after the
+ASCII characters and so they always will be placed after 'z' when sorting.
+
+It seems that most Unicode data is stored and shared in the compressed form
+which makes it challenging to sort. This can be solved by normalizing all
+incoming Unicode data to the decompressed form ('NFD') and *then* sorting.
+
+.. code-block:: python
+
+    >>> import unicodedata
+    >>> c = [unicodedata.normalize('NFD', x) for x in a]
+    >>> c  # doctest: +SKIP
+    ['f', 'e', 'é', 'é', 'a', 'z']
+    >>> sorted(c)  # doctest: +SKIP
+    ['a', 'e', 'é', 'é', 'f', 'z']
+
+Huzzah! Sane sorting without having to resort to :mod:`locale`!
 
 Using Locale to Compare Strings
 +++++++++++++++++++++++++++++++
@@ -1052,3 +1132,4 @@ what the rest of the world assumes.
 .. _Thousands separator support: https://github.com/SethMMorton/natsort/issues/36
 .. _really good: https://hypothesis.readthedocs.io/en/latest/
 .. _testing strategy: http://doc.pytest.org/en/latest/
+.. _check out some official Unicode documentation: http://unicode.org/reports/tr15/
