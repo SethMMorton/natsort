@@ -284,6 +284,12 @@ History
 These are the last three entries of the changelog.  See the package documentation
 for the complete `changelog <http://natsort.readthedocs.io/en/stable/changelog.html>`_.
 
+08-19-2017 v. 5.1.0
++++++++++++++++++++
+
+    - Fixed ``StopIteration`` warning on Python 3.6+.
+    - All Unicode input is now normalized.
+
 04-30-2017 v. 5.0.3
 +++++++++++++++++++
 
@@ -297,11 +303,3 @@ for the complete `changelog <http://natsort.readthedocs.io/en/stable/changelog.h
     - Renamed several internal functions and variables to improve clarity.
     - Improved documentation examples.
     - Added a "how does it work?" section to the documentation.
-
-06-04-2016 v. 5.0.1
-+++++++++++++++++++
-
-    - The ``ns`` enum attributes can now be imported from the top-level
-      namespace.
-    - Fixed a bug with the ``from natsort import *`` mechanism.
-    - Fixed bug with using ``natsort`` with ``python -OO``.

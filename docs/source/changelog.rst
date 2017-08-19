@@ -3,6 +3,12 @@
 Changelog
 ---------
 
+08-19-2017 v. 5.1.0
++++++++++++++++++++
+
+    - Fixed ``StopIteration`` warning on Python 3.6+.
+    - All Unicode input is now normalized.
+
 04-30-2017 v. 5.0.3
 +++++++++++++++++++
 
