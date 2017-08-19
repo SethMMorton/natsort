@@ -5,6 +5,7 @@ from __future__ import unicode_literals
 import pytest
 import locale
 from operator import methodcaller
+from unicodedata import normalize
 from natsort.ns_enum import ns
 from natsort.utils import _input_string_transform_factory
 from natsort.compat.py23 import NEWPY
@@ -28,12 +29,22 @@ from hypothesis.strategies import (
 
 def test_input_string_transform_factory_is_no_op_for_no_alg_options_examples():
     x = 'feijGGAd'
-    assert _input_string_transform_factory(0)(x) is x
+    assert _input_string_transform_factory(0)(x) == x
 
 
 @given(text())
-def test_input_string_transform_factory_is_no_op_for_no_alg_options(x):
-    assert _input_string_transform_factory(0)(x) is x
+def test_input_string_transform_factory_is_no_op_for_no_alg_options_except_normalization(x):
+    assert _input_string_transform_factory(0)(x) == normalize('NFD', x)
+
+
+def test_input_string_transform_factory_performs_compatibility_normalization_with_COMPATIBILITYNORMALIZE_examples():
+    x = '⑦'
+    assert _input_string_transform_factory(ns.COMPATIBILITYNORMALIZE)(x) == '7'
+
+
+@given(text())
+def test_input_string_transform_factory_performs_compatibility_normalization_with_COMPATIBILITYNORMALIZE(x):
+    assert _input_string_transform_factory(ns.COMPATIBILITYNORMALIZE)(x) == normalize('NFKD', x)
 
 
 def test_input_string_transform_factory_performs_casefold_with_IGNORECASE_examples():
@@ -47,9 +58,9 @@ def test_input_string_transform_factory_performs_casefold_with_IGNORECASE_exampl
 @given(text())
 def test_input_string_transform_factory_performs_casefold_with_IGNORECASE(x):
     if NEWPY:
-        assert _input_string_transform_factory(ns.IGNORECASE)(x) == x.casefold()
+        assert _input_string_transform_factory(ns.IGNORECASE)(x) == normalize('NFD', x).casefold()
     else:
-        assert _input_string_transform_factory(ns.IGNORECASE)(x) == x.lower()
+        assert _input_string_transform_factory(ns.IGNORECASE)(x) == normalize('NFD', x).lower()
 
 
 def test_input_string_transform_factory_performs_swapcase_with_DUMB_examples():
@@ -59,7 +70,7 @@ def test_input_string_transform_factory_performs_swapcase_with_DUMB_examples():
 
 @given(text())
 def test_input_string_transform_factory_performs_swapcase_with_DUMB(x):
-    assert _input_string_transform_factory(ns._DUMB)(x) == x.swapcase()
+    assert _input_string_transform_factory(ns._DUMB)(x) == normalize('NFD', x).swapcase()
 
 
 def test_input_string_transform_factory_performs_swapcase_with_LOWERCASEFIRST_example():
@@ -69,18 +80,17 @@ def test_input_string_transform_factory_performs_swapcase_with_LOWERCASEFIRST_ex
 
 @given(text())
 def test_input_string_transform_factory_performs_swapcase_with_LOWERCASEFIRST(x):
-    x = 'feijGGAd'
-    assert _input_string_transform_factory(ns.LOWERCASEFIRST)(x) == x.swapcase()
+    assert _input_string_transform_factory(ns.LOWERCASEFIRST)(x) == normalize('NFD', x).swapcase()
 
 
 def test_input_string_transform_factory_is_no_op_with_both_LOWERCASEFIRST_AND_DUMB_example():
     x = 'feijGGAd'
-    assert _input_string_transform_factory(ns._DUMB | ns.LOWERCASEFIRST)(x) is x
+    assert _input_string_transform_factory(ns._DUMB | ns.LOWERCASEFIRST)(x) == x
 
 
 @given(text())
 def test_input_string_transform_factory_is_no_op_with_both_LOWERCASEFIRST_AND_DUMB(x):
-    assert _input_string_transform_factory(ns._DUMB | ns.LOWERCASEFIRST)(x) is x
+    assert _input_string_transform_factory(ns._DUMB | ns.LOWERCASEFIRST)(x) == normalize('NFD', x)
 
 
 def test_input_string_transform_factory_performs_swapcase_and_casefold_both_LOWERCASEFIRST_AND_IGNORECASE_example():
@@ -94,9 +104,9 @@ def test_input_string_transform_factory_performs_swapcase_and_casefold_both_LOWE
 @given(text())
 def test_input_string_transform_factory_performs_swapcase_and_casefold_both_LOWERCASEFIRST_AND_IGNORECASE(x):
     if NEWPY:
-        assert _input_string_transform_factory(ns.IGNORECASE | ns.LOWERCASEFIRST)(x) == x.swapcase().casefold()
+        assert _input_string_transform_factory(ns.IGNORECASE | ns.LOWERCASEFIRST)(x) == normalize('NFD', x).swapcase().casefold()
     else:
-        assert _input_string_transform_factory(ns.IGNORECASE | ns.LOWERCASEFIRST)(x) == x.swapcase().lower()
+        assert _input_string_transform_factory(ns.IGNORECASE | ns.LOWERCASEFIRST)(x) == normalize('NFD', x).swapcase().lower()
 
 
 def test_input_string_transform_factory_removes_thousands_separator_with_LOCALE_example():

@@ -80,8 +80,10 @@ def test_natsorted_returns_sorted_list_with_mixed_type_input_and_does_not_raise_
 
 
 def test_natsorted_with_mixed_input_returns_sorted_results_without_error():
+    a = ['0', 'Á', '2', 'Z']
+    assert natsorted(a) == ['0', '2', 'Á', 'Z']
     a = ['2', 'ä', 'b', 1.5, 3]
-    assert natsorted(a) == [1.5, '2', 3, 'b', 'ä']
+    assert natsorted(a) == [1.5, '2', 3, 'ä', 'b']
 
 
 def test_natsorted_with_nan_input_returns_sorted_results_with_nan_last_with_NANLAST():
@@ -240,7 +242,7 @@ def test_natsorted_with_LOCALE_and_de_setting_returns_results_sorted_by_de_langu
 def test_natsorted_with_LOCALE_and_mixed_input_returns_sorted_results_without_error():
     load_locale('en_US')
     a = ['0', 'Á', '2', 'Z']
-    assert natsorted(a) == ['0', '2', 'Z', 'Á']
+    assert natsorted(a, alg=ns.LOCALE) == ['0', '2', 'Á', 'Z']
     a = ['2', 'ä', 'b', 1.5, 3]
     assert natsorted(a, alg=ns.LOCALE) == [1.5, '2', 3, 'ä', 'b']
     locale.setlocale(locale.LC_ALL, str(''))

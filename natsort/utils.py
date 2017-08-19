@@ -54,6 +54,7 @@ from itertools import chain as ichain
 from collections import deque
 from functools import partial, reduce
 from operator import methodcaller
+from unicodedata import normalize
 
 # Local imports.
 from natsort.ns_enum import ns
@@ -267,11 +268,23 @@ def _input_string_transform_factory(alg):
     # Shortcuts.
     lowfirst = alg & ns.LOWERCASEFIRST
     dumb = alg & ns._DUMB
+    normalization_form = 'NFKD' if alg & ns.COMPATIBILITYNORMALIZE else 'NFD'
+
+    if NEWPY:
+        careful_normalize = partial(normalize, normalization_form)
+    else:
+        def careful_normalize(x):
+            """Normalize unicode input."""
+            if isinstance(x, py23_str):  # unicode
+                return normalize(normalization_form, x)
+            else:
+                return x
 
     # Build the chain of functions to execute in order.
-    function_chain = []
+    function_chain = [careful_normalize]
     if (dumb and not lowfirst) or (lowfirst and not dumb):
         function_chain.append(methodcaller('swapcase'))
+
     if alg & ns.IGNORECASE:
         if NEWPY:
             function_chain.append(methodcaller('casefold'))
