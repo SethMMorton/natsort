@@ -251,16 +251,16 @@ def test_natsorted_with_LOCALE_and_mixed_input_returns_sorted_results_without_er
 def test_natsorted_with_LOCALE_and_UNGROUPLETTERS_and_mixed_input_returns_sorted_results_without_error():
     load_locale('en_US')
     a = ['0', 'Á', '2', 'Z']
-    assert natsorted(a, alg=ns.LOCALE | ns.UNGROUPLETTERS) == ['0', '2', 'Z', 'Á']
+    assert natsorted(a, alg=ns.LOCALE | ns.UNGROUPLETTERS) == ['0', '2', 'Á', 'Z']
     a = ['2', 'ä', 'b', 1.5, 3]
-    assert natsorted(a, alg=ns.LOCALE | ns.UNGROUPLETTERS) == [1.5, '2', 3, 'b', 'ä']
+    assert natsorted(a, alg=ns.LOCALE | ns.UNGROUPLETTERS) == [1.5, '2', 3, 'ä', 'b']
     locale.setlocale(locale.LC_ALL, str(''))
 
 
 def test_natsorted_with_PATH_and_LOCALE_and_UNGROUPLETTERS_and_mixed_input_returns_sorted_results_without_error():
     load_locale('en_US')
     a = ['0', 'Á', '2', 'Z']
-    assert natsorted(a, alg=ns.PATH | ns.LOCALE | ns.UNGROUPLETTERS) == ['0', '2', 'Z', 'Á']
+    assert natsorted(a, alg=ns.PATH | ns.LOCALE | ns.UNGROUPLETTERS) == ['0', '2', 'Á', 'Z']
     a = ['2', 'ä', 'b', 1.5, 3]
-    assert natsorted(a, alg=ns.PATH | ns.LOCALE | ns.UNGROUPLETTERS) == [1.5, '2', 3, 'b', 'ä']
+    assert natsorted(a, alg=ns.PATH | ns.LOCALE | ns.UNGROUPLETTERS) == [1.5, '2', 3, 'ä', 'b']
     locale.setlocale(locale.LC_ALL, str(''))
