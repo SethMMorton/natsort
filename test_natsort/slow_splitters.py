@@ -19,6 +19,7 @@ SplitElement = collections.namedtuple('SplitElement',
 
 def int_splitter(iterable, signed, sep):
     """Alternate (slow) method to split a string into numbers."""
+    iterable = unicodedata.normalize('NFD', iterable)
     split_by_digits = itertools.groupby(iterable, lambda a: a.isdigit())
     split_by_digits = refine_split_grouping(split_by_digits)
     split = int_splitter_iter(split_by_digits, signed)
@@ -32,6 +33,7 @@ def float_splitter(iterable, signed, exp, sep):
     def number_tester(x):
         return x.isdigit() or unicodedata.numeric(x, None) is not None
 
+    iterable = unicodedata.normalize('NFD', iterable)
     split_by_digits = itertools.groupby(iterable, number_tester)
     split_by_digits = peekable(refine_split_grouping(split_by_digits))
     split = float_splitter_iter(split_by_digits, signed, exp)

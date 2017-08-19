@@ -54,6 +54,7 @@ from itertools import chain as ichain
 from collections import deque
 from functools import partial, reduce
 from operator import methodcaller
+from unicodedata import normalize
 
 # Local imports.
 from natsort.ns_enum import ns
@@ -116,6 +117,22 @@ _regex_chooser = {
 def _no_op(x):
     """A function that does nothing."""
     return x
+
+
+def _normalize_input_factory(alg):
+    """Create a function that will normalize unicode input data."""
+    normalization_form = 'NFKD' if alg & ns.COMPATIBILITYNORMALIZE else 'NFD'
+
+    if NEWPY:
+        return partial(normalize, normalization_form)
+    else:
+        def func(x):
+            """Normalize unicode input."""
+            if isinstance(x, py23_str):  # unicode
+                return normalize(normalization_form, x)
+            else:
+                return x
+        return func
 
 
 def _natsort_key(val, key, string_func, bytes_func, num_func):
@@ -208,11 +225,13 @@ def _parse_string_factory(alg, sep, splitter,
     # sometimes after.
     orig_after_xfrm = not (alg & ns._DUMB and alg & ns.LOCALEALPHA)
     original_func = input_transform if orig_after_xfrm else _no_op
+    normalize_input = _normalize_input_factory(alg)
 
-    def func(x, original_func=original_func):
+    def func(x):
         # Apply string input transformation function and return to x.
         # Original function is usually a no-op, but some algorithms require it
         # to also be the transformation function.
+        x = normalize_input(x)
         x, original = input_transform(x), original_func(x)
         x = splitter(x)                       # Split string into components.
         x = py23_filter(None, x)              # Remove empty strings.
@@ -272,6 +291,7 @@ def _input_string_transform_factory(alg):
     function_chain = []
     if (dumb and not lowfirst) or (lowfirst and not dumb):
         function_chain.append(methodcaller('swapcase'))
+
     if alg & ns.IGNORECASE:
         if NEWPY:
             function_chain.append(methodcaller('casefold'))

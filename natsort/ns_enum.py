@@ -39,7 +39,7 @@ class ns(object):
         This is a shortcut for ``ns.FLOAT | ns.SIGNED``, which is useful
         when attempting to sort real numbers.
     NOEXP, N
-        Tell `natsort` to not search for exponents as part of the number.
+        Tell `natsort` to not search for exponents as part of a float number.
         For example, with `NOEXP` the number "5.6E5" would be interpreted
         as `5.6`, `"E"`, and `5` instead of `560000`.
     PATH, P
@@ -51,6 +51,13 @@ class ns(object):
         sorted properly; 'Folder/' will be placed at the end, not at the
         front. It is the same as setting the old `as_path` option to
         `True`.
+    COMPATIBILITYNORMALIZE, CN
+        Use the "NFKD" unicode normalization form on input rather than the
+        default "NFD". This will transform characters such as '⑦' into
+        '7'. Please see https://stackoverflow.com/a/7934397/1399279,
+        https://stackoverflow.com/a/7931547/1399279,
+        and http://unicode.org/reports/tr15/ full details into unicode
+        normalization.
     LOCALE, L
         Tell `natsort` to be locale-aware when sorting. This includes both
         proper sorting of alphabetical characters as well as proper
@@ -129,20 +136,21 @@ class ns(object):
 
     # The below are options. The values are stored as powers of two
     # so bitmasks can be used to extract the user's requested options.
-    FLOAT            = F  = 1 << 0
-    SIGNED           = S  = 1 << 1
-    REAL             = R  = FLOAT | SIGNED
-    NOEXP            = N  = 1 << 2
-    PATH             = P  = 1 << 3
-    LOCALEALPHA      = LA = 1 << 4
-    LOCALENUM        = LN = 1 << 5
-    LOCALE           = L  = LOCALEALPHA | LOCALENUM
-    IGNORECASE       = IC = 1 << 6
-    LOWERCASEFIRST   = LF = 1 << 7
-    GROUPLETTERS     = G  = 1 << 8
-    UNGROUPLETTERS   = UG = 1 << 9
-    CAPITALFIRST     = C  = UNGROUPLETTERS
-    NANLAST          = NL = 1 << 10
+    FLOAT                  = F  = 1 << 0
+    SIGNED                 = S  = 1 << 1
+    REAL                   = R  = FLOAT | SIGNED
+    NOEXP                  = N  = 1 << 2
+    PATH                   = P  = 1 << 3
+    LOCALEALPHA            = LA = 1 << 4
+    LOCALENUM              = LN = 1 << 5
+    LOCALE                 = L  = LOCALEALPHA | LOCALENUM
+    IGNORECASE             = IC = 1 << 6
+    LOWERCASEFIRST         = LF = 1 << 7
+    GROUPLETTERS           = G  = 1 << 8
+    UNGROUPLETTERS         = UG = 1 << 9
+    CAPITALFIRST           = C  = UNGROUPLETTERS
+    NANLAST                = NL = 1 << 10
+    COMPATIBILITYNORMALIZE = CN = 1 << 11
 
     # The below are private options for internal use only.
     _NUMERIC_ONLY    = REAL | NOEXP
