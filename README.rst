@@ -27,7 +27,7 @@ Simple yet flexible natural sorting in Python.
 
       - `Examples and Recipes <http://natsort.readthedocs.io/en/stable/examples.html>`_
       - `How Does Natsort Work? <http://natsort.readthedocs.io/en/stable/howitworks.html>`_
-      - `API <http://natsort.readthedocs.io/en/stable/api.html>`_
+      - `API <http://natsort.readthedocs.io/en/master/api.html>`_
 
     - `Optional Dependencies`_
 
@@ -65,9 +65,9 @@ Using ``natsorted`` is simple:
 
 ``natsorted`` identifies numbers anywhere in a string and sorts them
 naturally. Below are some other things you can do with ``natsort``
-(also see the `examples <http://natsort.readthedocs.io/en/stable/examples.html>`_
+(also see the `examples <http://natsort.readthedocs.io/en/master/examples.html>`_
 for a quick start guide, or the
-`api <http://natsort.readthedocs.io/en/stable/api.html>`_ for complete details).
+`api <http://natsort.readthedocs.io/en/master/api.html>`_ for complete details).
 
 **Note**: ``natsorted`` is designed to be a drop-in replacement for the built-in
 ``sorted`` function. Like ``sorted``, ``natsorted`` `does not sort in-place`.
@@ -100,7 +100,7 @@ This is handled properly by default (as of ``natsort`` version >= 4.0.0):
     ['version-1.9', 'version-1.10', 'version-1.11', 'version-2.0']
 
 If you need to sort release candidates, please see
-`this useful hack <http://natsort.readthedocs.io/en/stable/examples.html#rc-sorting>`_.
+`this useful hack <http://natsort.readthedocs.io/en/master/examples.html#rc-sorting>`_.
 
 Sorting by Real Numbers (i.e. Signed Floats)
 ++++++++++++++++++++++++++++++++++++++++++++
@@ -146,7 +146,7 @@ This can be achieved with the ``humansorted`` function:
 
 You may find you need to explicitly set the locale to get this to work
 (as shown in the example).
-Please see `locale issues <http://natsort.readthedocs.io/en/stable/locale_issues.html>`_ and the
+Please see `locale issues <http://natsort.readthedocs.io/en/master/locale_issues.html>`_ and the
 `Optional Dependencies`_ section below before using the ``humansorted`` function.
 
 Further Customizing Natsort
@@ -171,7 +171,7 @@ bitwise OR operator (``|``). For example,
     True
 
 All of the available customizations can be found in the documentation for
-`the ns enum <http://natsort.readthedocs.io/en/stable/ns_class.html>`_.
+`the ns enum <http://natsort.readthedocs.io/en/master/ns_class.html>`_.
 
 Sorting Mixed Types
 +++++++++++++++++++
@@ -235,9 +235,9 @@ Other Useful Things
 
  - recursively descend into lists of lists
  - automatic unicode normalization of input data
- - `controlling the case-sensitivity <http://natsort.readthedocs.io/en/stable/examples.html#case-sort>`_
- - `sorting file paths correctly <http://natsort.readthedocs.io/en/stable/examples.html#path-sort>`_
- - `allow custom sorting keys <http://natsort.readthedocs.io/en/stable/examples.html#custom-sort>`_
+ - `controlling the case-sensitivity <http://natsort.readthedocs.io/en/master/examples.html#case-sort>`_
+ - `sorting file paths correctly <http://natsort.readthedocs.io/en/master/examples.html#path-sort>`_
+ - `allow custom sorting keys <http://natsort.readthedocs.io/en/master/examples.html#custom-sort>`_
 
 Shell script
 ------------
@@ -271,7 +271,7 @@ PyICU
 
 It is recommended that you install `PyICU <https://pypi.org/project/PyICU>`_
 if you wish to sort in a locale-dependent manner, see
-http://natsort.readthedocs.io/en/stable/locale_issues.html for an explanation why.
+http://natsort.readthedocs.io/en/master/locale_issues.html for an explanation why.
 
 Author
 ------
@@ -282,7 +282,7 @@ History
 -------
 
 These are the last three entries of the changelog.  See the package documentation
-for the complete `changelog <http://natsort.readthedocs.io/en/stable/changelog.html>`_.
+for the complete `changelog <http://natsort.readthedocs.io/en/master/changelog.html>`_.
 
 08-19-2017 v. 5.1.0
 +++++++++++++++++++
