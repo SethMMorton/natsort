@@ -52,7 +52,7 @@ library from the Python stdlib. If you do not have
 `PyICU <https://pypi.org/project/PyICU>`_ installed, please keep the
 following known problems and issues in mind.
 
-.. note:: Remember, if you have `PyICU <https://pypi.python.org/pypi/PyICU>`_
+.. note:: Remember, if you have `PyICU <https://pypi.org/project/PyICU>`_
           installed you shouldn't need to worry about any of these.
 
 Explicitly Set the Locale Before Using :func:`~natsort.humansorted` or ``ns.LOCALE``
