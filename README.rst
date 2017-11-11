@@ -25,8 +25,8 @@ Simple yet flexible natural sorting in Python.
     - Downloads: https://pypi.org/project/natsort/
     - Documentation: http://natsort.readthedocs.io/
 
-      - `Examples and Recipes <http://natsort.readthedocs.io/en/stable/examples.html>`_
-      - `How Does Natsort Work? <http://natsort.readthedocs.io/en/stable/howitworks.html>`_
+      - `Examples and Recipes <http://natsort.readthedocs.io/en/master/examples.html>`_
+      - `How Does Natsort Work? <http://natsort.readthedocs.io/en/master/howitworks.html>`_
       - `API <http://natsort.readthedocs.io/en/master/api.html>`_
       - **NOTE**: The old documentation at pythonhosted.org has been taken down
         with no redirects. Please see
