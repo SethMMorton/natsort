@@ -28,6 +28,10 @@ Simple yet flexible natural sorting in Python.
       - `Examples and Recipes <http://natsort.readthedocs.io/en/stable/examples.html>`_
       - `How Does Natsort Work? <http://natsort.readthedocs.io/en/stable/howitworks.html>`_
       - `API <http://natsort.readthedocs.io/en/master/api.html>`_
+      - **NOTE**: The old documentation at pythonhosted.org has been taken down
+        with no redirects. Please see
+        `this post <https://opensource.stackexchange.com/q/5941/8999>`_ for an
+        explanation into why.
 
     - `Optional Dependencies`_
 
