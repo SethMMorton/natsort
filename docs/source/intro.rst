@@ -242,45 +242,69 @@ Other Useful Things
  - sorting file paths correctly (see :ref:`path_sort`)
  - allow custom sorting keys (see :ref:`custom_sort`)
 
-Installation
+Shell script
 ------------
 
-Installation of :mod:`natsort` is ultra-easy.  Simply execute from the
-command line::
+:mod:`natsort` comes with a shell script called :mod:`natsort`, or can also be called
+from the command line with ``python -m natsort``. 
+
+Requirements
+------------
+
+:mod:`natsort` requires Python version 2.6 or greater or Python 3.3 or greater.
+It may run on (but is not tested against) Python 3.2.
+
+Optional Dependencies
+---------------------
+
+fastnumbers
++++++++++++
+
+The most efficient sorting can occur if you install the
+`fastnumbers <https://pypi.org/project/fastnumbers>`_ package
+(version >=0.7.1); it helps with the string to number conversions.
+:mod:`natsort` will still run (efficiently) without the package, but if you need
+to squeeze out that extra juice it is recommended you include this as a dependency.
+:mod:`natsort` will not require (or check) that
+`fastnumbers <https://pypi.org/project/fastnumbers>`_ is installed
+at installation.
+
+PyICU
++++++
+
+It is recommended that you install `PyICU <https://pypi.org/project/PyICU>`_
+if you wish to sort in a locale-dependent manner, see
+http://natsort.readthedocs.io/en/master/locale_issues.html for an explanation why.
+
+Installation and Testing
+------------------------
+
+To install :mod:`natsort`, it is simplest to use ``pip``::
 
     pip install natsort
 
-You can also download the source from https://pypi.org/project/natsort/,
-or browse the git repository at https://github.com/SethMMorton/natsort.
+You can also add the `requirements.txt` file; it will ensure that ``argparse`` is
+installed for Python 2.6 but does nothing on any other Python version::
 
-If you choose to install from source, you can unzip the source archive and
-enter the directory, and type::
+    pip install -rrequirements.txt natsort
 
-    python setup.py install
+If you want to install the optional dependencies ``fastnumbers`` and ``PyICU``,
+add the `optional-requirements.txt` file::
 
-If you wish to run the unit tests, enter::
+    pip install -roptional-requirements.txt natsort
 
-    python setup.py test
+If you wish to run the tests, please note that :mod:`natsort` is NOT set-up to
+support ``python setup.py test``. The preferred way to run the tests is
+to use `tox <https://tox.readthedocs.io/en/latest/>`_. If you want to run unit
+tests on (for example) Python 2.7, you can execute the following::
 
-If you want to build this documentation, enter::
+    pip install tox
+    tox -e py27
 
-    python setup.py build_sphinx
+This will install all the necessary dependencies to run the :mod:`natsort` test suite.
+If you prefer not to use ``tox``, you can run the tests manually using
+`pytest <https://docs.pytest.org/en/latest/>`_::
 
-:mod:`natsort` requires Python version 2.6 or greater or Python 3.2 or greater.
+    pip install -rtesting-requirements.txt
+    python -m pytest
 
-The most efficient sorting can occur if you install the 
-`fastnumbers <https://pypi.org/project/fastnumbers>`_ package (it helps
-with the string to number conversions.)  ``natsort`` will still run (efficiently)
-without the package, but if you need to squeeze out that extra juice it is
-recommended you include this as a dependency.  ``natsort`` will not require (or
-check) that `fastnumbers <https://pypi.org/project/fastnumbers>`_ is installed.
-
-It is recommended that you install `PyICU <https://pypi.org/project/PyICU>`_
-if you wisht to sort in a locale-dependent manner, see :ref:`locale_issues` for
-an explanation why.
-
-:mod:`natsort` comes with a shell script called :mod:`natsort`, or can also be called
-from the command line with ``python -m natsort``.  The command line script is
-only installed onto your ``PATH`` if you don't install via a wheel.  There is
-apparently a known bug with the wheel installation process that will not create
-entry points.

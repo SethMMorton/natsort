@@ -273,6 +273,38 @@ It is recommended that you install `PyICU <https://pypi.org/project/PyICU>`_
 if you wish to sort in a locale-dependent manner, see
 http://natsort.readthedocs.io/en/master/locale_issues.html for an explanation why.
 
+Installation and Testing
+------------------------
+
+To install ``natsort``, it is simplest to use ``pip``::
+
+    pip install natsort
+
+You can also add the `requirements.txt` file; it will ensure that ``argparse`` is
+installed for Python 2.6 but does nothing on any other Python version::
+
+    pip install -rrequirements.txt natsort
+
+If you want to install the optional dependencies ``fastnumbers`` and ``PyICU``,
+add the `optional-requirements.txt` file::
+
+    pip install -roptional-requirements.txt natsort
+
+If you wish to run the tests, please note that ``natsort`` is NOT set-up to
+support ``python setup.py test``. The preferred way to run the tests is
+to use `tox <https://tox.readthedocs.io/en/latest/>`_. If you want to run unit
+tests on (for example) Python 2.7, you can execute the following::
+
+    pip install tox
+    tox -e py27
+
+This will install all the necessary dependencies to run the ``natsort`` test suite.
+If you prefer not to use ``tox``, you can run the tests manually using
+`pytest <https://docs.pytest.org/en/latest/>`_::
+
+    pip install -rtesting-requirements.txt
+    python -m pytest
+
 Author
 ------
 
