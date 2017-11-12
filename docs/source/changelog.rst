@@ -3,6 +3,12 @@
 Changelog
 ---------
 
+11-11-2017 v. 5.1.1
++++++++++++++++++++
+
+    - Added additional unicode number support for Python 3.7.
+    - Added information on how to install and test.
+
 08-19-2017 v. 5.1.0
 +++++++++++++++++++
 

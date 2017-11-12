@@ -320,6 +320,12 @@ History
 These are the last three entries of the changelog.  See the package documentation
 for the complete `changelog <http://natsort.readthedocs.io/en/master/changelog.html>`_.
 
+11-11-2017 v. 5.1.1
++++++++++++++++++++
+
+    - Added additional unicode number support for Python 3.7.
+    - Added information on how to install and test.
+
 08-19-2017 v. 5.1.0
 +++++++++++++++++++
 
@@ -331,11 +337,3 @@ for the complete `changelog <http://natsort.readthedocs.io/en/master/changelog.h
 
     - Improved development infrastructure.
     - Migrated documentation to ReadTheDocs.
-
-01-02-2017 v. 5.0.2
-+++++++++++++++++++
-
-    - Added additional unicode number support for Python 3.6.
-    - Renamed several internal functions and variables to improve clarity.
-    - Improved documentation examples.
-    - Added a "how does it work?" section to the documentation.
