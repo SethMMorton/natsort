@@ -1,5 +1,7 @@
 include README.rst
 include LICENSE
+include *.md
+include *requirements.txt
 recursive-include natsort *.py
 recursive-include test_natsort *.py
 include setup.py
