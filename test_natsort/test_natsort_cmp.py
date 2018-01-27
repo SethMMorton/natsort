@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+# pylint: disable=unused-variable
 """These test the natcmp() function."""
 import sys
 from functools import partial
@@ -13,7 +14,8 @@ PY_VERSION = float(sys.version[:3])
 
 
 if PY_VERSION >= 3.0:
-    cmp = lambda a, b: (a > b) - (a < b)
+    def cmp(a, b):
+        return (a > b) - (a < b)
 
 
 class Comparable(object):
