@@ -50,5 +50,5 @@ __all__ = [
 
 # Add the ns keys to this namespace for convenience.
 globals().update(
-    {k: v for k, v in vars(ns).items() if not k.startswith('_')}
+    dict((k, v) for k, v in vars(ns).items() if not k.startswith('_'))
 )
