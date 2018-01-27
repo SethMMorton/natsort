@@ -12,15 +12,17 @@ from natsort import natcmp, ns
 PY_VERSION = float(sys.version[:3])
 
 
+class Comparable:
+    """Stub class for testing natcmp functionality."""
+    def __init__(self, value):
+        self.value = value
+
+    def __cmp__(self, other):
+        return natcmp(self.value, other.value)
+
+
 @pytest.mark.skipif(PY_VERSION >= 3.0, reason='cmp() deprecated in Python 3')
 def test__classes_can_be_compared():
-    class Comparable:
-        def __init__(self, value):
-            self.value = value
-
-        def __cmp__(self, other):
-            return natcmp(self.value, other.value)
-
     one = Comparable("1")
     two = Comparable("2")
     another_two = Comparable("2")
@@ -31,14 +33,8 @@ def test__classes_can_be_compared():
 
 @pytest.mark.skipif(PY_VERSION >= 3.0, reason='cmp() deprecated in Python 3')
 def test__classes_can_utilize_max_or_min():
-    class Comparable:
-        def __init__(self, value):
-            self.value = value
-
-        def __cmp__(self, other):
-            return natcmp(self.value, other.value)
-
     comparables = [Comparable(i) for i in range(10)]
+
     assert max(comparables) == comparables[-1]
     assert min(comparables) == comparables[0]
 
