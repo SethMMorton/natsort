@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+"""These test the natcmp() function."""
 import sys
 from functools import partial
 
