@@ -674,3 +674,42 @@ def order_by_index(seq, index, iter=False):
 
     """
     return (seq[i] for i in index) if iter else [seq[i] for i in index]
+
+
+def natcmp(x, y, alg=0, **kwargs):
+    """
+    Compare two objects using a key and an algorithm.
+
+    Parameters
+    ----------
+    x : object
+        First object to compare.
+
+    y : object
+        Second object to compare.
+
+    alg : ns enum, optional
+        This option is used to control which algorithm `natsort`
+        uses when sorting. For details into these options, please see
+        the :class:`ns` class documentation. The default is `ns.INT`.
+
+    Returns
+    -------
+    out: int
+        0 if x and y are equal, 1 if x > y, -1 if y > x.
+
+    See Also
+    --------
+    natsort_keygen : Generates the key that makes natural sorting possible.
+
+    Examples
+    --------
+    Use `natcmp` just like the builtin `cmp`::
+
+        >>> one = 1
+        >>> two = 2
+        >>> natcmp(one, two)
+        -1
+    """
+    key = natsort_keygen(alg=alg, **kwargs)
+    return cmp(key(x), key(y))

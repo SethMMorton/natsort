@@ -23,6 +23,7 @@ from natsort.natsort import (
     as_ascii,
     as_utf8,
     ns,
+    natcmp,
 )
 from natsort.utils import chain_functions
 from natsort._version import __version__
@@ -40,6 +41,7 @@ __all__ = [
     'index_realsorted',
     'order_by_index',
     'decoder',
+    'natcmp',
     'as_ascii',
     'as_utf8',
     'ns',
