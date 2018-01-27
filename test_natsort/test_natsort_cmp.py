@@ -12,7 +12,7 @@ from natsort import natcmp, ns
 PY_VERSION = float(sys.version[:3])
 
 
-class Comparable:
+class Comparable(object):
     """Stub class for testing natcmp functionality."""
     def __init__(self, value):
         self.value = value
