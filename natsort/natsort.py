@@ -712,4 +712,4 @@ def natcmp(x, y, alg=0, **kwargs):
         -1
     """
     key = natsort_keygen(alg=alg, **kwargs)
-    return cmp(key(x), key(y))
+    return (key(x) > key(y)) - (key(x) < key(y))
