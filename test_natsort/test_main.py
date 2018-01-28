@@ -210,11 +210,9 @@ def test_check_filter_converts_filter_numbers_to_floats_if_filter_is_valid_examp
     assert check_filter([(6, 7), (2, 8)]) == [(6.0, 7.0), (2.0, 8.0)]
 
 
-@given(x=tuples(integers(max_value=100000, min_value=-100000), integers(max_value=100000, min_value=-100000),
-                floats(max_value=100000, min_value=-100000), floats(max_value=100000, min_value=-100000)))
-def test_check_filter_converts_filter_numbers_to_floats_if_filter_is_valid(x):
-    y = [a + 1 for a in x]
-    assert all(float(i) < float(j) for i, j in zip(x, y))
+@given(x=tuples(integers(), integers(), floats(), floats()), y=tuples(integers(), floats(), floats(), integers()))
+def test_check_filter_converts_filter_numbers_to_floats_if_filter_is_valid(x, y):
+    assume(all(float(i) < float(j) for i, j in zip(x, y)))
     assert check_filter(list(zip(x, y))) == [(float(i), float(j)) for i, j in zip(x, y)]
 
 
