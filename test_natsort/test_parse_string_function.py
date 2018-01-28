@@ -2,7 +2,6 @@
 """These test the utils.py functions."""
 from __future__ import unicode_literals
 
-from math import isnan
 from pytest import raises
 from natsort.ns_enum import ns
 from natsort.utils import (
@@ -25,7 +24,6 @@ from slow_splitters import (
     float_splitter,
 )
 from hypothesis import (
-    assume,
     given,
     example,
 )
@@ -80,12 +78,11 @@ def test_parse_string_factory_only_parses_digits_with_nosign_int_example():
     assert _parse_string_factory(0, '', _int_nosign_re.split, no_op, fast_int, tuple2)('a5+5.034e-1') == ('a', 5, '+', 5, '.', 34, 'e-', 1)
 
 
-@given(lists(elements=floats() | text() | integers(), min_size=1, max_size=10))
+@given(lists(elements=floats() | text().filter(whitespace_check) | integers(), min_size=1, max_size=10))
 @example([10000000000000000000000000000000000000000000000000000000000000000000000000,
           100000000000000000000000000000000000000000000000000000000000000000000000000,
           100000000000000000000000000000000000000000000000000000000000000000000000000])
 def test_parse_string_factory_only_parses_digits_with_nosign_int(x):
-    assume(all(whitespace_check(y) for y in x))
     s = ''.join(repr(y) if type(y) in (float, long, int) else y for y in x)
     assert _parse_string_factory(0, '', _int_nosign_re.split, no_op, fast_int, tuple2)(s) == int_splitter(s, False, '')
 
@@ -94,9 +91,8 @@ def test_parse_string_factory_parses_digit_with_sign_with_signed_int_example():
     assert _parse_string_factory(0, '', _int_sign_re.split, no_op, fast_int, tuple2)('a5+5.034e-1') == ('a', 5, '', 5, '.', 34, 'e', -1)
 
 
-@given(lists(elements=floats() | text() | integers(), min_size=1, max_size=10))
+@given(lists(elements=floats() | text().filter(whitespace_check) | integers(), min_size=1, max_size=10))
 def test_parse_string_factory_parses_digit_with_sign_with_signed_int(x):
-    assume(all(whitespace_check(y) for y in x))
     s = ''.join(repr(y) if type(y) in (float, long, int) else y for y in x)
     assert _parse_string_factory(0, '', _int_sign_re.split, no_op, fast_int, tuple2)(s) == int_splitter(s, True, '')
 
@@ -105,10 +101,8 @@ def test_parse_string_factory_only_parses_float_with_nosign_noexp_float_example(
     assert _parse_string_factory(0, '', _float_nosign_noexp_re.split, no_op, fast_float, tuple2)('a5+5.034e-1') == ('a', 5.0, '+', 5.034, 'e-', 1.0)
 
 
-@given(lists(elements=floats() | text() | integers(), min_size=1, max_size=10))
+@given(lists(elements=floats(allow_nan=False) | text().filter(whitespace_check) | integers(), min_size=1, max_size=10))
 def test_parse_string_factory_only_parses_float_with_nosign_noexp_float(x):
-    assume(not any(type(y) == float and isnan(y) for y in x))
-    assume(all(whitespace_check(y) for y in x))
     s = ''.join(repr(y) if type(y) in (float, long, int) else y for y in x)
     assert _parse_string_factory(0, '', _float_nosign_noexp_re.split, no_op, fast_float, tuple2)(s) == float_splitter(s, False, False, '')
 
@@ -117,10 +111,8 @@ def test_parse_string_factory_only_parses_float_with_exponent_with_nosign_exp_fl
     assert _parse_string_factory(0, '', _float_nosign_exp_re.split, no_op, fast_float, tuple2)('a5+5.034e-1') == ('a', 5.0, '+', 0.5034)
 
 
-@given(lists(elements=floats() | text() | integers(), min_size=1, max_size=10))
+@given(lists(elements=floats(allow_nan=False) | text().filter(whitespace_check) | integers(), min_size=1, max_size=10))
 def test_parse_string_factory_only_parses_float_with_exponent_with_nosign_exp_float(x):
-    assume(not any(type(y) == float and isnan(y) for y in x))
-    assume(all(whitespace_check(y) for y in x))
     s = ''.join(repr(y) if type(y) in (float, long, int) else y for y in x)
     assert _parse_string_factory(0, '', _float_nosign_exp_re.split, no_op, fast_float, tuple2)(s) == float_splitter(s, False, True, '')
 
@@ -129,10 +121,8 @@ def test_parse_string_factory_only_parses_float_with_sign_with_sign_noexp_float_
     assert _parse_string_factory(0, '', _float_sign_noexp_re.split, no_op, fast_float, tuple2)('a5+5.034e-1') == ('a', 5.0, '', 5.034, 'e', -1.0)
 
 
-@given(lists(elements=floats() | text() | integers(), min_size=1, max_size=10))
+@given(lists(elements=floats(allow_nan=False) | text().filter(whitespace_check) | integers(), min_size=1, max_size=10))
 def test_parse_string_factory_only_parses_float_with_sign_with_sign_noexp_float(x):
-    assume(not any(type(y) == float and isnan(y) for y in x))
-    assume(all(whitespace_check(y) for y in x))
     s = ''.join(repr(y) if type(y) in (float, long, int) else y for y in x)
     assert _parse_string_factory(0, '', _float_sign_noexp_re.split, no_op, fast_float, tuple2)(s) == float_splitter(s, True, False, '')
 
@@ -142,10 +132,8 @@ def test_parse_string_factory_parses_float_with_sign_exp_float_example():
     assert _parse_string_factory(0, '', _float_sign_exp_re.split, no_op, fast_float, tuple2)('6a5+5.034e-1') == ('', 6.0, 'a', 5.0, '', 0.5034)
 
 
-@given(lists(elements=floats() | text() | integers(), min_size=1, max_size=10))
+@given(lists(elements=floats(allow_nan=False) | text().filter(whitespace_check) | integers(), min_size=1, max_size=10))
 def test_parse_string_factory_parses_float_with_sign_exp_float(x):
-    assume(not any(type(y) == float and isnan(y) for y in x))
-    assume(all(whitespace_check(y) for y in x))
     s = ''.join(repr(y) if type(y) in (float, long, int) else y for y in x)
     assert _parse_string_factory(0, '', _float_sign_exp_re.split, no_op, fast_float, tuple2)(s) == float_splitter(s, True, True, '')
 

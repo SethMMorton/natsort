@@ -31,7 +31,6 @@ from slow_splitters import (
 )
 from compat.locale import low
 from hypothesis import (
-    assume,
     given,
 )
 from hypothesis.strategies import (
@@ -180,9 +179,8 @@ def test_groupletters_returns_letters_with_lowercase_transform_of_letter_example
     assert _groupletters('hello') == 'hheelllloo'
 
 
-@given(text())
+@given(text().filter(bool))
 def test_groupeletters_returns_letters_with_lowercase_transform_of_letter(x):
-    assume(bool(x))
     assert _groupletters(x) == ''.join(chain.from_iterable([low(y), y] for y in x))
 
 
@@ -200,9 +198,8 @@ def test_sep_inserter_inserts_separator_string_between_two_numbers_example():
     assert list(_sep_inserter(iter([5, 9]), null_string)) == [null_string, 5, null_string, 9]
 
 
-@given(lists(elements=text() | integers()))
+@given(lists(elements=text().filter(bool) | integers()))
 def test_sep_inserter_inserts_separator_between_two_numbers(x):
-    assume(bool(x))
     assert list(_sep_inserter(iter(x), '')) == list(add_leading_space_if_first_is_num(sep_inserter(x, ''), ''))
 
 
@@ -213,9 +210,8 @@ def test_path_splitter_splits_path_string_by_separator_example():
     assert tuple(_path_splitter(z)) == tuple(pathlib.Path(z).parts)
 
 
-@given(lists(sampled_from(string.ascii_letters), min_size=2))
+@given(lists(sampled_from(string.ascii_letters), min_size=2).filter(all))
 def test_path_splitter_splits_path_string_by_separator(x):
-    assume(all(x))
     z = py23_str(pathlib.Path(*x))
     assert tuple(_path_splitter(z)) == tuple(pathlib.Path(z).parts)
 
@@ -226,9 +222,8 @@ def test_path_splitter_splits_path_string_by_separator_and_removes_extension_exa
     assert tuple(_path_splitter(z)) == y[:-1] + (pathlib.Path(z).stem, pathlib.Path(z).suffix)
 
 
-@given(lists(sampled_from(string.ascii_letters), min_size=3))
+@given(lists(sampled_from(string.ascii_letters), min_size=3).filter(all))
 def test_path_splitter_splits_path_string_by_separator_and_removes_extension(x):
-    assume(all(x))
     z = py23_str(pathlib.Path(*x[:-2])) + '.' + x[-1]
     y = tuple(pathlib.Path(z).parts)
     assert tuple(_path_splitter(z)) == y[:-1] + (pathlib.Path(z).stem, pathlib.Path(z).suffix)
