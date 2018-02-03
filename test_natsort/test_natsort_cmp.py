@@ -41,6 +41,20 @@ def test__classes_can_be_compared():
 
 
 @pytest.mark.skipif(PY_VERSION >= 3.0, reason='cmp() deprecated in Python 3')
+def test__keys_are_being_cached():
+    natcmp.cached_keys = {}
+    assert len(natcmp.cached_keys) == 0
+    natcmp(0, 0)
+    assert len(natcmp.cached_keys) == 1
+    natcmp(0, 0)
+    assert len(natcmp.cached_keys) == 1
+    natcmp(0, 0, alg=ns.FLOAT | ns.IGNORECASE | ns.LOCALEALPHA)
+    assert len(natcmp.cached_keys) == 2
+    natcmp(0, 0, alg=ns.FLOAT | ns.IGNORECASE | ns.LOCALEALPHA)
+    assert len(natcmp.cached_keys) == 2
+
+
+@pytest.mark.skipif(PY_VERSION >= 3.0, reason='cmp() deprecated in Python 3')
 def test__classes_can_utilize_max_or_min():
     comparables = [Comparable(i) for i in range(10)]
 
