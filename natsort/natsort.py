@@ -678,6 +678,7 @@ def order_by_index(seq, index, iter=False):
     return (seq[i] for i in index) if iter else [seq[i] for i in index]
 
 if float(sys.version[:3]) < 3:
+    # pylint: disable=unused-variable
     class natcmp(object):
         """
         Compare two objects using a key and an algorithm.
