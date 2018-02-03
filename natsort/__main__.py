@@ -103,9 +103,8 @@ def range_check(low, high):
     """\
     Verifies that that given range has a low lower than the high.
     If the condition is not met, a ValueError is raised.
-    Otherwise, the values are returned, but as floats.
+    Otherwise the input is returned as-is.
     """
-    low, high = float(low), float(high)
     if low >= high:
         raise ValueError('low >= high')
     else:
@@ -117,7 +116,7 @@ def check_filter(filt):
     Check that the low value of the filter is lower than the high.
     If there is to be no filter, return 'None'.
     If the condition is not met, a ValueError is raised.
-    Otherwise, the values are returned, but as floats.
+    Otherwise, the values are returned as-is.
     """
     # Quick return if no filter.
     if not filt:

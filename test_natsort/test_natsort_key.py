@@ -3,7 +3,6 @@
 from __future__ import unicode_literals
 
 import pytest
-from math import isnan
 from natsort.compat.py23 import PY_VERSION
 from natsort.ns_enum import ns
 from natsort.utils import (
@@ -18,7 +17,6 @@ from natsort.utils import (
     _final_data_transform_factory,
 )
 from hypothesis import (
-    assume,
     given,
 )
 from hypothesis.strategies import (
@@ -73,22 +71,19 @@ def test__natsort_key_with_tuple_of_paths_and_PATH_returns_triply_nested_tuple()
 # They only confirm that _natsort_key uses the above building blocks.
 
 
-@given(floats() | integers())
+@given(floats(allow_nan=False) | integers())
 def test__natsort_key_with_numeric_input_takes_number_path(x):
-    assume(not isnan(x))
     assert _natsort_key(x, None, string_func, bytes_func, num_func) == num_func(x)
 
 
 @pytest.mark.skipif(PY_VERSION < 3, reason='only valid on python3')
-@given(binary())
+@given(binary().filter(bool))
 def test__natsort_key_with_bytes_input_takes_bytes_path(x):
-    assume(x)
     assert _natsort_key(x, None, string_func, bytes_func, num_func) == bytes_func(x)
 
 
-@given(lists(elements=floats() | text() | integers(), min_size=1, max_size=10))
+@given(lists(elements=floats(allow_nan=False) | text() | integers(), min_size=1, max_size=10))
 def test__natsort_key_with_text_input_takes_string_path(x):
-    assume(not any(type(y) == float and isnan(y) for y in x))
     s = ''.join(repr(y) if type(y) in (float, long, int) else y for y in x)
     assert _natsort_key(s, None, string_func, bytes_func, num_func) == string_func(s)
 

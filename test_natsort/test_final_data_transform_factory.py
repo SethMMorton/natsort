@@ -2,12 +2,10 @@
 """These test the utils.py functions."""
 from __future__ import unicode_literals
 
-from math import isnan, isinf
 from natsort.ns_enum import ns
 from natsort.utils import _final_data_transform_factory
 from natsort.compat.py23 import py23_str
 from hypothesis import (
-    assume,
     given,
 )
 from hypothesis.strategies import (
@@ -45,11 +43,8 @@ def test_final_data_transform_factory_returns_first_element_in_first_tuple_eleme
     assert _final_data_transform_factory(ns.LOCALE | ns.UNGROUPLETTERS, '')(('this', 60), 'this60') == (('t',), ('this', 60))
 
 
-@given(x=text(), y=floats() | integers())
+@given(x=text().filter(bool), y=floats(allow_nan=False, allow_infinity=False) | integers())
 def test_final_data_transform_factory_returns_first_element_in_first_tuple_element(x, y):
-    assume(x)
-    assume(not isnan(y))
-    assume(not isinf(y))
     assert _final_data_transform_factory(ns.LOCALE | ns.UNGROUPLETTERS, '')((x, y), ''.join(map(py23_str, [x, y]))) == ((x[0],), (x, y))
 
 
@@ -57,9 +52,6 @@ def test_final_data_transform_factory_returns_first_element_in_first_tuple_eleme
     assert _final_data_transform_factory(ns.LOCALE | ns.UNGROUPLETTERS | ns._DUMB | ns.LOWERCASEFIRST, '')(('this', 60), 'this60') == (('T',), ('this', 60))
 
 
-@given(x=text(), y=floats() | integers())
+@given(x=text().filter(bool), y=floats(allow_nan=False, allow_infinity=False) | integers())
 def test_final_data_transform_factory_returns_first_element_in_first_tuple_element_caseswapped_with_DUMB_and_LOWERCASEFIRST(x, y):
-    assume(x)
-    assume(not isnan(y))
-    assume(not isinf(y))
     assert _final_data_transform_factory(ns.LOCALE | ns.UNGROUPLETTERS | ns._DUMB | ns.LOWERCASEFIRST, '')((x, y), ''.join(map(py23_str, [x, y]))) == ((x[0].swapcase(),), (x, y))
