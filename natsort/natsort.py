@@ -678,7 +678,7 @@ def order_by_index(seq, index, iter=False):
     return (seq[i] for i in index) if iter else [seq[i] for i in index]
 
 if float(sys.version[:3]) < 3:
-    def natcmp(x, y, alg=0, **kwargs):
+    class natcmp(object):
         """
         Compare two objects using a key and an algorithm.
 
@@ -713,5 +713,21 @@ if float(sys.version[:3]) < 3:
             >>> natcmp(one, two)
             -1
         """
-        key = natsort_keygen(alg=alg, **kwargs)
-        return py23_cmp(key(x), key(y))
+        cached_keys = {}
+
+        def __new__(cls, x, y, alg=0, *args, **kwargs):
+            try:
+                alg = _args_to_enum(**kwargs) | alg
+            except TypeError:
+                msg = ("natsort_keygen: 'alg' argument must be "
+                       "from the enum 'ns'")
+                raise ValueError(msg + ', got {0}'.format(py23_str(alg)))
+
+            # Add the _DUMB option if the locale library is broken.
+            if alg & ns.LOCALEALPHA and natsort.compat.locale.dumb_sort():
+                alg |= ns._DUMB
+
+            if alg not in cls.cached_keys:
+                cls.cached_keys[alg] = natsort_keygen(alg=alg)
+
+            return py23_cmp(cls.cached_keys[alg](x), cls.cached_keys[alg](y))

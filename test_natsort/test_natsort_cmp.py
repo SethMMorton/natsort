@@ -63,7 +63,7 @@ def test__natcmp_works_the_same_for_floats_as_cmp(x, y):
 @pytest.mark.skipif(PY_VERSION >= 3.0, reason='cmp() deprecated in Python 3')
 @given(lists(elements=integers()))
 def test_sort_strings_with_numbers(a_list):
-    strings = map(str, a_list)
+    strings = [str(var) for var in a_list]
     natcmp_sorted = sorted(strings, cmp=partial(natcmp, alg=ns.REAL))
 
     assert sorted(a_list) == [int(var) for var in natcmp_sorted]
