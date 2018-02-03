@@ -6,6 +6,7 @@ Note that these tests are only relevant for Python version < 3.
 """
 import sys
 from functools import partial
+from mock import patch
 
 import pytest
 from hypothesis import given
@@ -48,10 +49,34 @@ def test__keys_are_being_cached():
     assert len(natcmp.cached_keys) == 1
     natcmp(0, 0)
     assert len(natcmp.cached_keys) == 1
-    natcmp(0, 0, alg=ns.FLOAT | ns.IGNORECASE | ns.LOCALEALPHA)
+    natcmp(0, 0, alg=ns.L)
     assert len(natcmp.cached_keys) == 2
-    natcmp(0, 0, alg=ns.FLOAT | ns.IGNORECASE | ns.LOCALEALPHA)
+
+    natcmp(0, 0, alg=ns.L)
     assert len(natcmp.cached_keys) == 2
+
+    with patch('natsort.compat.locale.dumb_sort', return_value=True):
+        natcmp(0, 0, alg=ns.L)
+
+    assert len(natcmp.cached_keys) == 3
+
+    with patch('natsort.compat.locale.dumb_sort', return_value=True):
+        natcmp(0, 0, alg=ns.L)
+
+    assert len(natcmp.cached_keys) == 3
+
+
+@pytest.mark.skipif(PY_VERSION >= 3.0, reason='cmp() deprecated in Python 3')
+def test__illegal_algorithm_raises_error():
+    try:
+        natcmp(0, 0, alg="Just random stuff")
+        assert False
+
+    except ValueError:
+        assert True
+
+    except Exception:
+        assert False
 
 
 @pytest.mark.skipif(PY_VERSION >= 3.0, reason='cmp() deprecated in Python 3')
