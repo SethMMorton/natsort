@@ -6,7 +6,7 @@ Note that these tests are only relevant for Python version < 3.
 """
 import sys
 from functools import partial
-from mock import patch
+from compat.mock import patch
 
 import pytest
 from hypothesis import given
