@@ -23,12 +23,14 @@ from functools import partial
 from warnings import warn
 
 # Local imports.
+import sys
+
 import natsort.compat.locale
 from natsort.ns_enum import ns
 from natsort.compat.py23 import (
     u_format,
     py23_str,
-)
+    py23_cmp)
 from natsort.utils import (
     _natsort_key,
     _args_to_enum,
@@ -675,41 +677,41 @@ def order_by_index(seq, index, iter=False):
     """
     return (seq[i] for i in index) if iter else [seq[i] for i in index]
 
+if float(sys.version[:3]) < 3:
+    def natcmp(x, y, alg=0, **kwargs):
+        """
+        Compare two objects using a key and an algorithm.
 
-def natcmp(x, y, alg=0, **kwargs):
-    """
-    Compare two objects using a key and an algorithm.
+        Parameters
+        ----------
+        x : object
+            First object to compare.
 
-    Parameters
-    ----------
-    x : object
-        First object to compare.
+        y : object
+            Second object to compare.
 
-    y : object
-        Second object to compare.
+        alg : ns enum, optional
+            This option is used to control which algorithm `natsort`
+            uses when sorting. For details into these options, please see
+            the :class:`ns` class documentation. The default is `ns.INT`.
 
-    alg : ns enum, optional
-        This option is used to control which algorithm `natsort`
-        uses when sorting. For details into these options, please see
-        the :class:`ns` class documentation. The default is `ns.INT`.
+        Returns
+        -------
+        out: int
+            0 if x and y are equal, 1 if x > y, -1 if y > x.
 
-    Returns
-    -------
-    out: int
-        0 if x and y are equal, 1 if x > y, -1 if y > x.
+        See Also
+        --------
+        natsort_keygen : Generates a key that makes natural sorting possible.
 
-    See Also
-    --------
-    natsort_keygen : Generates the key that makes natural sorting possible.
+        Examples
+        --------
+        Use `natcmp` just like the builtin `cmp`::
 
-    Examples
-    --------
-    Use `natcmp` just like the builtin `cmp`::
-
-        >>> one = 1
-        >>> two = 2
-        >>> natcmp(one, two)
-        -1
-    """
-    key = natsort_keygen(alg=alg, **kwargs)
-    return (key(x) > key(y)) - (key(x) < key(y))
+            >>> one = 1
+            >>> two = 2
+            >>> natcmp(one, two)
+            -1
+        """
+        key = natsort_keygen(alg=alg, **kwargs)
+        return py23_cmp(key(x), key(y))

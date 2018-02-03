@@ -1,6 +1,9 @@
 # -*- coding: utf-8 -*-
 # pylint: disable=unused-variable
-"""These test the natcmp() function."""
+"""These test the natcmp() function.
+
+Note that these tests are only relevant for Python version < 3.
+"""
 import sys
 from functools import partial
 
@@ -8,14 +11,14 @@ import pytest
 from hypothesis import given
 from hypothesis.strategies import floats, integers, lists
 
-from natsort import natcmp, ns
+from natsort import ns
+
+from natsort.compat.py23 import py23_cmp
 
 PY_VERSION = float(sys.version[:3])
 
-
-if PY_VERSION >= 3.0:
-    def cmp(a, b):
-        return (a > b) - (a < b)
+if PY_VERSION < 3:
+    from natsort import natcmp
 
 
 class Comparable(object):
@@ -48,13 +51,13 @@ def test__classes_can_utilize_max_or_min():
 @pytest.mark.skipif(PY_VERSION >= 3.0, reason='cmp() deprecated in Python 3')
 @given(integers(), integers())
 def test__natcmp_works_the_same_for_integers_as_cmp(x, y):
-    assert cmp(x, y) == natcmp(x, y)
+    assert py23_cmp(x, y) == natcmp(x, y)
 
 
 @pytest.mark.skipif(PY_VERSION >= 3.0, reason='cmp() deprecated in Python 3')
 @given(floats(allow_nan=False), floats(allow_nan=False))
 def test__natcmp_works_the_same_for_floats_as_cmp(x, y):
-    assert cmp(x, y) == natcmp(x, y)
+    assert py23_cmp(x, y) == natcmp(x, y)
 
 
 @pytest.mark.skipif(PY_VERSION >= 3.0, reason='cmp() deprecated in Python 3')
@@ -63,4 +66,4 @@ def test_sort_strings_with_numbers(a_list):
     strings = map(str, a_list)
     natcmp_sorted = sorted(strings, cmp=partial(natcmp, alg=ns.REAL))
 
-    assert sorted(a_list) == map(int, natcmp_sorted)
+    assert sorted(a_list) == [int(var) for var in natcmp_sorted]
