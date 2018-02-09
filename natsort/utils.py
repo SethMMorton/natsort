@@ -197,7 +197,7 @@ def _parse_bytes_factory(alg):
         return lambda x: (x,)
 
 
-def _parse_number_factory(alg, sep):
+def _parse_number_factory(alg, sep, pre_sep):
     """Create a function that will properly format a number in a tuple."""
     nan_replace = float('+inf') if alg & ns.NANLAST else float('-inf')
 
@@ -207,9 +207,9 @@ def _parse_number_factory(alg, sep):
 
     # Return the function, possibly wrapping in tuple if PATH is selected.
     if alg & ns.PATH and alg & ns.UNGROUPLETTERS and alg & ns.LOCALEALPHA:
-        return lambda x: ((('',), func(x)),)
+        return lambda x: (((pre_sep,), func(x)),)
     elif alg & ns.UNGROUPLETTERS and alg & ns.LOCALEALPHA:
-        return lambda x: (('',), func(x))
+        return lambda x: ((pre_sep,), func(x))
     elif alg & ns.PATH:
         return lambda x: (func(x),)
     else:
@@ -363,7 +363,7 @@ def _string_component_transform_factory(alg):
         return partial(fast_int, **kwargs)
 
 
-def _final_data_transform_factory(alg, sep):
+def _final_data_transform_factory(alg, sep, pre_sep):
     """
     Given a set of natsort algorithms, return the function to operate
     on the post-parsed strings according to the user's request.
@@ -383,7 +383,7 @@ def _final_data_transform_factory(alg, sep):
             if not split_val:
                 return (), ()
             elif split_val[0] == sep:
-                return ('',), split_val
+                return (pre_sep,), split_val
             else:
                 return (transform(val[0]),), split_val
         return func

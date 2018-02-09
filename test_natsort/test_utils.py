@@ -149,6 +149,7 @@ def test_ns_enum_values_have_are_as_expected():
     assert ns.UNGROUPLETTERS == ns.CAPITALFIRST
     assert ns.NANLAST == ns.NL
     assert ns.COMPATIBILITYNORMALIZE == ns.CN
+    assert ns.NUMAFTER == ns.NA
 
     # Convenience
     assert ns.LOCALE == ns.LOCALEALPHA | ns.LOCALENUM

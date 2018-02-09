@@ -6,8 +6,22 @@ from __future__ import (
     absolute_import
 )
 
+# Std. lib imports.
+import sys
+
 # Local imports.
-from natsort.compat.py23 import PY_VERSION, cmp_to_key
+from natsort.compat.py23 import (
+    PY_VERSION,
+    cmp_to_key,
+    py23_unichr,
+    py23_cmp,
+)
+
+# This string should be sorted after any other byte string because
+# it contains the max unicode character repeated 20 times.
+# You would need some odd data to come after that.
+null_string = ''
+null_string_max = py23_unichr(sys.maxunicode) * 20
 
 # Make the strxfrm function from strcoll on Python2
 # It can be buggy (especially on BSD-based systems),
@@ -17,6 +31,11 @@ try:
     from locale import getlocale
 
     null_string_locale = b''
+
+    # This string should in theory be sorted after any other byte
+    # string because it contains the max byte char repeated many times.
+    # You would need some odd data to come after that.
+    null_string_locale_max = b'x7f' * 50
 
     def dumb_sort():
         return False
@@ -49,8 +68,15 @@ except ImportError:
 
     null_string_locale = ''
 
+    # This string should be sorted after any other byte string because
+    # it contains the max unicode character repeated 20 times.
+    # You would need some odd data to come after that.
+    null_string_locale_max = py23_unichr(sys.maxunicode) * 20
+
     if PY_VERSION < 3:
-        null_string_locale = cmp_to_key(cmp)(null_string_locale)
+        null_string_locale = cmp_to_key(py23_cmp)(null_string_locale)
+        null_string_locale_max = cmp_to_key(py23_cmp)(null_string_locale_max)
+
     # On some systems, locale is broken and does not sort in the expected
     # order. We will try to detect this and compensate.
     def dumb_sort():
