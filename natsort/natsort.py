@@ -207,7 +207,10 @@ def natsort_keygen(key=None, alg=0, **_kwargs):
         alg |= ns._DUMB
 
     # Set some variables that will be passed to the factory functions
-    sep = natsort.compat.locale.null_string if alg & ns.LOCALEALPHA else ''
+    if alg & ns.LOCALEALPHA:
+        sep = natsort.compat.locale.null_string_locale
+    else:
+        sep = ''
     regex = _regex_chooser[alg & ns._NUMERIC_ONLY]
 
     # Create the functions that will be used to split strings.

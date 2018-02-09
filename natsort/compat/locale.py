@@ -16,7 +16,7 @@ try:
     import icu
     from locale import getlocale
 
-    null_string = b''
+    null_string_locale = b''
 
     def dumb_sort():
         return False
@@ -44,11 +44,13 @@ except ImportError:
     if PY_VERSION < 3:
         from locale import strcoll
         strxfrm = cmp_to_key(strcoll)
-        null_string = strxfrm('')
     else:
         from locale import strxfrm
-        null_string = ''
 
+    null_string_locale = ''
+
+    if PY_VERSION < 3:
+        null_string_locale = cmp_to_key(cmp)(null_string_locale)
     # On some systems, locale is broken and does not sort in the expected
     # order. We will try to detect this and compensate.
     def dumb_sort():
