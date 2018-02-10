@@ -30,6 +30,13 @@ py23_basestring = str if sys.version[0] == '3' else basestring
 # unichr function
 py23_unichr = chr if sys.version[0] == '3' else unichr
 
+
+def _py23_cmp(a, b):
+    return (a > b) - (a < b)
+
+
+py23_cmp = _py23_cmp if sys.version[0] == '3' else cmp
+
 # zip as an iterator
 if sys.version[0] == '3':
     py23_zip = zip

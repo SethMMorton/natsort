@@ -23,7 +23,7 @@ from natsort.utils import (
     _groupletters,
     chain_functions,
 )
-from natsort.compat.py23 import py23_str
+from natsort.compat.py23 import py23_str, py23_cmp
 from natsort.compat.locale import null_string
 from slow_splitters import (
     sep_inserter,
@@ -227,3 +227,10 @@ def test_path_splitter_splits_path_string_by_separator_and_removes_extension(x):
     z = py23_str(pathlib.Path(*x[:-2])) + '.' + x[-1]
     y = tuple(pathlib.Path(z).parts)
     assert tuple(_path_splitter(z)) == y[:-1] + (pathlib.Path(z).stem, pathlib.Path(z).suffix)
+
+
+@given(integers())
+def test_py23_cmp(x):
+    assert py23_cmp(x, x) == 0
+    assert py23_cmp(x, x + 1) < 0
+    assert py23_cmp(x, x - 1) > 0

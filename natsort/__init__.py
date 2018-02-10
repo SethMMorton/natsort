@@ -7,6 +7,11 @@ from __future__ import (
 )
 
 # Local imports.
+import sys
+
+from natsort.utils import chain_functions
+from natsort._version import __version__
+
 from natsort.natsort import (
     natsort_key,
     natsort_keygen,
@@ -24,8 +29,9 @@ from natsort.natsort import (
     as_utf8,
     ns,
 )
-from natsort.utils import chain_functions
-from natsort._version import __version__
+
+if float(sys.version[:3]) < 3:
+    from natsort.natsort import natcmp
 
 __all__ = [
     'natsort_key',
@@ -40,6 +46,7 @@ __all__ = [
     'index_realsorted',
     'order_by_index',
     'decoder',
+    'natcmp',
     'as_ascii',
     'as_utf8',
     'ns',

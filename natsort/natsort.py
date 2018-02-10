@@ -23,12 +23,14 @@ from functools import partial
 from warnings import warn
 
 # Local imports.
+import sys
+
 import natsort.compat.locale
 from natsort.ns_enum import ns
 from natsort.compat.py23 import (
     u_format,
     py23_str,
-)
+    py23_cmp)
 from natsort.utils import (
     _natsort_key,
     _args_to_enum,
@@ -674,3 +676,59 @@ def order_by_index(seq, index, iter=False):
 
     """
     return (seq[i] for i in index) if iter else [seq[i] for i in index]
+
+if float(sys.version[:3]) < 3:
+    # pylint: disable=unused-variable
+    class natcmp(object):
+        """
+        Compare two objects using a key and an algorithm.
+
+        Parameters
+        ----------
+        x : object
+            First object to compare.
+
+        y : object
+            Second object to compare.
+
+        alg : ns enum, optional
+            This option is used to control which algorithm `natsort`
+            uses when sorting. For details into these options, please see
+            the :class:`ns` class documentation. The default is `ns.INT`.
+
+        Returns
+        -------
+        out: int
+            0 if x and y are equal, 1 if x > y, -1 if y > x.
+
+        See Also
+        --------
+        natsort_keygen : Generates a key that makes natural sorting possible.
+
+        Examples
+        --------
+        Use `natcmp` just like the builtin `cmp`::
+
+            >>> one = 1
+            >>> two = 2
+            >>> natcmp(one, two)
+            -1
+        """
+        cached_keys = {}
+
+        def __new__(cls, x, y, alg=0, *args, **kwargs):
+            try:
+                alg = _args_to_enum(**kwargs) | alg
+            except TypeError:
+                msg = ("natsort_keygen: 'alg' argument must be "
+                       "from the enum 'ns'")
+                raise ValueError(msg + ', got {0}'.format(py23_str(alg)))
+
+            # Add the _DUMB option if the locale library is broken.
+            if alg & ns.LOCALEALPHA and natsort.compat.locale.dumb_sort():
+                alg |= ns._DUMB
+
+            if alg not in cls.cached_keys:
+                cls.cached_keys[alg] = natsort_keygen(alg=alg)
+
+            return py23_cmp(cls.cached_keys[alg](x), cls.cached_keys[alg](y))
