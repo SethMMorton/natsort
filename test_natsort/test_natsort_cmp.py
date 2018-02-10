@@ -49,21 +49,18 @@ def test__keys_are_being_cached():
     assert len(natcmp.cached_keys) == 1
     natcmp(0, 0)
     assert len(natcmp.cached_keys) == 1
-    natcmp(0, 0, alg=ns.L)
-    assert len(natcmp.cached_keys) == 2
 
-    natcmp(0, 0, alg=ns.L)
-    assert len(natcmp.cached_keys) == 2
+    with patch('natsort.compat.locale.dumb_sort', return_value=False):
+        natcmp(0, 0, alg=ns.L)
+        assert len(natcmp.cached_keys) == 2
+        natcmp(0, 0, alg=ns.L)
+        assert len(natcmp.cached_keys) == 2
 
     with patch('natsort.compat.locale.dumb_sort', return_value=True):
         natcmp(0, 0, alg=ns.L)
-
-    assert len(natcmp.cached_keys) == 3
-
-    with patch('natsort.compat.locale.dumb_sort', return_value=True):
+        assert len(natcmp.cached_keys) == 3
         natcmp(0, 0, alg=ns.L)
-
-    assert len(natcmp.cached_keys) == 3
+        assert len(natcmp.cached_keys) == 3
 
 
 @pytest.mark.skipif(PY_VERSION >= 3.0, reason='cmp() deprecated in Python 3')
@@ -103,6 +100,6 @@ def test__natcmp_works_the_same_for_floats_as_cmp(x, y):
 @given(lists(elements=integers()))
 def test_sort_strings_with_numbers(a_list):
     strings = [str(var) for var in a_list]
-    natcmp_sorted = sorted(strings, cmp=partial(natcmp, alg=ns.REAL))
+    natcmp_sorted = sorted(strings, cmp=partial(natcmp, alg=ns.SIGNED))
 
     assert sorted(a_list) == [int(var) for var in natcmp_sorted]
