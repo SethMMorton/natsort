@@ -66,10 +66,7 @@ except ImportError:
         def custom_strcoll(a, b, last=sentinel):
             """strcoll that can handle a sentinel that is always last."""
             if a is last:
-                if b is last:
-                    return 0
-                else:
-                    return 1
+                return 0 if a is b else 1
             elif b is last:  # a cannot also be sentinel b/c above logic
                 return -1
             else:  # neither are sentinel
