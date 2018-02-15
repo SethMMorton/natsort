@@ -6,8 +6,21 @@ from __future__ import (
     absolute_import
 )
 
+# Std. lib imports.
+import sys
+
 # Local imports.
-from natsort.compat.py23 import PY_VERSION, cmp_to_key
+from natsort.compat.py23 import (
+    PY_VERSION,
+    cmp_to_key,
+    py23_unichr,
+)
+
+# This string should be sorted after any other byte string because
+# it contains the max unicode character repeated 20 times.
+# You would need some odd data to come after that.
+null_string = ''
+null_string_max = py23_unichr(sys.maxunicode) * 20
 
 # Make the strxfrm function from strcoll on Python2
 # It can be buggy (especially on BSD-based systems),
@@ -16,7 +29,12 @@ try:
     import icu
     from locale import getlocale
 
-    null_string = b''
+    null_string_locale = b''
+
+    # This string should in theory be sorted after any other byte
+    # string because it contains the max byte char repeated many times.
+    # You would need some odd data to come after that.
+    null_string_locale_max = b'x7f' * 50
 
     def dumb_sort():
         return False
@@ -43,11 +61,28 @@ except ImportError:
     import locale
     if PY_VERSION < 3:
         from locale import strcoll
-        strxfrm = cmp_to_key(strcoll)
-        null_string = strxfrm('')
+        sentinel = object()
+
+        def custom_strcoll(a, b, last=sentinel):
+            """strcoll that can handle a sentinel that is always last."""
+            if a is last:
+                return 0 if a is b else 1
+            elif b is last:  # a cannot also be sentinel b/c above logic
+                return -1
+            else:  # neither are sentinel
+                return strcoll(a, b)
+
+        strxfrm = cmp_to_key(custom_strcoll)
+        null_string_locale = strxfrm('')
+        null_string_locale_max = strxfrm(sentinel)
     else:
         from locale import strxfrm
-        null_string = ''
+        null_string_locale = ''
+
+        # This string should be sorted after any other byte string because
+        # it contains the max unicode character repeated 20 times.
+        # You would need some odd data to come after that.
+        null_string_locale_max = py23_unichr(sys.maxunicode) * 20
 
     # On some systems, locale is broken and does not sort in the expected
     # order. We will try to detect this and compensate.

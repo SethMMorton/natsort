@@ -42,6 +42,9 @@ class ns(object):
         Tell `natsort` to not search for exponents as part of a float number.
         For example, with `NOEXP` the number "5.6E5" would be interpreted
         as `5.6`, `"E"`, and `5` instead of `560000`.
+    NUMAFTER, NA
+        Tell `natsort` to sort numbers after non-numbers. By default
+        numbers will be ordered before non-numbers.
     PATH, P
         Tell `natsort` to interpret strings as filesystem paths, so they
         will be split according to the filesystem separator
@@ -151,6 +154,7 @@ class ns(object):
     CAPITALFIRST           = C  = UNGROUPLETTERS
     NANLAST                = NL = 1 << 10
     COMPATIBILITYNORMALIZE = CN = 1 << 11
+    NUMAFTER               = NA = 1 << 12
 
     # The below are private options for internal use only.
     _NUMERIC_ONLY    = REAL | NOEXP

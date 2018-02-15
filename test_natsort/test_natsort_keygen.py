@@ -16,7 +16,7 @@ from natsort import (
 )
 from natsort.compat.py23 import PY_VERSION
 from natsort.compat.locale import (
-    null_string,
+    null_string_locale,
     get_strxfrm,
 )
 from compat.mock import patch
@@ -79,9 +79,9 @@ def test_natsort_keygen_splits_input_with_locale():
     load_locale('en_US')
     strxfrm = get_strxfrm()
     with patch('natsort.compat.locale.dumb_sort', return_value=False):
-        assert natsort_keygen(alg=ns.L)(INPUT) == ((null_string, 6, strxfrm('A-'), 5, strxfrm('.'), 34, strxfrm('e+'), 1), (strxfrm('/Folder ('), 1, strxfrm(')/Foo')), (null_string, 56.7))
+        assert natsort_keygen(alg=ns.L)(INPUT) == ((null_string_locale, 6, strxfrm('A-'), 5, strxfrm('.'), 34, strxfrm('e+'), 1), (strxfrm('/Folder ('), 1, strxfrm(')/Foo')), (null_string_locale, 56.7))
     with patch('natsort.compat.locale.dumb_sort', return_value=True):
-        assert natsort_keygen(alg=ns.L)(INPUT) == ((null_string, 6, strxfrm('aa--'), 5, strxfrm('..'), 34, strxfrm('eE++'), 1), (strxfrm('//ffoOlLdDeErR  (('), 1, strxfrm('))//ffoOoO')), (null_string, 56.7))
+        assert natsort_keygen(alg=ns.L)(INPUT) == ((null_string_locale, 6, strxfrm('aa--'), 5, strxfrm('..'), 34, strxfrm('eE++'), 1), (strxfrm('//ffoOlLdDeErR  (('), 1, strxfrm('))//ffoOoO')), (null_string_locale, 56.7))
     if PY_VERSION >= 3: assert natsort_keygen(alg=ns.LA)(b'6A-5.034e+1') == (b'6A-5.034e+1',)
     locale.setlocale(locale.LC_ALL, str(''))
 
@@ -90,7 +90,7 @@ def test_natsort_keygen_splits_input_with_locale_and_capitalfirst():
     load_locale('en_US')
     strxfrm = get_strxfrm()
     with patch('natsort.compat.locale.dumb_sort', return_value=False):
-        assert natsort_keygen(alg=ns.LA | ns.C)(INPUT) == ((('',), (null_string, 6, strxfrm('A-'), 5, strxfrm('.'), 34, strxfrm('e+'), 1)), (('/',), (strxfrm('/Folder ('), 1, strxfrm(')/Foo'))), (('',), (null_string, 56.7)))
+        assert natsort_keygen(alg=ns.LA | ns.C)(INPUT) == ((('',), (null_string_locale, 6, strxfrm('A-'), 5, strxfrm('.'), 34, strxfrm('e+'), 1)), (('/',), (strxfrm('/Folder ('), 1, strxfrm(')/Foo'))), (('',), (null_string_locale, 56.7)))
     if PY_VERSION >= 3: assert natsort_keygen(alg=ns.LA | ns.C)(b'6A-5.034e+1') == (b'6A-5.034e+1',)
     locale.setlocale(locale.LC_ALL, str(''))
 

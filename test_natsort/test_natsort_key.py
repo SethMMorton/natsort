@@ -34,10 +34,10 @@ if PY_VERSION >= 3:
 regex = _regex_chooser[ns.INT]
 pre = _input_string_transform_factory(ns.INT)
 post = _string_component_transform_factory(ns.INT)
-after = _final_data_transform_factory(ns.INT, '')
+after = _final_data_transform_factory(ns.INT, '', '')
 string_func = _parse_string_factory(ns.INT, '', regex.split, pre, post, after)
 bytes_func = _parse_bytes_factory(ns.INT)
-num_func = _parse_number_factory(ns.INT, '')
+num_func = _parse_number_factory(ns.INT, '', '')
 
 
 def test__natsort_key_with_numeric_input_and_PATH_returns_number_in_nested_tuple():
@@ -45,7 +45,7 @@ def test__natsort_key_with_numeric_input_and_PATH_returns_number_in_nested_tuple
     # so it will sort against the other as_path results.
     sfunc = _parse_path_factory(string_func)
     bytes_func = _parse_bytes_factory(ns.PATH)
-    num_func = _parse_number_factory(ns.PATH, '')
+    num_func = _parse_number_factory(ns.PATH, '', '')
     assert _natsort_key(10, None, sfunc, bytes_func, num_func) == (('', 10),)
 
 
@@ -55,7 +55,7 @@ def test__natsort_key_with_bytes_input_and_PATH_returns_number_in_nested_tuple()
     # so it will sort against the other as_path results.
     sfunc = _parse_path_factory(string_func)
     bytes_func = _parse_bytes_factory(ns.PATH)
-    num_func = _parse_number_factory(ns.PATH, '')
+    num_func = _parse_number_factory(ns.PATH, '', '')
     assert _natsort_key(b'/hello/world', None, sfunc, bytes_func, num_func) == ((b'/hello/world',),)
 
 
@@ -63,7 +63,7 @@ def test__natsort_key_with_tuple_of_paths_and_PATH_returns_triply_nested_tuple()
     # PATH also handles recursion well.
     sfunc = _parse_path_factory(string_func)
     bytes_func = _parse_bytes_factory(ns.PATH)
-    num_func = _parse_number_factory(ns.PATH, '')
+    num_func = _parse_number_factory(ns.PATH, '', '')
     assert _natsort_key(('/Folder', '/Folder (1)'), None, sfunc, bytes_func, num_func) == ((('/',), ('Folder',)), (('/',), ('Folder (', 1, ')')))
 
 

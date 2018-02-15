@@ -24,7 +24,7 @@ from natsort.utils import (
     chain_functions,
 )
 from natsort.compat.py23 import py23_str, py23_cmp
-from natsort.compat.locale import null_string
+from natsort.compat.locale import null_string_locale
 from slow_splitters import (
     sep_inserter,
     add_leading_space_if_first_is_num,
@@ -149,6 +149,7 @@ def test_ns_enum_values_have_are_as_expected():
     assert ns.UNGROUPLETTERS == ns.CAPITALFIRST
     assert ns.NANLAST == ns.NL
     assert ns.COMPATIBILITYNORMALIZE == ns.CN
+    assert ns.NUMAFTER == ns.NA
 
     # Convenience
     assert ns.LOCALE == ns.LOCALEALPHA | ns.LOCALENUM
@@ -195,7 +196,7 @@ def test_sep_inserter_does_nothing_if_only_one_number_example():
 
 def test_sep_inserter_inserts_separator_string_between_two_numbers_example():
     assert list(_sep_inserter(iter([5, 9]), '')) == ['', 5, '', 9]
-    assert list(_sep_inserter(iter([5, 9]), null_string)) == [null_string, 5, null_string, 9]
+    assert list(_sep_inserter(iter([5, 9]), null_string_locale)) == [null_string_locale, 5, null_string_locale, 9]
 
 
 @given(lists(elements=text().filter(bool) | integers()))

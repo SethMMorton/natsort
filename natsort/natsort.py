@@ -207,13 +207,24 @@ def natsort_keygen(key=None, alg=0, **_kwargs):
         alg |= ns._DUMB
 
     # Set some variables that will be passed to the factory functions
-    sep = natsort.compat.locale.null_string if alg & ns.LOCALEALPHA else ''
+    if alg & ns.NUMAFTER:
+        if alg & ns.LOCALEALPHA:
+            sep = natsort.compat.locale.null_string_locale_max
+        else:
+            sep = natsort.compat.locale.null_string_max
+        pre_sep = natsort.compat.locale.null_string_max
+    else:
+        if alg & ns.LOCALEALPHA:
+            sep = natsort.compat.locale.null_string_locale
+        else:
+            sep = natsort.compat.locale.null_string
+        pre_sep = natsort.compat.locale.null_string
     regex = _regex_chooser[alg & ns._NUMERIC_ONLY]
 
     # Create the functions that will be used to split strings.
     input_transform = _input_string_transform_factory(alg)
     component_transform = _string_component_transform_factory(alg)
-    final_transform = _final_data_transform_factory(alg, sep)
+    final_transform = _final_data_transform_factory(alg, sep, pre_sep)
 
     # Create the high-level parsing functions for strings, bytes, and numbers.
     string_func = _parse_string_factory(
@@ -223,7 +234,7 @@ def natsort_keygen(key=None, alg=0, **_kwargs):
     if alg & ns.PATH:
         string_func = _parse_path_factory(string_func)
     bytes_func = _parse_bytes_factory(alg)
-    num_func = _parse_number_factory(alg, sep)
+    num_func = _parse_number_factory(alg, sep, pre_sep)
 
     # Return the natsort key with the parsing path pre-chosen.
     return partial(
