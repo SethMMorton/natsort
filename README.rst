@@ -320,7 +320,7 @@ History
 These are the last three entries of the changelog.  See the package documentation
 for the complete `changelog <http://natsort.readthedocs.io/en/master/changelog.html>`_.
 
-02-14-2017 v. 5.2.0
+02-14-2018 v. 5.2.0
 +++++++++++++++++++
 
     - Add ``ns.NUMAFTER`` to cause numbers to be placed after non-numbers.
