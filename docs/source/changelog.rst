@@ -3,6 +3,12 @@
 Changelog
 ---------
 
+02-14-2017 v. 5.2.0
++++++++++++++++++++
+
+    - Add ``ns.NUMAFTER`` to cause numbers to be placed after non-numbers.
+    - Add ``natcmp`` function (Python 2 only).
+
 11-11-2017 v. 5.1.1
 +++++++++++++++++++
 

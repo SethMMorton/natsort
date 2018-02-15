@@ -320,6 +320,12 @@ History
 These are the last three entries of the changelog.  See the package documentation
 for the complete `changelog <http://natsort.readthedocs.io/en/master/changelog.html>`_.
 
+02-14-2017 v. 5.2.0
++++++++++++++++++++
+
+    - Add ``ns.NUMAFTER`` to cause numbers to be placed after non-numbers.
+    - Add ``natcmp`` function (Python 2 only).
+
 11-11-2017 v. 5.1.1
 +++++++++++++++++++
 
@@ -331,9 +337,3 @@ for the complete `changelog <http://natsort.readthedocs.io/en/master/changelog.h
 
     - Fixed ``StopIteration`` warning on Python 3.6+.
     - All Unicode input is now normalized.
-
-04-30-2017 v. 5.0.3
-+++++++++++++++++++
-
-    - Improved development infrastructure.
-    - Migrated documentation to ReadTheDocs.
