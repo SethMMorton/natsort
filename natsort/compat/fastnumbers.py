@@ -6,6 +6,8 @@ from __future__ import (
     absolute_import
 )
 
+from distutils.version import StrictVersion
+
 # If the user has fastnumbers installed, they will get great speed
 # benefits. If not, we use the simulated functions that come with natsort.
 try:
@@ -15,8 +17,7 @@ try:
     )
     import fastnumbers
     # Require >= version 0.7.1.
-    v = list(map(int, fastnumbers.__version__.split('.')))
-    if not (v[0] >= 0 and v[1] >= 7 and v[2] >= 1):
+    if StrictVersion(fastnumbers.__version__) < StrictVersion('0.7.1'):
         raise ImportError  # pragma: no cover
 except ImportError:
     from natsort.compat.fake_fastnumbers import (
