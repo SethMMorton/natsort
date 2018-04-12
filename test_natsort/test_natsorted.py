@@ -280,3 +280,13 @@ def test_natsorted_sorts_an_odd_collection_of_string():
                             'apple', 'banana', 'corn', '~~~~~~']
     assert natsorted(a, alg=ns.NUMAFTER) == ['Apple', 'Banana', 'Corn',
                                              'apple', 'banana', 'corn', '~~~~~~', '73', '5039']
+
+
+def test_natsorted_sorts_mixed_ascii_and_non_ascii_numbers():
+    a = ['1st street', '10th street', '2nd street', '2 street', '1 street', '1street',
+         '11 street', 'street 2', 'street 1', 'Street 11', '۲ street', '۱ street', '۱street',
+         '۱۲street', '۱۱ street', 'street ۲', 'street ۱', 'street ۱', 'street ۱۲', 'street ۱۱']
+    expected = ['1 street', '۱ street', '1st street', '1street', '۱street', '2 street', '۲ street',
+                '2nd street', '10th street', '11 street', '۱۱ street', '۱۲street', 'street 1',
+                'street ۱', 'street ۱', 'street 2', 'street ۲', 'Street 11', 'street ۱۱', 'street ۱۲']
+    assert natsorted(a, alg=ns.IGNORECASE) == expected
