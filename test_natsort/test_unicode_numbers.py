@@ -11,6 +11,10 @@ from natsort.unicode_numbers import (
     numeric,
     digit_chars,
     digits,
+    decimal_chars,
+    decimals,
+    digits_no_decimals,
+    numeric_no_decimals,
 )
 
 
@@ -24,10 +28,16 @@ def test_digit_chars_contains_only_valid_unicode_digit_characters():
         assert unicodedata.digit(a, None) is not None
 
 
+def test_decimal_chars_contains_only_valid_unicode_decimal_characters():
+    for a in decimal_chars:
+        assert unicodedata.decimal(a, None) is not None
+
+
 def test_numeric_chars_contains_all_valid_unicode_numeric_and_digit_characters():
     set_numeric_hex = set(numeric_hex)
     set_numeric_chars = set(numeric_chars)
     set_digit_chars = set(digit_chars)
+    set_decimal_chars = set(decimal_chars)
     for i in py23_range(0X110000):
         try:
             a = py23_unichr(i)
@@ -41,8 +51,18 @@ def test_numeric_chars_contains_all_valid_unicode_numeric_and_digit_characters()
         if unicodedata.digit(a, None) is not None:
             assert i in set_numeric_hex
             assert a in set_digit_chars
+        if unicodedata.decimal(a, None) is not None:
+            assert i in set_numeric_hex
+            assert a in set_decimal_chars
+
+    assert set_decimal_chars.isdisjoint(digits_no_decimals)
+    assert set_digit_chars.issuperset(digits_no_decimals)
+
+    assert set_decimal_chars.isdisjoint(numeric_no_decimals)
+    assert set_numeric_chars.issuperset(numeric_no_decimals)
 
 
 def test_combined_string_contains_all_characters_in_list():
     assert numeric == ''.join(numeric_chars)
     assert digits == ''.join(digit_chars)
+    assert decimals == ''.join(decimal_chars)

@@ -6,6 +6,7 @@ import unicodedata
 import collections
 import itertools
 import functools
+from natsort.unicode_numbers import decimals
 from natsort.compat.py23 import PY_VERSION, py23_zip
 
 if PY_VERSION >= 3.0:
@@ -20,9 +21,9 @@ SplitElement = collections.namedtuple('SplitElement',
 def int_splitter(iterable, signed, sep):
     """Alternate (slow) method to split a string into numbers."""
     iterable = unicodedata.normalize('NFD', iterable)
-    split_by_digits = itertools.groupby(iterable, lambda a: a.isdigit())
-    split_by_digits = refine_split_grouping(split_by_digits)
-    split = int_splitter_iter(split_by_digits, signed)
+    split_by_decimal = itertools.groupby(iterable, lambda a: a.isdigit())
+    split_by_decimal = refine_split_grouping(split_by_decimal)
+    split = int_splitter_iter(split_by_decimal, signed)
     split = sep_inserter(split, sep)
     return tuple(add_leading_space_if_first_is_num(split, sep))
 
@@ -31,12 +32,12 @@ def float_splitter(iterable, signed, exp, sep):
     """Alternate (slow) method to split a string into numbers."""
 
     def number_tester(x):
-        return x.isdigit() or unicodedata.numeric(x, None) is not None
+        return x.isdecimal() or unicodedata.numeric(x, None) is not None
 
     iterable = unicodedata.normalize('NFD', iterable)
-    split_by_digits = itertools.groupby(iterable, number_tester)
-    split_by_digits = peekable(refine_split_grouping(split_by_digits))
-    split = float_splitter_iter(split_by_digits, signed, exp)
+    split_by_decimal = itertools.groupby(iterable, number_tester)
+    split_by_decimal = peekable(refine_split_grouping(split_by_decimal))
+    split = float_splitter_iter(split_by_decimal, signed, exp)
     split = sep_inserter(split, sep)
     return tuple(add_leading_space_if_first_is_num(split, sep))
 
@@ -64,8 +65,9 @@ def refine_split_grouping(iterable):
             yield SplitElement(False, val, False)
 
 
-def group_unicode_and_ascii_numbers(iterable,
-                                    ascii_digits=frozenset('0123456789')):
+def group_unicode_and_ascii_numbers(
+        iterable, ascii_digits=frozenset(decimals + '0123456789')
+):
     """
     Use groupby to group ASCII and unicode numeric characters.
     Assumes all input is already all numeric characters.

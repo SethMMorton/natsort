@@ -58,7 +58,7 @@ from unicodedata import normalize
 
 # Local imports.
 from natsort.ns_enum import ns
-from natsort.unicode_numbers import digits, numeric
+from natsort.unicode_numbers import numeric_no_decimals, digits_no_decimals
 from natsort.compat.pathlib import PurePath, has_pathlib
 from natsort.compat.locale import (
     get_strxfrm,
@@ -80,25 +80,26 @@ if PY_VERSION >= 3:
     long = int
 
 # The regex that locates floats - include Unicode numerals.
-_exp = r'(?:[eE][-+]?[0-9]+)?'
-_num = r'(?:[0-9]+\.?[0-9]*|\.[0-9]+)'
+_nnd = numeric_no_decimals
+_exp = r'(?:[eE][-+]?\d+)?'
+_num = r'(?:\d+\.?\d*|\.\d+)'
 _float_sign_exp_re = r'([-+]?{0}{1}|[{2}])'
-_float_sign_exp_re = _float_sign_exp_re.format(_num, _exp, numeric)
+_float_sign_exp_re = _float_sign_exp_re.format(_num, _exp, _nnd)
 _float_sign_exp_re = re.compile(_float_sign_exp_re, flags=re.U)
 _float_nosign_exp_re = r'({0}{1}|[{2}])'
-_float_nosign_exp_re = _float_nosign_exp_re.format(_num, _exp, numeric)
+_float_nosign_exp_re = _float_nosign_exp_re.format(_num, _exp, _nnd)
 _float_nosign_exp_re = re.compile(_float_nosign_exp_re, flags=re.U)
 _float_sign_noexp_re = r'([-+]?{0}|[{1}])'
-_float_sign_noexp_re = _float_sign_noexp_re.format(_num, numeric)
+_float_sign_noexp_re = _float_sign_noexp_re.format(_num, _nnd)
 _float_sign_noexp_re = re.compile(_float_sign_noexp_re, flags=re.U)
 _float_nosign_noexp_re = r'({0}|[{1}])'
-_float_nosign_noexp_re = _float_nosign_noexp_re.format(_num, numeric)
+_float_nosign_noexp_re = _float_nosign_noexp_re.format(_num, _nnd)
 _float_nosign_noexp_re = re.compile(_float_nosign_noexp_re, flags=re.U)
 
 # Integer regexes - include Unicode digits.
-_int_nosign_re = r'([0-9]+|[{0}])'.format(digits)
+_int_nosign_re = r'(\d+|[{0}])'.format(digits_no_decimals)
 _int_nosign_re = re.compile(_int_nosign_re, flags=re.U)
-_int_sign_re = r'([-+]?[0-9]+|[{0}])'.format(digits)
+_int_sign_re = r'([-+]?\d+|[{0}])'.format(digits_no_decimals)
 _int_sign_re = re.compile(_int_sign_re, flags=re.U)
 
 # This dict will help select the correct regex and number conversion function.

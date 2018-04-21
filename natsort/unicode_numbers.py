@@ -280,10 +280,17 @@ for a in numeric_hex:
 digit_chars = [a for a in numeric_chars
                if unicodedata.digit(a, None) is not None]
 
+# The decimal characters are a subset of the numberals
+# (probably of the digits, but let's be safe).
+decimal_chars = [a for a in numeric_chars
+                 if unicodedata.decimal(a, None) is not None]
+
 # Create a single string with the above data.
+decimals = ''.join(decimal_chars)
 digits = ''.join(digit_chars)
 numeric = ''.join(numeric_chars)
-
+digits_no_decimals = ''.join([x for x in digits if x not in decimals])
+numeric_no_decimals = ''.join([x for x in numeric if x not in decimals])
 
 # Some code that can be used to create the above list of hex numbers.
 if __name__ == '__main__':

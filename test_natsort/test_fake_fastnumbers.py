@@ -78,6 +78,8 @@ def test_fast_float_converts_float_string_to_float_example():
     assert isnan(fast_float('nan'))
     assert isnan(fast_float('+nan'))
     assert isnan(fast_float('-NaN'))
+    assert fast_float('۱۲.۱۲') == 12.12
+    assert fast_float('-۱۲.۱۲') == -12.12
 
 
 @given(floats(allow_nan=False))
@@ -117,6 +119,8 @@ def test_fast_int_leaves_float_string_as_is(x):
 def test_fast_int_converts_int_string_to_int_example():
     assert fast_int('-45') == -45
     assert fast_int('+45') == 45
+    assert fast_int('۱۲') == 12
+    assert fast_int('-۱۲') == -12
 
 
 @given(integers())
