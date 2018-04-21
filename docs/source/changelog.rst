@@ -3,6 +3,12 @@
 Changelog
 ---------
 
+04-20-2018 v. 5.3.0
++++++++++++++++++++
+
+    - Fix bug in assessing ``fastnumbers`` version at import-time.
+    - Add ability to consider unicode-decimal numbers as numbers.
+
 02-14-2018 v. 5.2.0
 +++++++++++++++++++
 

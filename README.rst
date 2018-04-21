@@ -320,6 +320,12 @@ History
 These are the last three entries of the changelog.  See the package documentation
 for the complete `changelog <http://natsort.readthedocs.io/en/master/changelog.html>`_.
 
+04-20-2018 v. 5.3.0
++++++++++++++++++++
+
+    - Fix bug in assessing ``fastnumbers`` version at import-time.
+    - Add ability to consider unicode-decimal numbers as numbers.
+
 02-14-2018 v. 5.2.0
 +++++++++++++++++++
 
@@ -331,9 +337,3 @@ for the complete `changelog <http://natsort.readthedocs.io/en/master/changelog.h
 
     - Added additional unicode number support for Python 3.7.
     - Added information on how to install and test.
-
-08-19-2017 v. 5.1.0
-+++++++++++++++++++
-
-    - Fixed ``StopIteration`` warning on Python 3.6+.
-    - All Unicode input is now normalized.
