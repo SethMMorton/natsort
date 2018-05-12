@@ -1,8 +1,6 @@
 language: python
 python:
-- "2.6"
 - "2.7"
-- "3.3"
 - "3.4"
 - "3.5"
 - "3.6"
@@ -13,11 +11,6 @@ dist: trusty
 env:
 - WITH_OPTIONS="[fast,icu]"
 - WITH_OPTIONS=""
-
-matrix:
-  exclude:
-    - python: "2.6"
-      env: WITH_OPTIONS="[fast,icu]"
 
 addons:
   apt:
