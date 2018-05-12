@@ -11,13 +11,13 @@ sudo: false
 dist: trusty
 
 env:
-- WITH_OPTIONS="optional-"
+- WITH_OPTIONS="[fast,icu]"
 - WITH_OPTIONS=""
 
 matrix:
   exclude:
     - python: "2.6"
-      env: WITH_OPTIONS="optional-"
+      env: WITH_OPTIONS="[fast,icu]"
 
 addons:
   apt:

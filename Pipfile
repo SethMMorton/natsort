@@ -1,0 +1,16 @@
+[dev-packages]
+coverage = "*"
+
+# Testing on Python < 2.7 is not well supported.
+pytest              = {version = "*", python_version = "> '2.6'"}
+pytest-cache        = {version = "*", python_version = "> '2.6'"}
+pytest-cov          = {version = "*", python_version = "> '2.6'"}
+pytest-flakes       = {version = "*", python_version = "> '2.6'"}
+pytest-pep8         = {version = "*", python_version = "> '2.6'"}
+hypothesis          = {version = ">=3.8.0", python_version = "> '2.6'"}
+astroid             = {version = "==1.5.3", python_version = "> '2.6'"}
+pytest-faulthandler = {version = "*", python_version = "> '2.6'", platform_python_implementation = "== 'CPython'"}
+
+# These packages are standard on newer python versions.
+pathlib             = {version = "*", python_version = "< '3.4'"}
+mock                = {version = "*", python_version = "< '3.3'"}
