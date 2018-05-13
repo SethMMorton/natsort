@@ -1,7 +1,6 @@
 [dev-packages]
 coverage      = "*"
 pytest        = "*"
-pytest-cache  = "*"
 pytest-cov    = "*"
 pytest-flakes = "*"
 pytest-pep8   = "*"

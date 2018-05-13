@@ -13,20 +13,6 @@
 # serve to show the default.
 
 import os
-import re
-
-def current_version():
-    # Read the _version.py file for the module version number
-    VERSIONFILE = os.path.join('..', '..', 'natsort', '_version.py')
-    versionsearch = re.compile(r"^__version__ = ['\"]([^'\"]*)['\"]")
-    with open(VERSIONFILE, "rt") as fl:
-        for line in fl:
-            m = versionsearch.search(line)
-            if m:
-                return m.group(1)
-        else:
-            s = "Unable to locate version string in {0}"
-            raise RuntimeError(s.format(VERSIONFILE))
 
 # If extensions (or modules to document with autodoc) are in another directory,
 # add these directories to sys.path here. If the directory is relative to the
@@ -70,7 +56,7 @@ copyright = u'2014, Seth M. Morton'
 # built documents.
 #
 # The full version, including alpha/beta/rc tags.
-release = current_version()
+release = '5.3.0'
 # The short X.Y version.
 version = '.'.join(release.split('.')[0:2])
 

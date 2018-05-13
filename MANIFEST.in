@@ -1,16 +1,14 @@
 include README.rst
 include LICENSE
 include *.md
-include *requirements.txt
-recursive-include natsort *.py
-recursive-include test_natsort *.py
+include Pipfile
 include setup.py
 include setup.cfg
 include tox.ini
 include .travis.yml
 include .coveragerc
 include .gitignore
-include .hgignore
-prune natsort/__pycache__
-prune test_natsort/__pycache__
-graft docs/source
+graft docs
+graft src
+graft test_natsort
+global-exclude *.py[cod] __pycache__ *.so
