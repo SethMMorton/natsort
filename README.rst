@@ -35,7 +35,7 @@ Simple yet flexible natural sorting in Python.
 
     - `Optional Dependencies`_
 
-      - `fastnumbers <https://pypi.org/project/fastnumbers>`_ >= 0.7.1
+      - `fastnumbers <https://pypi.org/project/fastnumbers>`_ >= 2.0.0
       - `PyICU <https://pypi.org/project/PyICU>`_ >= 1.0.0
 
 Quick Description
