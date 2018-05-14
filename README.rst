@@ -1,7 +1,7 @@
 natsort
 =======
 
-.. image:: https://img.shields.io/pypi/format/natsort.svg
+.. image:: https://img.shields.io/pypi/v/natsort.svg
     :target: https://pypi.org/project/natsort/
 
 .. image:: https://img.shields.io/pypi/pyversions/natsort.svg
