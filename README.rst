@@ -1,6 +1,15 @@
 natsort
 =======
 
+.. image:: https://img.shields.io/pypi/format/natsort.svg
+    :target: https://pypi.org/project/natsort/
+
+.. image:: https://img.shields.io/pypi/pyversions/natsort.svg
+    :target: https://pypi.org/project/natsort/
+
+.. image:: https://img.shields.io/pypi/l/natsort.svg
+    :target: https://github.com/SethMMorton/natsort/blob/master/LICENSE
+
 .. image:: https://img.shields.io/travis/SethMMorton/natsort/master.svg?label=travis-ci
     :target: https://travis-ci.org/SethMMorton/natsort
 
@@ -9,15 +18,6 @@ natsort
 
 .. image:: https://api.codacy.com/project/badge/Grade/f2bf04b1fc5d4792bf546f6e497cf4b8
     :target: https://www.codacy.com/app/SethMMorton/natsort
-
-.. image:: https://img.shields.io/pypi/pyversions/natsort.svg
-    :target: https://pypi.org/project/natsort/
-
-.. image:: https://img.shields.io/pypi/format/natsort.svg
-    :target: https://pypi.org/project/natsort/
-
-.. image:: https://img.shields.io/pypi/l/natsort.svg
-    :target: https://github.com/SethMMorton/natsort/blob/master/LICENSE
 
 Simple yet flexible natural sorting in Python.
 
