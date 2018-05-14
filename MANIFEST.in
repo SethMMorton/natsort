@@ -8,6 +8,7 @@ include tox.ini
 include .travis.yml
 include .coveragerc
 include .gitignore
+include .bumpversion.cfg
 graft docs
 graft src
 graft test_natsort

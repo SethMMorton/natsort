@@ -317,23 +317,4 @@ Seth M. Morton
 History
 -------
 
-These are the last three entries of the changelog.  See the package documentation
-for the complete `changelog <http://natsort.readthedocs.io/en/master/changelog.html>`_.
-
-04-20-2018 v. 5.3.0
-+++++++++++++++++++
-
-    - Fix bug in assessing ``fastnumbers`` version at import-time.
-    - Add ability to consider unicode-decimal numbers as numbers.
-
-02-14-2018 v. 5.2.0
-+++++++++++++++++++
-
-    - Add ``ns.NUMAFTER`` to cause numbers to be placed after non-numbers.
-    - Add ``natcmp`` function (Python 2 only).
-
-11-11-2017 v. 5.1.1
-+++++++++++++++++++
-
-    - Added additional unicode number support for Python 3.7.
-    - Added information on how to install and test.
+Please visit the `changelog <http://natsort.readthedocs.io/en/master/changelog.html>`_.
