@@ -9,7 +9,7 @@ sudo: false
 dist: trusty
 
 env:
-- WITH_OPTIONS="[fast,icu]"
+- WITH_OPTIONS="fast,icu"
 - WITH_OPTIONS=""
 
 addons:
