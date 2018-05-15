@@ -6,9 +6,11 @@ Changelog
 XX-XX-XXXX v. X.X.X
 +++++++++++++++++++
 
+    - No bugfixes or features, just infrastructure and installation updates.
     - Move to defining dependencies with Pipfile.
     - Development layout is now src/natsort/ instead of natsort/.
     - Add bumpversion infrastructure.
+    - Extras can be installed by "[]" notation.
 
 04-20-2018 v. 5.3.0
 +++++++++++++++++++
