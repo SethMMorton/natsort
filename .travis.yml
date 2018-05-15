@@ -9,8 +9,8 @@ sudo: false
 dist: trusty
 
 env:
-- WITH_OPTIONS="fast,icu"
-- WITH_OPTIONS=""
+- WITH_EXTRAS="fast,icu"
+- WITH_EXTRAS=""
 
 addons:
   apt:
