@@ -24,7 +24,8 @@ install:
 - pip install tox-travis codacy-coverage codecov
 
 script:
-- tox
+# I only want to run coverage in Travis, so these are passed via posargs here.
+- tox -- --cov {envsitepackagesdir}/natsort --cov-report term-missing
 
 after_success:
 - coverage xml
