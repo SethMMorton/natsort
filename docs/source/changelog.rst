@@ -3,7 +3,7 @@
 Changelog
 ---------
 
-XX-XX-XXXX v. X.X.X
+05-14-2018 v. 5.3.1
 +++++++++++++++++++
 
     - No bugfixes or features, just infrastructure and installation updates.
