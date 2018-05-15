@@ -285,7 +285,7 @@ Installation
 
 Use ``pip``!
 
-.. code-block::
+.. code-block:: sh
 
     $ pip install natsort
 
@@ -295,7 +295,7 @@ at installation time to install those dependencies as well - use ``fast`` for
 `fastnumbers <https://pypi.org/project/fastnumbers>`_ and ``icu`` for
 `PyICU <https://pypi.org/project/PyICU>`_.
 
-.. code-block::
+.. code-block:: sh
 
     # Install both optional dependencies.
     $ pip install natsort[fast,icu]
@@ -311,7 +311,7 @@ The recommended way to run tests is with `tox <https://tox.readthedocs.io/en/lat
 Suppose you want to run tests for Python 3.6 - you can run tests by simply executing the
 following:
 
-.. code-block::
+.. code-block:: sh
 
     $ tox -e py36
 
@@ -321,7 +321,7 @@ needed testing requirements for you.
 If you want to run testing on all of Python 2.7, 3.4, 3.5, and 3.6 you can simply
 execute
 
-.. code-block::
+.. code-block:: sh
 
     $ tox
 
@@ -330,7 +330,7 @@ tests manually using `pytest <https://docs.pytest.org/en/latest/>`_ - ``natsort`
 contains a ``Pipfile`` for use with `pipenv <https://github.com/pypa/pipenv>`_ that
 makes it easy for you to install the testing dependencies:
 
-.. code-block::
+.. code-block:: sh
 
     $ pipenv install --dev
     $ pipenv install -e .  # Optionally include dependencies as -e .[fast,icu]
