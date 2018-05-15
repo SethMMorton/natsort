@@ -15,8 +15,3 @@ exclude_lines =
 
 ignore_errors = True
 
-# Files to not perform coverage on
-omit =
-    natsort/__init__.*
-    natsort/py23compat.*
-    natsort/_version.*

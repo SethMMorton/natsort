@@ -1,0 +1,13 @@
+[dev-packages]
+coverage      = "*"
+pytest        = "*"
+pytest-cov    = "*"
+pytest-flakes = "*"
+pytest-pep8   = "*"
+hypothesis    = ">=3.8.0"
+astroid       = "==1.5.3"
+pytest-faulthandler = {version = "*", platform_python_implementation = "== 'CPython'"}
+
+# These packages are standard on newer python versions.
+pathlib = {version = "*", python_version = "< '3.4'"}
+mock    = {version = "*", python_version = "< '3.3'"}

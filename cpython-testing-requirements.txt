@@ -1,2 +1,0 @@
-# In case of weird segfaults on CPython.
-pytest-faulthandler; python_version > '2.6'

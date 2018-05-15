@@ -1,6 +1,15 @@
 natsort
 =======
 
+.. image:: https://img.shields.io/pypi/v/natsort.svg
+    :target: https://pypi.org/project/natsort/
+
+.. image:: https://img.shields.io/pypi/pyversions/natsort.svg
+    :target: https://pypi.org/project/natsort/
+
+.. image:: https://img.shields.io/pypi/l/natsort.svg
+    :target: https://github.com/SethMMorton/natsort/blob/master/LICENSE
+
 .. image:: https://img.shields.io/travis/SethMMorton/natsort/master.svg?label=travis-ci
     :target: https://travis-ci.org/SethMMorton/natsort
 
@@ -9,15 +18,6 @@ natsort
 
 .. image:: https://api.codacy.com/project/badge/Grade/f2bf04b1fc5d4792bf546f6e497cf4b8
     :target: https://www.codacy.com/app/SethMMorton/natsort
-
-.. image:: https://img.shields.io/pypi/pyversions/natsort.svg
-    :target: https://pypi.org/project/natsort/
-
-.. image:: https://img.shields.io/pypi/format/natsort.svg
-    :target: https://pypi.org/project/natsort/
-
-.. image:: https://img.shields.io/pypi/l/natsort.svg
-    :target: https://github.com/SethMMorton/natsort/blob/master/LICENSE
 
 Simple yet flexible natural sorting in Python.
 
@@ -35,7 +35,7 @@ Simple yet flexible natural sorting in Python.
 
     - `Optional Dependencies`_
 
-      - `fastnumbers <https://pypi.org/project/fastnumbers>`_ >= 0.7.1
+      - `fastnumbers <https://pypi.org/project/fastnumbers>`_ >= 2.0.0
       - `PyICU <https://pypi.org/project/PyICU>`_ >= 1.0.0
 
 Quick Description
@@ -277,37 +277,61 @@ It is recommended that you install `PyICU <https://pypi.org/project/PyICU>`_
 if you wish to sort in a locale-dependent manner, see
 http://natsort.readthedocs.io/en/master/locale_issues.html for an explanation why.
 
-Installation and Testing
-------------------------
+Installation
+------------
 
-To install ``natsort``, it is simplest to use ``pip``::
+Use ``pip``!
 
-    pip install natsort
+.. code-block:: sh
 
-You can also add the `requirements.txt` file; it will ensure that ``argparse`` is
-installed for Python 2.6 but does nothing on any other Python version::
+    $ pip install natsort
 
-    pip install -rrequirements.txt natsort
+If you want to install the `Optional Dependencies`_, you can use the
+`"extras" notation <https://packaging.python.org/tutorials/installing-packages/#installing-setuptools-extras>`_
+at installation time to install those dependencies as well - use ``fast`` for
+`fastnumbers <https://pypi.org/project/fastnumbers>`_ and ``icu`` for
+`PyICU <https://pypi.org/project/PyICU>`_.
 
-If you want to install the optional dependencies ``fastnumbers`` and ``PyICU``,
-add the `optional-requirements.txt` file::
+.. code-block:: sh
 
-    pip install -roptional-requirements.txt natsort
+    # Install both optional dependencies.
+    $ pip install natsort[fast,icu]
+    # Install just fastnumbers
+    $ pip install natsort[fast]
 
-If you wish to run the tests, please note that ``natsort`` is NOT set-up to
-support ``python setup.py test``. The preferred way to run the tests is
-to use `tox <https://tox.readthedocs.io/en/latest/>`_. If you want to run unit
-tests on (for example) Python 2.7, you can execute the following::
+How to Run Tests
+----------------
 
-    pip install tox
-    tox -e py27
+Please note that ``natsort`` is NOT set-up to support ``python setup.py test``.
 
-This will install all the necessary dependencies to run the ``natsort`` test suite.
-If you prefer not to use ``tox``, you can run the tests manually using
-`pytest <https://docs.pytest.org/en/latest/>`_::
+The recommended way to run tests is with `tox <https://tox.readthedocs.io/en/latest/>`_.
+Suppose you want to run tests for Python 3.6 - you can run tests by simply executing the
+following:
 
-    pip install -rtesting-requirements.txt
-    python -m pytest
+.. code-block:: sh
+
+    $ tox -e py36
+
+``tox`` will create virtual a virtual environment for your tests and install all the
+needed testing requirements for you.
+
+If you want to run testing on all of Python 2.7, 3.4, 3.5, and 3.6 you can simply
+execute
+
+.. code-block:: sh
+
+    $ tox
+
+If you do not wish to use ``tox``, you can install the testing dependencies and run the
+tests manually using `pytest <https://docs.pytest.org/en/latest/>`_ - ``natsort``
+contains a ``Pipfile`` for use with `pipenv <https://github.com/pypa/pipenv>`_ that
+makes it easy for you to install the testing dependencies:
+
+.. code-block:: sh
+
+    $ pipenv install --dev
+    $ pipenv install -e .  # Optionally include dependencies as -e .[fast,icu]
+    $ pipenv run pytest
 
 Author
 ------
@@ -317,23 +341,4 @@ Seth M. Morton
 History
 -------
 
-These are the last three entries of the changelog.  See the package documentation
-for the complete `changelog <http://natsort.readthedocs.io/en/master/changelog.html>`_.
-
-04-20-2018 v. 5.3.0
-+++++++++++++++++++
-
-    - Fix bug in assessing ``fastnumbers`` version at import-time.
-    - Add ability to consider unicode-decimal numbers as numbers.
-
-02-14-2018 v. 5.2.0
-+++++++++++++++++++
-
-    - Add ``ns.NUMAFTER`` to cause numbers to be placed after non-numbers.
-    - Add ``natcmp`` function (Python 2 only).
-
-11-11-2017 v. 5.1.1
-+++++++++++++++++++
-
-    - Added additional unicode number support for Python 3.7.
-    - Added information on how to install and test.
+Please visit the `changelog <http://natsort.readthedocs.io/en/master/changelog.html>`_.
