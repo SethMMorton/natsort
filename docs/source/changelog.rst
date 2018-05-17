@@ -3,6 +3,11 @@
 Changelog
 ---------
 
+05-16-2018 v. X.X.X
++++++++++++++++++++
+
+    - Fix bug that prevented install on old versions of setuptools.
+
 05-14-2018 v. 5.3.1
 +++++++++++++++++++
 
