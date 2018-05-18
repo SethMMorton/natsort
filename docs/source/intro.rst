@@ -327,5 +327,4 @@ makes it easy for you to install the testing dependencies:
 .. code-block:: sh
 
     $ pipenv install --skip-lock --dev
-    $ pipenv install --skip-lock -e .  # Optionally include dependencies as -e .[fast,icu]
     $ pipenv run pytest
