@@ -10,7 +10,7 @@ Changelog
     - Revert layout from src/natsort/ back to natsort/ to make user
       testing simpler.
 
-05-14-2018 v. 5.3.1
+05-14-2018 v. 5.3.2
 +++++++++++++++++++
 
     - No bugfixes or features, just infrastructure and installation updates.

@@ -3,7 +3,7 @@
 from setuptools import setup, find_packages
 setup(
     name='natsort',
-    version='5.3.1',
+    version='5.3.2',
     packages=find_packages(),
     install_requires=["argparse; python_version < '2.7'"],
     entry_points={'console_scripts': ['natsort = natsort.__main__:main']},
