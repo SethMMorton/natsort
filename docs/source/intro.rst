@@ -327,4 +327,7 @@ makes it easy for you to install the testing dependencies:
 .. code-block:: sh
 
     $ pipenv install --skip-lock --dev
-    $ pipenv run pytest
+    $ pipenv run python -m pytest
+
+Note that above I invoked ``python -m pytest`` instead of just ``pytest`` - this is because
+`the former puts the CWD on sys.path <https://docs.pytest.org/en/latest/usage.html#calling-pytest-through-python-m-pytest>`_.
