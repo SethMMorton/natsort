@@ -305,22 +305,16 @@ How to Run Tests
 Please note that ``natsort`` is NOT set-up to support ``python setup.py test``.
 
 The recommended way to run tests is with `tox <https://tox.readthedocs.io/en/latest/>`_.
-Suppose you want to run tests for Python 3.6 - you can run tests by simply executing the
-following:
-
-.. code-block:: sh
-
-    $ tox -e py36
-
-``tox`` will create virtual a virtual environment for your tests and install all the
-needed testing requirements for you.
-
-If you want to run testing on all of Python 2.7, 3.4, 3.5, and 3.6 you can simply
-execute
+After installing ``tox``, running tests is as simple as executing the following in the
+``natsort`` directory:
 
 .. code-block:: sh
 
     $ tox
+
+``tox`` will create virtual a virtual environment for your tests and install all the
+needed testing requirements for you.  You can specify a particular python version
+with the ``-e`` flag, e.g. ``tox -e py36``.
 
 If you do not wish to use ``tox``, you can install the testing dependencies and run the
 tests manually using `pytest <https://docs.pytest.org/en/latest/>`_ - ``natsort``
