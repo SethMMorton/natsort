@@ -3,14 +3,14 @@
 Changelog
 ---------
 
-05-17-2018 v. X.X.X
+05-17-2018 v. 5.3.2
 +++++++++++++++++++
 
     - Fix bug that prevented install on old versions of setuptools.
     - Revert layout from src/natsort/ back to natsort/ to make user
       testing simpler.
 
-05-14-2018 v. 5.3.2
+05-14-2018 v. 5.3.1
 +++++++++++++++++++
 
     - No bugfixes or features, just infrastructure and installation updates.
