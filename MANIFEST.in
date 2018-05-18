@@ -1,6 +1,7 @@
 include README.rst
 include LICENSE
 include *.md
+include *.sh
 include Pipfile
 include setup.py
 include setup.cfg
