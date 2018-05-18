@@ -10,6 +10,6 @@ include .coveragerc
 include .gitignore
 include .bumpversion.cfg
 graft docs
-graft src
+graft natsort
 graft test_natsort
 global-exclude *.py[cod] __pycache__ *.so
