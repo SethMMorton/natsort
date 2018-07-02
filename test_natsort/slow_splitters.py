@@ -304,7 +304,10 @@ def sep_inserter(iterable, sep, types=frozenset((int, long, float))):
     pairs = pairwise(iterable)
 
     # Prime loop by handling first pair specially.
-    first, second = next(pairs)
+    try:
+        first, second = next(pairs)
+    except StopIteration:
+        return
     if second is None:  # Only one element
         yield first
     elif type(first) in types and type(second) in types:
