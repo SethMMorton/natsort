@@ -107,8 +107,8 @@ a wrapper for the following code:
 
 .. code-block:: python
 
-    >>> from natsort import natsort_keygen()
-    >>> natsort_key = natsort.natsort_keygen()
+    >>> from natsort import natsort_keygen
+    >>> natsort_key = natsort_keygen()
     >>> sorted(['1', '10', '2'], key=natsort_key)
     ['1', '2', '10']
 
