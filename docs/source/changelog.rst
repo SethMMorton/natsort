@@ -3,6 +3,13 @@
 Changelog
 ---------
 
+07-07-2018 v. X.X.X
++++++++++++++++++++
+
+   - Update docs with a FAQ and quick how-it-works.
+   - Fix a StopIteration error in the testing code.
+   - Enable Python 3.7 support in Travis-CI.
+
 05-17-2018 v. 5.3.2
 +++++++++++++++++++
 
