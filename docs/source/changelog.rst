@@ -3,7 +3,7 @@
 Changelog
 ---------
 
-07-07-2018 v. X.X.X
+07-07-2018 v. 5.3.3
 +++++++++++++++++++
 
    - Update docs with a FAQ and quick how-it-works.
