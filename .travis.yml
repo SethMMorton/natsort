@@ -1,23 +1,46 @@
 language: python
-python:
-- "2.7"
-- "3.4"
-- "3.5"
-- "3.6"
-
-sudo: false
-dist: trusty
-
-env:
-- WITH_EXTRAS="fast,icu"
-- WITH_EXTRAS=""
-
-addons:
-  apt:
-    packages:
-    - libicu-dev
-    - language-pack-de
-    - language-pack-en
+matrix:
+  include:
+    - python: "2.7"
+      dist: trusty
+      sudo: false
+      env: WITH_EXTRAS=""
+    - python: "2.7"
+      dist: trusty
+      sudo: false
+      env: WITH_EXTRAS="fast,icu"
+      addons:
+        apt:
+          packages:
+          - libicu-dev
+          - language-pack-de
+          - language-pack-en
+    - python: "3.4"
+      dist: trusty
+      sudo: false
+      env: WITH_EXTRAS=""
+    - python: "3.5"
+      dist: trusty
+      sudo: false
+      env: WITH_EXTRAS=""
+    - python: "3.6"
+      dist: trusty
+      sudo: false
+      env: WITH_EXTRAS=""
+    - python: "3.6"
+      dist: trusty
+      sudo: false
+      env: WITH_EXTRAS="fast,icu"
+      addons:
+        apt:
+          packages:
+          - libicu-dev
+          - language-pack-de
+          - language-pack-en
+    - python: "3.7"
+      dist: xenial
+      sudo: true
+      env: WITH_EXTRAS=""
 
 install:
 - pip install -U pip
