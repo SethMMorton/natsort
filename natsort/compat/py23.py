@@ -1,10 +1,5 @@
 # -*- coding: utf-8 -*-
-from __future__ import (
-    print_function,
-    division,
-    unicode_literals,
-    absolute_import
-)
+from __future__ import print_function, division, unicode_literals, absolute_import
 
 import functools
 import sys
@@ -19,31 +14,32 @@ PY_VERSION = float(sys.version[:3])
 NEWPY = PY_VERSION >= 3.3
 
 # Assume all strings are Unicode in Python 2
-py23_str = str if sys.version[0] == '3' else unicode
+py23_str = str if sys.version[0] == "3" else unicode
 
 # Use the range iterator always
-py23_range = range if sys.version[0] == '3' else xrange
+py23_range = range if sys.version[0] == "3" else xrange
 
 # Uniform base string type
-py23_basestring = str if sys.version[0] == '3' else basestring
+py23_basestring = str if sys.version[0] == "3" else basestring
 
 # unichr function
-py23_unichr = chr if sys.version[0] == '3' else unichr
+py23_unichr = chr if sys.version[0] == "3" else unichr
 
 
 def _py23_cmp(a, b):
     return (a > b) - (a < b)
 
 
-py23_cmp = _py23_cmp if sys.version[0] == '3' else cmp
+py23_cmp = _py23_cmp if sys.version[0] == "3" else cmp
 
 # zip as an iterator
-if sys.version[0] == '3':
+if sys.version[0] == "3":
     py23_zip = zip
     py23_map = map
     py23_filter = filter
 else:
     import itertools
+
     py23_zip = itertools.izip
     py23_map = itertools.imap
     py23_filter = itertools.ifilter
@@ -53,10 +49,12 @@ else:
 try:
     from functools import cmp_to_key
 except ImportError:  # pragma: no cover
+
     def cmp_to_key(mycmp):
         """Convert a cmp= function into a key= function"""
+
         class K(object):
-            __slots__ = ['obj']
+            __slots__ = ["obj"]
 
             def __init__(self, obj):
                 self.obj = obj
@@ -80,7 +78,7 @@ except ImportError:  # pragma: no cover
                 return mycmp(self.obj, other.obj) != 0
 
             def __hash__(self):
-                raise TypeError('hash not implemented')
+                raise TypeError("hash not implemented")
 
         return K
 
@@ -104,18 +102,21 @@ def _modify_str_or_docstring(str_change_func):
             func.__doc__ = doc
             return func
         return doc
+
     return wrapper
 
 
 # Properly modify a doctstring to either have the unicode literal or not.
-if sys.version[0] == '3':
+if sys.version[0] == "3":
     # Abstract u'abc' syntax:
     @_modify_str_or_docstring
     def u_format(s):
         """"{u}'abc'" --> "'abc'" (Python 3)
 
         Accepts a string or a function, so it can be used as a decorator."""
-        return s.format(u='')
+        return s.format(u="")
+
+
 else:
     # Abstract u'abc' syntax:
     @_modify_str_or_docstring
@@ -123,4 +124,4 @@ else:
         """"{u}'abc'" --> "u'abc'" (Python 2)
 
         Accepts a string or a function, so it can be used as a decorator."""
-        return s.format(u='u')
+        return s.format(u="u")

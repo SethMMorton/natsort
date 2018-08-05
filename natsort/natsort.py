@@ -10,12 +10,7 @@ descend into lists of lists so you can sort by the sublist contents.
 
 See the README or the natsort homepage for more details.
 """
-from __future__ import (
-    print_function,
-    division,
-    unicode_literals,
-    absolute_import
-)
+from __future__ import print_function, division, unicode_literals, absolute_import
 
 # Std lib. imports.
 from operator import itemgetter
@@ -27,10 +22,7 @@ import sys
 
 import natsort.compat.locale
 from natsort.ns_enum import ns
-from natsort.compat.py23 import (
-    u_format,
-    py23_str,
-    py23_cmp)
+from natsort.compat.py23 import u_format, py23_str, py23_cmp
 from natsort.utils import (
     _natsort_key,
     _args_to_enum,
@@ -113,7 +105,7 @@ def as_ascii(s):
     decoder
 
     """
-    return _do_decoding(s, 'ascii')
+    return _do_decoding(s, "ascii")
 
 
 @u_format
@@ -138,7 +130,7 @@ def as_utf8(s):
     decoder
 
     """
-    return _do_decoding(s, 'utf-8')
+    return _do_decoding(s, "utf-8")
 
 
 def natsort_key(val, key=None, alg=0, **_kwargs):
@@ -200,7 +192,7 @@ def natsort_keygen(key=None, alg=0, **_kwargs):
         alg = _args_to_enum(**_kwargs) | alg
     except TypeError:
         msg = "natsort_keygen: 'alg' argument must be from the enum 'ns'"
-        raise ValueError(msg+', got {0}'.format(py23_str(alg)))
+        raise ValueError(msg + ", got {0}".format(py23_str(alg)))
 
     # Add the _DUMB option if the locale library is broken.
     if alg & ns.LOCALEALPHA and natsort.compat.locale.dumb_sort():
@@ -228,8 +220,7 @@ def natsort_keygen(key=None, alg=0, **_kwargs):
 
     # Create the high-level parsing functions for strings, bytes, and numbers.
     string_func = _parse_string_factory(
-        alg, sep, regex.split,
-        input_transform, component_transform, final_transform
+        alg, sep, regex.split, input_transform, component_transform, final_transform
     )
     if alg & ns.PATH:
         string_func = _parse_path_factory(string_func)
@@ -242,7 +233,7 @@ def natsort_keygen(key=None, alg=0, **_kwargs):
         key=key,
         string_func=string_func,
         bytes_func=bytes_func,
-        num_func=num_func
+        num_func=num_func,
     )
 
 
@@ -485,12 +476,13 @@ def index_natsorted(seq, key=None, reverse=False, alg=0, **_kwargs):
     if key is None:
         newkey = itemgetter(1)
     else:
+
         def newkey(x):
             return key(itemgetter(1)(x))
+
     # Pair the index and sequence together, then sort by element
     index_seq_pair = [[x, y] for x, y in enumerate(seq)]
-    index_seq_pair.sort(reverse=reverse,
-                        key=natsort_keygen(newkey, alg, **_kwargs))
+    index_seq_pair.sort(reverse=reverse, key=natsort_keygen(newkey, alg, **_kwargs))
     return [x for x, _ in index_seq_pair]
 
 
@@ -726,15 +718,15 @@ if float(sys.version[:3]) < 3:
             >>> natcmp(one, two)
             -1
         """
+
         cached_keys = {}
 
         def __new__(cls, x, y, alg=0, *args, **kwargs):
             try:
                 alg = _args_to_enum(**kwargs) | alg
             except TypeError:
-                msg = ("natsort_keygen: 'alg' argument must be "
-                       "from the enum 'ns'")
-                raise ValueError(msg + ', got {0}'.format(py23_str(alg)))
+                msg = "natsort_keygen: 'alg' argument must be " "from the enum 'ns'"
+                raise ValueError(msg + ", got {0}".format(py23_str(alg)))
 
             # Add the _DUMB option if the locale library is broken.
             if alg & ns.LOCALEALPHA and natsort.compat.locale.dumb_sort():

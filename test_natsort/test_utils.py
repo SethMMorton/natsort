@@ -25,88 +25,81 @@ from natsort.utils import (
 )
 from natsort.compat.py23 import py23_str, py23_cmp
 from natsort.compat.locale import null_string_locale
-from slow_splitters import (
-    sep_inserter,
-    add_leading_space_if_first_is_num,
-)
+from slow_splitters import sep_inserter, add_leading_space_if_first_is_num
 from compat.locale import low
-from hypothesis import (
-    given,
-)
-from hypothesis.strategies import (
-    sampled_from,
-    lists,
-    text,
-    integers,
-)
+from hypothesis import given
+from hypothesis.strategies import sampled_from, lists, text, integers
 
 
 def test_do_decoding_decodes_bytes_string_to_unicode():
-    assert type(_do_decoding(b'bytes', 'ascii')) is py23_str
-    assert _do_decoding(b'bytes', 'ascii') == 'bytes'
-    assert _do_decoding(b'bytes', 'ascii') == b'bytes'.decode('ascii')
+    assert type(_do_decoding(b"bytes", "ascii")) is py23_str
+    assert _do_decoding(b"bytes", "ascii") == "bytes"
+    assert _do_decoding(b"bytes", "ascii") == b"bytes".decode("ascii")
 
 
 def test_args_to_enum_raises_TypeError_for_invalid_argument():
     with raises(TypeError):
-        _args_to_enum(**{'alf': 0})
+        _args_to_enum(**{"alf": 0})
 
 
 def test_args_to_enum_converts_signed_exp_float_to_ns_F():
     # number_type, signed, exp, as_path, py3_safe
-    assert _args_to_enum(**{'number_type': float,
-                            'signed': True,
-                            'exp': True}) == ns.F | ns.S
+    assert (
+        _args_to_enum(**{"number_type": float, "signed": True, "exp": True})
+        == ns.F | ns.S
+    )
 
 
 def test_args_to_enum_converts_signed_noexp_float_to_ns_FN():
     # number_type, signed, exp, as_path, py3_safe
-    assert _args_to_enum(**{'number_type': float,
-                            'signed': True,
-                            'exp': False}) == ns.F | ns.N | ns.S
+    assert (
+        _args_to_enum(**{"number_type": float, "signed": True, "exp": False})
+        == ns.F | ns.N | ns.S
+    )
 
 
 def test_args_to_enum_converts_unsigned_exp_float_to_ns_FU():
     # number_type, signed, exp, as_path, py3_safe
-    assert _args_to_enum(**{'number_type': float,
-                            'signed': False,
-                            'exp': True}) == ns.F | ns.U
+    assert (
+        _args_to_enum(**{"number_type": float, "signed": False, "exp": True})
+        == ns.F | ns.U
+    )
     # unsigned is default
-    assert _args_to_enum(**{'number_type': float,
-                            'signed': False,
-                            'exp': True}) == ns.F
+    assert _args_to_enum(**{"number_type": float, "signed": False, "exp": True}) == ns.F
 
 
 def test_args_to_enum_converts_unsigned_unexp_float_to_ns_FNU():
     # number_type, signed, exp, as_path, py3_safe
-    assert _args_to_enum(**{'number_type': float,
-                            'signed': False,
-                            'exp': False}) == ns.F | ns.U | ns.N
+    assert (
+        _args_to_enum(**{"number_type": float, "signed": False, "exp": False})
+        == ns.F | ns.U | ns.N
+    )
 
 
 def test_args_to_enum_converts_float_and_path_and_py3safe_to_ns_FPT():
     # number_type, signed, exp, as_path, py3_safe
-    assert _args_to_enum(**{'number_type': float,
-                            'as_path': True,
-                            'py3_safe': True}) == ns.F | ns.P | ns.T
+    assert (
+        _args_to_enum(**{"number_type": float, "as_path": True, "py3_safe": True})
+        == ns.F | ns.P | ns.T
+    )
 
 
 def test_args_to_enum_converts_int_and_path_to_ns_IP():
     # number_type, signed, exp, as_path, py3_safe
-    assert _args_to_enum(**{'number_type': int, 'as_path': True}) == ns.I | ns.P
+    assert _args_to_enum(**{"number_type": int, "as_path": True}) == ns.I | ns.P
 
 
 def test_args_to_enum_converts_unsigned_int_and_py3safe_to_ns_IUT():
     # number_type, signed, exp, as_path, py3_safe
-    assert _args_to_enum(**{'number_type': int,
-                            'signed': False,
-                            'py3_safe': True}) == ns.I | ns.U | ns.T
+    assert (
+        _args_to_enum(**{"number_type": int, "signed": False, "py3_safe": True})
+        == ns.I | ns.U | ns.T
+    )
 
 
 def test_args_to_enum_converts_None_to_ns_IU():
     # number_type, signed, exp, as_path, py3_safe
-    assert _args_to_enum(**{'number_type': None,
-                            'exp': True}) == ns.I | ns.U
+    assert _args_to_enum(**{"number_type": None, "exp": True}) == ns.I | ns.U
 
 
 def test_regex_chooser_returns_correct_regular_expression_object():
@@ -163,7 +156,7 @@ def test_chain_functions_is_a_no_op_if_no_functions_are_given():
 
 
 def test_chain_functions_does_one_function_if_one_function_is_given():
-    x = '2345'
+    x = "2345"
     assert chain_functions([len])(x) == 4
 
 
@@ -175,39 +168,47 @@ def test_chain_functions_combines_functions_in_given_order():
 # Each test has an "example" version for demonstrative purposes,
 # and a test that uses the hypothesis module.
 
+
 def test_groupletters_returns_letters_with_lowercase_transform_of_letter_example():
-    assert _groupletters('HELLO') == 'hHeElLlLoO'
-    assert _groupletters('hello') == 'hheelllloo'
+    assert _groupletters("HELLO") == "hHeElLlLoO"
+    assert _groupletters("hello") == "hheelllloo"
 
 
 @given(text().filter(bool))
 def test_groupeletters_returns_letters_with_lowercase_transform_of_letter(x):
-    assert _groupletters(x) == ''.join(chain.from_iterable([low(y), y] for y in x))
+    assert _groupletters(x) == "".join(chain.from_iterable([low(y), y] for y in x))
 
 
 def test_sep_inserter_does_nothing_if_no_numbers_example():
-    assert list(_sep_inserter(iter(['a', 'b', 'c']), '')) == ['a', 'b', 'c']
-    assert list(_sep_inserter(iter(['a']), '')) == ['a']
+    assert list(_sep_inserter(iter(["a", "b", "c"]), "")) == ["a", "b", "c"]
+    assert list(_sep_inserter(iter(["a"]), "")) == ["a"]
 
 
 def test_sep_inserter_does_nothing_if_only_one_number_example():
-    assert list(_sep_inserter(iter(['a', 5]), '')) == ['a', 5]
+    assert list(_sep_inserter(iter(["a", 5]), "")) == ["a", 5]
 
 
 def test_sep_inserter_inserts_separator_string_between_two_numbers_example():
-    assert list(_sep_inserter(iter([5, 9]), '')) == ['', 5, '', 9]
-    assert list(_sep_inserter(iter([5, 9]), null_string_locale)) == [null_string_locale, 5, null_string_locale, 9]
+    assert list(_sep_inserter(iter([5, 9]), "")) == ["", 5, "", 9]
+    assert list(_sep_inserter(iter([5, 9]), null_string_locale)) == [
+        null_string_locale,
+        5,
+        null_string_locale,
+        9,
+    ]
 
 
 @given(lists(elements=text().filter(bool) | integers()))
 def test_sep_inserter_inserts_separator_between_two_numbers(x):
-    assert list(_sep_inserter(iter(x), '')) == list(add_leading_space_if_first_is_num(sep_inserter(x, ''), ''))
+    assert list(_sep_inserter(iter(x), "")) == list(
+        add_leading_space_if_first_is_num(sep_inserter(x, ""), "")
+    )
 
 
 def test_path_splitter_splits_path_string_by_separator_example():
-    z = '/this/is/a/path'
+    z = "/this/is/a/path"
     assert tuple(_path_splitter(z)) == tuple(pathlib.Path(z).parts)
-    z = pathlib.Path('/this/is/a/path')
+    z = pathlib.Path("/this/is/a/path")
     assert tuple(_path_splitter(z)) == tuple(pathlib.Path(z).parts)
 
 
@@ -218,16 +219,22 @@ def test_path_splitter_splits_path_string_by_separator(x):
 
 
 def test_path_splitter_splits_path_string_by_separator_and_removes_extension_example():
-    z = '/this/is/a/path/file.exe'
+    z = "/this/is/a/path/file.exe"
     y = tuple(pathlib.Path(z).parts)
-    assert tuple(_path_splitter(z)) == y[:-1] + (pathlib.Path(z).stem, pathlib.Path(z).suffix)
+    assert tuple(_path_splitter(z)) == y[:-1] + (
+        pathlib.Path(z).stem,
+        pathlib.Path(z).suffix,
+    )
 
 
 @given(lists(sampled_from(string.ascii_letters), min_size=3).filter(all))
 def test_path_splitter_splits_path_string_by_separator_and_removes_extension(x):
-    z = py23_str(pathlib.Path(*x[:-2])) + '.' + x[-1]
+    z = py23_str(pathlib.Path(*x[:-2])) + "." + x[-1]
     y = tuple(pathlib.Path(z).parts)
-    assert tuple(_path_splitter(z)) == y[:-1] + (pathlib.Path(z).stem, pathlib.Path(z).suffix)
+    assert tuple(_path_splitter(z)) == y[:-1] + (
+        pathlib.Path(z).stem,
+        pathlib.Path(z).suffix,
+    )
 
 
 @given(integers())

@@ -13,7 +13,7 @@ from hypothesis.strategies import binary
 
 
 def test_parse_bytes_factory_makes_function_that_returns_tuple_example():
-    assert _parse_bytes_factory(0)(b'hello') == (b'hello',)
+    assert _parse_bytes_factory(0)(b"hello") == (b"hello",)
 
 
 @given(binary())
@@ -22,16 +22,18 @@ def test_parse_bytes_factory_makes_function_that_returns_tuple(x):
 
 
 def test_parse_bytes_factory_with_IGNORECASE_makes_function_that_returns_tuple_with_lowercase_example():
-    assert _parse_bytes_factory(ns.IGNORECASE)(b'HelLo') == (b'hello',)
+    assert _parse_bytes_factory(ns.IGNORECASE)(b"HelLo") == (b"hello",)
 
 
 @given(binary())
-def test_parse_bytes_factory_with_IGNORECASE_makes_function_that_returns_tuple_with_lowercase(x):
+def test_parse_bytes_factory_with_IGNORECASE_makes_function_that_returns_tuple_with_lowercase(
+    x
+):
     assert _parse_bytes_factory(ns.IGNORECASE)(x) == (x.lower(),)
 
 
 def test_parse_bytes_factory_with_PATH_makes_function_that_returns_nested_tuple_example():
-    assert _parse_bytes_factory(ns.PATH)(b'hello') == ((b'hello',),)
+    assert _parse_bytes_factory(ns.PATH)(b"hello") == ((b"hello",),)
 
 
 @given(binary())
@@ -40,9 +42,11 @@ def test_parse_bytes_factory_with_PATH_makes_function_that_returns_nested_tuple(
 
 
 def test_parse_bytes_factory_with_PATH_and_IGNORECASE_makes_function_that_returns_nested_tuple_with_lowercase_example():
-    assert _parse_bytes_factory(ns.PATH | ns.IGNORECASE)(b'HelLo') == ((b'hello',),)
+    assert _parse_bytes_factory(ns.PATH | ns.IGNORECASE)(b"HelLo") == ((b"hello",),)
 
 
 @given(binary())
-def test_parse_bytes_factory_with_PATH_and_IGNORECASE_makes_function_that_returns_nested_tuple_with_lowercase(x):
+def test_parse_bytes_factory_with_PATH_and_IGNORECASE_makes_function_that_returns_nested_tuple_with_lowercase(
+    x
+):
     assert _parse_bytes_factory(ns.PATH | ns.IGNORECASE)(x) == ((x.lower(),),)

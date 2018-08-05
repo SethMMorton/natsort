@@ -14,13 +14,12 @@ if PY_VERSION >= 3.0:
 
 triple_none = None, None, None
 _sentinel = object()
-SplitElement = collections.namedtuple('SplitElement',
-                                      ['isnum', 'val', 'isuni'])
+SplitElement = collections.namedtuple("SplitElement", ["isnum", "val", "isuni"])
 
 
 def int_splitter(iterable, signed, sep):
     """Alternate (slow) method to split a string into numbers."""
-    iterable = unicodedata.normalize('NFD', iterable)
+    iterable = unicodedata.normalize("NFD", iterable)
     split_by_decimal = itertools.groupby(iterable, lambda a: a.isdigit())
     split_by_decimal = refine_split_grouping(split_by_decimal)
     split = int_splitter_iter(split_by_decimal, signed)
@@ -34,7 +33,7 @@ def float_splitter(iterable, signed, exp, sep):
     def number_tester(x):
         return x.isdecimal() or unicodedata.numeric(x, None) is not None
 
-    iterable = unicodedata.normalize('NFD', iterable)
+    iterable = unicodedata.normalize("NFD", iterable)
     split_by_decimal = itertools.groupby(iterable, number_tester)
     split_by_decimal = peekable(refine_split_grouping(split_by_decimal))
     split = float_splitter_iter(split_by_decimal, signed, exp)
@@ -56,17 +55,17 @@ def refine_split_grouping(iterable):
                         yield SplitElement(True, u, True)
                 # If ASCII, combine into a single multicharacter number.
                 else:
-                    val = ''.join(num_values)
+                    val = "".join(num_values)
                     yield SplitElement(True, val, False)
 
         else:
             # If non-numeric, combine into a single string.
-            val = ''.join(values)
+            val = "".join(values)
             yield SplitElement(False, val, False)
 
 
 def group_unicode_and_ascii_numbers(
-        iterable, ascii_digits=frozenset(decimals + '0123456789')
+    iterable, ascii_digits=frozenset(decimals + "0123456789")
 ):
     """
     Use groupby to group ASCII and unicode numeric characters.
@@ -84,31 +83,42 @@ def int_splitter_iter(iterable, signed):
             yield int(val)
         elif signed:
             for x in try_to_read_signed_integer(iterable, val):
-                yield int(''.join(x)) if isinstance(x, list) else x
+                yield int("".join(x)) if isinstance(x, list) else x
         else:
             yield val
 
 
 def float_splitter_iter(iterable, signed, exp):
     """Split the input into integers and other."""
-    weird_check = ('-inf', '-infinity', '+inf', '+infinity',
-                   'inf', 'infinity', 'nan', '-nan', '+nan')
+    weird_check = (
+        "-inf",
+        "-infinity",
+        "+inf",
+        "+infinity",
+        "inf",
+        "infinity",
+        "nan",
+        "-nan",
+        "+nan",
+    )
     try_to_read_float_correctly = [
         try_to_read_float,
         try_to_read_float_with_exp,
-        functools.partial(try_to_read_signed_float_template,
-                          key=try_to_read_float),
-        functools.partial(try_to_read_signed_float_template,
-                          key=try_to_read_float_with_exp),
-    ][signed * 2 + exp * 1]  # Choose the appropriate converter function.
+        functools.partial(try_to_read_signed_float_template, key=try_to_read_float),
+        functools.partial(
+            try_to_read_signed_float_template, key=try_to_read_float_with_exp
+        ),
+    ][
+        signed * 2 + exp * 1
+    ]  # Choose the appropriate converter function.
     for isnum, val, isuni in iterable:
         if isuni:
             yield unicodedata.numeric(val)
         else:
             for x in try_to_read_float_correctly(iterable, isnum, val):
                 if isinstance(x, list):
-                    yield float(''.join(x))
-                elif x.lower().strip(' \t\n\r\f\v') in weird_check:
+                    yield float("".join(x))
+                elif x.lower().strip(" \t\n\r\f\v") in weird_check:
                     yield float(x)
                 else:
                     yield x
@@ -119,7 +129,7 @@ def try_to_read_signed_integer(iterable, val):
     If the given string ends with +/-, attempt to return a signed int.
     Otherwise, return the string as-is.
     """
-    if val.endswith(('+', '-')):
+    if val.endswith(("+", "-")):
         next_element = next(iterable, None)
 
         # Last element, return as-is.
@@ -138,7 +148,7 @@ def try_to_read_signed_integer(iterable, val):
             yield unicodedata.digit(next_val)
 
         # If the val is *only* the sign, return only the number.
-        elif val in ('-', '+'):
+        elif val in ("-", "+"):
             yield [val, next_val]
 
         # Otherwise, remove the sign from the val and apply it to the number,
@@ -167,14 +177,14 @@ def try_to_read_float(iterable, isnum, val):
             yield val
 
         # If this the decimal point, add it to the number and return.
-        elif val == '.':
+        elif val == ".":
             next(iterable)  # To progress the iterator.
             yield [val, next_val]
 
         # If the val ends with the decimal point, split the decimal point
         # off the end of the string then place it to the front of the
         # iterable so that we can use it later.
-        elif val.endswith('.'):
+        elif val.endswith("."):
             iterable.push(SplitElement(False, val[-1], False))
             yield val[:-1]
 
@@ -186,9 +196,9 @@ def try_to_read_float(iterable, isnum, val):
     else:
 
         # If the next element is not '.', return now.
-        if next_val != '.':
+        if next_val != ".":
             # If the next val starts with a '.', let's add that.
-            if next_val is not None and next_val.startswith('.'):
+            if next_val is not None and next_val.startswith("."):
                 next(iterable)  # To progress the iterator.
                 iterable.push(SplitElement(False, next_val[1:], False))
                 yield [val, next_val[0]]
@@ -214,7 +224,7 @@ def try_to_read_float_with_exp(iterable, isnum, val):
     Try to read a string that matches num.numE[+-]num and return as a float.
     Otherwise return the input as found.
     """
-    exp_ident = ('e', 'E', 'e-', 'E-', 'e+', 'E+')
+    exp_ident = ("e", "E", "e-", "E-", "e+", "E+")
 
     # Start by reading the floating point part.
     float_ret = next(try_to_read_float(iterable, isnum, val))
@@ -253,10 +263,10 @@ def try_to_read_signed_float_template(iterable, isnum, val, key):
 
     # If it looks like there is a sign here and the next value is a
     # non-unicode number, try to parse that with the sign.
-    if val.endswith(('+', '-')) and next_isnum and not next_isuni:
+    if val.endswith(("+", "-")) and next_isnum and not next_isuni:
 
         # If this value is a sign, return the combo.
-        if val in ('+', '-'):
+        if val in ("+", "-"):
             next(iterable)  # To progress the iterator.
             yield [val] + next(key(iterable, next_isnum, next_val))
 
@@ -269,13 +279,13 @@ def try_to_read_signed_float_template(iterable, isnum, val, key):
 
     # If it looks like there is a sign here and the next value is a
     # decimal, try to parse as a decimal.
-    elif val.endswith(('+.', '-.')) and next_isnum and not next_isuni:
+    elif val.endswith(("+.", "-.")) and next_isnum and not next_isuni:
 
         # Push back a zero before the decimal then parse.
         print(val, iterable.peek())
 
         # If this value is a sign, return the combo
-        if val[:-1] in ('+', '-'):
+        if val[:-1] in ("+", "-"):
             yield [val[:-1]] + next(key(iterable, False, val[-1]))
 
         # If the val ends with the sign split the decimal the end of
@@ -366,6 +376,7 @@ class peekable(object):
         >>> assert peekable(xrange(1))
         >>> assert not peekable([])
     """
+
     # Lowercase to blend in with itertools. The fact that it's a class is an
     # implementation detail.
 
@@ -389,7 +400,7 @@ class peekable(object):
         Return ``default`` if there are no items left. If ``default`` is not
         provided, raise ``StopIteration``.
         """
-        if not hasattr(self, '_peek'):
+        if not hasattr(self, "_peek"):
             try:
                 self._peek = next(self._it)
             except StopIteration:
@@ -410,7 +421,7 @@ class peekable(object):
 
     def push(self, value):
         """Put an element at the front of the iterable."""
-        if hasattr(self, '_peek'):
+        if hasattr(self, "_peek"):
             self._it = itertools.chain([value, self._peek], self._it)
             del self._peek
         else:
