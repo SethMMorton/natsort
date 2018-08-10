@@ -69,8 +69,8 @@ locale)::
 
 .. _bug_note:
 
-`locale <https://docs.python.org/3.5/library/locale.html>`_ Is Broken on Mac OS X
-+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+The `locale <https://docs.python.org/3.5/library/locale.html>`_ Module Is Broken on Mac OS X
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 It's not Python's fault, but the OS... the locale library for BSD-based systems
 (of which Mac OS X is one) is broken. See the following links:
