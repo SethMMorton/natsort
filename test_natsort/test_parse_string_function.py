@@ -3,7 +3,7 @@
 from __future__ import unicode_literals
 
 from pytest import raises
-from natsort.ns_enum import ns
+from natsort.ns_enum import ns, ns_DUMB
 from natsort.utils import (
     _float_sign_exp_re,
     _float_nosign_exp_re,
@@ -203,13 +203,13 @@ def test_parse_string_factory_selects_pre_function_value_if_not_dumb():
         0, "", _int_nosign_re.split, py23_str.upper, fast_float, tuple2
     )("a5+5.034e-1") == ("A", ("A", 5, "+", 5, ".", 34, "E-", 1))
     assert _parse_string_factory(
-        ns._DUMB, "", _int_nosign_re.split, py23_str.upper, fast_float, tuple2
+        ns_DUMB, "", _int_nosign_re.split, py23_str.upper, fast_float, tuple2
     )("a5+5.034e-1") == ("A", ("A", 5, "+", 5, ".", 34, "E-", 1))
     assert _parse_string_factory(
         ns.LOCALE, "", _int_nosign_re.split, py23_str.upper, fast_float, tuple2
     )("a5+5.034e-1") == ("A", ("A", 5, "+", 5, ".", 34, "E-", 1))
     assert _parse_string_factory(
-        ns.LOCALE | ns._DUMB,
+        ns.LOCALE | ns_DUMB,
         "",
         _int_nosign_re.split,
         py23_str.upper,

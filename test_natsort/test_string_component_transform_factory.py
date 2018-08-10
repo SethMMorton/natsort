@@ -2,7 +2,7 @@
 """These test the utils.py functions."""
 from __future__ import unicode_literals
 
-from natsort.ns_enum import ns
+from natsort.ns_enum import ns, ns_DUMB
 from natsort.utils import _string_component_transform_factory, _groupletters
 from natsort.compat.py23 import py23_str
 from natsort.compat.locale import get_strxfrm
@@ -115,7 +115,7 @@ def test_string_component_transform_factory_with_LOCALE_and_GROUPLETTERS_returns
 
 def test_string_component_transform_factory_with_LOCALE_and_DUMB_returns_fast_int_and_groupletters_and_locale_convert_example():
     x = "hello"
-    assert _string_component_transform_factory(ns._DUMB | ns.LOCALE)(x) == fast_int(
+    assert _string_component_transform_factory(ns_DUMB | ns.LOCALE)(x) == fast_int(
         x, key=lambda x: get_strxfrm()(_groupletters(x))
     )
 
@@ -125,7 +125,7 @@ def test_string_component_transform_factory_with_LOCALE_and_DUMB_returns_fast_in
     x
 ):
     try:
-        assert _string_component_transform_factory(ns._DUMB | ns.LOCALE)(x) == fast_int(
+        assert _string_component_transform_factory(ns_DUMB | ns.LOCALE)(x) == fast_int(
             x, key=lambda x: get_strxfrm()(_groupletters(x))
         )
     except ValueError as e:  # handle broken locale lib on BSD.

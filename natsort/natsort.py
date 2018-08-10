@@ -16,7 +16,7 @@ from warnings import warn
 import sys
 
 import natsort.compat.locale
-from natsort.ns_enum import ns
+from natsort.ns_enum import ns, ns_DUMB
 from natsort.compat.py23 import u_format, py23_str, py23_cmp
 from natsort.utils import (
     _natsort_key,
@@ -185,7 +185,7 @@ def natsort_keygen(key=None, alg=0, **_kwargs):
 
     # Add the _DUMB option if the locale library is broken.
     if alg & ns.LOCALEALPHA and natsort.compat.locale.dumb_sort():
-        alg |= ns._DUMB
+        alg |= ns_DUMB
 
     # Set some variables that will be passed to the factory functions
     if alg & ns.NUMAFTER:
@@ -200,7 +200,7 @@ def natsort_keygen(key=None, alg=0, **_kwargs):
         else:
             sep = natsort.compat.locale.null_string
         pre_sep = natsort.compat.locale.null_string
-    regex = _regex_chooser[alg & ns._NUMERIC_ONLY]
+    regex = _regex_chooser[alg & (ns.REAL | ns.NOEXP)]
 
     # Create the functions that will be used to split strings.
     input_transform = _input_string_transform_factory(alg)
@@ -693,7 +693,7 @@ if float(sys.version[:3]) < 3:
 
             # Add the _DUMB option if the locale library is broken.
             if alg & ns.LOCALEALPHA and natsort.compat.locale.dumb_sort():
-                alg |= ns._DUMB
+                alg |= ns_DUMB
 
             if alg not in cls.cached_keys:
                 cls.cached_keys[alg] = natsort_keygen(alg=alg)

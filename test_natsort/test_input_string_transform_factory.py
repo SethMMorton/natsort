@@ -5,7 +5,7 @@ from __future__ import unicode_literals
 import pytest
 import locale
 from operator import methodcaller
-from natsort.ns_enum import ns
+from natsort.ns_enum import ns, ns_DUMB
 from natsort.utils import _input_string_transform_factory
 from natsort.compat.py23 import NEWPY
 from compat.locale import load_locale, has_locale_de_DE
@@ -45,12 +45,12 @@ def test_input_string_transform_factory_performs_casefold_with_IGNORECASE(x):
 
 def test_input_string_transform_factory_performs_swapcase_with_DUMB_examples():
     x = "feijGGAd"
-    assert _input_string_transform_factory(ns._DUMB)(x) == x.swapcase()
+    assert _input_string_transform_factory(ns_DUMB)(x) == x.swapcase()
 
 
 @given(text())
 def test_input_string_transform_factory_performs_swapcase_with_DUMB(x):
-    assert _input_string_transform_factory(ns._DUMB)(x) == x.swapcase()
+    assert _input_string_transform_factory(ns_DUMB)(x) == x.swapcase()
 
 
 def test_input_string_transform_factory_performs_swapcase_with_LOWERCASEFIRST_example():
@@ -66,12 +66,12 @@ def test_input_string_transform_factory_performs_swapcase_with_LOWERCASEFIRST(x)
 
 def test_input_string_transform_factory_is_no_op_with_both_LOWERCASEFIRST_AND_DUMB_example():
     x = "feijGGAd"
-    assert _input_string_transform_factory(ns._DUMB | ns.LOWERCASEFIRST)(x) is x
+    assert _input_string_transform_factory(ns_DUMB | ns.LOWERCASEFIRST)(x) is x
 
 
 @given(text())
 def test_input_string_transform_factory_is_no_op_with_both_LOWERCASEFIRST_AND_DUMB(x):
-    assert _input_string_transform_factory(ns._DUMB | ns.LOWERCASEFIRST)(x) is x
+    assert _input_string_transform_factory(ns_DUMB | ns.LOWERCASEFIRST)(x) is x
 
 
 def test_input_string_transform_factory_performs_swapcase_and_casefold_both_LOWERCASEFIRST_AND_IGNORECASE_example():

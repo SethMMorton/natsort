@@ -147,7 +147,6 @@ def test_ns_enum_values_have_are_as_expected():
     # Convenience
     assert ns.LOCALE == ns.LOCALEALPHA | ns.LOCALENUM
     assert ns.REAL == ns.FLOAT | ns.SIGNED
-    assert ns._NUMERIC_ONLY == ns.REAL | ns.NOEXP
 
 
 def test_chain_functions_is_a_no_op_if_no_functions_are_given():

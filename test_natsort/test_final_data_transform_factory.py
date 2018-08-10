@@ -2,7 +2,7 @@
 """These test the utils.py functions."""
 from __future__ import unicode_literals
 
-from natsort.ns_enum import ns
+from natsort.ns_enum import ns, ns_DUMB
 from natsort.utils import _final_data_transform_factory
 from natsort.compat.py23 import py23_str
 from hypothesis import given
@@ -60,7 +60,7 @@ def test_final_data_transform_factory_returns_first_element_in_first_tuple_eleme
 
 def test_final_data_transform_factory_returns_first_element_in_first_tuple_element_caseswapped_with_DUMB_and_LOWERCASEFIRST_example():
     assert _final_data_transform_factory(
-        ns.LOCALE | ns.UNGROUPLETTERS | ns._DUMB | ns.LOWERCASEFIRST, "", ""
+        ns.LOCALE | ns.UNGROUPLETTERS | ns_DUMB | ns.LOWERCASEFIRST, "", ""
     )(("this", 60), "this60") == (("T",), ("this", 60))
 
 
@@ -71,5 +71,5 @@ def test_final_data_transform_factory_returns_first_element_in_first_tuple_eleme
     x, y
 ):
     assert _final_data_transform_factory(
-        ns.LOCALE | ns.UNGROUPLETTERS | ns._DUMB | ns.LOWERCASEFIRST, "", ""
+        ns.LOCALE | ns.UNGROUPLETTERS | ns_DUMB | ns.LOWERCASEFIRST, "", ""
     )((x, y), "".join(map(py23_str, [x, y]))) == ((x[0].swapcase(),), (x, y))

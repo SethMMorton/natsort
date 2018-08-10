@@ -52,7 +52,7 @@ from operator import methodcaller
 from unicodedata import normalize
 
 # Local imports.
-from natsort.ns_enum import ns
+from natsort.ns_enum import ns, ns_DUMB
 from natsort.unicode_numbers import numeric_no_decimals, digits_no_decimals
 from natsort.compat.pathlib import PurePath, has_pathlib
 from natsort.compat.locale import get_strxfrm, get_thousands_sep, get_decimal_point
@@ -330,7 +330,7 @@ def _parse_string_factory(
     """
     # Sometimes we store the "original" input before transformation,
     # sometimes after.
-    orig_after_xfrm = not (alg & ns._DUMB and alg & ns.LOCALEALPHA)
+    orig_after_xfrm = not (alg & ns_DUMB and alg & ns.LOCALEALPHA)
     original_func = input_transform if orig_after_xfrm else _no_op
     normalize_input = _normalize_input_factory(alg)
 
@@ -443,7 +443,7 @@ def _input_string_transform_factory(alg):
     """
     # Shortcuts.
     lowfirst = alg & ns.LOWERCASEFIRST
-    dumb = alg & ns._DUMB
+    dumb = alg & ns_DUMB
 
     # Build the chain of functions to execute in order.
     function_chain = []
@@ -517,7 +517,7 @@ def _string_component_transform_factory(alg):
     """
     # Shortcuts.
     use_locale = alg & ns.LOCALEALPHA
-    dumb = alg & ns._DUMB
+    dumb = alg & ns_DUMB
     group_letters = (alg & ns.GROUPLETTERS) or (use_locale and dumb)
     nan_val = float("+inf") if alg & ns.NANLAST else float("-inf")
 
@@ -558,7 +558,7 @@ def _final_data_transform_factory(alg, sep, pre_sep):
 
     """
     if alg & ns.UNGROUPLETTERS and alg & ns.LOCALEALPHA:
-        swap = alg & ns._DUMB and alg & ns.LOWERCASEFIRST
+        swap = alg & ns_DUMB and alg & ns.LOWERCASEFIRST
         transform = methodcaller("swapcase") if swap else _no_op
 
         def func(split_val, val, transform=transform):
