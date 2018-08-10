@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """
-Contains all possible non-ASCII unicode numbers.
+Pre-determine the collection of unicode decimals, digits, and numerals.
 """
 from __future__ import print_function, division, unicode_literals, absolute_import
 

@@ -1,5 +1,8 @@
 # -*- coding: utf-8 -*-
-"""This module defines the "ns" enum for natsort."""
+"""
+This module defines the "ns" enum for natsort is used to determine
+what algorithm natsort uses.
+"""
 from __future__ import print_function, division, unicode_literals, absolute_import
 
 

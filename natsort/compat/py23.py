@@ -1,4 +1,10 @@
 # -*- coding: utf-8 -*-
+"""
+Compatibility layer for Python 2 and Python 3.
+
+Probably could have used six...
+This file will light up most linters...
+"""
 from __future__ import print_function, division, unicode_literals, absolute_import
 
 import functools

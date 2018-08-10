@@ -11,10 +11,10 @@ from natsort.compat.py23 import py23_str
 
 
 def main():
-    """\
+    """
     Performs a natural sort on entries given on the command-line.
-    A natural sort sorts numerically then alphabetically, and will sort
-    by numbers in the middle of an entry.
+
+    Arguments are read from sys.argv.
     """
 
     from argparse import ArgumentParser, RawDescriptionHelpFormatter
@@ -134,8 +134,8 @@ def main():
     args = parser.parse_args()
 
     # Make sure the filter range is given properly. Does nothing if no filter
-    args.filter = check_filter(args.filter)
-    args.reverse_filter = check_filter(args.reverse_filter)
+    args.filter = check_filters(args.filter)
+    args.reverse_filter = check_filters(args.reverse_filter)
 
     # Remove trailing whitespace from all the entries
     entries = [e.strip() for e in args.entries]
@@ -145,10 +145,23 @@ def main():
 
 
 def range_check(low, high):
-    """\
-    Verifies that that given range has a low lower than the high.
-    If the condition is not met, a ValueError is raised.
-    Otherwise the input is returned as-is.
+    """
+    Verify that that given range has a low lower than the high.
+
+    Parameters
+    ----------
+    low : {float, int}
+    high : {float, int}
+
+    Returns
+    -------
+    tuple : low, high
+
+    Raises
+    ------
+    ValueError
+        Low is greater than or equal to high.
+
     """
     if low >= high:
         raise ValueError("low >= high")
@@ -156,29 +169,58 @@ def range_check(low, high):
         return low, high
 
 
-def check_filter(filt):
-    """\
-    Check that the low value of the filter is lower than the high.
-    If there is to be no filter, return 'None'.
-    If the condition is not met, a ValueError is raised.
-    Otherwise, the values are returned as-is.
+def check_filters(filters):
     """
-    # Quick return if no filter.
-    if not filt:
+    Execute range_check for every element of an iterable.
+
+    Parameters
+    ----------
+    filters : iterable
+        The collection of filters to check. Each element
+        must be a two-element tuple of floats or ints.
+
+    Returns
+    -------
+    The input as-is, or None if it evaluates to False.
+
+    Raises
+    ------
+    ValueError
+        Low is greater than or equal to high for any element.
+
+    """
+    if not filters:
         return None
     try:
-        return [range_check(f[0], f[1]) for f in filt]
+        return [range_check(f[0], f[1]) for f in filters]
     except ValueError as err:
         raise ValueError("Error in --filter: " + py23_str(err))
 
 
 def keep_entry_range(entry, lows, highs, converter, regex):
-    """\
-    Boolean function to determine if an entry should be kept out
-    based on if any numbers are in a given range.
+    """
+    Check if an entry falls into a desired range.
 
-    Returns True if it should be kept (i.e. falls in the range),
-    and False if it is not in the range and should not be kept.
+    Every number in the entry will be extracted using *regex*,
+    if any are within a given low to high range the entry will
+    be kept.
+
+    Parameters
+    ----------
+    entry : str
+    lows : iterable
+        Collection of low values against which to compare the entry.
+    highs : iterable
+        Collection of high values against which to compare the entry.
+    converter : callable
+        Function to convert a string to a number.
+    regex : regex object
+        Regular expression to locate numbers in a string.
+
+    Returns
+    -------
+    True if the entry should be kept, False otherwise.
+
     """
     return any(
         low <= converter(num) <= high
@@ -187,13 +229,27 @@ def keep_entry_range(entry, lows, highs, converter, regex):
     )
 
 
-def exclude_entry(entry, values, converter, regex):
-    """\
-    Boolean function to determine if an entry should be kept out
-    based on if it contains a specific number.
+def keep_entry_value(entry, values, converter, regex):
+    """
+    Check if an entry does not match a given value.
 
-    Returns True if it should be kept (i.e. does not match),
-    and False if it matches and should not be kept.
+    Every number in the entry will be extracted using *regex*,
+    if any match a given value the entry will not be kept.
+
+    Parameters
+    ----------
+    entry : str
+    values : iterable
+        Collection of values against which to compare the entry.
+    converter : callable
+        Function to convert a string to a number.
+    regex : regex object
+        Regular expression to locate numbers in a string.
+
+    Returns
+    -------
+    True if the entry should be kept, False otherwise.
+
     """
     return not any(converter(num) in values for num in regex.findall(entry))
 
@@ -245,7 +301,7 @@ def sort_and_print_entries(entries, args):
             entries = [
                 entry
                 for entry in entries
-                if exclude_entry(entry, exclude, float, regex)
+                if keep_entry_value(entry, exclude, float, regex)
             ]
 
     # Print off the sorted results

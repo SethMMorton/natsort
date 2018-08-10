@@ -1,14 +1,9 @@
 # -*- coding: utf-8 -*-
 """
-Natsort can sort strings with numbers in a natural order.
-It provides the natsorted function to sort strings with
-arbitrary numbers.
+Along with ns_enum.py, this module contains all of the
+natsort public API.
 
-You can mix types with natsorted.  This can get around the new
-'unorderable types' issue with Python 3. Natsort will recursively
-descend into lists of lists so you can sort by the sublist contents.
-
-See the README or the natsort homepage for more details.
+The majority of the "work" is defined in utils.py.
 """
 from __future__ import print_function, division, unicode_literals, absolute_import
 
@@ -37,9 +32,6 @@ from natsort.utils import (
     _final_data_transform_factory,
 )
 
-# Make sure the doctest works for either python2 or python3
-__doc__ = u_format(__doc__)
-
 
 @u_format
 def decoder(encoding):
@@ -48,12 +40,12 @@ def decoder(encoding):
 
     Parameters
     ----------
-    encoding: str
+    encoding : str
         The codec to use for decoding. This must be a valid unicode codec.
 
     Returns
     -------
-    decode_function:
+    decode_function
         A function that takes a single argument and attempts to decode
         it using the supplied codec. Any `UnicodeErrors` are raised.
         If the argument was not of `bytes` type, it is simply returned
@@ -90,12 +82,11 @@ def as_ascii(s):
 
     Parameters
     ----------
-    s:
-        Any object.
+    s : object
 
     Returns
     -------
-    output:
+    output
         If the input was of type `bytes`, the return value is a `str` decoded
         with the ASCII codec. Otherwise, the return value is identically the
         input.
@@ -115,12 +106,11 @@ def as_utf8(s):
 
     Parameters
     ----------
-    s:
-        Any object.
+    s : object
 
     Returns
     -------
-    output:
+    output
         If the input was of type `bytes`, the return value is a `str` decoded
         with the UTF-8 codec. Otherwise, the return value is identically the
         input.
@@ -142,12 +132,11 @@ def natsort_key(val, key=None, alg=0, **_kwargs):
 
 @u_format
 def natsort_keygen(key=None, alg=0, **_kwargs):
-    """\
+    """
     Generate a key to sort strings and numbers naturally.
 
-    Generate a key to sort strings and numbers naturally,
-    not lexicographically. This key is designed for use as the
-    `key` argument to functions such as the `sorted` builtin.
+    This key is designed for use as the `key` argument to
+    functions such as the `sorted` builtin.
 
     The user may customize the generated function with the
     arguments to `natsort_keygen`, including an optional
@@ -239,17 +228,13 @@ def natsort_keygen(key=None, alg=0, **_kwargs):
 
 @u_format
 def natsorted(seq, key=None, reverse=False, alg=0, **_kwargs):
-    """\
+    """
     Sorts an iterable naturally.
-
-    Sorts an iterable naturally (alphabetically and numerically),
-    not lexicographically. Returns a list containing a sorted copy
-    of the iterable.
 
     Parameters
     ----------
     seq : iterable
-        The iterable to sort.
+        The input to sort.
 
     key : callable, optional
         A key used to determine how to sort each element of the iterable.
@@ -268,7 +253,7 @@ def natsorted(seq, key=None, reverse=False, alg=0, **_kwargs):
     Returns
     -------
     out: list
-        The sorted sequence.
+        The sorted input.
 
     See Also
     --------
@@ -286,13 +271,13 @@ def natsorted(seq, key=None, reverse=False, alg=0, **_kwargs):
         [{u}'num2', {u}'num3', {u}'num5']
 
     """
-    natsort_key = natsort_keygen(key, alg, **_kwargs)
-    return sorted(seq, reverse=reverse, key=natsort_key)
+    key = natsort_keygen(key, alg, **_kwargs)
+    return sorted(seq, reverse=reverse, key=key)
 
 
 @u_format
 def versorted(seq, key=None, reverse=False, alg=0, **_kwargs):
-    """\
+    """
     Identical to :func:`natsorted`.
 
     This function exists for backwards compatibility with `natsort`
@@ -308,17 +293,15 @@ def versorted(seq, key=None, reverse=False, alg=0, **_kwargs):
 
 @u_format
 def humansorted(seq, key=None, reverse=False, alg=0):
-    """\
+    """
     Convenience function to properly sort non-numeric characters.
 
-    Convenience function to properly sort non-numeric characters
-    in a locale-aware fashion (a.k.a "human sorting"). This is a
-    wrapper around ``natsorted(seq, alg=ns.LOCALE)``.
+    This is a wrapper around ``natsorted(seq, alg=ns.LOCALE)``.
 
     Parameters
     ----------
     seq : iterable
-        The sequence to sort.
+        The input to sort.
 
     key : callable, optional
         A key used to determine how to sort each element of the sequence.
@@ -337,7 +320,7 @@ def humansorted(seq, key=None, reverse=False, alg=0):
     Returns
     -------
     out : list
-        The sorted sequence.
+        The sorted input.
 
     See Also
     --------
@@ -363,11 +346,10 @@ def humansorted(seq, key=None, reverse=False, alg=0):
 
 @u_format
 def realsorted(seq, key=None, reverse=False, alg=0):
-    """\
+    """
     Convenience function to properly sort signed floats.
 
-    Convenience function to properly sort signed floats within
-    strings (i.e. "a-5.7"). This is a wrapper around
+    A signed float in a string could be "a-5.7". This is a wrapper around
     ``natsorted(seq, alg=ns.REAL)``.
 
     The behavior of :func:`realsorted` for `natsort` version >= 4.0.0
@@ -377,7 +359,7 @@ def realsorted(seq, key=None, reverse=False, alg=0):
     Parameters
     ----------
     seq : iterable
-        The sequence to sort.
+        The input to sort.
 
     key : callable, optional
         A key used to determine how to sort each element of the sequence.
@@ -396,7 +378,7 @@ def realsorted(seq, key=None, reverse=False, alg=0):
     Returns
     -------
     out : list
-        The sorted sequence.
+        The sorted input.
 
     See Also
     --------
@@ -418,18 +400,18 @@ def realsorted(seq, key=None, reverse=False, alg=0):
 
 @u_format
 def index_natsorted(seq, key=None, reverse=False, alg=0, **_kwargs):
-    """\
-    Return the list of the indexes used to sort the input sequence.
+    """
+    Determine the list of the indexes used to sort the input sequence.
 
     Sorts a sequence naturally, but returns a list of sorted the
-    indexes and not the sorted list. This list of indexes can be
-    used to sort multiple lists by the sorted order of the given
-    sequence.
+    indexes and not the sorted list itself. This list of indexes
+    can be used to sort multiple lists by the sorted order of the
+    given sequence.
 
     Parameters
     ----------
     seq : iterable
-        The sequence to sort.
+        The input to sort.
 
     key : callable, optional
         A key used to determine how to sort each element of the sequence.
@@ -448,7 +430,7 @@ def index_natsorted(seq, key=None, reverse=False, alg=0, **_kwargs):
     Returns
     -------
     out : tuple
-        The ordered indexes of the sequence.
+        The ordered indexes of the input.
 
     See Also
     --------
@@ -488,7 +470,7 @@ def index_natsorted(seq, key=None, reverse=False, alg=0, **_kwargs):
 
 @u_format
 def index_versorted(seq, key=None, reverse=False, alg=0, **_kwargs):
-    """\
+    """
     Identical to :func:`index_natsorted`.
 
     This function exists for backwards compatibility with
@@ -507,21 +489,13 @@ def index_versorted(seq, key=None, reverse=False, alg=0, **_kwargs):
 
 @u_format
 def index_humansorted(seq, key=None, reverse=False, alg=0):
-    """\
-    Return the list of the indexes used to sort the input sequence
-    in a locale-aware manner.
-
-    Sorts a sequence in a locale-aware manner, but returns a list
-    of sorted the indexes and not the sorted list. This list of
-    indexes can be used to sort multiple lists by the sorted order
-    of the given sequence.
-
+    """
     This is a wrapper around ``index_natsorted(seq, alg=ns.LOCALE)``.
 
     Parameters
     ----------
     seq: iterable
-        The sequence to sort.
+        The input to sort.
 
     key: callable, optional
         A key used to determine how to sort each element of the sequence.
@@ -540,7 +514,7 @@ def index_humansorted(seq, key=None, reverse=False, alg=0):
     Returns
     -------
     out : tuple
-        The ordered indexes of the sequence.
+        The ordered indexes of the input.
 
     See Also
     --------
@@ -565,25 +539,13 @@ def index_humansorted(seq, key=None, reverse=False, alg=0):
 
 @u_format
 def index_realsorted(seq, key=None, reverse=False, alg=0):
-    """\
-    Return the list of the indexes used to sort the input sequence
-    in a locale-aware manner.
-
-    Sorts a sequence in a locale-aware manner, but returns a list
-    of sorted the indexes and not the sorted list. This list of
-    indexes can be used to sort multiple lists by the sorted order
-    of the given sequence.
-
+    """
     This is a wrapper around ``index_natsorted(seq, alg=ns.REAL)``.
-
-    The behavior of :func:`index_realsorted` in `natsort` version >= 4.0.0
-    was the default behavior of :func:`index_natsorted` for `natsort`
-    version < 4.0.0.
 
     Parameters
     ----------
     seq: iterable
-        The sequence to sort.
+        The input to sort.
 
     key: callable, optional
         A key used to determine how to sort each element of the sequence.
@@ -602,7 +564,7 @@ def index_realsorted(seq, key=None, reverse=False, alg=0):
     Returns
     -------
     out : tuple
-        The ordered indexes of the sequence.
+        The ordered indexes of the input.
 
     See Also
     --------
@@ -623,7 +585,7 @@ def index_realsorted(seq, key=None, reverse=False, alg=0):
 
 @u_format
 def order_by_index(seq, index, iter=False):
-    """\
+    """
     Order a given sequence by an index sequence.
 
     The output of `index_natsorted` is a
@@ -683,6 +645,7 @@ def order_by_index(seq, index, iter=False):
 
 if float(sys.version[:3]) < 3:
     # pylint: disable=unused-variable
+    # noinspection PyUnresolvedReferences,PyPep8Naming
     class natcmp(object):
         """
         Compare two objects using a key and an algorithm.

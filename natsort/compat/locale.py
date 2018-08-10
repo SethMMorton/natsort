@@ -1,4 +1,8 @@
 # -*- coding: utf-8 -*-
+"""
+Interface for natsort to access locale functionality without
+having to worry about if it is using PyICU or the built-in locale.
+"""
 from __future__ import print_function, division, unicode_literals, absolute_import
 
 # Std. lib imports.

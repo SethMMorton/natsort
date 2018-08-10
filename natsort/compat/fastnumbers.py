@@ -1,4 +1,8 @@
 # -*- coding: utf-8 -*-
+"""
+Interface for natsort to access fastnumbers functions without
+having to worry if it is actually installed.
+"""
 from __future__ import print_function, division, unicode_literals, absolute_import
 
 from distutils.version import StrictVersion

@@ -12,9 +12,9 @@ from hypothesis.strategies import integers, floats, lists, data
 from natsort.__main__ import (
     main,
     range_check,
-    check_filter,
+    check_filters,
     keep_entry_range,
-    exclude_entry,
+    keep_entry_value,
     sort_and_print_entries,
 )
 
@@ -221,43 +221,43 @@ def test_range_check_raises_ValueError_if_second_is_less_than_first(x, data):
     assert str(err.value) == "low >= high"
 
 
-def test_check_filter_returns_None_if_filter_evaluates_to_False():
-    assert check_filter(()) is None
-    assert check_filter(False) is None
-    assert check_filter(None) is None
+def test_check_filters_returns_None_if_filter_evaluates_to_False():
+    assert check_filters(()) is None
+    assert check_filters(False) is None
+    assert check_filters(None) is None
 
 
-def test_check_filter_returns_input_as_is_if_filter_is_valid_example():
-    assert check_filter([(6, 7)]) == [(6, 7)]
-    assert check_filter([(6, 7), (2, 8)]) == [(6, 7), (2, 8)]
+def test_check_filters_returns_input_as_is_if_filter_is_valid_example():
+    assert check_filters([(6, 7)]) == [(6, 7)]
+    assert check_filters([(6, 7), (2, 8)]) == [(6, 7), (2, 8)]
 
 
 @given(
     x=lists(integers(), min_size=1), data=data()
 )  # Defer data selection for y till test is run.
-def test_check_filter_returns_input_as_is_if_filter_is_valid(x, data):
+def test_check_filters_returns_input_as_is_if_filter_is_valid(x, data):
     y = [
         data.draw(integers(min_value=val + 1)) for val in x
     ]  # ensure y is element-wise greater than x
-    assert check_filter(list(zip(x, y))) == [(i, j) for i, j in zip(x, y)]
+    assert check_filters(list(zip(x, y))) == [(i, j) for i, j in zip(x, y)]
 
 
-def test_check_filter_raises_ValueError_if_filter_is_invalid_example():
+def test_check_filters_raises_ValueError_if_filter_is_invalid_example():
     with raises(ValueError) as err:
-        check_filter([(7, 2)])
+        check_filters([(7, 2)])
     assert str(err.value) == "Error in --filter: low >= high"
 
 
 @given(
     x=lists(integers(), min_size=1), data=data()
 )  # Defer data selection for y till test is run.
-def test_check_filter_raises_ValueError_if_filter_is_invalid(x, data):
+def test_check_filters_raises_ValueError_if_filter_is_invalid(x, data):
     y = [
         data.draw(integers(max_value=val)) for val in x
     ]  # ensure y is element-wise less than or equal to x
 
     with raises(ValueError) as err:
-        check_filter(list(zip(x, y)))
+        check_filters(list(zip(x, y)))
     assert str(err.value) == "Error in --filter: low >= high"
 
 
@@ -273,9 +273,9 @@ def test_keep_entry_range_returns_False_if_no_portion_of_input_is_between_the_ra
     assert not keep_entry_range("a56b23c89", [1], [20], int, re.compile(r"\d+"))
 
 
-def test_exclude_entry_returns_True_if_exlcude_parameters_are_not_in_input_example():
-    assert exclude_entry("a56b23c89", [100, 45], int, re.compile(r"\d+"))
+def test_keep_entry_value_returns_True_if_exlcude_parameters_are_not_in_input_example():
+    assert keep_entry_value("a56b23c89", [100, 45], int, re.compile(r"\d+"))
 
 
-def test_exclude_entry_returns_False_if_exlcude_parameters_are_in_input_example():
-    assert not exclude_entry("a56b23c89", [23], int, re.compile(r"\d+"))
+def test_keep_entry_value_returns_False_if_exlcude_parameters_are_in_input_example():
+    assert not keep_entry_value("a56b23c89", [23], int, re.compile(r"\d+"))

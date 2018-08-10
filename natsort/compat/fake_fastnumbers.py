@@ -1,8 +1,7 @@
 # -*- coding: utf-8 -*-
-"""\
+"""
 This module is intended to replicate some of the functionality
-from the fastnumbers module in the event that module is not
-installed.
+from the fastnumbers module in the event that module is not installed.
 """
 from __future__ import print_function, division, unicode_literals, absolute_import
 
@@ -38,6 +37,7 @@ NAN_INF = frozenset(NAN_INF)
 ASCII_NUMS = "0123456789+-"
 
 
+# noinspection PyIncorrectDocstring
 def fast_float(
     x,
     key=lambda x: x,
@@ -46,10 +46,25 @@ def fast_float(
     nan_inf=NAN_INF,
     _first_char=frozenset(decimal_chars + list(ASCII_NUMS + ".")),
 ):
-    """\
+    """
     Convert a string to a float quickly, return input as-is if not possible.
+
     We don't need to accept all input that the real fast_int accepts because
-    the input will be controlled by the splitting algorithm.
+    natsort is controlling what is passed to this function.
+
+    Parameters
+    ----------
+    x : str
+        String to attempt to convert to a float.
+    key : callable
+        Single-argument function to apply to *x* if conversion fails.
+    nan : object
+        Value to return instead of NaN if NaN would be returned.
+
+    Returns
+    -------
+    *str* or *float*
+
     """
     if x[0] in _first_char or x.lstrip()[:3] in nan_inf:
         try:
@@ -67,6 +82,7 @@ def fast_float(
             return key(x)
 
 
+# noinspection PyIncorrectDocstring
 def fast_int(
     x,
     key=lambda x: x,
@@ -74,10 +90,23 @@ def fast_int(
     uni=unicodedata.digit,
     _first_char=frozenset(decimal_chars + list(ASCII_NUMS)),
 ):
-    """\
+    """
     Convert a string to a int quickly, return input as-is if not possible.
+
     We don't need to accept all input that the real fast_int accepts because
-    the input will be controlled by the splitting algorithm.
+    natsort is controlling what is passed to this function.
+
+    Parameters
+    ----------
+    x : str
+        String to attempt to convert to an int.
+    key : callable
+        Single-argument function to apply to *x* if conversion fails.
+
+    Returns
+    -------
+    *str* or *int*
+
     """
     del nan  # explicitly indicate we are not using the nan argument
     if x[0] in _first_char:

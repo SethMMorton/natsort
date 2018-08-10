@@ -1,9 +1,10 @@
 # -*- coding: utf-8 -*-
 """
-Rather than determine what unicode characters are numeric on the fly which
-would incur a startup runtime penalty, the hex values are hard-coded below.
+Contains all possible non-ASCII unicode numbers.
 """
 
+# Rather than determine what unicode characters are numeric on the fly which
+# would incur a startup runtime penalty, the hex values are hard-coded below.
 numeric_hex = (
     0XB2,
     0XB3,
