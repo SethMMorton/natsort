@@ -127,19 +127,11 @@ def _normalize_input_factory(alg):
 
     """
     normalization_form = "NFKD" if alg & ns.COMPATIBILITYNORMALIZE else "NFD"
-
+    wrapped = partial(normalize, normalization_form)
     if NEWPY:
-        return partial(normalize, normalization_form)
+        return wrapped
     else:
-
-        def func(x):
-            """Normalize unicode input."""
-            if isinstance(x, py23_str):  # unicode
-                return normalize(normalization_form, x)
-            else:
-                return x
-
-        return func
+        return lambda x, _f=wrapped: _f(x) if isinstance(x, py23_str) else x
 
 
 def _natsort_key(val, key, string_func, bytes_func, num_func):
