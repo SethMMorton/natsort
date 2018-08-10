@@ -660,8 +660,6 @@ def _do_decoding(s, encoding):
     """
     try:
         return s.decode(encoding)
-    except UnicodeError:
-        raise
     except (AttributeError, TypeError):
         return s
 
