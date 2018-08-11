@@ -69,40 +69,89 @@ from natsort.unicode_numbers import digits_no_decimals, numeric_no_decimals
 if PY_VERSION >= 3:
     long = int
 
-# The regex that locates floats - include Unicode numerals.
-_nnd = numeric_no_decimals
-_exp = r"(?:[eE][-+]?\d+)?"
-_num = r"(?:\d+\.?\d*|\.\d+)"
-_float_sign_exp_re = r"([-+]?{0}{1}|[{2}])"
-_float_sign_exp_re = _float_sign_exp_re.format(_num, _exp, _nnd)
-_float_sign_exp_re = re.compile(_float_sign_exp_re, flags=re.U)
-_float_nosign_exp_re = r"({0}{1}|[{2}])"
-_float_nosign_exp_re = _float_nosign_exp_re.format(_num, _exp, _nnd)
-_float_nosign_exp_re = re.compile(_float_nosign_exp_re, flags=re.U)
-_float_sign_noexp_re = r"([-+]?{0}|[{1}])"
-_float_sign_noexp_re = _float_sign_noexp_re.format(_num, _nnd)
-_float_sign_noexp_re = re.compile(_float_sign_noexp_re, flags=re.U)
-_float_nosign_noexp_re = r"({0}|[{1}])"
-_float_nosign_noexp_re = _float_nosign_noexp_re.format(_num, _nnd)
-_float_nosign_noexp_re = re.compile(_float_nosign_noexp_re, flags=re.U)
 
-# Integer regexes - include Unicode digits.
-_int_nosign_re = r"(\d+|[{0}])".format(digits_no_decimals)
-_int_nosign_re = re.compile(_int_nosign_re, flags=re.U)
-_int_sign_re = r"([-+]?\d+|[{0}])".format(digits_no_decimals)
-_int_sign_re = re.compile(_int_sign_re, flags=re.U)
+class NumericalRegularExpressions(object):
+    """
+    Container of regular expressions that match numbers.
 
-# This dict will help select the correct regex and number conversion function.
-_regex_chooser = {
-    (ns.F | ns.S): _float_sign_exp_re,
-    (ns.F | ns.S | ns.N): _float_sign_noexp_re,
-    (ns.F | ns.U): _float_nosign_exp_re,
-    (ns.F | ns.U | ns.N): _float_nosign_noexp_re,
-    (ns.I | ns.S): _int_sign_re,
-    (ns.I | ns.S | ns.N): _int_sign_re,
-    (ns.I | ns.U): _int_nosign_re,
-    (ns.I | ns.U | ns.N): _int_nosign_re,
-}
+    The numbers also account for unicode non-decimal characters.
+
+    Not intended to be made an instance - use class methods only.
+    """
+
+    # All unicode numeric characters (minus the decimal characters).
+    numeric = numeric_no_decimals
+    # All unicode digit characters (minus the decimal characters).
+    digits = digits_no_decimals
+    # Regular expression to match exponential component of a float.
+    exp = r"(?:[eE][-+]?\d+)?"
+    # Regular expression to match a floating point number.
+    float_num = r"(?:\d+\.?\d*|\.\d+)"
+
+    @classmethod
+    def _construct_regex(cls, fmt):
+        """Given a format string, construct the regex with class attributes."""
+        return re.compile(fmt.format(**vars(cls)), flags=re.U)
+
+    @classmethod
+    def int_sign(cls):
+        """Regular expression to match a signed int."""
+        return cls._construct_regex(r"([-+]?\d+|[{digits}])")
+
+    @classmethod
+    def int_nosign(cls):
+        """Regular expression to match an unsigned int."""
+        return cls._construct_regex(r"(\d+|[{digits}])")
+
+    @classmethod
+    def float_sign_exp(cls):
+        """Regular expression to match a signed float with exponent."""
+        return cls._construct_regex(r"([-+]?{float_num}{exp}|[{numeric}])")
+
+    @classmethod
+    def float_nosign_exp(cls):
+        """Regular expression to match an unsigned float with exponent."""
+        return cls._construct_regex(r"({float_num}{exp}|[{numeric}])")
+
+    @classmethod
+    def float_sign_noexp(cls):
+        """Regular expression to match a signed float without exponent."""
+        return cls._construct_regex(r"([-+]?{float_num}|[{numeric}])")
+
+    @classmethod
+    def float_nosign_noexp(cls):
+        """Regular expression to match an unsigned float without exponent."""
+        return cls._construct_regex(r"({float_num}|[{numeric}])")
+
+
+def regex_chooser(alg):
+    """
+    Select an appropriate regex for the type of number of interest.
+
+    Parameters
+    ----------
+    alg : ns enum
+        Used to indicate the regular expression to select.
+
+    Returns
+    -------
+    regex : compiled regex object
+        Regular expression object that matches the desired number type.
+
+    """
+    if alg & ns.FLOAT:
+        alg &= ns.FLOAT | ns.SIGNED | ns.NOEXP
+    else:
+        alg &= ns.INT | ns.SIGNED
+
+    return {
+        ns.INT: NumericalRegularExpressions.int_nosign(),
+        ns.FLOAT: NumericalRegularExpressions.float_nosign_exp(),
+        ns.INT | ns.SIGNED: NumericalRegularExpressions.int_sign(),
+        ns.FLOAT | ns.SIGNED: NumericalRegularExpressions.float_sign_exp(),
+        ns.FLOAT | ns.NOEXP: NumericalRegularExpressions.float_nosign_noexp(),
+        ns.FLOAT | ns.SIGNED | ns.NOEXP: NumericalRegularExpressions.float_sign_noexp(),
+    }[alg]
 
 
 def _no_op(x):

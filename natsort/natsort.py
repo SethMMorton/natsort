@@ -25,7 +25,7 @@ from natsort.utils import (
     _parse_number_factory,
     _parse_path_factory,
     _parse_string_factory,
-    _regex_chooser,
+    regex_chooser,
     _string_component_transform_factory,
 )
 
@@ -197,7 +197,7 @@ def natsort_keygen(key=None, alg=0, **_kwargs):
         else:
             sep = natsort.compat.locale.null_string
         pre_sep = natsort.compat.locale.null_string
-    regex = _regex_chooser[alg & (ns.REAL | ns.NOEXP)]
+    regex = regex_chooser(alg)
 
     # Create the functions that will be used to split strings.
     input_transform = _input_string_transform_factory(alg)

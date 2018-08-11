@@ -15,7 +15,7 @@ from natsort.utils import (
     _parse_number_factory,
     _parse_path_factory,
     _parse_string_factory,
-    _regex_chooser,
+    regex_chooser,
     _string_component_transform_factory,
 )
 
@@ -23,7 +23,7 @@ if PY_VERSION >= 3:
     long = int
 
 
-regex = _regex_chooser[ns.INT]
+regex = regex_chooser(ns.INT)
 pre = _input_string_transform_factory(ns.INT)
 post = _string_component_transform_factory(ns.INT)
 after = _final_data_transform_factory(ns.INT, "", "")

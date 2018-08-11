@@ -5,7 +5,7 @@ import sys
 
 import natsort
 from natsort.compat.py23 import py23_str
-from natsort.utils import _regex_chooser
+from natsort.utils import regex_chooser
 
 
 def main():
@@ -276,7 +276,7 @@ def sort_and_print_entries(entries, args):
             | natsort.ns.SIGNED * signed
             | natsort.ns.NOEXP * (not args.exp)
         )
-        regex = _regex_chooser[inp_options]
+        regex = regex_chooser(inp_options)
         if args.filter is not None:
             lows, highs = ([f[0] for f in args.filter], [f[1] for f in args.filter])
             entries = [

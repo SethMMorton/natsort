@@ -15,15 +15,10 @@ from natsort.ns_enum import ns
 from natsort.utils import (
     _args_to_enum,
     _do_decoding,
-    _float_nosign_exp_re,
-    _float_nosign_noexp_re,
-    _float_sign_exp_re,
-    _float_sign_noexp_re,
     _groupletters,
-    _int_nosign_re,
-    _int_sign_re,
     _path_splitter,
-    _regex_chooser,
+    NumericalRegularExpressions,
+    regex_chooser,
     _sep_inserter,
     chain_functions,
 )
@@ -105,14 +100,14 @@ def test_args_to_enum_converts_None_to_ns_IU():
 
 
 def test_regex_chooser_returns_correct_regular_expression_object():
-    assert _regex_chooser[ns.INT] is _int_nosign_re
-    assert _regex_chooser[ns.INT | ns.NOEXP] is _int_nosign_re
-    assert _regex_chooser[ns.INT | ns.SIGNED] is _int_sign_re
-    assert _regex_chooser[ns.INT | ns.SIGNED | ns.NOEXP] is _int_sign_re
-    assert _regex_chooser[ns.FLOAT] is _float_nosign_exp_re
-    assert _regex_chooser[ns.FLOAT | ns.NOEXP] is _float_nosign_noexp_re
-    assert _regex_chooser[ns.FLOAT | ns.SIGNED] is _float_sign_exp_re
-    assert _regex_chooser[ns.FLOAT | ns.SIGNED | ns.NOEXP] is _float_sign_noexp_re
+    assert regex_chooser(ns.INT) is NumericalRegularExpressions.int_nosign()
+    assert regex_chooser(ns.INT | ns.NOEXP) is NumericalRegularExpressions.int_nosign()
+    assert regex_chooser(ns.INT | ns.SIGNED) is NumericalRegularExpressions.int_sign()
+    assert regex_chooser(ns.INT | ns.SIGNED | ns.NOEXP) is NumericalRegularExpressions.int_sign()
+    assert regex_chooser(ns.FLOAT) is NumericalRegularExpressions.float_nosign_exp()
+    assert regex_chooser(ns.FLOAT | ns.NOEXP) is NumericalRegularExpressions.float_nosign_noexp()
+    assert regex_chooser(ns.FLOAT | ns.SIGNED) is NumericalRegularExpressions.float_sign_exp()
+    assert regex_chooser(ns.FLOAT | ns.SIGNED | ns.NOEXP) is NumericalRegularExpressions.float_sign_noexp()
 
 
 def test_ns_enum_values_have_are_as_expected():
