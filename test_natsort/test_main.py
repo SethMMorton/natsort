@@ -3,20 +3,23 @@
 Test the natsort command-line tool functions.
 """
 from __future__ import print_function, unicode_literals
+
 import re
 import sys
-from pytest import raises
-from compat.mock import patch, call
+
 from hypothesis import given
-from hypothesis.strategies import integers, floats, lists, data
+from hypothesis.strategies import data, floats, integers, lists
 from natsort.__main__ import (
-    main,
-    range_check,
     check_filters,
     keep_entry_range,
     keep_entry_value,
+    main,
+    range_check,
     sort_and_print_entries,
 )
+from pytest import raises
+
+from compat.mock import call, patch
 
 
 def test_main_passes_default_arguments_with_no_command_line_options():

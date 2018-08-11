@@ -2,12 +2,11 @@
 """These test the utils.py functions."""
 from __future__ import unicode_literals
 
+from hypothesis import given
+from hypothesis.strategies import floats, integers, text
+from natsort.compat.py23 import py23_str
 from natsort.ns_enum import ns, ns_DUMB
 from natsort.utils import _final_data_transform_factory
-from natsort.compat.py23 import py23_str
-from hypothesis import given
-from hypothesis.strategies import text, floats, integers
-
 
 # Each test has an "example" version for demonstrative purposes,
 # and a test that uses the hypothesis module.

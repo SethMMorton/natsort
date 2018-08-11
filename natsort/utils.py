@@ -38,33 +38,33 @@ that ensures "val" is a local variable instead of global variable
 and thus has a slightly improved performance at runtime.
 
 """
-from __future__ import print_function, division, unicode_literals, absolute_import
+from __future__ import absolute_import, division, print_function, unicode_literals
 
-# Std. lib imports.
 import re
-from warnings import warn
-from os import curdir as os_curdir, pardir as os_pardir
-from os.path import split as path_split, splitext as path_splitext
-from itertools import chain as ichain
 from collections import deque
 from functools import partial, reduce
+from itertools import chain as ichain
 from operator import methodcaller
+from os import curdir as os_curdir
+from os import pardir as os_pardir
+from os.path import split as path_split
+from os.path import splitext as path_splitext
 from unicodedata import normalize
+from warnings import warn
 
-# Local imports.
-from natsort.ns_enum import ns, ns_DUMB
-from natsort.unicode_numbers import numeric_no_decimals, digits_no_decimals
-from natsort.compat.pathlib import PurePath, has_pathlib
-from natsort.compat.locale import get_strxfrm, get_thousands_sep, get_decimal_point
-from natsort.compat.py23 import (
-    u_format,
-    py23_str,
-    py23_map,
-    py23_filter,
-    PY_VERSION,
-    NEWPY,
-)
 from natsort.compat.fastnumbers import fast_float, fast_int
+from natsort.compat.locale import get_decimal_point, get_strxfrm, get_thousands_sep
+from natsort.compat.pathlib import PurePath, has_pathlib
+from natsort.compat.py23 import (
+    NEWPY,
+    PY_VERSION,
+    py23_filter,
+    py23_map,
+    py23_str,
+    u_format,
+)
+from natsort.ns_enum import ns, ns_DUMB
+from natsort.unicode_numbers import digits_no_decimals, numeric_no_decimals
 
 if PY_VERSION >= 3:
     long = int

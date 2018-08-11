@@ -5,7 +5,6 @@ what algorithm natsort uses.
 """
 from __future__ import print_function, division, unicode_literals, absolute_import
 
-# Std lib. imports.
 import collections
 
 # NOTE: OrderedDict is not used below for compatibility with Python 2.6.

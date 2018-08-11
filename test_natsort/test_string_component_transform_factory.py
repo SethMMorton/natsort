@@ -2,13 +2,14 @@
 """These test the utils.py functions."""
 from __future__ import unicode_literals
 
-from natsort.ns_enum import ns, ns_DUMB
-from natsort.utils import _string_component_transform_factory, _groupletters
-from natsort.compat.py23 import py23_str
-from natsort.compat.locale import get_strxfrm
-from natsort.compat.fastnumbers import fast_float, fast_int
 from hypothesis import given
-from hypothesis.strategies import text, floats, integers
+from hypothesis.strategies import floats, integers, text
+from natsort.compat.fastnumbers import fast_float, fast_int
+from natsort.compat.locale import get_strxfrm
+from natsort.compat.py23 import py23_str
+from natsort.ns_enum import ns, ns_DUMB
+from natsort.utils import _groupletters, _string_component_transform_factory
+
 from compat.locale import bad_uni_chars
 
 

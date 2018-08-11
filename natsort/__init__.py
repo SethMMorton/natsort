@@ -1,28 +1,26 @@
 # -*- coding: utf-8 -*-
 from __future__ import print_function, division, unicode_literals, absolute_import
 
-# Std. lib imports.
 import sys
 
-# Local imports.
-from natsort.utils import chain_functions
 from natsort.natsort import (
+    as_ascii,
+    as_utf8,
+    decoder,
+    humansorted,
+    index_humansorted,
+    index_natsorted,
+    index_realsorted,
+    index_versorted,
     natsort_key,
     natsort_keygen,
     natsorted,
-    versorted,
-    humansorted,
-    realsorted,
-    index_natsorted,
-    index_versorted,
-    index_humansorted,
-    index_realsorted,
-    order_by_index,
-    decoder,
-    as_ascii,
-    as_utf8,
     ns,
+    order_by_index,
+    realsorted,
+    versorted,
 )
+from natsort.utils import chain_functions
 
 if float(sys.version[:3]) < 3:
     from natsort.natsort import natcmp

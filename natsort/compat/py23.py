@@ -5,7 +5,7 @@ Compatibility layer for Python 2 and Python 3.
 Probably could have used six...
 This file will light up most linters...
 """
-from __future__ import print_function, division, unicode_literals, absolute_import
+from __future__ import absolute_import, division, print_function, unicode_literals
 
 import functools
 import sys

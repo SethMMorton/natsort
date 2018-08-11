@@ -3,21 +3,21 @@
 from __future__ import unicode_literals
 
 import pytest
+from hypothesis import given
+from hypothesis.strategies import binary, floats, integers, lists, text
 from natsort.compat.py23 import PY_VERSION
 from natsort.ns_enum import ns
 from natsort.utils import (
-    _natsort_key,
-    _regex_chooser,
-    _parse_string_factory,
-    _parse_path_factory,
-    _parse_number_factory,
-    _parse_bytes_factory,
-    _input_string_transform_factory,
-    _string_component_transform_factory,
     _final_data_transform_factory,
+    _input_string_transform_factory,
+    _natsort_key,
+    _parse_bytes_factory,
+    _parse_number_factory,
+    _parse_path_factory,
+    _parse_string_factory,
+    _regex_chooser,
+    _string_component_transform_factory,
 )
-from hypothesis import given
-from hypothesis.strategies import lists, text, floats, integers, binary
 
 if PY_VERSION >= 3:
     long = int

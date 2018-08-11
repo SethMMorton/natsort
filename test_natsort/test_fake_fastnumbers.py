@@ -6,10 +6,11 @@ from __future__ import unicode_literals
 
 import unicodedata
 from math import isnan
-from natsort.compat.py23 import PY_VERSION
-from natsort.compat.fake_fastnumbers import fast_float, fast_int
+
 from hypothesis import given
 from hypothesis.strategies import floats, integers, text
+from natsort.compat.fake_fastnumbers import fast_float, fast_int
+from natsort.compat.py23 import PY_VERSION
 
 if PY_VERSION >= 3:
     long = int

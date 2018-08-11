@@ -3,16 +3,18 @@
 Here are a collection of examples of how this module can be used.
 See the README or the natsort homepage for more details.
 """
-from __future__ import unicode_literals, print_function
+from __future__ import print_function, unicode_literals
 
-import warnings
 import locale
-from pytest import raises
-from natsort import natsorted, natsort_key, natsort_keygen, ns
+import warnings
+
+from natsort import natsort_key, natsort_keygen, natsorted, ns
+from natsort.compat.locale import get_strxfrm, null_string_locale
 from natsort.compat.py23 import PY_VERSION
-from natsort.compat.locale import null_string_locale, get_strxfrm
-from compat.mock import patch
+from pytest import raises
+
 from compat.locale import load_locale
+from compat.mock import patch
 
 INPUT = ["6A-5.034e+1", "/Folder (1)/Foo", 56.7]
 

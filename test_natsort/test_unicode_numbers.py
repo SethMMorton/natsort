@@ -3,17 +3,19 @@
 Test the Unicode numbers module.
 """
 from __future__ import unicode_literals
+
 import unicodedata
+
 from natsort.compat.py23 import py23_range, py23_unichr
 from natsort.unicode_numbers import (
-    numeric_hex,
-    numeric_chars,
-    numeric,
-    digit_chars,
-    digits,
     decimal_chars,
     decimals,
+    digit_chars,
+    digits,
     digits_no_decimals,
+    numeric,
+    numeric_chars,
+    numeric_hex,
     numeric_no_decimals,
 )
 

@@ -6,29 +6,31 @@ import pathlib
 import string
 from itertools import chain
 from operator import neg as op_neg
-from pytest import raises
+
+from hypothesis import given
+from hypothesis.strategies import integers, lists, sampled_from, text
+from natsort.compat.locale import null_string_locale
+from natsort.compat.py23 import py23_cmp, py23_str
 from natsort.ns_enum import ns
 from natsort.utils import (
-    _sep_inserter,
     _args_to_enum,
-    _regex_chooser,
-    _float_sign_exp_re,
+    _do_decoding,
     _float_nosign_exp_re,
-    _float_sign_noexp_re,
     _float_nosign_noexp_re,
+    _float_sign_exp_re,
+    _float_sign_noexp_re,
+    _groupletters,
     _int_nosign_re,
     _int_sign_re,
-    _do_decoding,
     _path_splitter,
-    _groupletters,
+    _regex_chooser,
+    _sep_inserter,
     chain_functions,
 )
-from natsort.compat.py23 import py23_str, py23_cmp
-from natsort.compat.locale import null_string_locale
-from slow_splitters import sep_inserter, add_leading_space_if_first_is_num
+from pytest import raises
+
 from compat.locale import low
-from hypothesis import given
-from hypothesis.strategies import sampled_from, lists, text, integers
+from slow_splitters import add_leading_space_if_first_is_num, sep_inserter
 
 
 def test_do_decoding_decodes_bytes_string_to_unicode():

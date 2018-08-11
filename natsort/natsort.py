@@ -5,31 +5,28 @@ natsort public API.
 
 The majority of the "work" is defined in utils.py.
 """
-from __future__ import print_function, division, unicode_literals, absolute_import
+from __future__ import absolute_import, division, print_function, unicode_literals
 
-# Std lib. imports.
-from operator import itemgetter
+import sys
 from functools import partial
+from operator import itemgetter
 from warnings import warn
 
-# Local imports.
-import sys
-
 import natsort.compat.locale
+from natsort.compat.py23 import py23_cmp, py23_str, u_format
 from natsort.ns_enum import ns, ns_DUMB
-from natsort.compat.py23 import u_format, py23_str, py23_cmp
 from natsort.utils import (
-    _natsort_key,
     _args_to_enum,
     _do_decoding,
-    _regex_chooser,
-    _parse_string_factory,
-    _parse_path_factory,
-    _parse_number_factory,
-    _parse_bytes_factory,
-    _input_string_transform_factory,
-    _string_component_transform_factory,
     _final_data_transform_factory,
+    _input_string_transform_factory,
+    _natsort_key,
+    _parse_bytes_factory,
+    _parse_number_factory,
+    _parse_path_factory,
+    _parse_string_factory,
+    _regex_chooser,
+    _string_component_transform_factory,
 )
 
 

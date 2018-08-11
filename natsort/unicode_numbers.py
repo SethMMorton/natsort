@@ -2,14 +2,12 @@
 """
 Pre-determine the collection of unicode decimals, digits, and numerals.
 """
-from __future__ import print_function, division, unicode_literals, absolute_import
+from __future__ import division, print_function, absolute_import, unicode_literals
 
-# Std. lib imports.
 import unicodedata
 
-# Local imports.
-from natsort.unicode_numeric_hex import numeric_hex
 from natsort.compat.py23 import py23_unichr
+from natsort.unicode_numeric_hex import numeric_hex
 
 # Convert each hex into the literal Unicode character.
 # Stop if a ValueError is raised in case of a narrow Unicode build.

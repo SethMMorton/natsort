@@ -3,14 +3,17 @@
 Here are a collection of examples of how this module can be used.
 See the README or the natsort homepage for more details.
 """
-from __future__ import unicode_literals, print_function
-import pytest
+from __future__ import print_function, unicode_literals
+
 import locale
-from natsort.compat.py23 import PY_VERSION
 from operator import itemgetter
-from pytest import raises
+
+import pytest
 from natsort import natsorted, ns
-from compat.locale import load_locale, has_locale_de_DE
+from natsort.compat.py23 import PY_VERSION
+from pytest import raises
+
+from compat.locale import has_locale_de_DE, load_locale
 
 
 def test_natsorted_returns_strings_with_numbers_in_ascending_order():

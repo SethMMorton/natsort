@@ -6,15 +6,14 @@ Note that these tests are only relevant for Python version < 3.
 """
 import sys
 from functools import partial
-from compat.mock import patch
 
 import pytest
 from hypothesis import given
 from hypothesis.strategies import floats, integers, lists
-
 from natsort import ns
-
 from natsort.compat.py23 import py23_cmp
+
+from compat.mock import patch
 
 PY_VERSION = float(sys.version[:3])
 

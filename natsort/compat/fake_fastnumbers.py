@@ -3,12 +3,14 @@
 This module is intended to replicate some of the functionality
 from the fastnumbers module in the event that module is not installed.
 """
-from __future__ import print_function, division, unicode_literals, absolute_import
+from __future__ import absolute_import, division, print_function, unicode_literals
 
 # Std. lib imports.
 import unicodedata
-from natsort.unicode_numbers import decimal_chars
+
+# Local imports.
 from natsort.compat.py23 import PY_VERSION
+from natsort.unicode_numbers import decimal_chars
 
 if PY_VERSION >= 3:
     long = int

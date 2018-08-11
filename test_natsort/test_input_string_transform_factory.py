@@ -2,16 +2,17 @@
 """These test the utils.py functions."""
 from __future__ import unicode_literals
 
-import pytest
 import locale
 from operator import methodcaller
+
+import pytest
+from hypothesis import given
+from hypothesis.strategies import integers, lists, text
+from natsort.compat.py23 import NEWPY
 from natsort.ns_enum import ns, ns_DUMB
 from natsort.utils import _input_string_transform_factory
-from natsort.compat.py23 import NEWPY
-from compat.locale import load_locale, has_locale_de_DE
-from hypothesis import given
-from hypothesis.strategies import text, integers, lists
 
+from compat.locale import has_locale_de_DE, load_locale
 
 # Each test has an "example" version for demonstrative purposes,
 # and a test that uses the hypothesis module.

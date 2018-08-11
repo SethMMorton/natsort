@@ -3,24 +3,26 @@
 Here are a collection of examples of how this module can be used.
 See the README or the natsort homepage for more details.
 """
-from __future__ import unicode_literals, print_function
+from __future__ import print_function, unicode_literals
+
 from operator import itemgetter
-from natsort.compat.py23 import PY_VERSION
+
 from natsort import (
-    natsorted,
-    index_natsorted,
-    versorted,
-    index_versorted,
-    humansorted,
-    index_humansorted,
-    realsorted,
-    index_realsorted,
-    order_by_index,
-    ns,
-    decoder,
     as_ascii,
     as_utf8,
+    decoder,
+    humansorted,
+    index_humansorted,
+    index_natsorted,
+    index_realsorted,
+    index_versorted,
+    natsorted,
+    ns,
+    order_by_index,
+    realsorted,
+    versorted,
 )
+from natsort.compat.py23 import PY_VERSION
 
 
 def test_decoder_returns_function_that_can_decode_bytes_but_return_non_bytes_as_is():

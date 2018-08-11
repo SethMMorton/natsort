@@ -4,13 +4,18 @@ This file contains functions to profile natsorted with different
 inputs and different settings.
 """
 from __future__ import print_function
+
 import cProfile
+import locale
 import sys
 
-sys.path.insert(0, ".")
-from natsort import natsort_keygen, ns
-from natsort.compat.py23 import py23_range
-import locale
+try:
+    from natsort import ns, natsort_keygen
+    from natsort.compat.py23 import py23_range
+except ImportError:
+    sys.path.insert(0, ".")
+    from natsort import ns, natsort_keygen
+    from natsort.compat.py23 import py23_range
 
 locale.setlocale(locale.LC_ALL, "en_US.UTF-8")
 

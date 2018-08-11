@@ -2,12 +2,13 @@
 """Alternate versions of the splitting functions for testing."""
 from __future__ import unicode_literals
 
-import unicodedata
 import collections
-import itertools
 import functools
-from natsort.unicode_numbers import decimals
+import itertools
+import unicodedata
+
 from natsort.compat.py23 import PY_VERSION, py23_zip
+from natsort.unicode_numbers import decimals
 
 if PY_VERSION >= 3.0:
     long = int

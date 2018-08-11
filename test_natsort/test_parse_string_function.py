@@ -2,23 +2,24 @@
 """These test the utils.py functions."""
 from __future__ import unicode_literals
 
-from pytest import raises
+from hypothesis import example, given
+from hypothesis.strategies import floats, integers, lists, text
+from natsort.compat.fastnumbers import fast_float, fast_int
+from natsort.compat.py23 import PY_VERSION, py23_str
 from natsort.ns_enum import ns, ns_DUMB
 from natsort.utils import (
-    _float_sign_exp_re,
     _float_nosign_exp_re,
-    _float_sign_noexp_re,
     _float_nosign_noexp_re,
+    _float_sign_exp_re,
+    _float_sign_noexp_re,
     _int_nosign_re,
     _int_sign_re,
-    _parse_string_factory,
     _parse_path_factory,
+    _parse_string_factory,
 )
-from natsort.compat.py23 import py23_str, PY_VERSION
-from natsort.compat.fastnumbers import fast_float, fast_int
-from slow_splitters import int_splitter, float_splitter
-from hypothesis import given, example
-from hypothesis.strategies import lists, text, floats, integers
+from pytest import raises
+
+from slow_splitters import float_splitter, int_splitter
 
 if PY_VERSION >= 3:
     long = int
