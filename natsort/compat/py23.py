@@ -20,26 +20,29 @@ PY_VERSION = float(sys.version[:3])
 NEWPY = PY_VERSION >= 3.3
 
 # Assume all strings are Unicode in Python 2
-py23_str = str if sys.version[0] == "3" else unicode
+py23_str = str if PY_VERSION >= 3 else unicode
 
 # Use the range iterator always
-py23_range = range if sys.version[0] == "3" else xrange
+py23_range = range if PY_VERSION >= 3 else xrange
 
 # Uniform base string type
-py23_basestring = str if sys.version[0] == "3" else basestring
+py23_basestring = str if PY_VERSION >= 3 else basestring
 
 # unichr function
-py23_unichr = chr if sys.version[0] == "3" else unichr
+py23_unichr = chr if PY_VERSION >= 3 else unichr
+
+# Proper lower-casing of letters.
+py23_lower = py23_str.casefold if NEWPY else py23_str.lower
 
 
 def _py23_cmp(a, b):
     return (a > b) - (a < b)
 
 
-py23_cmp = _py23_cmp if sys.version[0] == "3" else cmp
+py23_cmp = _py23_cmp if PY_VERSION >= 3 else cmp
 
 # zip as an iterator
-if sys.version[0] == "3":
+if PY_VERSION >= 3:
     py23_zip = zip
     py23_map = map
     py23_filter = filter
@@ -49,7 +52,6 @@ else:
     py23_zip = itertools.izip
     py23_map = itertools.imap
     py23_filter = itertools.ifilter
-
 
 # cmp_to_key was not created till 2.7, so require this for 2.6
 try:
@@ -113,7 +115,7 @@ def _modify_str_or_docstring(str_change_func):
 
 
 # Properly modify a doctstring to either have the unicode literal or not.
-if sys.version[0] == "3":
+if PY_VERSION >= 3:
     # Abstract u'abc' syntax:
     @_modify_str_or_docstring
     def u_format(s):

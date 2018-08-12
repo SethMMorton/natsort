@@ -8,13 +8,11 @@ from __future__ import print_function, unicode_literals
 import locale
 import warnings
 
+import pytest
 from natsort import natsort_key, natsort_keygen, natsorted, ns
 from natsort.compat.locale import get_strxfrm, null_string_locale
 from natsort.compat.py23 import PY_VERSION
 from pytest import raises
-
-from compat.locale import load_locale
-from compat.mock import patch
 
 INPUT = ["6A-5.034e+1", "/Folder (1)/Foo", 56.7]
 
@@ -92,10 +90,10 @@ def test_natsort_keygen_splits_input_with_lowercasefirst_noexp_float():
         )
 
 
-def test_natsort_keygen_splits_input_with_locale():
-    load_locale("en_US")
+@pytest.mark.usefixtures("with_locale_en_us")
+def test_natsort_keygen_splits_input_with_locale(mocker):
     strxfrm = get_strxfrm()
-    with patch("natsort.compat.locale.dumb_sort", return_value=False):
+    with mocker.patch("natsort.compat.locale.dumb_sort", return_value=False):
         assert natsort_keygen(alg=ns.L)(INPUT) == (
             (
                 null_string_locale,
@@ -110,7 +108,7 @@ def test_natsort_keygen_splits_input_with_locale():
             (strxfrm("/Folder ("), 1, strxfrm(")/Foo")),
             (null_string_locale, 56.7),
         )
-    with patch("natsort.compat.locale.dumb_sort", return_value=True):
+    with mocker.patch("natsort.compat.locale.dumb_sort", return_value=True):
         assert natsort_keygen(alg=ns.L)(INPUT) == (
             (
                 null_string_locale,
@@ -130,10 +128,10 @@ def test_natsort_keygen_splits_input_with_locale():
     locale.setlocale(locale.LC_ALL, str(""))
 
 
-def test_natsort_keygen_splits_input_with_locale_and_capitalfirst():
-    load_locale("en_US")
+@pytest.mark.usefixtures("with_locale_en_us")
+def test_natsort_keygen_splits_input_with_locale_and_capitalfirst(mocker):
     strxfrm = get_strxfrm()
-    with patch("natsort.compat.locale.dumb_sort", return_value=False):
+    with mocker.patch("natsort.compat.locale.dumb_sort", return_value=False):
         assert natsort_keygen(alg=ns.LA | ns.C)(INPUT) == (
             (
                 ("",),

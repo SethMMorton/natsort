@@ -13,8 +13,6 @@ from hypothesis.strategies import floats, integers, lists
 from natsort import ns
 from natsort.compat.py23 import py23_cmp
 
-from compat.mock import patch
-
 PY_VERSION = float(sys.version[:3])
 
 if PY_VERSION < 3:
@@ -42,7 +40,7 @@ def test__classes_can_be_compared():
 
 
 @pytest.mark.skipif(PY_VERSION >= 3.0, reason="cmp() deprecated in Python 3")
-def test__keys_are_being_cached():
+def test__keys_are_being_cached(mocker):
     natcmp.cached_keys = {}
     assert len(natcmp.cached_keys) == 0
     natcmp(0, 0)
@@ -50,13 +48,13 @@ def test__keys_are_being_cached():
     natcmp(0, 0)
     assert len(natcmp.cached_keys) == 1
 
-    with patch("natsort.compat.locale.dumb_sort", return_value=False):
+    with mocker.patch("natsort.compat.locale.dumb_sort", return_value=False):
         natcmp(0, 0, alg=ns.L)
         assert len(natcmp.cached_keys) == 2
         natcmp(0, 0, alg=ns.L)
         assert len(natcmp.cached_keys) == 2
 
-    with patch("natsort.compat.locale.dumb_sort", return_value=True):
+    with mocker.patch("natsort.compat.locale.dumb_sort", return_value=True):
         natcmp(0, 0, alg=ns.L)
         assert len(natcmp.cached_keys) == 3
         natcmp(0, 0, alg=ns.L)

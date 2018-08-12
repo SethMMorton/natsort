@@ -12,8 +12,6 @@ from natsort.compat.py23 import NEWPY
 from natsort.ns_enum import ns, ns_DUMB
 from natsort.utils import _input_string_transform_factory
 
-from compat.locale import has_locale_de_DE, load_locale
-
 # Each test has an "example" version for demonstrative purposes,
 # and a test that uses the hypothesis module.
 
@@ -105,8 +103,8 @@ def test_input_string_transform_factory_performs_swapcase_and_casefold_both_LOWE
         )
 
 
+@pytest.mark.usefixtures("with_locale_en_us")
 def test_input_string_transform_factory_removes_thousands_separator_with_LOCALE_example():
-    load_locale("en_US")
     x = "12,543,642,642.534,534,980"  # Without FLOAT it does not account for decimal.
     assert _input_string_transform_factory(ns.LOCALE)(x) == "12543642642.534534980"
     x = (
@@ -120,8 +118,8 @@ def test_input_string_transform_factory_removes_thousands_separator_with_LOCALE_
 
 
 @given(lists(elements=integers(), min_size=4, max_size=20))
+@pytest.mark.usefixtures("with_locale_en_us")
 def test_input_string_transform_factory_removes_thousands_separator_with_LOCALE(x):
-    load_locale("en_US")
     t = "".join(
         map(methodcaller("rstrip", "lL"), map(str, map(abs, x)))
     )  # Remove negative signs trailing L
@@ -146,10 +144,10 @@ def test_input_string_transform_factory_removes_thousands_separator_and_is_float
     lists(elements=integers(), min_size=4, max_size=20),
     lists(elements=integers(), min_size=4, max_size=20),
 )
+@pytest.mark.usefixtures("with_locale_en_us")
 def test_input_string_transform_factory_removes_thousands_separator_and_is_float_aware_with_LOCALE_and_FLOAT(
     x, y
 ):
-    load_locale("en_US")
     t = "".join(
         map(methodcaller("rstrip", "lL"), map(str, map(abs, x)))
     )  # Remove negative signs trailing L
@@ -181,8 +179,8 @@ def test_input_string_transform_factory_removes_thousands_separator_and_is_float
 # These might be too much to test with hypothesis.
 
 
+@pytest.mark.usefixtures("with_locale_en_us")
 def test_input_string_transform_factory_leaves_invalid_thousands_separator_with_LOCALE_example():
-    load_locale("en_US")
     x = "12,543,642642.5345,34980"
     assert _input_string_transform_factory(ns.LOCALE)(x) == "12543,642642.5345,34980"
     x = "12,59443,642,642.53,4534980"
@@ -192,12 +190,8 @@ def test_input_string_transform_factory_leaves_invalid_thousands_separator_with_
     locale.setlocale(locale.LC_ALL, str(""))
 
 
-# @pytest.mark.skipif(not has_locale_de_DE or dumb_sort(), reason='requires de_DE locale and working locale')
-@pytest.mark.skipif(
-    not has_locale_de_DE, reason="requires de_DE locale and working locale"
-)
+@pytest.mark.usefixtures("with_locale_de_de")
 def test_input_string_transform_factory_replaces_decimal_separator_with_LOCALE_example():
-    load_locale("de_DE")
     x = "1543,753"
     assert (
         _input_string_transform_factory(ns.LOCALE)(x) == "1543,753"
@@ -209,12 +203,8 @@ def test_input_string_transform_factory_replaces_decimal_separator_with_LOCALE_e
     locale.setlocale(locale.LC_ALL, str(""))
 
 
-# @pytest.mark.skipif(not has_locale_de_DE or dumb_sort(), reason='requires de_DE locale and working locale')
-@pytest.mark.skipif(
-    not has_locale_de_DE, reason="requires de_DE locale and working locale"
-)
+@pytest.mark.usefixtures("with_locale_de_de")
 def test_input_string_transform_factory_does_not_replace_invalid_decimal_separator_with_LOCALE_example():
-    load_locale("de_DE")
     x = "154s,t53"
     assert _input_string_transform_factory(ns.LOCALE | ns.FLOAT)(x) == "154s,t53"
     locale.setlocale(locale.LC_ALL, str(""))

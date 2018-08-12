@@ -6,11 +6,18 @@ from hypothesis import given
 from hypothesis.strategies import floats, integers, text
 from natsort.compat.fastnumbers import fast_float, fast_int
 from natsort.compat.locale import get_strxfrm
-from natsort.compat.py23 import py23_str
+from natsort.compat.py23 import py23_str, py23_unichr, py23_range
 from natsort.ns_enum import ns, ns_DUMB
 from natsort.utils import _groupletters, _string_component_transform_factory
 
-from compat.locale import bad_uni_chars
+# There are some unicode values that are known failures with the builtin locale
+# library on BSD systems that has nothing to do with natsort (a ValueError is
+# raised by strxfrm). Let's filter them out.
+try:
+    bad_uni_chars = set(py23_unichr(x) for x in py23_range(0X10fefd, 0X10ffff + 1))
+except ValueError:
+    # Narrow unicode build... no worries.
+    bad_uni_chars = set()
 
 
 def no_null(x):

@@ -10,7 +10,7 @@ from operator import neg as op_neg
 from hypothesis import given
 from hypothesis.strategies import integers, lists, sampled_from, text
 from natsort.compat.locale import null_string_locale
-from natsort.compat.py23 import py23_cmp, py23_str
+from natsort.compat.py23 import py23_cmp, py23_str, py23_lower
 from natsort.ns_enum import ns
 from natsort.utils import (
     _args_to_enum,
@@ -24,7 +24,6 @@ from natsort.utils import (
 )
 from pytest import raises
 
-from compat.locale import low
 from slow_splitters import add_leading_space_if_first_is_num, sep_inserter
 
 
@@ -172,7 +171,7 @@ def test_groupletters_returns_letters_with_lowercase_transform_of_letter_example
 
 @given(text().filter(bool))
 def test_groupeletters_returns_letters_with_lowercase_transform_of_letter(x):
-    assert _groupletters(x) == "".join(chain.from_iterable([low(y), y] for y in x))
+    assert _groupletters(x) == "".join(chain.from_iterable([py23_lower(y), y] for y in x))
 
 
 def test_sep_inserter_does_nothing_if_no_numbers_example():

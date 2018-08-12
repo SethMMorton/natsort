@@ -13,8 +13,6 @@ from natsort import natsorted, ns
 from natsort.compat.py23 import PY_VERSION
 from pytest import raises
 
-from compat.locale import has_locale_de_DE, load_locale
-
 
 def test_natsorted_returns_strings_with_numbers_in_ascending_order():
     a = ["a2", "a5", "a9", "a1", "a4", "a10", "a6"]
@@ -305,9 +303,9 @@ def test_natsorted_with_IGNORECASE_sorts_without_regard_to_case_for_nested_input
     assert natsorted(b, alg=ns.IGNORECASE) == [("a3", "a1"), ("A5", "a6")]
 
 
+@pytest.mark.usefixtures("with_locale_en_us")
 def test_natsorted_with_LOCALE_returns_results_sorted_by_lowercase_first_and_grouped_letters():
     a = ["Apple", "corn", "Corn", "Banana", "apple", "banana"]
-    load_locale("en_US")
     assert natsorted(a, alg=ns.LOCALE) == [
         "apple",
         "Apple",
@@ -319,9 +317,9 @@ def test_natsorted_with_LOCALE_returns_results_sorted_by_lowercase_first_and_gro
     locale.setlocale(locale.LC_ALL, str(""))
 
 
+@pytest.mark.usefixtures("with_locale_en_us")
 def test_natsorted_with_LOCALE_and_CAPITALFIRST_returns_results_sorted_by_capital_first_and_ungrouped():
     a = ["Apple", "corn", "Corn", "Banana", "apple", "banana"]
-    load_locale("en_US")
     assert natsorted(a, alg=ns.LOCALE | ns.CAPITALFIRST) == [
         "Apple",
         "Banana",
@@ -333,9 +331,9 @@ def test_natsorted_with_LOCALE_and_CAPITALFIRST_returns_results_sorted_by_capita
     locale.setlocale(locale.LC_ALL, str(""))
 
 
+@pytest.mark.usefixtures("with_locale_en_us")
 def test_natsorted_with_LOCALE_and_LOWERCASEFIRST_returns_results_sorted_by_uppercase_first_and_grouped_letters():
     a = ["Apple", "corn", "Corn", "Banana", "apple", "banana"]
-    load_locale("en_US")
     assert natsorted(a, alg=ns.LOCALE | ns.LOWERCASEFIRST) == [
         "Apple",
         "apple",
@@ -347,9 +345,9 @@ def test_natsorted_with_LOCALE_and_LOWERCASEFIRST_returns_results_sorted_by_uppe
     locale.setlocale(locale.LC_ALL, str(""))
 
 
+@pytest.mark.usefixtures("with_locale_en_us")
 def test_natsorted_with_LOCALE_and_CAPITALFIRST_and_LOWERCASE_returns_results_sorted_by_capital_last_and_ungrouped():
     a = ["Apple", "corn", "Corn", "Banana", "apple", "banana"]
-    load_locale("en_US")
     assert natsorted(a, alg=ns.LOCALE | ns.CAPITALFIRST | ns.LOWERCASEFIRST) == [
         "apple",
         "banana",
@@ -361,8 +359,8 @@ def test_natsorted_with_LOCALE_and_CAPITALFIRST_and_LOWERCASE_returns_results_so
     locale.setlocale(locale.LC_ALL, str(""))
 
 
+@pytest.mark.usefixtures("with_locale_en_us")
 def test_natsorted_with_LOCALE_and_en_setting_returns_results_sorted_by_en_language():
-    load_locale("en_US")
     a = ["c", "a5,467.86", "ä", "b", "a5367.86", "a5,6", "a5,50"]
     assert natsorted(a, alg=ns.LOCALE | ns.F) == [
         "a5,6",
@@ -376,11 +374,8 @@ def test_natsorted_with_LOCALE_and_en_setting_returns_results_sorted_by_en_langu
     locale.setlocale(locale.LC_ALL, str(""))
 
 
-@pytest.mark.skipif(
-    not has_locale_de_DE, reason="requires de_DE locale and working locale"
-)
+@pytest.mark.usefixtures("with_locale_de_de")
 def test_natsorted_with_LOCALE_and_de_setting_returns_results_sorted_by_de_language():
-    load_locale("de_DE")
     a = ["c", "a5.467,86", "ä", "b", "a5367.86", "a5,6", "a5,50"]
     assert natsorted(a, alg=ns.LOCALE | ns.F) == [
         "a5,50",
@@ -394,8 +389,8 @@ def test_natsorted_with_LOCALE_and_de_setting_returns_results_sorted_by_de_langu
     locale.setlocale(locale.LC_ALL, str(""))
 
 
+@pytest.mark.usefixtures("with_locale_en_us")
 def test_natsorted_with_LOCALE_and_mixed_input_returns_sorted_results_without_error():
-    load_locale("en_US")
     a = ["0", "Á", "2", "Z"]
     assert natsorted(a, alg=ns.LOCALE) == ["0", "2", "Á", "Z"]
     assert natsorted(a, alg=ns.LOCALE | ns.NUMAFTER) == ["Á", "Z", "0", "2"]
@@ -405,8 +400,8 @@ def test_natsorted_with_LOCALE_and_mixed_input_returns_sorted_results_without_er
     locale.setlocale(locale.LC_ALL, str(""))
 
 
+@pytest.mark.usefixtures("with_locale_en_us")
 def test_natsorted_with_LOCALE_and_UNGROUPLETTERS_and_mixed_input_returns_sorted_results_without_error():
-    load_locale("en_US")
     a = ["0", "Á", "2", "Z"]
     assert natsorted(a, alg=ns.LOCALE | ns.UNGROUPLETTERS) == ["0", "2", "Á", "Z"]
     assert natsorted(a, alg=ns.LOCALE | ns.UNGROUPLETTERS | ns.NUMAFTER) == [
@@ -427,8 +422,8 @@ def test_natsorted_with_LOCALE_and_UNGROUPLETTERS_and_mixed_input_returns_sorted
     locale.setlocale(locale.LC_ALL, str(""))
 
 
+@pytest.mark.usefixtures("with_locale_en_us")
 def test_natsorted_with_PATH_and_LOCALE_and_UNGROUPLETTERS_and_mixed_input_returns_sorted_results_without_error():
-    load_locale("en_US")
     a = ["0", "Á", "2", "Z"]
     assert natsorted(a, alg=ns.PATH | ns.LOCALE | ns.UNGROUPLETTERS) == [
         "0",

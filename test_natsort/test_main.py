@@ -19,60 +19,58 @@ from natsort.__main__ import (
 )
 from pytest import raises
 
-from compat.mock import call, patch
+
+def test_main_passes_default_arguments_with_no_command_line_options(mocker):
+    p = mocker.patch("natsort.__main__.sort_and_print_entries")
+    sys.argv[1:] = ["num-2", "num-6", "num-1"]
+    main()
+    args = p.call_args[0][1]
+    assert not args.paths
+    assert args.filter is None
+    assert args.reverse_filter is None
+    assert args.exclude is None
+    assert not args.reverse
+    assert args.number_type == "int"
+    assert not args.signed
+    assert args.exp
+    assert not args.locale
 
 
-def test_main_passes_default_arguments_with_no_command_line_options():
-    with patch("natsort.__main__.sort_and_print_entries") as p:
-        sys.argv[1:] = ["num-2", "num-6", "num-1"]
-        main()
-        args = p.call_args[0][1]
-        assert not args.paths
-        assert args.filter is None
-        assert args.reverse_filter is None
-        assert args.exclude is None
-        assert not args.reverse
-        assert args.number_type == "int"
-        assert not args.signed
-        assert args.exp
-        assert not args.locale
-
-
-def test_main_passes_arguments_with_all_command_line_options():
-    with patch("natsort.__main__.sort_and_print_entries") as p:
-        sys.argv[1:] = [
-            "--paths",
-            "--reverse",
-            "--locale",
-            "--filter",
-            "4",
-            "10",
-            "--reverse-filter",
-            "100",
-            "110",
-            "--number-type",
-            "float",
-            "--noexp",
-            "--sign",
-            "--exclude",
-            "34",
-            "--exclude",
-            "35",
-            "num-2",
-            "num-6",
-            "num-1",
-        ]
-        main()
-        args = p.call_args[0][1]
-        assert args.paths
-        assert args.filter == [(4.0, 10.0)]
-        assert args.reverse_filter == [(100.0, 110.0)]
-        assert args.exclude == [34, 35]
-        assert args.reverse
-        assert args.number_type == "float"
-        assert args.signed
-        assert not args.exp
-        assert args.locale
+def test_main_passes_arguments_with_all_command_line_options(mocker):
+    p = mocker.patch("natsort.__main__.sort_and_print_entries")
+    sys.argv[1:] = [
+        "--paths",
+        "--reverse",
+        "--locale",
+        "--filter",
+        "4",
+        "10",
+        "--reverse-filter",
+        "100",
+        "110",
+        "--number-type",
+        "float",
+        "--noexp",
+        "--sign",
+        "--exclude",
+        "34",
+        "--exclude",
+        "35",
+        "num-2",
+        "num-6",
+        "num-1",
+    ]
+    main()
+    args = p.call_args[0][1]
+    assert args.paths
+    assert args.filter == [(4.0, 10.0)]
+    assert args.reverse_filter == [(100.0, 110.0)]
+    assert args.exclude == [34, 35]
+    assert args.reverse
+    assert args.number_type == "float"
+    assert args.signed
+    assert not args.exp
+    assert args.locale
 
 
 class Args:
@@ -103,79 +101,79 @@ entries = [
 mock_print = "__builtin__.print" if sys.version[0] == "2" else "builtins.print"
 
 
-def test_sort_and_print_entries_uses_default_algorithm_with_all_options_false():
-    with patch(mock_print) as p:
-        # tmp/a1 (1)/path1
-        # tmp/a1/path1
-        # tmp/a23/path1
-        # tmp/a57/path2
-        # tmp/a64/path1
-        # tmp/a64/path2
-        # tmp/a130/path1
-        sort_and_print_entries(entries, Args(None, None, False, False, False))
-        e = [call(entries[i]) for i in [3, 2, 1, 0, 5, 6, 4]]
-        p.assert_has_calls(e)
+def test_sort_and_print_entries_uses_default_algorithm_with_all_options_false(mocker):
+    p = mocker.patch(mock_print)
+    # tmp/a1 (1)/path1
+    # tmp/a1/path1
+    # tmp/a23/path1
+    # tmp/a57/path2
+    # tmp/a64/path1
+    # tmp/a64/path2
+    # tmp/a130/path1
+    sort_and_print_entries(entries, Args(None, None, False, False, False))
+    e = [mocker.call(entries[i]) for i in [3, 2, 1, 0, 5, 6, 4]]
+    p.assert_has_calls(e)
 
 
-def test_sort_and_print_entries_uses_PATH_algorithm_with_path_option_true_to_properly_sort_OS_generated_path_names():
-    with patch(mock_print) as p:
-        # tmp/a1/path1
-        # tmp/a1 (1)/path1
-        # tmp/a23/path1
-        # tmp/a57/path2
-        # tmp/a64/path1
-        # tmp/a64/path2
-        # tmp/a130/path1
-        sort_and_print_entries(entries, Args(None, None, False, True, False))
-        e = [call(entries[i]) for i in [2, 3, 1, 0, 5, 6, 4]]
-        p.assert_has_calls(e)
+def test_sort_and_print_entries_uses_PATH_algorithm_with_path_option_true_to_properly_sort_OS_generated_path_names(mocker):
+    p = mocker.patch(mock_print)
+    # tmp/a1/path1
+    # tmp/a1 (1)/path1
+    # tmp/a23/path1
+    # tmp/a57/path2
+    # tmp/a64/path1
+    # tmp/a64/path2
+    # tmp/a130/path1
+    sort_and_print_entries(entries, Args(None, None, False, True, False))
+    e = [mocker.call(entries[i]) for i in [2, 3, 1, 0, 5, 6, 4]]
+    p.assert_has_calls(e)
 
 
-def test_sort_and_print_entries_keeps_only_paths_between_of_20_to_100_with_filter_option():
-    with patch(mock_print) as p:
-        # tmp/a23/path1
-        # tmp/a57/path2
-        # tmp/a64/path1
-        # tmp/a64/path2
-        sort_and_print_entries(entries, Args([(20, 100)], None, False, False, False))
-        e = [call(entries[i]) for i in [1, 0, 5, 6]]
-        p.assert_has_calls(e)
+def test_sort_and_print_entries_keeps_only_paths_between_of_20_to_100_with_filter_option(mocker):
+    p = mocker.patch(mock_print)
+    # tmp/a23/path1
+    # tmp/a57/path2
+    # tmp/a64/path1
+    # tmp/a64/path2
+    sort_and_print_entries(entries, Args([(20, 100)], None, False, False, False))
+    e = [mocker.call(entries[i]) for i in [1, 0, 5, 6]]
+    p.assert_has_calls(e)
 
 
-def test_sort_and_print_entries_excludes_paths_between_of_20_to_100_with_reverse_filter_option():
-    with patch(mock_print) as p:
-        # tmp/a1/path1
-        # tmp/a1 (1)/path1
-        # tmp/a130/path1
-        sort_and_print_entries(entries, Args(None, [(20, 100)], False, True, False))
-        e = [call(entries[i]) for i in [2, 3, 4]]
-        p.assert_has_calls(e)
+def test_sort_and_print_entries_excludes_paths_between_of_20_to_100_with_reverse_filter_option(mocker):
+    p = mocker.patch(mock_print)
+    # tmp/a1/path1
+    # tmp/a1 (1)/path1
+    # tmp/a130/path1
+    sort_and_print_entries(entries, Args(None, [(20, 100)], False, True, False))
+    e = [mocker.call(entries[i]) for i in [2, 3, 4]]
+    p.assert_has_calls(e)
 
 
-def test_sort_and_print_entries_excludes_paths_23_or_130_with_exclude_option_list():
-    with patch(mock_print) as p:
-        # tmp/a1/path1
-        # tmp/a1 (1)/path1
-        # tmp/a57/path2
-        # tmp/a64/path1
-        # tmp/a64/path2
-        sort_and_print_entries(entries, Args(None, None, [23, 130], True, False))
-        e = [call(entries[i]) for i in [2, 3, 0, 5, 6]]
-        p.assert_has_calls(e)
+def test_sort_and_print_entries_excludes_paths_23_or_130_with_exclude_option_list(mocker):
+    p = mocker.patch(mock_print)
+    # tmp/a1/path1
+    # tmp/a1 (1)/path1
+    # tmp/a57/path2
+    # tmp/a64/path1
+    # tmp/a64/path2
+    sort_and_print_entries(entries, Args(None, None, [23, 130], True, False))
+    e = [mocker.call(entries[i]) for i in [2, 3, 0, 5, 6]]
+    p.assert_has_calls(e)
 
 
-def test_sort_and_print_entries_reverses_order_with_reverse_option():
-    with patch(mock_print) as p:
-        # tmp/a130/path1
-        # tmp/a64/path2
-        # tmp/a64/path1
-        # tmp/a57/path2
-        # tmp/a23/path1
-        # tmp/a1 (1)/path1
-        # tmp/a1/path1
-        sort_and_print_entries(entries, Args(None, None, False, True, True))
-        e = [call(entries[i]) for i in reversed([2, 3, 1, 0, 5, 6, 4])]
-        p.assert_has_calls(e)
+def test_sort_and_print_entries_reverses_order_with_reverse_option(mocker):
+    p = mocker.patch(mock_print)
+    # tmp/a130/path1
+    # tmp/a64/path2
+    # tmp/a64/path1
+    # tmp/a57/path2
+    # tmp/a23/path1
+    # tmp/a1 (1)/path1
+    # tmp/a1/path1
+    sort_and_print_entries(entries, Args(None, None, False, True, True))
+    e = [mocker.call(entries[i]) for i in reversed([2, 3, 1, 0, 5, 6, 4])]
+    p.assert_has_calls(e)
 
 
 # Each test has an "example" version for demonstrative purposes,
