@@ -28,6 +28,9 @@ py23_range = range if PY_VERSION >= 3 else xrange
 # Uniform base string type
 py23_basestring = str if PY_VERSION >= 3 else basestring
 
+# Iniform int type
+py23_int = (int,) if PY_VERSION >= 3 else (int, long)
+
 # unichr function
 py23_unichr = chr if PY_VERSION >= 3 else unichr
 

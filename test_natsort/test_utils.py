@@ -7,157 +7,113 @@ import string
 from itertools import chain
 from operator import neg as op_neg
 
+import pytest
 from hypothesis import given
 from hypothesis.strategies import integers, lists, sampled_from, text
-from natsort.compat.locale import null_string_locale
-from natsort.compat.py23 import py23_cmp, py23_str, py23_lower
+from natsort import utils
+from natsort.compat.py23 import py23_cmp, py23_str, py23_lower, py23_int
 from natsort.ns_enum import ns
-from natsort.utils import (
-    _args_to_enum,
-    _do_decoding,
-    _groupletters,
-    _path_splitter,
-    NumericalRegularExpressions,
-    regex_chooser,
-    _sep_inserter,
-    chain_functions,
-)
-from pytest import raises
-
-from slow_splitters import add_leading_space_if_first_is_num, sep_inserter
 
 
 def test_do_decoding_decodes_bytes_string_to_unicode():
-    assert type(_do_decoding(b"bytes", "ascii")) is py23_str
-    assert _do_decoding(b"bytes", "ascii") == "bytes"
-    assert _do_decoding(b"bytes", "ascii") == b"bytes".decode("ascii")
+    assert type(utils._do_decoding(b"bytes", "ascii")) is py23_str
+    assert utils._do_decoding(b"bytes", "ascii") == "bytes"
+    assert utils._do_decoding(b"bytes", "ascii") == b"bytes".decode("ascii")
 
 
-def test_args_to_enum_raises_TypeError_for_invalid_argument():
-    with raises(TypeError):
-        _args_to_enum(**{"alf": 0})
+def test_args_to_enum_raises_typeerror_for_invalid_argument():
+    with pytest.raises(TypeError):
+        utils._args_to_enum(**{"alf": 0})
 
 
-def test_args_to_enum_converts_signed_exp_float_to_ns_F():
-    # number_type, signed, exp, as_path, py3_safe
-    assert (
-        _args_to_enum(**{"number_type": float, "signed": True, "exp": True})
-        == ns.F | ns.S
-    )
+@pytest.mark.parametrize(
+    "kwargs, expected",
+    [
+        ({"number_type": float, "signed": True, "exp": True}, ns.F | ns.S),
+        ({"number_type": float, "signed": True, "exp": False}, ns.F | ns.N | ns.S),
+        ({"number_type": float, "signed": False, "exp": True}, ns.F | ns.U),
+        ({"number_type": float, "signed": False, "exp": True}, ns.F),
+        ({"number_type": float, "signed": False, "exp": False}, ns.F | ns.U | ns.N),
+        ({"number_type": float, "as_path": True}, ns.F | ns.P),
+        ({"number_type": int, "as_path": True}, ns.I | ns.P),
+        ({"number_type": int, "signed": False}, ns.I | ns.U),
+        ({"number_type": None, "exp": True}, ns.I | ns.U),
+    ],
+)
+def test_args_to_enum(kwargs, expected):
+    assert utils._args_to_enum(**kwargs) == expected
 
 
-def test_args_to_enum_converts_signed_noexp_float_to_ns_FN():
-    # number_type, signed, exp, as_path, py3_safe
-    assert (
-        _args_to_enum(**{"number_type": float, "signed": True, "exp": False})
-        == ns.F | ns.N | ns.S
-    )
+@pytest.mark.parametrize(
+    "alg, expected",
+    [
+        (ns.I, utils.NumericalRegularExpressions.int_nosign()),
+        (ns.I | ns.N, utils.NumericalRegularExpressions.int_nosign()),
+        (ns.I | ns.S, utils.NumericalRegularExpressions.int_sign()),
+        (ns.I | ns.S | ns.N, utils.NumericalRegularExpressions.int_sign()),
+        (ns.F, utils.NumericalRegularExpressions.float_nosign_exp()),
+        (ns.F | ns.N, utils.NumericalRegularExpressions.float_nosign_noexp()),
+        (ns.F | ns.S, utils.NumericalRegularExpressions.float_sign_exp()),
+        (ns.F | ns.S | ns.N, utils.NumericalRegularExpressions.float_sign_noexp()),
+    ],
+)
+def test_regex_chooser_returns_correct_regular_expression_object(alg, expected):
+    assert utils.regex_chooser(alg) == expected
 
 
-def test_args_to_enum_converts_unsigned_exp_float_to_ns_FU():
-    # number_type, signed, exp, as_path, py3_safe
-    assert (
-        _args_to_enum(**{"number_type": float, "signed": False, "exp": True})
-        == ns.F | ns.U
-    )
-    # unsigned is default
-    assert _args_to_enum(**{"number_type": float, "signed": False, "exp": True}) == ns.F
-
-
-def test_args_to_enum_converts_unsigned_unexp_float_to_ns_FNU():
-    # number_type, signed, exp, as_path, py3_safe
-    assert (
-        _args_to_enum(**{"number_type": float, "signed": False, "exp": False})
-        == ns.F | ns.U | ns.N
-    )
-
-
-def test_args_to_enum_converts_float_and_path_and_py3safe_to_ns_FPT():
-    # number_type, signed, exp, as_path, py3_safe
-    assert (
-        _args_to_enum(**{"number_type": float, "as_path": True, "py3_safe": True})
-        == ns.F | ns.P | ns.T
-    )
-
-
-def test_args_to_enum_converts_int_and_path_to_ns_IP():
-    # number_type, signed, exp, as_path, py3_safe
-    assert _args_to_enum(**{"number_type": int, "as_path": True}) == ns.I | ns.P
-
-
-def test_args_to_enum_converts_unsigned_int_and_py3safe_to_ns_IUT():
-    # number_type, signed, exp, as_path, py3_safe
-    assert (
-        _args_to_enum(**{"number_type": int, "signed": False, "py3_safe": True})
-        == ns.I | ns.U | ns.T
-    )
-
-
-def test_args_to_enum_converts_None_to_ns_IU():
-    # number_type, signed, exp, as_path, py3_safe
-    assert _args_to_enum(**{"number_type": None, "exp": True}) == ns.I | ns.U
-
-
-def test_regex_chooser_returns_correct_regular_expression_object():
-    assert regex_chooser(ns.INT) is NumericalRegularExpressions.int_nosign()
-    assert regex_chooser(ns.INT | ns.NOEXP) is NumericalRegularExpressions.int_nosign()
-    assert regex_chooser(ns.INT | ns.SIGNED) is NumericalRegularExpressions.int_sign()
-    assert regex_chooser(ns.INT | ns.SIGNED | ns.NOEXP) is NumericalRegularExpressions.int_sign()
-    assert regex_chooser(ns.FLOAT) is NumericalRegularExpressions.float_nosign_exp()
-    assert regex_chooser(ns.FLOAT | ns.NOEXP) is NumericalRegularExpressions.float_nosign_noexp()
-    assert regex_chooser(ns.FLOAT | ns.SIGNED) is NumericalRegularExpressions.float_sign_exp()
-    assert regex_chooser(ns.FLOAT | ns.SIGNED | ns.NOEXP) is NumericalRegularExpressions.float_sign_noexp()
-
-
-def test_ns_enum_values_have_are_as_expected():
-    # Defaults
-    assert ns.TYPESAFE == 0
-    assert ns.INT == 0
-    assert ns.VERSION == 0
-    assert ns.DIGIT == 0
-    assert ns.UNSIGNED == 0
-
-    # Aliases
-    assert ns.TYPESAFE == ns.T
-    assert ns.INT == ns.I
-    assert ns.VERSION == ns.V
-    assert ns.DIGIT == ns.D
-    assert ns.UNSIGNED == ns.U
-    assert ns.FLOAT == ns.F
-    assert ns.SIGNED == ns.S
-    assert ns.NOEXP == ns.N
-    assert ns.PATH == ns.P
-    assert ns.LOCALEALPHA == ns.LA
-    assert ns.LOCALENUM == ns.LN
-    assert ns.LOCALE == ns.L
-    assert ns.IGNORECASE == ns.IC
-    assert ns.LOWERCASEFIRST == ns.LF
-    assert ns.GROUPLETTERS == ns.G
-    assert ns.UNGROUPLETTERS == ns.UG
-    assert ns.CAPITALFIRST == ns.C
-    assert ns.UNGROUPLETTERS == ns.CAPITALFIRST
-    assert ns.NANLAST == ns.NL
-    assert ns.COMPATIBILITYNORMALIZE == ns.CN
-    assert ns.NUMAFTER == ns.NA
-
-    # Convenience
-    assert ns.LOCALE == ns.LOCALEALPHA | ns.LOCALENUM
-    assert ns.REAL == ns.FLOAT | ns.SIGNED
+@pytest.mark.parametrize(
+    "alg, value_or_alias",
+    [
+        # Defaults
+        (ns.TYPESAFE, 0),
+        (ns.INT, 0),
+        (ns.VERSION, 0),
+        (ns.DIGIT, 0),
+        (ns.UNSIGNED, 0),
+        # Aliases
+        (ns.TYPESAFE, ns.T),
+        (ns.INT, ns.I),
+        (ns.VERSION, ns.V),
+        (ns.DIGIT, ns.D),
+        (ns.UNSIGNED, ns.U),
+        (ns.FLOAT, ns.F),
+        (ns.SIGNED, ns.S),
+        (ns.NOEXP, ns.N),
+        (ns.PATH, ns.P),
+        (ns.LOCALEALPHA, ns.LA),
+        (ns.LOCALENUM, ns.LN),
+        (ns.LOCALE, ns.L),
+        (ns.IGNORECASE, ns.IC),
+        (ns.LOWERCASEFIRST, ns.LF),
+        (ns.GROUPLETTERS, ns.G),
+        (ns.UNGROUPLETTERS, ns.UG),
+        (ns.CAPITALFIRST, ns.C),
+        (ns.UNGROUPLETTERS, ns.CAPITALFIRST),
+        (ns.NANLAST, ns.NL),
+        (ns.COMPATIBILITYNORMALIZE, ns.CN),
+        (ns.NUMAFTER, ns.NA),
+        # Convenience
+        (ns.LOCALE, ns.LOCALEALPHA | ns.LOCALENUM),
+        (ns.REAL, ns.FLOAT | ns.SIGNED),
+    ],
+)
+def test_ns_enum_values_and_aliases(alg, value_or_alias):
+    assert alg == value_or_alias
 
 
 def test_chain_functions_is_a_no_op_if_no_functions_are_given():
     x = 2345
-    assert chain_functions([])(x) is x
+    assert utils.chain_functions([])(x) is x
 
 
 def test_chain_functions_does_one_function_if_one_function_is_given():
     x = "2345"
-    assert chain_functions([len])(x) == 4
+    assert utils.chain_functions([len])(x) == 4
 
 
 def test_chain_functions_combines_functions_in_given_order():
     x = 2345
-    assert chain_functions([str, len, op_neg])(x) == -len(str(x))
+    assert utils.chain_functions([str, len, op_neg])(x) == -len(str(x))
 
 
 # Each test has an "example" version for demonstrative purposes,
@@ -165,58 +121,58 @@ def test_chain_functions_combines_functions_in_given_order():
 
 
 def test_groupletters_returns_letters_with_lowercase_transform_of_letter_example():
-    assert _groupletters("HELLO") == "hHeElLlLoO"
-    assert _groupletters("hello") == "hheelllloo"
+    assert utils._groupletters("HELLO") == "hHeElLlLoO"
+    assert utils._groupletters("hello") == "hheelllloo"
 
 
 @given(text().filter(bool))
 def test_groupeletters_returns_letters_with_lowercase_transform_of_letter(x):
-    assert _groupletters(x) == "".join(chain.from_iterable([py23_lower(y), y] for y in x))
+    assert utils._groupletters(x) == "".join(
+        chain.from_iterable([py23_lower(y), y] for y in x)
+    )
 
 
 def test_sep_inserter_does_nothing_if_no_numbers_example():
-    assert list(_sep_inserter(iter(["a", "b", "c"]), "")) == ["a", "b", "c"]
-    assert list(_sep_inserter(iter(["a"]), "")) == ["a"]
+    assert list(utils._sep_inserter(iter(["a", "b", "c"]), "")) == ["a", "b", "c"]
+    assert list(utils._sep_inserter(iter(["a"]), "")) == ["a"]
 
 
 def test_sep_inserter_does_nothing_if_only_one_number_example():
-    assert list(_sep_inserter(iter(["a", 5]), "")) == ["a", 5]
+    assert list(utils._sep_inserter(iter(["a", 5]), "")) == ["a", 5]
 
 
 def test_sep_inserter_inserts_separator_string_between_two_numbers_example():
-    assert list(_sep_inserter(iter([5, 9]), "")) == ["", 5, "", 9]
-    assert list(_sep_inserter(iter([5, 9]), null_string_locale)) == [
-        null_string_locale,
-        5,
-        null_string_locale,
-        9,
-    ]
+    assert list(utils._sep_inserter(iter([5, 9]), "")) == ["", 5, "", 9]
 
 
-@given(lists(elements=text().filter(bool) | integers()))
+@given(lists(elements=text().filter(bool) | integers(), min_size=3))
 def test_sep_inserter_inserts_separator_between_two_numbers(x):
-    assert list(_sep_inserter(iter(x), "")) == list(
-        add_leading_space_if_first_is_num(sep_inserter(x, ""), "")
-    )
+    # Rather than just replicating the the results in a different
+    # algorithm, validate that the "shape" of the output is as expected.
+    result = list(utils._sep_inserter(iter(x), ""))
+    for i, pos in enumerate(result[1:-1], 1):
+        if pos == "":
+            assert isinstance(result[i - 1], py23_int)
+            assert isinstance(result[i + 1], py23_int)
 
 
 def test_path_splitter_splits_path_string_by_separator_example():
     z = "/this/is/a/path"
-    assert tuple(_path_splitter(z)) == tuple(pathlib.Path(z).parts)
+    assert tuple(utils._path_splitter(z)) == tuple(pathlib.Path(z).parts)
     z = pathlib.Path("/this/is/a/path")
-    assert tuple(_path_splitter(z)) == tuple(pathlib.Path(z).parts)
+    assert tuple(utils._path_splitter(z)) == tuple(pathlib.Path(z).parts)
 
 
 @given(lists(sampled_from(string.ascii_letters), min_size=2).filter(all))
 def test_path_splitter_splits_path_string_by_separator(x):
     z = py23_str(pathlib.Path(*x))
-    assert tuple(_path_splitter(z)) == tuple(pathlib.Path(z).parts)
+    assert tuple(utils._path_splitter(z)) == tuple(pathlib.Path(z).parts)
 
 
 def test_path_splitter_splits_path_string_by_separator_and_removes_extension_example():
     z = "/this/is/a/path/file.exe"
     y = tuple(pathlib.Path(z).parts)
-    assert tuple(_path_splitter(z)) == y[:-1] + (
+    assert tuple(utils._path_splitter(z)) == y[:-1] + (
         pathlib.Path(z).stem,
         pathlib.Path(z).suffix,
     )
@@ -226,7 +182,7 @@ def test_path_splitter_splits_path_string_by_separator_and_removes_extension_exa
 def test_path_splitter_splits_path_string_by_separator_and_removes_extension(x):
     z = py23_str(pathlib.Path(*x[:-2])) + "." + x[-1]
     y = tuple(pathlib.Path(z).parts)
-    assert tuple(_path_splitter(z)) == y[:-1] + (
+    assert tuple(utils._path_splitter(z)) == y[:-1] + (
         pathlib.Path(z).stem,
         pathlib.Path(z).suffix,
     )

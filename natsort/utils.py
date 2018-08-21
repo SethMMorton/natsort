@@ -722,7 +722,7 @@ def _path_splitter(s, _d_match=re.compile(r"\.\d").match):
 
     Parameters
     ----------
-    s : str
+    s : str, pathlib.Path
 
     Returns
     -------
