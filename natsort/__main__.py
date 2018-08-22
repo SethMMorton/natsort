@@ -8,7 +8,7 @@ from natsort.compat.py23 import py23_str
 from natsort.utils import regex_chooser
 
 
-def main():
+def main(*arguments):
     """
     Performs a natural sort on entries given on the command-line.
 
@@ -129,7 +129,7 @@ def main():
         help="The entries to sort. Taken from stdin if nothing is given on "
         "the command line.",
     )
-    args = parser.parse_args()
+    args = parser.parse_args(arguments or None)
 
     # Make sure the filter range is given properly. Does nothing if no filter
     args.filter = check_filters(args.filter)
