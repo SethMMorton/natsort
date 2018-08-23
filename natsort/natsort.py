@@ -580,6 +580,7 @@ def index_realsorted(seq, key=None, reverse=False, alg=0):
     return index_natsorted(seq, key, reverse, alg | ns.REAL)
 
 
+# noinspection PyShadowingBuiltins,PyUnresolvedReferences
 @u_format
 def order_by_index(seq, index, iter=False):
     """

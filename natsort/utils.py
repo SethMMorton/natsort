@@ -315,9 +315,9 @@ def _parse_number_factory(alg, sep, pre_sep):
     """
     nan_replace = float("+inf") if alg & ns.NANLAST else float("-inf")
 
-    def func(val, nan_replace=nan_replace, sep=sep):
+    def func(val, _nan_replace=nan_replace, _sep=sep):
         """Given a number, place it in a tuple with a leading null string."""
-        return sep, nan_replace if val != val else val
+        return _sep, _nan_replace if val != val else val
 
     # Return the function, possibly wrapping in tuple if PATH is selected.
     if alg & ns.PATH and alg & ns.UNGROUPLETTERS and alg & ns.LOCALEALPHA:
@@ -580,6 +580,7 @@ def _string_component_transform_factory(alg):
 
     # Return the correct chained functions.
     if alg & ns.FLOAT:
+        # noinspection PyTypeChecker
         kwargs["nan"] = nan_val
         return partial(fast_float, **kwargs)
     else:
@@ -594,6 +595,12 @@ def _final_data_transform_factory(alg, sep, pre_sep):
     ----------
     alg : ns enum
         Indicate how to format the *str*.
+    sep : str
+        Separator that was passed to *parse_string_factory*.
+    pre_sep : str
+        String separator to insert at the at the front
+        of the return tuple in the case that the first element
+        is *sep*.
 
     Returns
     -------
@@ -610,7 +617,7 @@ def _final_data_transform_factory(alg, sep, pre_sep):
         swap = alg & ns_DUMB and alg & ns.LOWERCASEFIRST
         transform = methodcaller("swapcase") if swap else _no_op
 
-        def func(split_val, val, transform=transform):
+        def func(split_val, val, _transform=transform, _sep=sep, _pre_sep=pre_sep):
             """
             Return a tuple with the first character of the first element
             of the return value as the first element, and the return value
@@ -620,16 +627,17 @@ def _final_data_transform_factory(alg, sep, pre_sep):
             split_val = tuple(split_val)
             if not split_val:
                 return (), ()
-            elif split_val[0] == sep:
-                return (pre_sep,), split_val
+            elif split_val[0] == _sep:
+                return (_pre_sep,), split_val
             else:
-                return (transform(val[0]),), split_val
+                return (_transform(val[0]),), split_val
 
         return func
     else:
         return lambda split_val, val: tuple(split_val)
 
 
+# noinspection PyIncorrectDocstring
 @u_format
 def _groupletters(x, _low=methodcaller("casefold" if NEWPY else "lower")):
     """
@@ -713,6 +721,7 @@ def _do_decoding(s, encoding):
         return s
 
 
+# noinspection PyIncorrectDocstring
 @u_format
 def _path_splitter(s, _d_match=re.compile(r"\.\d").match):
     """

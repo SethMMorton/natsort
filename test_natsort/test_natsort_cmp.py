@@ -98,6 +98,7 @@ def test__natcmp_works_the_same_for_floats_as_cmp(x, y):
 @given(lists(elements=integers()))
 def test_sort_strings_with_numbers(a_list):
     strings = [str(var) for var in a_list]
+    # noinspection PyArgumentList
     natcmp_sorted = sorted(strings, cmp=partial(natcmp, alg=ns.SIGNED))
 
     assert sorted(a_list) == [int(var) for var in natcmp_sorted]
