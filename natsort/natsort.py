@@ -13,21 +13,9 @@ from operator import itemgetter
 from warnings import warn
 
 import natsort.compat.locale
+from natsort import utils
 from natsort.compat.py23 import py23_cmp, py23_str, u_format
 from natsort.ns_enum import ns, ns_DUMB
-from natsort.utils import (
-    _args_to_enum,
-    _do_decoding,
-    _final_data_transform_factory,
-    _input_string_transform_factory,
-    _natsort_key,
-    _parse_bytes_factory,
-    _parse_number_factory,
-    _parse_path_factory,
-    _parse_string_factory,
-    regex_chooser,
-    _string_component_transform_factory,
-)
 
 
 @u_format
@@ -69,7 +57,7 @@ def decoder(encoding):
         True
 
     """
-    return partial(_do_decoding, encoding=encoding)
+    return partial(utils.do_decoding, encoding=encoding)
 
 
 @u_format
@@ -93,7 +81,7 @@ def as_ascii(s):
     decoder
 
     """
-    return _do_decoding(s, "ascii")
+    return utils.do_decoding(s, "ascii")
 
 
 @u_format
@@ -117,7 +105,7 @@ def as_utf8(s):
     decoder
 
     """
-    return _do_decoding(s, "utf-8")
+    return utils.do_decoding(s, "utf-8")
 
 
 def natsort_key(val, key=None, alg=0, **_kwargs):
@@ -175,7 +163,7 @@ def natsort_keygen(key=None, alg=0, **_kwargs):
     """
     # Transform old arguments to the ns enum.
     try:
-        alg = _args_to_enum(**_kwargs) | alg
+        alg = utils.args_to_enum(**_kwargs) | alg
     except TypeError:
         msg = "natsort_keygen: 'alg' argument must be from the enum 'ns'"
         raise ValueError(msg + ", got {0}".format(py23_str(alg)))
@@ -197,25 +185,25 @@ def natsort_keygen(key=None, alg=0, **_kwargs):
         else:
             sep = natsort.compat.locale.null_string
         pre_sep = natsort.compat.locale.null_string
-    regex = regex_chooser(alg)
+    regex = utils.regex_chooser(alg)
 
     # Create the functions that will be used to split strings.
-    input_transform = _input_string_transform_factory(alg)
-    component_transform = _string_component_transform_factory(alg)
-    final_transform = _final_data_transform_factory(alg, sep, pre_sep)
+    input_transform = utils.input_string_transform_factory(alg)
+    component_transform = utils.string_component_transform_factory(alg)
+    final_transform = utils.final_data_transform_factory(alg, sep, pre_sep)
 
     # Create the high-level parsing functions for strings, bytes, and numbers.
-    string_func = _parse_string_factory(
+    string_func = utils.parse_string_factory(
         alg, sep, regex.split, input_transform, component_transform, final_transform
     )
     if alg & ns.PATH:
-        string_func = _parse_path_factory(string_func)
-    bytes_func = _parse_bytes_factory(alg)
-    num_func = _parse_number_factory(alg, sep, pre_sep)
+        string_func = utils.parse_path_factory(string_func)
+    bytes_func = utils.parse_bytes_factory(alg)
+    num_func = utils.parse_number_factory(alg, sep, pre_sep)
 
     # Return the natsort key with the parsing path pre-chosen.
     return partial(
-        _natsort_key,
+        utils.natsort_key,
         key=key,
         string_func=string_func,
         bytes_func=bytes_func,
@@ -684,7 +672,7 @@ if float(sys.version[:3]) < 3:
 
         def __new__(cls, x, y, alg=0, *args, **kwargs):
             try:
-                alg = _args_to_enum(**kwargs) | alg
+                alg = utils.args_to_enum(**kwargs) | alg
             except TypeError:
                 msg = "natsort_keygen: 'alg' argument must be " "from the enum 'ns'"
                 raise ValueError(msg + ", got {0}".format(py23_str(alg)))

@@ -10,7 +10,7 @@ from hypothesis import given
 from hypothesis.strategies import integers, lists, text
 from natsort.compat.py23 import NEWPY
 from natsort.ns_enum import ns, ns_DUMB
-from natsort.utils import _input_string_transform_factory
+from natsort.utils import input_string_transform_factory
 
 # Each test has an "example" version for demonstrative purposes,
 # and a test that uses the hypothesis module.
@@ -18,71 +18,71 @@ from natsort.utils import _input_string_transform_factory
 
 def test_input_string_transform_factory_is_no_op_for_no_alg_options_examples():
     x = "feijGGAd"
-    assert _input_string_transform_factory(0)(x) is x
+    assert input_string_transform_factory(0)(x) is x
 
 
 @given(text())
 def test_input_string_transform_factory_is_no_op_for_no_alg_options(x):
-    assert _input_string_transform_factory(0)(x) is x
+    assert input_string_transform_factory(0)(x) is x
 
 
 def test_input_string_transform_factory_performs_casefold_with_IGNORECASE_examples():
     x = "feijGGAd"
     if NEWPY:
-        assert _input_string_transform_factory(ns.IGNORECASE)(x) == x.casefold()
+        assert input_string_transform_factory(ns.IGNORECASE)(x) == x.casefold()
     else:
-        assert _input_string_transform_factory(ns.IGNORECASE)(x) == x.lower()
+        assert input_string_transform_factory(ns.IGNORECASE)(x) == x.lower()
 
 
 @given(text())
 def test_input_string_transform_factory_performs_casefold_with_IGNORECASE(x):
     if NEWPY:
-        assert _input_string_transform_factory(ns.IGNORECASE)(x) == x.casefold()
+        assert input_string_transform_factory(ns.IGNORECASE)(x) == x.casefold()
     else:
-        assert _input_string_transform_factory(ns.IGNORECASE)(x) == x.lower()
+        assert input_string_transform_factory(ns.IGNORECASE)(x) == x.lower()
 
 
 def test_input_string_transform_factory_performs_swapcase_with_DUMB_examples():
     x = "feijGGAd"
-    assert _input_string_transform_factory(ns_DUMB)(x) == x.swapcase()
+    assert input_string_transform_factory(ns_DUMB)(x) == x.swapcase()
 
 
 @given(text())
 def test_input_string_transform_factory_performs_swapcase_with_DUMB(x):
-    assert _input_string_transform_factory(ns_DUMB)(x) == x.swapcase()
+    assert input_string_transform_factory(ns_DUMB)(x) == x.swapcase()
 
 
 def test_input_string_transform_factory_performs_swapcase_with_LOWERCASEFIRST_example():
     x = "feijGGAd"
-    assert _input_string_transform_factory(ns.LOWERCASEFIRST)(x) == x.swapcase()
+    assert input_string_transform_factory(ns.LOWERCASEFIRST)(x) == x.swapcase()
 
 
 @given(text())
 def test_input_string_transform_factory_performs_swapcase_with_LOWERCASEFIRST(x):
     x = "feijGGAd"
-    assert _input_string_transform_factory(ns.LOWERCASEFIRST)(x) == x.swapcase()
+    assert input_string_transform_factory(ns.LOWERCASEFIRST)(x) == x.swapcase()
 
 
 def test_input_string_transform_factory_is_no_op_with_both_LOWERCASEFIRST_AND_DUMB_example():
     x = "feijGGAd"
-    assert _input_string_transform_factory(ns_DUMB | ns.LOWERCASEFIRST)(x) is x
+    assert input_string_transform_factory(ns_DUMB | ns.LOWERCASEFIRST)(x) is x
 
 
 @given(text())
 def test_input_string_transform_factory_is_no_op_with_both_LOWERCASEFIRST_AND_DUMB(x):
-    assert _input_string_transform_factory(ns_DUMB | ns.LOWERCASEFIRST)(x) is x
+    assert input_string_transform_factory(ns_DUMB | ns.LOWERCASEFIRST)(x) is x
 
 
 def test_input_string_transform_factory_performs_swapcase_and_casefold_both_LOWERCASEFIRST_AND_IGNORECASE_example():
     x = "feijGGAd"
     if NEWPY:
         assert (
-            _input_string_transform_factory(ns.IGNORECASE | ns.LOWERCASEFIRST)(x)
+            input_string_transform_factory(ns.IGNORECASE | ns.LOWERCASEFIRST)(x)
             == x.swapcase().casefold()
         )
     else:
         assert (
-            _input_string_transform_factory(ns.IGNORECASE | ns.LOWERCASEFIRST)(x)
+            input_string_transform_factory(ns.IGNORECASE | ns.LOWERCASEFIRST)(x)
             == x.swapcase().lower()
         )
 
@@ -93,12 +93,12 @@ def test_input_string_transform_factory_performs_swapcase_and_casefold_both_LOWE
 ):
     if NEWPY:
         assert (
-            _input_string_transform_factory(ns.IGNORECASE | ns.LOWERCASEFIRST)(x)
+            input_string_transform_factory(ns.IGNORECASE | ns.LOWERCASEFIRST)(x)
             == x.swapcase().casefold()
         )
     else:
         assert (
-            _input_string_transform_factory(ns.IGNORECASE | ns.LOWERCASEFIRST)(x)
+            input_string_transform_factory(ns.IGNORECASE | ns.LOWERCASEFIRST)(x)
             == x.swapcase().lower()
         )
 
@@ -106,12 +106,12 @@ def test_input_string_transform_factory_performs_swapcase_and_casefold_both_LOWE
 @pytest.mark.usefixtures("with_locale_en_us")
 def test_input_string_transform_factory_removes_thousands_separator_with_LOCALE_example():
     x = "12,543,642,642.534,534,980"  # Without FLOAT it does not account for decimal.
-    assert _input_string_transform_factory(ns.LOCALE)(x) == "12543642642.534534980"
+    assert input_string_transform_factory(ns.LOCALE)(x) == "12543642642.534534980"
     x = (
         "12,543,642,642.534,534,980"
     )  # LOCALEALPHA doesn't do anything... need LOCALENUM
     assert (
-        _input_string_transform_factory(ns.LOCALEALPHA)(x)
+        input_string_transform_factory(ns.LOCALEALPHA)(x)
         == "12,543,642,642.534,534,980"
     )
     locale.setlocale(locale.LC_ALL, str(""))
@@ -128,14 +128,14 @@ def test_input_string_transform_factory_removes_thousands_separator_with_LOCALE(
         s = y + s
         if i % 3 == 0 and i != len(t):
             s = "," + s
-    assert _input_string_transform_factory(ns.LOCALE)(s) == t
+    assert input_string_transform_factory(ns.LOCALE)(s) == t
     locale.setlocale(locale.LC_ALL, str(""))
 
 
 def test_input_string_transform_factory_removes_thousands_separator_and_is_float_aware_with_LOCALE_and_FLOAT_example():
     x = "12,543,642,642.534,534,980"
     assert (
-        _input_string_transform_factory(ns.LOCALE | ns.FLOAT)(x)
+        input_string_transform_factory(ns.LOCALE | ns.FLOAT)(x)
         == "12543642642.534,534980"
     )
 
@@ -167,10 +167,10 @@ def test_input_string_transform_factory_removes_thousands_separator_and_is_float
     # Remove all but first comma.
     a = v.split(",", 1)
     p = a[0] + "," + a[1].replace(",", "")
-    assert _input_string_transform_factory(ns.LOCALE)(".".join([s, v])) == ".".join(
+    assert input_string_transform_factory(ns.LOCALE)(".".join([s, v])) == ".".join(
         [t, u]
     )
-    assert _input_string_transform_factory(ns.LOCALE | ns.FLOAT)(
+    assert input_string_transform_factory(ns.LOCALE | ns.FLOAT)(
         ".".join([s, v])
     ) == ".".join([t, p])
     locale.setlocale(locale.LC_ALL, str(""))
@@ -182,11 +182,11 @@ def test_input_string_transform_factory_removes_thousands_separator_and_is_float
 @pytest.mark.usefixtures("with_locale_en_us")
 def test_input_string_transform_factory_leaves_invalid_thousands_separator_with_LOCALE_example():
     x = "12,543,642642.5345,34980"
-    assert _input_string_transform_factory(ns.LOCALE)(x) == "12543,642642.5345,34980"
+    assert input_string_transform_factory(ns.LOCALE)(x) == "12543,642642.5345,34980"
     x = "12,59443,642,642.53,4534980"
-    assert _input_string_transform_factory(ns.LOCALE)(x) == "12,59443,642642.53,4534980"
+    assert input_string_transform_factory(ns.LOCALE)(x) == "12,59443,642642.53,4534980"
     x = "12543,642,642.5,34534980"
-    assert _input_string_transform_factory(ns.LOCALE)(x) == "12543,642642.5,34534980"
+    assert input_string_transform_factory(ns.LOCALE)(x) == "12543,642642.5,34534980"
     locale.setlocale(locale.LC_ALL, str(""))
 
 
@@ -194,11 +194,11 @@ def test_input_string_transform_factory_leaves_invalid_thousands_separator_with_
 def test_input_string_transform_factory_replaces_decimal_separator_with_LOCALE_example():
     x = "1543,753"
     assert (
-        _input_string_transform_factory(ns.LOCALE)(x) == "1543,753"
+        input_string_transform_factory(ns.LOCALE)(x) == "1543,753"
     )  # Does nothing without FLOAT
-    assert _input_string_transform_factory(ns.LOCALE | ns.FLOAT)(x) == "1543.753"
+    assert input_string_transform_factory(ns.LOCALE | ns.FLOAT)(x) == "1543.753"
     assert (
-        _input_string_transform_factory(ns.LOCALEALPHA)(x) == "1543,753"
+        input_string_transform_factory(ns.LOCALEALPHA)(x) == "1543,753"
     )  # LOCALEALPHA doesn't do anything... need LOCALENUM
     locale.setlocale(locale.LC_ALL, str(""))
 
@@ -206,5 +206,5 @@ def test_input_string_transform_factory_replaces_decimal_separator_with_LOCALE_e
 @pytest.mark.usefixtures("with_locale_de_de")
 def test_input_string_transform_factory_does_not_replace_invalid_decimal_separator_with_LOCALE_example():
     x = "154s,t53"
-    assert _input_string_transform_factory(ns.LOCALE | ns.FLOAT)(x) == "154s,t53"
+    assert input_string_transform_factory(ns.LOCALE | ns.FLOAT)(x) == "154s,t53"
     locale.setlocale(locale.LC_ALL, str(""))

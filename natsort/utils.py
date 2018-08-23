@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """
 Utilities and definitions for natsort, mostly all used to define
-the _natsort_key function.
+the natsort_key function.
 
 SOME CONVENTIONS USED IN THIS FILE.
 
@@ -183,7 +183,7 @@ def _normalize_input_factory(alg):
         return lambda x, _f=wrapped: _f(x) if isinstance(x, py23_str) else x
 
 
-def _natsort_key(val, key, string_func, bytes_func, num_func):
+def natsort_key(val, key, string_func, bytes_func, num_func):
     """
     Key to sort strings and numbers naturally.
 
@@ -192,7 +192,7 @@ def _natsort_key(val, key, string_func, bytes_func, num_func):
 
     Parameters
     ----------
-    val : str | unicode
+    val : str | unicode | bytes | int | float | iterable
     key : callable | None
         A key to apply to the *val* before any other operations are performed.
     string_func : callable
@@ -220,9 +220,9 @@ def _natsort_key(val, key, string_func, bytes_func, num_func):
 
     See Also
     --------
-    _parse_string_factory
-    _parse_bytes_factory
-    _parse_number_factory
+    parse_string_factory
+    parse_bytes_factory
+    parse_number_factory
 
     """
 
@@ -243,7 +243,7 @@ def _natsort_key(val, key, string_func, bytes_func, num_func):
         # Do not apply the key recursively.
         try:
             return tuple(
-                _natsort_key(x, None, string_func, bytes_func, num_func) for x in val
+                natsort_key(x, None, string_func, bytes_func, num_func) for x in val
             )
 
         # If that failed, it must be a number.
@@ -251,7 +251,7 @@ def _natsort_key(val, key, string_func, bytes_func, num_func):
             return num_func(val)
 
 
-def _parse_bytes_factory(alg):
+def parse_bytes_factory(alg):
     """
     Create a function that will format a *bytes* object into a tuple.
 
@@ -265,11 +265,11 @@ def _parse_bytes_factory(alg):
     func : callable
         A function that accepts *bytes* input and returns a tuple
         with the formatted *bytes*. Intended to be used as the
-        *bytes_func* argument to *_natsort_key*.
+        *bytes_func* argument to *natsort_key*.
 
     See Also
     --------
-    _natsort_key
+    natsort_key
 
     """
     # We don't worry about ns.UNGROUPLETTERS | ns.LOCALEALPHA because
@@ -284,7 +284,7 @@ def _parse_bytes_factory(alg):
         return lambda x: (x,)
 
 
-def _parse_number_factory(alg, sep, pre_sep):
+def parse_number_factory(alg, sep, pre_sep):
     """
     Create a function that will format a number into a tuple.
 
@@ -306,11 +306,11 @@ def _parse_number_factory(alg, sep, pre_sep):
         A function that accepts numeric input (e.g. *int* or *float*)
         and returns a tuple containing the number with the leading string
         *sep*. Intended to be used as the *num_func* argument to
-        *_natsort_key*.
+        *natsort_key*.
 
     See Also
     --------
-    _natsort_key
+    natsort_key
 
     """
     nan_replace = float("+inf") if alg & ns.NANLAST else float("-inf")
@@ -330,7 +330,7 @@ def _parse_number_factory(alg, sep, pre_sep):
         return func
 
 
-def _parse_string_factory(
+def parse_string_factory(
     alg, sep, splitter, input_transform, component_transform, final_transform
 ):
     """
@@ -367,14 +367,14 @@ def _parse_string_factory(
         components, where the numeric components are converted into
         numeric objects. The first element is *always* a string,
         and then alternates number then string. Intended to be
-        used as the *string_func* argument to *_natsort_key*.
+        used as the *string_func* argument to *natsort_key*.
 
     See Also
     --------
-    _natsort_key
-    _input_string_transform_factory
-    _string_component_transform_factory
-    _final_data_transform_factory
+    natsort_key
+    input_string_transform_factory
+    string_component_transform_factory
+    final_data_transform_factory
 
     """
     # Sometimes we store the "original" input before transformation,
@@ -392,20 +392,20 @@ def _parse_string_factory(
         x = splitter(x)  # Split string into components.
         x = py23_filter(None, x)  # Remove empty strings.
         x = py23_map(component_transform, x)  # Apply transform on components.
-        x = _sep_inserter(x, sep)  # Insert '' between numbers.
+        x = sep_inserter(x, sep)  # Insert '' between numbers.
         return final_transform(x, original)  # Apply the final transform.
 
     return func
 
 
-def _parse_path_factory(str_split):
+def parse_path_factory(str_split):
     """
     Create a function that will properly split and format a path.
 
     Parameters
     ----------
     str_split : callable
-        The output of the *_parse_string_factory* function.
+        The output of the *parse_string_factory* function.
 
     Returns
     -------
@@ -414,18 +414,18 @@ def _parse_path_factory(str_split):
         and splits it into its path components, then passes
         each component to *str_split* and returns the result
         as a nested tuple. Can be used as the *string_func*
-        argument to *_natsort_key*.
+        argument to *natsort_key*.
 
     See Also
     --------
-    _natsort_key
-    _parse_string_factory
+    natsort_key
+    parse_string_factory
 
     """
-    return lambda x: tuple(py23_map(str_split, _path_splitter(x)))
+    return lambda x: tuple(py23_map(str_split, path_splitter(x)))
 
 
-def _sep_inserter(iterable, sep):
+def sep_inserter(iterable, sep):
     """
     Insert '' between numbers in an iterable.
 
@@ -470,7 +470,7 @@ def _sep_inserter(iterable, sep):
         return
 
 
-def _input_string_transform_factory(alg):
+def input_string_transform_factory(alg):
     """
     Create a function to transform a string.
 
@@ -483,11 +483,11 @@ def _input_string_transform_factory(alg):
     -------
     func : callable
         A function to be used as the *input_transform* argument to
-        *_parse_string_factory*.
+        *parse_string_factory*.
 
     See Also
     --------
-    _parse_string_factory
+    parse_string_factory
 
     """
     # Shortcuts.
@@ -544,7 +544,7 @@ def _input_string_transform_factory(alg):
     return chain_functions(function_chain)
 
 
-def _string_component_transform_factory(alg):
+def string_component_transform_factory(alg):
     """
     Create a function to either transform a string or convert to a number.
 
@@ -557,11 +557,11 @@ def _string_component_transform_factory(alg):
     -------
     func : callable
         A function to be used as the *component_transform* argument to
-        *_parse_string_factory*.
+        *parse_string_factory*.
 
     See Also
     --------
-    _parse_string_factory
+    parse_string_factory
 
     """
     # Shortcuts.
@@ -573,7 +573,7 @@ def _string_component_transform_factory(alg):
     # Build the chain of functions to execute in order.
     func_chain = []
     if group_letters:
-        func_chain.append(_groupletters)
+        func_chain.append(groupletters)
     if use_locale:
         func_chain.append(get_strxfrm())
     kwargs = {"key": chain_functions(func_chain)} if func_chain else {}
@@ -587,7 +587,7 @@ def _string_component_transform_factory(alg):
         return partial(fast_int, **kwargs)
 
 
-def _final_data_transform_factory(alg, sep, pre_sep):
+def final_data_transform_factory(alg, sep, pre_sep):
     """
     Create a function to transform a tuple.
 
@@ -606,11 +606,11 @@ def _final_data_transform_factory(alg, sep, pre_sep):
     -------
     func : callable
         A function to be used as the *final_transform* argument to
-        *_parse_string_factory*.
+        *parse_string_factory*.
 
     See Also
     --------
-    _parse_string_factory
+    parse_string_factory
 
     """
     if alg & ns.UNGROUPLETTERS and alg & ns.LOCALEALPHA:
@@ -639,7 +639,7 @@ def _final_data_transform_factory(alg, sep, pre_sep):
 
 # noinspection PyIncorrectDocstring
 @u_format
-def _groupletters(x, _low=methodcaller("casefold" if NEWPY else "lower")):
+def groupletters(x, _low=methodcaller("casefold" if NEWPY else "lower")):
     """
     Double all characters, making doubled letters lowercase.
 
@@ -654,7 +654,7 @@ def _groupletters(x, _low=methodcaller("casefold" if NEWPY else "lower")):
     Examples
     --------
 
-        >>> _groupletters("Apple")
+        >>> groupletters("Apple")
         {u}'aAppppllee'
 
     """
@@ -698,7 +698,7 @@ def chain_functions(functions):
         return partial(reduce, lambda res, f: f(res), functions)
 
 
-def _do_decoding(s, encoding):
+def do_decoding(s, encoding):
     """
     Helper to decode a *bytes* object, or return the object as-is.
 
@@ -723,7 +723,7 @@ def _do_decoding(s, encoding):
 
 # noinspection PyIncorrectDocstring
 @u_format
-def _path_splitter(s, _d_match=re.compile(r"\.\d").match):
+def path_splitter(s, _d_match=re.compile(r"\.\d").match):
     """
     Split a string into its path components.
 
@@ -741,7 +741,7 @@ def _path_splitter(s, _d_match=re.compile(r"\.\d").match):
     Examples
     --------
 
-        >>> tuple(_path_splitter("/this/thing.ext"))
+        >>> tuple(path_splitter("/this/thing.ext"))
         ({u}'/', {u}'this', {u}'thing', {u}'.ext')
 
     """
@@ -786,7 +786,7 @@ def _path_splitter(s, _d_match=re.compile(r"\.\d").match):
     return ichain(path_parts, base_parts)
 
 
-def _args_to_enum(**kwargs):
+def args_to_enum(**kwargs):
     """
     A function to convert input booleans to an enum-type argument.
 

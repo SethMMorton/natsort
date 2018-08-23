@@ -16,14 +16,14 @@ from natsort.ns_enum import ns
 
 
 def test_do_decoding_decodes_bytes_string_to_unicode():
-    assert type(utils._do_decoding(b"bytes", "ascii")) is py23_str
-    assert utils._do_decoding(b"bytes", "ascii") == "bytes"
-    assert utils._do_decoding(b"bytes", "ascii") == b"bytes".decode("ascii")
+    assert type(utils.do_decoding(b"bytes", "ascii")) is py23_str
+    assert utils.do_decoding(b"bytes", "ascii") == "bytes"
+    assert utils.do_decoding(b"bytes", "ascii") == b"bytes".decode("ascii")
 
 
 def test_args_to_enum_raises_typeerror_for_invalid_argument():
     with pytest.raises(TypeError):
-        utils._args_to_enum(**{"alf": 0})
+        utils.args_to_enum(**{"alf": 0})
 
 
 @pytest.mark.parametrize(
@@ -41,7 +41,7 @@ def test_args_to_enum_raises_typeerror_for_invalid_argument():
     ],
 )
 def test_args_to_enum(kwargs, expected):
-    assert utils._args_to_enum(**kwargs) == expected
+    assert utils.args_to_enum(**kwargs) == expected
 
 
 @pytest.mark.parametrize(
@@ -121,35 +121,35 @@ def test_chain_functions_combines_functions_in_given_order():
 
 
 def test_groupletters_returns_letters_with_lowercase_transform_of_letter_example():
-    assert utils._groupletters("HELLO") == "hHeElLlLoO"
-    assert utils._groupletters("hello") == "hheelllloo"
+    assert utils.groupletters("HELLO") == "hHeElLlLoO"
+    assert utils.groupletters("hello") == "hheelllloo"
 
 
 @given(text().filter(bool))
-def test_groupeletters_returns_letters_with_lowercase_transform_of_letter(x):
-    assert utils._groupletters(x) == "".join(
+def test_groupletters_returns_letters_with_lowercase_transform_of_letter(x):
+    assert utils.groupletters(x) == "".join(
         chain.from_iterable([py23_lower(y), y] for y in x)
     )
 
 
 def test_sep_inserter_does_nothing_if_no_numbers_example():
-    assert list(utils._sep_inserter(iter(["a", "b", "c"]), "")) == ["a", "b", "c"]
-    assert list(utils._sep_inserter(iter(["a"]), "")) == ["a"]
+    assert list(utils.sep_inserter(iter(["a", "b", "c"]), "")) == ["a", "b", "c"]
+    assert list(utils.sep_inserter(iter(["a"]), "")) == ["a"]
 
 
 def test_sep_inserter_does_nothing_if_only_one_number_example():
-    assert list(utils._sep_inserter(iter(["a", 5]), "")) == ["a", 5]
+    assert list(utils.sep_inserter(iter(["a", 5]), "")) == ["a", 5]
 
 
 def test_sep_inserter_inserts_separator_string_between_two_numbers_example():
-    assert list(utils._sep_inserter(iter([5, 9]), "")) == ["", 5, "", 9]
+    assert list(utils.sep_inserter(iter([5, 9]), "")) == ["", 5, "", 9]
 
 
 @given(lists(elements=text().filter(bool) | integers(), min_size=3))
 def test_sep_inserter_inserts_separator_between_two_numbers(x):
     # Rather than just replicating the the results in a different
     # algorithm, validate that the "shape" of the output is as expected.
-    result = list(utils._sep_inserter(iter(x), ""))
+    result = list(utils.sep_inserter(iter(x), ""))
     for i, pos in enumerate(result[1:-1], 1):
         if pos == "":
             assert isinstance(result[i - 1], py23_int)
@@ -158,21 +158,21 @@ def test_sep_inserter_inserts_separator_between_two_numbers(x):
 
 def test_path_splitter_splits_path_string_by_separator_example():
     z = "/this/is/a/path"
-    assert tuple(utils._path_splitter(z)) == tuple(pathlib.Path(z).parts)
+    assert tuple(utils.path_splitter(z)) == tuple(pathlib.Path(z).parts)
     z = pathlib.Path("/this/is/a/path")
-    assert tuple(utils._path_splitter(z)) == tuple(pathlib.Path(z).parts)
+    assert tuple(utils.path_splitter(z)) == tuple(pathlib.Path(z).parts)
 
 
 @given(lists(sampled_from(string.ascii_letters), min_size=2).filter(all))
 def test_path_splitter_splits_path_string_by_separator(x):
     z = py23_str(pathlib.Path(*x))
-    assert tuple(utils._path_splitter(z)) == tuple(pathlib.Path(z).parts)
+    assert tuple(utils.path_splitter(z)) == tuple(pathlib.Path(z).parts)
 
 
 def test_path_splitter_splits_path_string_by_separator_and_removes_extension_example():
     z = "/this/is/a/path/file.exe"
     y = tuple(pathlib.Path(z).parts)
-    assert tuple(utils._path_splitter(z)) == y[:-1] + (
+    assert tuple(utils.path_splitter(z)) == y[:-1] + (
         pathlib.Path(z).stem,
         pathlib.Path(z).suffix,
     )
@@ -182,7 +182,7 @@ def test_path_splitter_splits_path_string_by_separator_and_removes_extension_exa
 def test_path_splitter_splits_path_string_by_separator_and_removes_extension(x):
     z = py23_str(pathlib.Path(*x[:-2])) + "." + x[-1]
     y = tuple(pathlib.Path(z).parts)
-    assert tuple(utils._path_splitter(z)) == y[:-1] + (
+    assert tuple(utils.path_splitter(z)) == y[:-1] + (
         pathlib.Path(z).stem,
         pathlib.Path(z).suffix,
     )

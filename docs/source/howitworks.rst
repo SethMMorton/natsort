@@ -495,14 +495,14 @@ Let's take a look at how this works out.
 
 .. code-block:: python
 
-    >>> from natsort.utils import _sep_inserter
-    >>> list(_sep_inserter(iter(['apples']), ''))
+    >>> from natsort.utils import sep_inserter
+    >>> list(sep_inserter(iter(['apples']), ''))
     ['apples']
     >>>
-    >>> list(_sep_inserter(iter([12, ' apples']), ''))
+    >>> list(sep_inserter(iter([12, ' apples']), ''))
     ['', 12, ' apples']
     >>>
-    >>> list(_sep_inserter(iter(['version', 5, -3]), ''))
+    >>> list(sep_inserter(iter(['version', 5, -3]), ''))
     ['version', 5, '', -3]
     >>>
     >>> from natsort import natsort_keygen, ns
@@ -613,7 +613,7 @@ and user customizations.
     ...             coerced_input = (coerce_to_float(s) for s in split_input)
     ...         else:
     ...             coerced_input = (coerce_to_int(s) for s in split_input)
-    ...         return tuple(_sep_inserter(coerced_input, ''))
+    ...         return tuple(sep_inserter(coerced_input, ''))
     ...
 
 And this doesn't even show handling :class:`bytes` type!  Notice that we have
@@ -1092,7 +1092,7 @@ what the rest of the world assumes.
 .. [#f3]
     I'm not going to show how this is implemented in this document,
     but if you are interested you can look at the code to
-    :func:`_sep_inserter` in `util.py`_.
+    :func:`sep_inserter` in `util.py`_.
 .. [#f4]
     Handling each of these is straightforward, but coupled with the rapidly
     fracturing execution paths presented in :ref:`TL;DR 2 <tldr2>` one can imagine
