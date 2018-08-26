@@ -65,6 +65,7 @@ def test_regex_chooser_returns_correct_regular_expression_object(alg, expected):
     "alg, value_or_alias",
     [
         # Defaults
+        (ns.DEFAULT, 0),
         (ns.TYPESAFE, 0),
         (ns.INT, 0),
         (ns.VERSION, 0),

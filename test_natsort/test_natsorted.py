@@ -12,8 +12,6 @@ from natsort import natsorted, ns, as_utf8
 from natsort.compat.py23 import PY_VERSION
 from pytest import raises
 
-DEFAULT = 0
-
 
 @pytest.fixture
 def float_list():
@@ -52,7 +50,7 @@ def test_natsorted_can_sort_as_unsigned_and_ignore_exponents(float_list, alg):
 
 
 # INT, DIGIT, and VERSION are all equivalent.
-@pytest.mark.parametrize("alg", [DEFAULT, ns.INT, ns.DIGIT, ns.VERSION])
+@pytest.mark.parametrize("alg", [ns.DEFAULT, ns.INT, ns.DIGIT, ns.VERSION])
 def test_natsorted_can_sort_as_unsigned_ints_which_is_default(float_list, alg):
     expected = ["a5.034e1", "a50", "a50.4", "a50.31", "a50.300", "a51.", "a-50"]
     assert natsorted(float_list, alg=alg) == expected
@@ -72,7 +70,7 @@ def test_natsorted_can_sort_with_or_without_accounting_for_sign(alg, expected):
     assert natsorted(given, alg=alg) == expected
 
 
-@pytest.mark.parametrize("alg", [DEFAULT, ns.VERSION])
+@pytest.mark.parametrize("alg", [ns.DEFAULT, ns.VERSION])
 def test_natsorted_can_sort_as_version_numbers(alg):
     given = ["1.9.9a", "1.11", "1.9.9b", "1.11.4", "1.10.1"]
     expected = ["1.9.9a", "1.9.9b", "1.10.1", "1.11", "1.11.4"]
@@ -82,7 +80,7 @@ def test_natsorted_can_sort_as_version_numbers(alg):
 @pytest.mark.parametrize(
     "alg, expected",
     [
-        (DEFAULT, ["0", 1.5, "2", 3, "Á", "Z", "ä", "b"]),
+        (ns.DEFAULT, ["0", 1.5, "2", 3, "Á", "Z", "ä", "b"]),
         (ns.NUMAFTER, ["Á", "Z", "ä", "b", "0", 1.5, "2", 3]),
     ],
 )
@@ -93,7 +91,7 @@ def test_natsorted_handles_mixed_types(mixed_list, alg, expected):
 @pytest.mark.parametrize(
     "alg, expected, slc",
     [
-        (DEFAULT, [float("nan"), 5, "25", 1E40], slice(1, None)),
+        (ns.DEFAULT, [float("nan"), 5, "25", 1E40], slice(1, None)),
         (ns.NANLAST, [5, "25", 1E40, float("nan")], slice(None, 3)),
     ],
 )
@@ -170,7 +168,7 @@ def test_natsorted_handles_numbers_and_filesystem_paths_simultaneously():
 @pytest.mark.parametrize(
     "alg, expected",
     [
-        (DEFAULT, ["Apple", "Banana", "Corn", "apple", "banana", "corn"]),
+        (ns.DEFAULT, ["Apple", "Banana", "Corn", "apple", "banana", "corn"]),
         (ns.IGNORECASE, ["Apple", "apple", "Banana", "banana", "corn", "Corn"]),
         (ns.LOWERCASEFIRST, ["apple", "banana", "corn", "Apple", "Banana", "Corn"]),
         (ns.GROUPLETTERS, ["Apple", "apple", "Banana", "banana", "Corn", "corn"]),
@@ -184,7 +182,7 @@ def test_natsorted_supports_case_handling(alg, expected, fruit_list):
 @pytest.mark.parametrize(
     "alg, expected",
     [
-        (DEFAULT, [("A5", "a6"), ("a3", "a1")]),
+        (ns.DEFAULT, [("A5", "a6"), ("a3", "a1")]),
         (ns.LOWERCASEFIRST, [("a3", "a1"), ("A5", "a6")]),
         (ns.IGNORECASE, [("a3", "a1"), ("A5", "a6")]),
     ],
@@ -197,7 +195,7 @@ def test_natsorted_supports_nested_case_handling(alg, expected):
 @pytest.mark.parametrize(
     "alg, expected",
     [
-        (DEFAULT, ["apple", "Apple", "banana", "Banana", "corn", "Corn"]),
+        (ns.DEFAULT, ["apple", "Apple", "banana", "Banana", "corn", "Corn"]),
         (ns.CAPITALFIRST, ["Apple", "Banana", "Corn", "apple", "banana", "corn"]),
         (ns.LOWERCASEFIRST, ["Apple", "apple", "Banana", "banana", "Corn", "corn"]),
         (ns.C | ns.LF, ["apple", "banana", "corn", "Apple", "Banana", "Corn"]),
@@ -225,7 +223,7 @@ def test_natsorted_can_sort_locale_specific_numbers_de():
 @pytest.mark.parametrize(
     "alg, expected",
     [
-        (DEFAULT, ["0", 1.5, "2", 3, "ä", "Á", "b", "Z"]),
+        (ns.DEFAULT, ["0", 1.5, "2", 3, "ä", "Á", "b", "Z"]),
         (ns.NUMAFTER, ["ä", "Á", "b", "Z", "0", 1.5, "2", 3]),
         (ns.UNGROUPLETTERS, ["0", 1.5, "2", 3, "Á", "Z", "ä", "b"]),
         (ns.UG | ns.NA, ["Á", "Z", "ä", "b", "0", 1.5, "2", 3]),
@@ -244,7 +242,7 @@ def test_natsorted_handles_mixed_types_with_locale(mixed_list, alg, expected):
 @pytest.mark.parametrize(
     "alg, expected",
     [
-        (DEFAULT, ["73", "5039", "Banana", "apple", "corn", "~~~~~~"]),
+        (ns.DEFAULT, ["73", "5039", "Banana", "apple", "corn", "~~~~~~"]),
         (ns.NUMAFTER, ["Banana", "apple", "corn", "~~~~~~", "73", "5039"]),
     ],
 )

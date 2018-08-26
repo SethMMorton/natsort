@@ -28,7 +28,7 @@ enum_options = [
 ]
 
 # Following were previously options but are now defaults.
-enum_do_nothing = ["TYPESAFE", "INT", "VERSION", "DIGIT", "UNSIGNED"]
+enum_do_nothing = ["DEFAULT", "TYPESAFE", "INT", "VERSION", "DIGIT", "UNSIGNED"]
 
 # The following are bitwise-OR combinations of other fields.
 enum_combos = [("REAL", ("FLOAT", "SIGNED")), ("LOCALE", ("LOCALEALPHA", "LOCALENUM"))]

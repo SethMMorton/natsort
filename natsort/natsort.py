@@ -108,7 +108,7 @@ def as_utf8(s):
     return utils.do_decoding(s, "utf-8")
 
 
-def natsort_key(val, key=None, alg=0, **_kwargs):
+def natsort_key(val, key=None, alg=ns.DEFAULT, **_kwargs):
     """Undocumented, kept for backwards-compatibility."""
     msg = "natsort_key is deprecated as of 3.4.0, please use natsort_keygen"
     warn(msg, DeprecationWarning)
@@ -116,7 +116,7 @@ def natsort_key(val, key=None, alg=0, **_kwargs):
 
 
 @u_format
-def natsort_keygen(key=None, alg=0, **_kwargs):
+def natsort_keygen(key=None, alg=ns.DEFAULT, **_kwargs):
     """
     Generate a key to sort strings and numbers naturally.
 
@@ -212,7 +212,7 @@ def natsort_keygen(key=None, alg=0, **_kwargs):
 
 
 @u_format
-def natsorted(seq, key=None, reverse=False, alg=0, **_kwargs):
+def natsorted(seq, key=None, reverse=False, alg=ns.DEFAULT, **_kwargs):
     """
     Sorts an iterable naturally.
 
@@ -261,7 +261,7 @@ def natsorted(seq, key=None, reverse=False, alg=0, **_kwargs):
 
 
 @u_format
-def versorted(seq, key=None, reverse=False, alg=0, **_kwargs):
+def versorted(seq, key=None, reverse=False, alg=ns.DEFAULT, **_kwargs):
     """
     Identical to :func:`natsorted`.
 
@@ -277,7 +277,7 @@ def versorted(seq, key=None, reverse=False, alg=0, **_kwargs):
 
 
 @u_format
-def humansorted(seq, key=None, reverse=False, alg=0):
+def humansorted(seq, key=None, reverse=False, alg=ns.DEFAULT):
     """
     Convenience function to properly sort non-numeric characters.
 
@@ -330,7 +330,7 @@ def humansorted(seq, key=None, reverse=False, alg=0):
 
 
 @u_format
-def realsorted(seq, key=None, reverse=False, alg=0):
+def realsorted(seq, key=None, reverse=False, alg=ns.DEFAULT):
     """
     Convenience function to properly sort signed floats.
 
@@ -384,7 +384,7 @@ def realsorted(seq, key=None, reverse=False, alg=0):
 
 
 @u_format
-def index_natsorted(seq, key=None, reverse=False, alg=0, **_kwargs):
+def index_natsorted(seq, key=None, reverse=False, alg=ns.DEFAULT, **_kwargs):
     """
     Determine the list of the indexes used to sort the input sequence.
 
@@ -454,7 +454,7 @@ def index_natsorted(seq, key=None, reverse=False, alg=0, **_kwargs):
 
 
 @u_format
-def index_versorted(seq, key=None, reverse=False, alg=0, **_kwargs):
+def index_versorted(seq, key=None, reverse=False, alg=ns.DEFAULT, **_kwargs):
     """
     Identical to :func:`index_natsorted`.
 
@@ -473,7 +473,7 @@ def index_versorted(seq, key=None, reverse=False, alg=0, **_kwargs):
 
 
 @u_format
-def index_humansorted(seq, key=None, reverse=False, alg=0):
+def index_humansorted(seq, key=None, reverse=False, alg=ns.DEFAULT):
     """
     This is a wrapper around ``index_natsorted(seq, alg=ns.LOCALE)``.
 
@@ -523,7 +523,7 @@ def index_humansorted(seq, key=None, reverse=False, alg=0):
 
 
 @u_format
-def index_realsorted(seq, key=None, reverse=False, alg=0):
+def index_realsorted(seq, key=None, reverse=False, alg=ns.DEFAULT):
     """
     This is a wrapper around ``index_natsorted(seq, alg=ns.REAL)``.
 
@@ -670,7 +670,7 @@ if float(sys.version[:3]) < 3:
 
         cached_keys = {}
 
-        def __new__(cls, x, y, alg=0, *args, **kwargs):
+        def __new__(cls, x, y, alg=ns.DEFAULT, *args, **kwargs):
             try:
                 alg = utils.args_to_enum(**kwargs) | alg
             except TypeError:

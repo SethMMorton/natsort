@@ -12,7 +12,7 @@ from natsort.utils import parse_bytes_factory
 @pytest.mark.parametrize(
     "alg, example_func",
     [
-        (0, lambda x: (x,)),
+        (ns.DEFAULT, lambda x: (x,)),
         (ns.IGNORECASE, lambda x: (x.lower(),)),
         # With PATH, it becomes a tested tuple.
         (ns.PATH, lambda x: ((x,),)),
