@@ -44,8 +44,8 @@ def fast_float(
     x,
     key=lambda x: x,
     nan=None,
-    uni=unicodedata.numeric,
-    nan_inf=NAN_INF,
+    _uni=unicodedata.numeric,
+    _nan_inf=NAN_INF,
     _first_char=frozenset(decimal_chars + list(ASCII_NUMS + ".")),
 ):
     """
@@ -68,18 +68,18 @@ def fast_float(
     *str* or *float*
 
     """
-    if x[0] in _first_char or x.lstrip()[:3] in nan_inf:
+    if x[0] in _first_char or x.lstrip()[:3] in _nan_inf:
         try:
             x = float(x)
             return nan if nan is not None and x != x else x
         except ValueError:
             try:
-                return uni(x, key(x)) if len(x) == 1 else key(x)
+                return _uni(x, key(x)) if len(x) == 1 else key(x)
             except TypeError:  # pragma: no cover
                 return key(x)
     else:
         try:
-            return uni(x, key(x)) if len(x) == 1 else key(x)
+            return _uni(x, key(x)) if len(x) == 1 else key(x)
         except TypeError:  # pragma: no cover
             return key(x)
 
@@ -88,8 +88,7 @@ def fast_float(
 def fast_int(
     x,
     key=lambda x: x,
-    nan=None,
-    uni=unicodedata.digit,
+    _uni=unicodedata.digit,
     _first_char=frozenset(decimal_chars + list(ASCII_NUMS)),
 ):
     """
@@ -110,17 +109,16 @@ def fast_int(
     *str* or *int*
 
     """
-    del nan  # explicitly indicate we are not using the nan argument
     if x[0] in _first_char:
         try:
             return long(x)
         except ValueError:
             try:
-                return uni(x, key(x)) if len(x) == 1 else key(x)
+                return _uni(x, key(x)) if len(x) == 1 else key(x)
             except TypeError:  # pragma: no cover
                 return key(x)
     else:
         try:
-            return uni(x, key(x)) if len(x) == 1 else key(x)
+            return _uni(x, key(x)) if len(x) == 1 else key(x)
         except TypeError:  # pragma: no cover
             return key(x)

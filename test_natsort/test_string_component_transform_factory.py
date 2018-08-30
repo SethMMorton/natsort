@@ -2,11 +2,14 @@
 """These test the utils.py functions."""
 from __future__ import unicode_literals
 
-from hypothesis import given
+from functools import partial
+
+import pytest
+from hypothesis import example, given
 from hypothesis.strategies import floats, integers, text
 from natsort.compat.fastnumbers import fast_float, fast_int
 from natsort.compat.locale import get_strxfrm
-from natsort.compat.py23 import py23_str, py23_unichr, py23_range
+from natsort.compat.py23 import py23_range, py23_str, py23_unichr
 from natsort.ns_enum import ns, ns_DUMB
 from natsort.utils import groupletters, string_component_transform_factory
 
@@ -20,122 +23,53 @@ except ValueError:
     bad_uni_chars = set()
 
 
+def no_bad_uni_chars(x, _bad_chars=frozenset(bad_uni_chars)):
+    """Ensure text does not contain bad unicode characters"""
+    return not any(y in _bad_chars for y in x)
+
+
 def no_null(x):
+    """Ensure text does not contain a null character."""
     return "\0" not in x
 
 
-# Each test has an "example" version for demonstrative purposes,
-# and a test that uses the hypothesis module.
-
-
-def test_string_component_transform_factory_returns_fast_int_example():
-    x = "hello"
-    assert string_component_transform_factory(0)(x) is fast_int(x)
-    assert string_component_transform_factory(0)("5007") == fast_int("5007")
-
-
-@given(text().filter(bool) | floats() | integers())
-def test_string_component_transform_factory_returns_fast_int(x):
-    assert string_component_transform_factory(0)(py23_str(x)) == fast_int(py23_str(x))
-
-
-def test_string_component_transform_factory_with_FLOAT_returns_fast_float_example():
-    x = "hello"
-    assert string_component_transform_factory(ns.FLOAT)(x) is fast_float(x)
-    assert string_component_transform_factory(ns.FLOAT)("5007") == fast_float("5007")
-
-
-@given(text().filter(bool) | floats() | integers())
-def test_string_component_transform_factory_with_FLOAT_returns_fast_float(x):
-    assert string_component_transform_factory(ns.FLOAT)(py23_str(x)) == fast_float(
-        py23_str(x), nan=float("-inf")
-    )
-
-
-def test_string_component_transform_factory_with_FLOAT_returns_fast_float_with_neg_inf_replacing_nan():
-    assert string_component_transform_factory(ns.FLOAT)("nan") == fast_float(
-        "nan", nan=float("-inf")
-    )
-
-
-def test_string_component_transform_factory_with_FLOAT_and_NANLAST_returns_fast_float_with_pos_inf_replacing_nan():
-    assert string_component_transform_factory(ns.FLOAT | ns.NANLAST)(
-        "nan"
-    ) == fast_float("nan", nan=float("+inf"))
-
-
-def test_string_component_transform_factory_with_GROUPLETTERS_returns_fast_int_and_groupletters_example():
-    x = "hello"
-    assert string_component_transform_factory(ns.GROUPLETTERS)(x) == fast_int(
-        x, key=groupletters
-    )
-
-
-@given(text().filter(bool))
-def test_string_component_transform_factory_with_GROUPLETTERS_returns_fast_int_and_groupletters(
-    x
-):
-    assert string_component_transform_factory(ns.GROUPLETTERS)(x) == fast_int(
-        x, key=groupletters
-    )
-
-
-def test_string_component_transform_factory_with_LOCALE_returns_fast_int_and_groupletters_example():
-    x = "hello"
-    assert string_component_transform_factory(ns.LOCALE)(x) == fast_int(
-        x, key=get_strxfrm()
-    )
-
-
-@given(
-    text()
-    .filter(bool)
-    .filter(lambda x: not any(y in bad_uni_chars for y in x))
-    .filter(no_null)
+@pytest.mark.parametrize(
+    "alg, example_func",
+    [
+        (ns.INT, fast_int),
+        (ns.DEFAULT, fast_int),
+        (ns.FLOAT, partial(fast_float, nan=float("-inf"))),
+        (ns.FLOAT | ns.NANLAST, partial(fast_float, nan=float("+inf"))),
+        (ns.GROUPLETTERS, partial(fast_int, key=groupletters)),
+        (ns.LOCALE, partial(fast_int, key=get_strxfrm())),
+        (
+            ns.GROUPLETTERS | ns.LOCALE,
+            partial(fast_int, key=lambda x: get_strxfrm()(groupletters(x))),
+        ),
+        (
+            ns_DUMB | ns.LOCALE,
+            partial(fast_int, key=lambda x: get_strxfrm()(groupletters(x))),
+        ),
+        (
+            ns.GROUPLETTERS | ns.LOCALE | ns.FLOAT | ns.NANLAST,
+            partial(
+                fast_float,
+                key=lambda x: get_strxfrm()(groupletters(x)),
+                nan=float("+inf"),
+            ),
+        ),
+    ],
 )
-def test_string_component_transform_factory_with_LOCALE_returns_fast_int_and_groupletters(
-    x
-):
-    assert string_component_transform_factory(ns.LOCALE)(x) == fast_int(
-        x, key=get_strxfrm()
-    )
-
-
-def test_string_component_transform_factory_with_LOCALE_and_GROUPLETTERS_returns_fast_int_and_groupletters_and_locale_convert_example():
-    x = "hello"
-    assert string_component_transform_factory(ns.GROUPLETTERS | ns.LOCALE)(
-        x
-    ) == fast_int(x, key=lambda x: get_strxfrm()(groupletters(x)))
-
-
-@given(text().filter(bool).filter(no_null))
-def test_string_component_transform_factory_with_LOCALE_and_GROUPLETTERS_returns_fast_int_and_groupletters_and_locale_convert(
-    x
-):
+@example(x=float("nan"))
+@given(
+    x=integers()
+    | floats()
+    | text().filter(bool).filter(no_bad_uni_chars).filter(no_null)
+)
+def test_string_component_transform_factory(x, alg, example_func):
+    string_component_transform_func = string_component_transform_factory(alg)
     try:
-        assert string_component_transform_factory(ns.GROUPLETTERS | ns.LOCALE)(
-            x
-        ) == fast_int(x, key=lambda x: get_strxfrm()(groupletters(x)))
-    except ValueError as e:  # handle broken locale lib on BSD.
-        if "is not in range" not in str(e):
-            raise
-
-
-def test_string_component_transform_factory_with_LOCALE_and_DUMB_returns_fast_int_and_groupletters_and_locale_convert_example():
-    x = "hello"
-    assert string_component_transform_factory(ns_DUMB | ns.LOCALE)(x) == fast_int(
-        x, key=lambda x: get_strxfrm()(groupletters(x))
-    )
-
-
-@given(text().filter(bool).filter(no_null))
-def test_string_component_transform_factory_with_LOCALE_and_DUMB_returns_fast_int_and_groupletters_and_locale_convert(
-    x
-):
-    try:
-        assert string_component_transform_factory(ns_DUMB | ns.LOCALE)(x) == fast_int(
-            x, key=lambda x: get_strxfrm()(groupletters(x))
-        )
+        assert string_component_transform_func(py23_str(x)) == example_func(py23_str(x))
     except ValueError as e:  # handle broken locale lib on BSD.
         if "is not in range" not in str(e):
             raise
