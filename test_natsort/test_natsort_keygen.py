@@ -5,170 +5,171 @@ See the README or the natsort homepage for more details.
 """
 from __future__ import print_function, unicode_literals
 
-import locale
-import warnings
-
 import pytest
 from natsort import natsort_key, natsort_keygen, natsorted, ns
 from natsort.compat.locale import get_strxfrm, null_string_locale
 from natsort.compat.py23 import PY_VERSION
-from pytest import raises
-
-INPUT = ["6A-5.034e+1", "/Folder (1)/Foo", 56.7]
 
 
-def test_natsort_key_public_raises_DeprecationWarning_when_called():
-    # But it raises a deprecation warning
-    with warnings.catch_warnings(record=True) as w:
-        warnings.simplefilter("always")
+@pytest.fixture
+def arbitrary_input():
+    return ["6A-5.034e+1", "/Folder (1)/Foo", 56.7]
+
+
+@pytest.fixture
+def bytes_input():
+    return b"6A-5.034e+1"
+
+
+def test_natsort_keygen_demonstration():
+    original_list = ["a50", "a51.", "a50.31", "a50.4", "a5.034e1", "a50.300"]
+    copy_of_list = original_list[:]
+    original_list.sort(key=natsort_keygen(alg=ns.F))
+    # natsorted uses the output of natsort_keygen under the hood.
+    assert original_list == natsorted(copy_of_list, alg=ns.F)
+
+
+def test_natsort_key_public_raises_deprecation_warning_when_called():
+    with pytest.warns(DeprecationWarning, match="^natsort_key is deprecated") as w:
         assert natsort_key("a-5.034e2") == ("a-", 5, ".", 34, "e", 2)
-        assert len(w) == 1
-        assert (
-            "natsort_key is deprecated as of 3.4.0, please use natsort_keygen"
-            in str(w[-1].message)
-        )
+    assert len(w) == 1
+
     # It is called for each element in a list when sorting
-    with warnings.catch_warnings(record=True) as w:
-        warnings.simplefilter("always")
+    with pytest.warns(DeprecationWarning) as w:
         a = ["a2", "a5", "a9", "a1", "a4", "a10", "a6"]
         a.sort(key=natsort_key)
-        assert len(w) == 7
+    assert len(w) == 7
 
 
-def test_natsort_keygen_with_invalid_alg_input_raises_ValueError():
+def test_natsort_keygen_with_invalid_alg_input_raises_value_error():
     # Invalid arguments give the correct response
-    with raises(ValueError) as err:
+    with pytest.raises(ValueError, match="'alg' argument"):
         natsort_keygen(None, "1")
-    assert (
-        str(err.value)
-        == "natsort_keygen: 'alg' argument must be from the enum 'ns', got 1"
-    )
 
 
-def test_natsort_keygen_returns_natsort_key_that_parses_input():
-    a = "a-5.034e1"
-    assert natsort_keygen()(a) == ("a-", 5, ".", 34, "e", 1)
-    assert natsort_keygen(alg=ns.F | ns.S)(a) == ("a", -50.34)
+@pytest.mark.parametrize(
+    "alg, expected",
+    [(ns.DEFAULT, ("a-", 5, ".", 34, "e", 1)), (ns.FLOAT | ns.SIGNED, ("a", -50.34))],
+)
+def test_natsort_keygen_returns_natsort_key_that_parses_input(alg, expected):
+    ns_key = natsort_keygen(alg=alg)
+    assert ns_key("a-5.034e1") == expected
 
 
-def test_natsort_keygen_returns_key_that_can_be_used_to_sort_list_in_place_with_same_result_as_natsorted():
-    a = ["a50", "a51.", "a50.31", "a50.4", "a5.034e1", "a50.300"]
-    b = a[:]
-    a.sort(key=natsort_keygen(alg=ns.F))
-    assert a == natsorted(b, alg=ns.F)
+@pytest.mark.parametrize(
+    "alg, expected",
+    [
+        (
+            ns.DEFAULT,
+            (("", 6, "A-", 5, ".", 34, "e+", 1), ("/Folder (", 1, ")/Foo"), ("", 56.7)),
+        ),
+        (
+            ns.IGNORECASE,
+            (("", 6, "a-", 5, ".", 34, "e+", 1), ("/folder (", 1, ")/foo"), ("", 56.7)),
+        ),
+        (ns.REAL, (("", 6.0, "A", -50.34), ("/Folder (", 1.0, ")/Foo"), ("", 56.7))),
+        (
+            ns.LOWERCASEFIRST | ns.FLOAT | ns.NOEXP,
+            (
+                ("", 6.0, "a-", 5.034, "E+", 1.0),
+                ("/fOLDER (", 1.0, ")/fOO"),
+                ("", 56.7),
+            ),
+        ),
+        (
+            ns.PATH | ns.GROUPLETTERS,
+            (
+                (("", 6, "aA--", 5, "..", 34, "ee++", 1),),
+                (("//",), ("fFoollddeerr  ((", 1, "))"), ("fFoooo",)),
+                (("", 56.7),),
+            ),
+        ),
+    ],
+)
+def test_natsort_keygen_handles_arbitrary_input(arbitrary_input, alg, expected):
+    ns_key = natsort_keygen(alg=alg)
+    assert ns_key(arbitrary_input) == expected
 
 
-def test_natsort_keygen_splits_input_with_defaults():
-    assert natsort_keygen()(INPUT) == (
-        ("", 6, "A-", 5, ".", 34, "e+", 1),
-        ("/Folder (", 1, ")/Foo"),
-        ("", 56.7),
-    )
-    if PY_VERSION >= 3:
-        assert natsort_keygen()(b"6A-5.034e+1") == (b"6A-5.034e+1",)
+@pytest.mark.parametrize(
+    "alg, expected",
+    [
+        (ns.DEFAULT, (b"6A-5.034e+1",)),
+        (ns.IGNORECASE, (b"6a-5.034e+1",)),
+        (ns.REAL, (b"6A-5.034e+1",)),
+        (ns.LOWERCASEFIRST | ns.FLOAT | ns.NOEXP, (b"6A-5.034e+1",)),
+        (ns.PATH | ns.GROUPLETTERS, ((b"6A-5.034e+1",),)),
+    ],
+)
+@pytest.mark.skipif(PY_VERSION < 3.0, reason="special bytes handling only on Python3")
+def test_natsort_keygen_handles_bytes_input(bytes_input, alg, expected):
+    ns_key = natsort_keygen(alg=alg)
+    assert ns_key(bytes_input) == expected
 
 
-def test_natsort_keygen_splits_input_with_real():
-    assert natsort_keygen(alg=ns.R)(INPUT) == (
-        ("", 6.0, "A", -50.34),
-        ("/Folder (", 1.0, ")/Foo"),
-        ("", 56.7),
-    )
-    if PY_VERSION >= 3:
-        assert natsort_keygen(alg=ns.R)(b"6A-5.034e+1") == (b"6A-5.034e+1",)
-
-
-def test_natsort_keygen_splits_input_with_lowercasefirst_noexp_float():
-    assert natsort_keygen(alg=ns.LF | ns.F | ns.N)(INPUT) == (
-        ("", 6.0, "a-", 5.034, "E+", 1.0),
-        ("/fOLDER (", 1.0, ")/fOO"),
-        ("", 56.7),
-    )
-    if PY_VERSION >= 3:
-        assert natsort_keygen(alg=ns.LF | ns.F | ns.N)(b"6A-5.034e+1") == (
-            b"6A-5.034e+1",
-        )
-
-
+@pytest.mark.parametrize(
+    "alg, expected, is_dumb",
+    [
+        (
+            ns.LOCALE,
+            (
+                (null_string_locale, 6, "A-", 5, ".", 34, "e+", 1),
+                ("/Folder (", 1, ")/Foo"),
+                (null_string_locale, 56.7),
+            ),
+            False,
+        ),
+        (
+            ns.LOCALE,
+            (
+                (null_string_locale, 6, "aa--", 5, "..", 34, "eE++", 1),
+                ("//ffoOlLdDeErR  ((", 1, "))//ffoOoO"),
+                (null_string_locale, 56.7),
+            ),
+            True,
+        ),
+        (
+            ns.LOCALE | ns.CAPITALFIRST,
+            (
+                (("",), (null_string_locale, 6, "A-", 5, ".", 34, "e+", 1)),
+                (("/",), ("/Folder (", 1, ")/Foo")),
+                (("",), (null_string_locale, 56.7)),
+            ),
+            False,
+        ),
+    ],
+)
 @pytest.mark.usefixtures("with_locale_en_us")
-def test_natsort_keygen_splits_input_with_locale(mocker):
+def test_natsort_keygen_with_locale(mocker, arbitrary_input, alg, expected, is_dumb):
+    # First, apply the correct strxfrm function to the string values.
     strxfrm = get_strxfrm()
-    with mocker.patch("natsort.compat.locale.dumb_sort", return_value=False):
-        assert natsort_keygen(alg=ns.L)(INPUT) == (
-            (
-                null_string_locale,
-                6,
-                strxfrm("A-"),
-                5,
-                strxfrm("."),
-                34,
-                strxfrm("e+"),
-                1,
-            ),
-            (strxfrm("/Folder ("), 1, strxfrm(")/Foo")),
-            (null_string_locale, 56.7),
-        )
-    with mocker.patch("natsort.compat.locale.dumb_sort", return_value=True):
-        assert natsort_keygen(alg=ns.L)(INPUT) == (
-            (
-                null_string_locale,
-                6,
-                strxfrm("aa--"),
-                5,
-                strxfrm(".."),
-                34,
-                strxfrm("eE++"),
-                1,
-            ),
-            (strxfrm("//ffoOlLdDeErR  (("), 1, strxfrm("))//ffoOoO")),
-            (null_string_locale, 56.7),
-        )
-    if PY_VERSION >= 3:
-        assert natsort_keygen(alg=ns.LA)(b"6A-5.034e+1") == (b"6A-5.034e+1",)
-    locale.setlocale(locale.LC_ALL, str(""))
+    expected = [list(sub) for sub in expected]
+    try:
+        for i in (2, 4, 6):
+            expected[0][i] = strxfrm(expected[0][i])
+        for i in (0, 2):
+            expected[1][i] = strxfrm(expected[1][i])
+        expected = tuple(tuple(sub) for sub in expected)
+    except IndexError:  # ns.LOCALE | ns.CAPITALFIRST
+        expected = [[list(subsub) for subsub in sub] for sub in expected]
+        for i in (2, 4, 6):
+            expected[0][1][i] = strxfrm(expected[0][1][i])
+        for i in (0, 2):
+            expected[1][1][i] = strxfrm(expected[1][1][i])
+        expected = tuple(tuple(tuple(subsub) for subsub in sub) for sub in expected)
+
+    with mocker.patch("natsort.compat.locale.dumb_sort", return_value=is_dumb):
+        ns_key = natsort_keygen(alg=alg)
+        assert ns_key(arbitrary_input) == expected
 
 
+@pytest.mark.parametrize(
+    "alg, is_dumb",
+    [(ns.LOCALE, False), (ns.LOCALE, True), (ns.LOCALE | ns.CAPITALFIRST, False)],
+)
 @pytest.mark.usefixtures("with_locale_en_us")
-def test_natsort_keygen_splits_input_with_locale_and_capitalfirst(mocker):
-    strxfrm = get_strxfrm()
-    with mocker.patch("natsort.compat.locale.dumb_sort", return_value=False):
-        assert natsort_keygen(alg=ns.LA | ns.C)(INPUT) == (
-            (
-                ("",),
-                (
-                    null_string_locale,
-                    6,
-                    strxfrm("A-"),
-                    5,
-                    strxfrm("."),
-                    34,
-                    strxfrm("e+"),
-                    1,
-                ),
-            ),
-            (("/",), (strxfrm("/Folder ("), 1, strxfrm(")/Foo"))),
-            (("",), (null_string_locale, 56.7)),
-        )
-    if PY_VERSION >= 3:
-        assert natsort_keygen(alg=ns.LA | ns.C)(b"6A-5.034e+1") == (b"6A-5.034e+1",)
-    locale.setlocale(locale.LC_ALL, str(""))
-
-
-def test_natsort_keygen_splits_input_with_path():
-    assert natsort_keygen(alg=ns.P | ns.G)(INPUT) == (
-        (("", 6, "aA--", 5, "..", 34, "ee++", 1),),
-        (("//",), ("fFoollddeerr  ((", 1, "))"), ("fFoooo",)),
-        (("", 56.7),),
-    )
-    if PY_VERSION >= 3:
-        assert natsort_keygen(alg=ns.P | ns.G)(b"6A-5.034e+1") == ((b"6A-5.034e+1",),)
-
-
-def test_natsort_keygen_splits_input_with_ignorecase():
-    assert natsort_keygen(alg=ns.IC)(INPUT) == (
-        ("", 6, "a-", 5, ".", 34, "e+", 1),
-        ("/folder (", 1, ")/foo"),
-        ("", 56.7),
-    )
-    if PY_VERSION >= 3:
-        assert natsort_keygen(alg=ns.IC)(b"6A-5.034e+1") == (b"6a-5.034e+1",)
+def test_natsort_keygen_with_locale_bytes(mocker, bytes_input, alg, is_dumb):
+    expected = (b"6A-5.034e+1",)
+    with mocker.patch("natsort.compat.locale.dumb_sort", return_value=is_dumb):
+        ns_key = natsort_keygen(alg=alg)
+        assert ns_key(bytes_input) == expected
