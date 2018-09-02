@@ -147,28 +147,6 @@ Starting with :mod:`natsort` version 4.0.0 the default number definition was
 changed to an *unsigned integer* which satisfies the "least astonishment" principle, and
 I have not heard a complaint since.
 
-.. admonition:: Wouldn't itertools.groupby work as well as regex to split strings?
-
-    You *could* do it using something like :func:`itertools.groupby`, but it is not clearer
-    nor more concise, *I promise*.
-
-    .. code-block:: python
-
-        >>> import itertools
-        >>> import operator
-        >>> list(map(''.join, map(operator.itemgetter(1), itertools.groupby('2 ft 11 in', str.isdigit))))
-        ['2', ' ft ', '11', ' in']
-
-    OK, but let's assume for a moment that you *really* like itertools and think the above
-    is fine. We still have lost a lot of flexibility here because of the :meth:`str.isdigit`
-    call which makes this method non-optimal; with a regular expression one can change
-    the pattern string and split on much more complicated patterns, but with
-    :func:`itertools.groupby` it becomes *much* more complicated to change it up;
-    I implemented this strategy `as part of my testing`_ and it is anything but clear an concise.
-
-    Not to mention it's *way* slower than regex. Just the simple example above (unsigned integers)
-    is 50% slower than regex...
-
 Coercing Strings Containing Numbers Into Numbers
 ++++++++++++++++++++++++++++++++++++++++++++++++
 
