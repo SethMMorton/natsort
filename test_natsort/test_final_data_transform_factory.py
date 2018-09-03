@@ -3,7 +3,7 @@
 from __future__ import unicode_literals
 
 import pytest
-from hypothesis import given
+from hypothesis import given, example
 from hypothesis.strategies import floats, integers, text
 from natsort.compat.py23 import py23_str
 from natsort.ns_enum import ns, ns_DUMB
@@ -34,6 +34,7 @@ def test_final_data_transform_factory_default(x, y, alg):
     ],
 )
 @given(x=text(), y=floats(allow_nan=False, allow_infinity=False) | integers())
+@example(x="İ", y=0)
 @pytest.mark.usefixtures("with_locale_en_us")
 def test_final_data_transform_factory_ungroup_and_locale(x, y, alg, func):
     final_data_transform_func = final_data_transform_factory(alg, "", "::")
@@ -41,7 +42,7 @@ def test_final_data_transform_factory_ungroup_and_locale(x, y, alg, func):
     original_value = "".join(map(py23_str, value))
     result = final_data_transform_func(value, original_value)
     if x:
-        expected = (tuple(func(original_value[:1])), value)
+        expected = ((func(original_value[:1]),), value)
     else:
         expected = (("::",), value)
     assert result == expected
