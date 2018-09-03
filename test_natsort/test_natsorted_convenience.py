@@ -75,6 +75,7 @@ def test_realsorted_is_identical_to_natsorted_with_real_alg(float_list):
     assert realsorted(float_list) == natsorted(float_list, alg=ns.REAL)
 
 
+@pytest.mark.usefixtures("with_locale_en_us")
 def test_humansorted_is_identical_to_natsorted_with_locale_alg(fruit_list):
     assert humansorted(fruit_list) == natsorted(fruit_list, alg=ns.LOCALE)
 
@@ -108,6 +109,7 @@ def test_index_realsorted_is_identical_to_index_natsorted_with_real_alg(float_li
     assert index_realsorted(float_list) == index_natsorted(float_list, alg=ns.REAL)
 
 
+@pytest.mark.usefixtures("with_locale_en_us")
 def test_index_humansorted_is_identical_to_index_natsorted_with_locale_alg(fruit_list):
     assert index_humansorted(fruit_list) == index_natsorted(fruit_list, alg=ns.LOCALE)
 

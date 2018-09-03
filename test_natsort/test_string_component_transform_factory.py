@@ -66,6 +66,7 @@ def no_null(x):
     | floats()
     | text().filter(bool).filter(no_bad_uni_chars).filter(no_null)
 )
+@pytest.mark.usefixtures("with_locale_en_us")
 def test_string_component_transform_factory(x, alg, example_func):
     string_component_transform_func = string_component_transform_factory(alg)
     try:
