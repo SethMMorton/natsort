@@ -59,7 +59,7 @@ enum_aliases = [
     ("NA", "NUMAFTER"),
 ]
 
-# Construct the list of enums with their fields.
+# Construct the list of bitwise distinct enums with their fields.
 enum_fields = [(name, 1 << i) for i, name in enumerate(enum_options)]
 enum_fields.extend((name, 0) for name in enum_do_nothing)
 
@@ -73,7 +73,7 @@ for name, combo in enum_combos:
 current_mapping = dict(enum_fields)
 enum_fields.extend((alias, current_mapping[name]) for alias, name in enum_aliases)
 
-# Finally, extract out the enum field names and thier values.
+# Finally, extract out the enum field names and their values.
 enum_field_names, enum_field_values = zip(*enum_fields)
 
 

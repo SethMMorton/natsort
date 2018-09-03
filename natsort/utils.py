@@ -239,7 +239,7 @@ def natsort_key(val, key, string_func, bytes_func, num_func):
         if type(val) in (bytes,):
             return bytes_func(val)
 
-        # Otherwise, assume it is an iterable that must be parses recursively.
+        # Otherwise, assume it is an iterable that must be parsed recursively.
         # Do not apply the key recursively.
         try:
             return tuple(
@@ -731,7 +731,7 @@ def path_splitter(s, _d_match=re.compile(r"\.\d").match):
 
     Parameters
     ----------
-    s : str, pathlib.Path
+    s : str | pathlib.Path
 
     Returns
     -------
