@@ -27,7 +27,10 @@ def test_final_data_transform_factory_default(x, y, alg):
         (ns.UNGROUPLETTERS | ns.LOCALE, lambda x: x),
         (ns.LOCALE | ns.UNGROUPLETTERS | ns_DUMB, lambda x: x),
         (ns.LOCALE | ns.UNGROUPLETTERS | ns.LOWERCASEFIRST, lambda x: x),
-        (ns.LOCALE | ns.UNGROUPLETTERS | ns_DUMB | ns.LOWERCASEFIRST, lambda x: x),
+        (
+            ns.LOCALE | ns.UNGROUPLETTERS | ns_DUMB | ns.LOWERCASEFIRST,
+            lambda x: x.swapcase(),
+        ),
     ],
 )
 @given(x=text(), y=floats(allow_nan=False, allow_infinity=False) | integers())
