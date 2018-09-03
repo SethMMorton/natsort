@@ -25,7 +25,7 @@ def fruit_list():
 
 @pytest.fixture
 def mixed_list():
-    return ["Á", "0", "ä", 3, "b", 1.5, "2", "Z"]
+    return ["Ä", "0", "ä", 3, "b", 1.5, "2", "Z"]
 
 
 def test_natsorted_numbers_in_ascending_order():
@@ -80,8 +80,8 @@ def test_natsorted_can_sort_as_version_numbers(alg):
 @pytest.mark.parametrize(
     "alg, expected",
     [
-        (ns.DEFAULT, ["0", 1.5, "2", 3, "Á", "Z", "ä", "b"]),
-        (ns.NUMAFTER, ["Á", "Z", "ä", "b", "0", 1.5, "2", 3]),
+        (ns.DEFAULT, ["0", 1.5, "2", 3, "Ä", "Z", "ä", "b"]),
+        (ns.NUMAFTER, ["Ä", "Z", "ä", "b", "0", 1.5, "2", 3]),
     ],
 )
 def test_natsorted_handles_mixed_types(mixed_list, alg, expected):
@@ -223,15 +223,15 @@ def test_natsorted_can_sort_locale_specific_numbers_de():
 @pytest.mark.parametrize(
     "alg, expected",
     [
-        (ns.DEFAULT, ["0", 1.5, "2", 3, "ä", "Á", "b", "Z"]),
-        (ns.NUMAFTER, ["ä", "Á", "b", "Z", "0", 1.5, "2", 3]),
-        (ns.UNGROUPLETTERS, ["0", 1.5, "2", 3, "Á", "Z", "ä", "b"]),
-        (ns.UG | ns.NA, ["Á", "Z", "ä", "b", "0", 1.5, "2", 3]),
+        (ns.DEFAULT, ["0", 1.5, "2", 3, "ä", "Ä", "b", "Z"]),
+        (ns.NUMAFTER, ["ä", "Ä", "b", "Z", "0", 1.5, "2", 3]),
+        (ns.UNGROUPLETTERS, ["0", 1.5, "2", 3, "Ä", "Z", "ä", "b"]),
+        (ns.UG | ns.NA, ["Ä", "Z", "ä", "b", "0", 1.5, "2", 3]),
         # Adding PATH changes nothing.
-        (ns.PATH, ["0", 1.5, "2", 3, "ä", "Á", "b", "Z"]),
-        (ns.PATH | ns.NUMAFTER, ["ä", "Á", "b", "Z", "0", 1.5, "2", 3]),
-        (ns.PATH | ns.UNGROUPLETTERS, ["0", 1.5, "2", 3, "Á", "Z", "ä", "b"]),
-        (ns.PATH | ns.UG | ns.NA, ["Á", "Z", "ä", "b", "0", 1.5, "2", 3]),
+        (ns.PATH, ["0", 1.5, "2", 3, "ä", "Ä", "b", "Z"]),
+        (ns.PATH | ns.NUMAFTER, ["ä", "Ä", "b", "Z", "0", 1.5, "2", 3]),
+        (ns.PATH | ns.UNGROUPLETTERS, ["0", 1.5, "2", 3, "Ä", "Z", "ä", "b"]),
+        (ns.PATH | ns.UG | ns.NA, ["Ä", "Z", "ä", "b", "0", 1.5, "2", 3]),
     ],
 )
 @pytest.mark.usefixtures("with_locale_en_us")
