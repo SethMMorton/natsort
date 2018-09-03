@@ -22,7 +22,10 @@ class CustomTuple(tuple):
 
 def input_transform(x):
     """Make uppercase."""
-    return x.upper()
+    try:
+        return x.upper()
+    except AttributeError:
+        return x
 
 
 def final_transform(x, original):
@@ -76,7 +79,7 @@ def test_parse_string_factory_invariance(x, parse_string_func, orig_func):
     # What is relevant is that the form of the output matches the invariant
     # that even elements are string and odd are numerical. That each component
     # function is doing what it should is tested elsewhere.
-    value = "".join(map(str, x))  # Convert the input to a single string.
+    value = "".join(map(py23_str, x))  # Convert the input to a single string.
     result = parse_string_func(value)
     result_types = list(map(type, result))
     expected_types = [py23_str if i % 2 == 0 else float for i in range(len(result))]

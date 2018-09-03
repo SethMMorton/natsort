@@ -167,6 +167,7 @@ def test_natsort_keygen_with_locale(mocker, arbitrary_input, alg, expected, is_d
     "alg, is_dumb",
     [(ns.LOCALE, False), (ns.LOCALE, True), (ns.LOCALE | ns.CAPITALFIRST, False)],
 )
+@pytest.mark.skipif(PY_VERSION < 3.0, reason="special bytes handling only on Python3")
 @pytest.mark.usefixtures("with_locale_en_us")
 def test_natsort_keygen_with_locale_bytes(mocker, bytes_input, alg, is_dumb):
     expected = (b"6A-5.034e+1",)
