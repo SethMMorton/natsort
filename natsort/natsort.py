@@ -10,7 +10,6 @@ from __future__ import absolute_import, division, print_function, unicode_litera
 import sys
 from functools import partial
 from operator import itemgetter
-from warnings import warn
 
 import natsort.compat.locale
 from natsort import utils
@@ -108,13 +107,6 @@ def as_utf8(s):
     return utils.do_decoding(s, "utf-8")
 
 
-def natsort_key(val, key=None, alg=ns.DEFAULT, **_kwargs):
-    """Undocumented, kept for backwards-compatibility."""
-    msg = "natsort_key is deprecated as of 3.4.0, please use natsort_keygen"
-    warn(msg, DeprecationWarning)
-    return natsort_keygen(key, alg, **_kwargs)(val)
-
-
 @u_format
 def natsort_keygen(key=None, alg=ns.DEFAULT, **_kwargs):
     """
@@ -149,6 +141,7 @@ def natsort_keygen(key=None, alg=ns.DEFAULT, **_kwargs):
     See Also
     --------
     natsorted
+    natsort_key
 
     Examples
     --------
@@ -209,6 +202,21 @@ def natsort_keygen(key=None, alg=ns.DEFAULT, **_kwargs):
         bytes_func=bytes_func,
         num_func=num_func,
     )
+
+
+# Exposed for simplicity if one needs the default natsort key.
+natsort_key = natsort_keygen()
+natsort_key.__doc__ = """\
+natsort_key(val)
+The default natural sorting key.
+
+This is the output of :func:`natsort_keygen` with default values.
+
+See Also
+--------
+natsort_keygen
+
+"""
 
 
 @u_format

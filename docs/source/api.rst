@@ -10,6 +10,7 @@ natsort API
    :maxdepth: 2
 
    natsort_keygen.rst
+   natsort_key.rst
    natsorted.rst
    versorted.rst
    humansorted.rst

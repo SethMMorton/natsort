@@ -3,6 +3,12 @@
 Changelog
 ---------
 
+XX-XX-XXXX v. X.X.X
++++++++++++++++++++
+
+   - Re-expose ``natsort_key`` as "public" and remove the
+     associated ``DepricationWarning``.
+
 07-07-2018 v. 5.3.3
 +++++++++++++++++++
 

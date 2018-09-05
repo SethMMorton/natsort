@@ -29,16 +29,8 @@ def test_natsort_keygen_demonstration():
     assert original_list == natsorted(copy_of_list, alg=ns.F)
 
 
-def test_natsort_key_public_raises_deprecation_warning_when_called():
-    with pytest.warns(DeprecationWarning, match="^natsort_key is deprecated") as w:
-        assert natsort_key("a-5.034e2") == ("a-", 5, ".", 34, "e", 2)
-    assert len(w) == 1
-
-    # It is called for each element in a list when sorting
-    with pytest.warns(DeprecationWarning) as w:
-        a = ["a2", "a5", "a9", "a1", "a4", "a10", "a6"]
-        a.sort(key=natsort_key)
-    assert len(w) == 7
+def test_natsort_key_public():
+    assert natsort_key("a-5.034e2") == ("a-", 5, ".", 34, "e", 2)
 
 
 def test_natsort_keygen_with_invalid_alg_input_raises_value_error():
