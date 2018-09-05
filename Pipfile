@@ -6,7 +6,6 @@ pytest-flakes = "*"
 pytest-pep8   = "*"
 pytest-mock   = ">=1.1"
 hypothesis    = ">=3.8.0"
-astroid       = "==1.5.3"
 pytest-faulthandler = {version = "*", platform_python_implementation = "== 'CPython'"}
 
 # These packages are standard on newer python versions.
