@@ -3,92 +3,93 @@
 Test the natsort command-line tool functions.
 """
 from __future__ import print_function, unicode_literals
+
 import re
 import sys
-from pytest import raises
-from compat.mock import patch, call
-from hypothesis import (
-    given,
-)
-from hypothesis.strategies import (
-    integers,
-    floats,
-    lists,
-    data,
-)
+
+import pytest
+from hypothesis import given
+from hypothesis.strategies import data, floats, integers, lists
 from natsort.__main__ import (
+    check_filters,
+    keep_entry_range,
+    keep_entry_value,
     main,
     range_check,
-    check_filter,
-    keep_entry_range,
-    exclude_entry,
     sort_and_print_entries,
 )
 
 
-def test_main_passes_default_arguments_with_no_command_line_options():
-    with patch('natsort.__main__.sort_and_print_entries') as p:
-        sys.argv[1:] = ['num-2', 'num-6', 'num-1']
-        main()
-        args = p.call_args[0][1]
-        assert not args.paths
-        assert args.filter is None
-        assert args.reverse_filter is None
-        assert args.exclude is None
-        assert not args.reverse
-        assert args.number_type == 'int'
-        assert not args.signed
-        assert args.exp
-        assert not args.locale
+def test_main_passes_default_arguments_with_no_command_line_options(mocker):
+    p = mocker.patch("natsort.__main__.sort_and_print_entries")
+    main("num-2", "num-6", "num-1")
+    args = p.call_args[0][1]
+    assert not args.paths
+    assert args.filter is None
+    assert args.reverse_filter is None
+    assert args.exclude is None
+    assert not args.reverse
+    assert args.number_type == "int"
+    assert not args.signed
+    assert args.exp
+    assert not args.locale
 
 
-def test_main_passes_arguments_with_all_command_line_options():
-    with patch('natsort.__main__.sort_and_print_entries') as p:
-        sys.argv[1:] = ['--paths', '--reverse', '--locale',
-                        '--filter', '4', '10',
-                        '--reverse-filter', '100', '110',
-                        '--number-type', 'float', '--noexp', '--sign',
-                        '--exclude', '34', '--exclude', '35',
-                        'num-2', 'num-6', 'num-1']
-        main()
-        args = p.call_args[0][1]
-        assert args.paths
-        assert args.filter == [(4.0, 10.0)]
-        assert args.reverse_filter == [(100.0, 110.0)]
-        assert args.exclude == [34, 35]
-        assert args.reverse
-        assert args.number_type == 'float'
-        assert args.signed
-        assert not args.exp
-        assert args.locale
+def test_main_passes_arguments_with_all_command_line_options(mocker):
+    arguments = ["--paths", "--reverse", "--locale"]
+    arguments.extend(["--filter", "4", "10"])
+    arguments.extend(["--reverse-filter", "100", "110"])
+    arguments.extend(["--number-type", "float"])
+    arguments.extend(["--noexp", "--sign"])
+    arguments.extend(["--exclude", "34"])
+    arguments.extend(["--exclude", "35"])
+    arguments.extend(["num-2", "num-6", "num-1"])
+    p = mocker.patch("natsort.__main__.sort_and_print_entries")
+    main(*arguments)
+    args = p.call_args[0][1]
+    assert args.paths
+    assert args.filter == [(4.0, 10.0)]
+    assert args.reverse_filter == [(100.0, 110.0)]
+    assert args.exclude == [34, 35]
+    assert args.reverse
+    assert args.number_type == "float"
+    assert args.signed
+    assert not args.exp
+    assert args.locale
 
 
 class Args:
     """A dummy class to simulate the argparse Namespace object"""
+
     def __init__(self, filt, reverse_filter, exclude, as_path, reverse):
         self.filter = filt
         self.reverse_filter = reverse_filter
         self.exclude = exclude
         self.reverse = reverse
-        self.number_type = 'float'
+        self.number_type = "float"
         self.signed = True
         self.exp = True
         self.paths = as_path
         self.locale = 0
 
-entries = ['tmp/a57/path2',
-           'tmp/a23/path1',
-           'tmp/a1/path1',
-           'tmp/a1 (1)/path1',
-           'tmp/a130/path1',
-           'tmp/a64/path1',
-           'tmp/a64/path2']
 
-mock_print = '__builtin__.print' if sys.version[0] == '2' else 'builtins.print'
+mock_print = "__builtin__.print" if sys.version[0] == "2" else "builtins.print"
+
+entries = [
+    "tmp/a57/path2",
+    "tmp/a23/path1",
+    "tmp/a1/path1",
+    "tmp/a1 (1)/path1",
+    "tmp/a130/path1",
+    "tmp/a64/path1",
+    "tmp/a64/path2",
+]
 
 
-def test_sort_and_print_entries_uses_default_algorithm_with_all_options_false():
-    with patch(mock_print) as p:
+@pytest.mark.parametrize(
+    "options, order",
+    [
+        # Defaults, all options false
         # tmp/a1 (1)/path1
         # tmp/a1/path1
         # tmp/a23/path1
@@ -96,13 +97,8 @@ def test_sort_and_print_entries_uses_default_algorithm_with_all_options_false():
         # tmp/a64/path1
         # tmp/a64/path2
         # tmp/a130/path1
-        sort_and_print_entries(entries, Args(None, None, False, False, False))
-        e = [call(entries[i]) for i in [3, 2, 1, 0, 5, 6, 4]]
-        p.assert_has_calls(e)
-
-
-def test_sort_and_print_entries_uses_PATH_algorithm_with_path_option_true_to_properly_sort_OS_generated_path_names():
-    with patch(mock_print) as p:
+        ([None, None, False, False, False], [3, 2, 1, 0, 5, 6, 4]),
+        # Path option True
         # tmp/a1/path1
         # tmp/a1 (1)/path1
         # tmp/a23/path1
@@ -110,46 +106,26 @@ def test_sort_and_print_entries_uses_PATH_algorithm_with_path_option_true_to_pro
         # tmp/a64/path1
         # tmp/a64/path2
         # tmp/a130/path1
-        sort_and_print_entries(entries, Args(None, None, False, True, False))
-        e = [call(entries[i]) for i in [2, 3, 1, 0, 5, 6, 4]]
-        p.assert_has_calls(e)
-
-
-def test_sort_and_print_entries_keeps_only_paths_between_of_20_to_100_with_filter_option():
-    with patch(mock_print) as p:
+        ([None, None, False, True, False], [2, 3, 1, 0, 5, 6, 4]),
+        # Filter option keeps only within range
         # tmp/a23/path1
         # tmp/a57/path2
         # tmp/a64/path1
         # tmp/a64/path2
-        sort_and_print_entries(entries, Args([(20, 100)], None, False, False, False))
-        e = [call(entries[i]) for i in [1, 0, 5, 6]]
-        p.assert_has_calls(e)
-
-
-def test_sort_and_print_entries_excludes_paths_between_of_20_to_100_with_reverse_filter_option():
-    with patch(mock_print) as p:
+        ([[(20, 100)], None, False, False, False], [1, 0, 5, 6]),
+        # Reverse filter, exclude in range
         # tmp/a1/path1
         # tmp/a1 (1)/path1
         # tmp/a130/path1
-        sort_and_print_entries(entries, Args(None, [(20, 100)], False, True, False))
-        e = [call(entries[i]) for i in [2, 3, 4]]
-        p.assert_has_calls(e)
-
-
-def test_sort_and_print_entries_excludes_paths_23_or_130_with_exclude_option_list():
-    with patch(mock_print) as p:
+        ([None, [(20, 100)], False, True, False], [2, 3, 4]),
+        # Exclude given values with exclude list
         # tmp/a1/path1
         # tmp/a1 (1)/path1
         # tmp/a57/path2
         # tmp/a64/path1
         # tmp/a64/path2
-        sort_and_print_entries(entries, Args(None, None, [23, 130], True, False))
-        e = [call(entries[i]) for i in [2, 3, 0, 5, 6]]
-        p.assert_has_calls(e)
-
-
-def test_sort_and_print_entries_reverses_order_with_reverse_option():
-    with patch(mock_print) as p:
+        ([None, None, [23, 130], True, False], [2, 3, 0, 5, 6]),
+        # Reverse order
         # tmp/a130/path1
         # tmp/a64/path2
         # tmp/a64/path1
@@ -157,94 +133,91 @@ def test_sort_and_print_entries_reverses_order_with_reverse_option():
         # tmp/a23/path1
         # tmp/a1 (1)/path1
         # tmp/a1/path1
-        sort_and_print_entries(entries, Args(None, None, False, True, True))
-        e = [call(entries[i]) for i in reversed([2, 3, 1, 0, 5, 6, 4])]
-        p.assert_has_calls(e)
+        ([None, None, False, True, True], reversed([2, 3, 1, 0, 5, 6, 4])),
+    ],
+)
+def test_sort_and_print_entries(options, order, mocker):
+    p = mocker.patch(mock_print)
+    sort_and_print_entries(entries, Args(*options))
+    e = [mocker.call(entries[i]) for i in order]
+    p.assert_has_calls(e)
 
 
 # Each test has an "example" version for demonstrative purposes,
 # and a test that uses the hypothesis module.
+
 
 def test_range_check_returns_range_as_is_but_with_floats_if_first_is_less_than_second_example():
     assert range_check(10, 11) == (10.0, 11.0)
     assert range_check(6.4, 30) == (6.4, 30.0)
 
 
-@given(x=integers(), data=data())  # Defer data selection for y till test is run.
-def test_range_check_returns_range_as_is_but_with_floats_if_first_is_less_than_second(x, data):
+@given(x=floats(allow_nan=False, min_value=-1E8, max_value=1E8) | integers(), d=data())
+def test_range_check_returns_range_as_is_if_first_is_less_than_second(x, d):
     # Pull data such that the first is less than the second.
-    y = data.draw(integers(min_value=x + 1))
+    if isinstance(x, float):
+        y = d.draw(floats(min_value=x + 1.0, max_value=1E9, allow_nan=False))
+    else:
+        y = d.draw(integers(min_value=x + 1))
     assert range_check(x, y) == (x, y)
 
 
-@given(x=floats(allow_nan=False, min_value=-1E8, max_value=1E8), data=data())  # Defer data selection for y till test is run.
-def test_range_check_returns_range_as_is_but_with_floats_if_first_is_less_than_second2(x, data):
-    # Pull data such that the first is less than the second.
-    y = data.draw(floats(min_value=x + 1.0, max_value=1E9, allow_nan=False))
-    assert range_check(x, y) == (x, y)
-
-
-def test_range_check_raises_ValueError_if_second_is_less_than_first_example():
-    with raises(ValueError) as err:
+def test_range_check_raises_value_error_if_second_is_less_than_first_example():
+    with pytest.raises(ValueError, match="low >= high"):
         range_check(7, 2)
-    assert str(err.value) == 'low >= high'
 
 
-@given(x=floats(allow_nan=False), data=data())  # Defer data selection for y till test is run.
-def test_range_check_raises_ValueError_if_second_is_less_than_first(x, data):
+@given(x=floats(allow_nan=False), d=data())
+def test_range_check_raises_value_error_if_second_is_less_than_first(x, d):
     # Pull data such that the first is greater than or equal to the second.
-    y = data.draw(floats(max_value=x, allow_nan=False))
-    with raises(ValueError) as err:
+    y = d.draw(floats(max_value=x, allow_nan=False))
+    with pytest.raises(ValueError, match="low >= high"):
         range_check(x, y)
-    assert str(err.value) == 'low >= high'
 
 
-def test_check_filter_returns_None_if_filter_evaluates_to_False():
-    assert check_filter(()) is None
-    assert check_filter(False) is None
-    assert check_filter(None) is None
+def test_check_filters_returns_none_if_filter_evaluates_to_false():
+    assert check_filters(()) is None
+    assert check_filters(False) is None
+    assert check_filters(None) is None
 
 
-def test_check_filter_returns_input_as_is_if_filter_is_valid_example():
-    assert check_filter([(6, 7)]) == [(6, 7)]
-    assert check_filter([(6, 7), (2, 8)]) == [(6, 7), (2, 8)]
+def test_check_filters_returns_input_as_is_if_filter_is_valid_example():
+    assert check_filters([(6, 7)]) == [(6, 7)]
+    assert check_filters([(6, 7), (2, 8)]) == [(6, 7), (2, 8)]
 
 
-@given(x=lists(integers(), min_size=1), data=data())  # Defer data selection for y till test is run.
-def test_check_filter_returns_input_as_is_if_filter_is_valid(x, data):
-    y = [data.draw(integers(min_value=val + 1)) for val in x]  # ensure y is element-wise greater than x
-    assert check_filter(list(zip(x, y))) == [(i, j) for i, j in zip(x, y)]
+@given(x=lists(integers(), min_size=1), d=data())
+def test_check_filters_returns_input_as_is_if_filter_is_valid(x, d):
+    # ensure y is element-wise greater than x
+    y = [d.draw(integers(min_value=val + 1)) for val in x]
+    assert check_filters(list(zip(x, y))) == [(i, j) for i, j in zip(x, y)]
 
 
-def test_check_filter_raises_ValueError_if_filter_is_invalid_example():
-    with raises(ValueError) as err:
-        check_filter([(7, 2)])
-    assert str(err.value) == 'Error in --filter: low >= high'
+def test_check_filters_raises_value_error_if_filter_is_invalid_example():
+    with pytest.raises(ValueError, match="Error in --filter: low >= high"):
+        check_filters([(7, 2)])
 
 
-@given(x=lists(integers(), min_size=1), data=data())  # Defer data selection for y till test is run.
-def test_check_filter_raises_ValueError_if_filter_is_invalid(x, data):
-    y = [data.draw(integers(max_value=val)) for val in x]    # ensure y is element-wise less than or equal to x
-    with raises(ValueError) as err:
-        check_filter(list(zip(x, y)))
-    assert str(err.value) == 'Error in --filter: low >= high'
+@given(x=lists(integers(), min_size=1), d=data())
+def test_check_filters_raises_value_error_if_filter_is_invalid(x, d):
+    # ensure y is element-wise less than or equal to x
+    y = [d.draw(integers(max_value=val)) for val in x]
+    with pytest.raises(ValueError, match="Error in --filter: low >= high"):
+        check_filters(list(zip(x, y)))
 
 
-def test_keep_entry_range_returns_True_if_any_portion_of_input_is_between_the_range_bounds_example():
-    assert keep_entry_range('a56b23c89', [0], [100], int, re.compile(r'\d+'))
+@pytest.mark.parametrize(
+    "lows, highs, truth",
+    # 1. Any portion is between the bounds => True.
+    # 2. Any portion is between any bounds => True.
+    # 3. No portion is between the bounds => False.
+    [([0], [100], True), ([1, 88], [20, 90], True), ([1], [20], False)],
+)
+def test_keep_entry_range(lows, highs, truth):
+    assert keep_entry_range("a56b23c89", lows, highs, int, re.compile(r"\d+")) is truth
 
 
-def test_keep_entry_range_returns_True_if_any_portion_of_input_is_between_any_range_bounds_example():
-    assert keep_entry_range('a56b23c89', [1, 88], [20, 90], int, re.compile(r'\d+'))
-
-
-def test_keep_entry_range_returns_False_if_no_portion_of_input_is_between_the_range_bounds_example():
-    assert not keep_entry_range('a56b23c89', [1], [20], int, re.compile(r'\d+'))
-
-
-def test_exclude_entry_returns_True_if_exlcude_parameters_are_not_in_input_example():
-    assert exclude_entry('a56b23c89', [100, 45], int, re.compile(r'\d+'))
-
-
-def test_exclude_entry_returns_False_if_exlcude_parameters_are_in_input_example():
-    assert not exclude_entry('a56b23c89', [23], int, re.compile(r'\d+'))
+# 1. Values not in entry => True. 2. Values in entry => False.
+@pytest.mark.parametrize("values, truth", [([100, 45], True), ([23], False)])
+def test_keep_entry_value(values, truth):
+    assert keep_entry_value("a56b23c89", values, int, re.compile(r"\d+")) is truth

@@ -29,6 +29,7 @@ pip-log.txt
 .pytest_cache
 .pytest
 .envrc
+.venv
 
 #Translations
 *.mo

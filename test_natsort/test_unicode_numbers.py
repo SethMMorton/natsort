@@ -3,17 +3,19 @@
 Test the Unicode numbers module.
 """
 from __future__ import unicode_literals
+
 import unicodedata
+
 from natsort.compat.py23 import py23_range, py23_unichr
 from natsort.unicode_numbers import (
-    numeric_hex,
-    numeric_chars,
-    numeric,
-    digit_chars,
-    digits,
     decimal_chars,
     decimals,
+    digit_chars,
+    digits,
     digits_no_decimals,
+    numeric,
+    numeric_chars,
+    numeric_hex,
     numeric_no_decimals,
 )
 
@@ -43,7 +45,7 @@ def test_numeric_chars_contains_all_valid_unicode_numeric_and_digit_characters()
             a = py23_unichr(i)
         except ValueError:
             break
-        if a in set('0123456789'):
+        if a in set("0123456789"):
             continue
         if unicodedata.numeric(a, None) is not None:
             assert i in set_numeric_hex
@@ -63,6 +65,6 @@ def test_numeric_chars_contains_all_valid_unicode_numeric_and_digit_characters()
 
 
 def test_combined_string_contains_all_characters_in_list():
-    assert numeric == ''.join(numeric_chars)
-    assert digits == ''.join(digit_chars)
-    assert decimals == ''.join(decimal_chars)
+    assert numeric == "".join(numeric_chars)
+    assert digits == "".join(digit_chars)
+    assert decimals == "".join(decimal_chars)
