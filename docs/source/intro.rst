@@ -330,7 +330,7 @@ fastnumbers
 
 The most efficient sorting can occur if you install the
 `fastnumbers <https://pypi.org/project/fastnumbers>`_ package
-(version >=0.7.1); it helps with the string to number conversions.
+(version >=2.0.0); it helps with the string to number conversions.
 :mod:`natsort` will still run (efficiently) without the package, but if you need
 to squeeze out that extra juice it is recommended you include this as a dependency.
 :mod:`natsort` will not require (or check) that

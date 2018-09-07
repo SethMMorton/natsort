@@ -13,8 +13,8 @@ try:
     # noinspection PyPackageRequirements
     from fastnumbers import fast_float, fast_int, __version__ as fn_ver
 
-    # Require >= version 0.7.1.
-    if StrictVersion(fn_ver) < StrictVersion("0.7.1"):
+    # Require >= version 2.0.0.
+    if StrictVersion(fn_ver) < StrictVersion("2.0.0"):
         raise ImportError  # pragma: no cover
 except ImportError:
     from natsort.compat.fake_fastnumbers import fast_float, fast_int
