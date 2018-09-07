@@ -10,6 +10,7 @@ XX-XX-XXXX v. X.X.X
      associated ``DepricationWarning``.
    - Add better developer documentation.
    - Refactor tests.
+   - Bump allowed ``fastnumbers`` version.
 
 07-07-2018 v. 5.3.3
 +++++++++++++++++++
