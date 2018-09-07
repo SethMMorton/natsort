@@ -3,7 +3,7 @@
 Changelog
 ---------
 
-XX-XX-XXXX v. X.X.X
+09-06-2018 v. 5.4.0
 +++++++++++++++++++
 
    - Re-expose ``natsort_key`` as "public" and remove the
