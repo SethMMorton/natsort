@@ -41,7 +41,7 @@ def no_null(x):
         (ns.FLOAT, partial(fast_float, nan=float("-inf"))),
         (ns.FLOAT | ns.NANLAST, partial(fast_float, nan=float("+inf"))),
         (ns.GROUPLETTERS, partial(fast_int, key=groupletters)),
-        (ns.LOCALE, partial(fast_int, key=get_strxfrm())),
+        (ns.LOCALE, partial(fast_int, key=lambda x: get_strxfrm()(x))),
         (
             ns.GROUPLETTERS | ns.LOCALE,
             partial(fast_int, key=lambda x: get_strxfrm()(groupletters(x))),
