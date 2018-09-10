@@ -3,7 +3,7 @@
 Interface for natsort to access fastnumbers functions without
 having to worry if it is actually installed.
 """
-from __future__ import print_function, division, unicode_literals, absolute_import
+from __future__ import absolute_import, division, print_function, unicode_literals
 
 from distutils.version import StrictVersion
 
@@ -17,4 +17,4 @@ try:
     if StrictVersion(fn_ver) < StrictVersion("2.0.0"):
         raise ImportError  # pragma: no cover
 except ImportError:
-    from natsort.compat.fake_fastnumbers import fast_float, fast_int
+    from natsort.compat.fake_fastnumbers import fast_float, fast_int  # noqa: F401

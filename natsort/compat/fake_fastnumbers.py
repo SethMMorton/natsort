@@ -37,6 +37,7 @@ NAN_INF = [
 NAN_INF.extend(["+" + x[:2] for x in NAN_INF] + ["-" + x[:2] for x in NAN_INF])
 NAN_INF = frozenset(NAN_INF)
 ASCII_NUMS = "0123456789+-"
+POTENTIAL_FIRST_CHAR = frozenset(decimal_chars + list(ASCII_NUMS + "."))
 
 
 # noinspection PyIncorrectDocstring
@@ -46,7 +47,7 @@ def fast_float(
     nan=None,
     _uni=unicodedata.numeric,
     _nan_inf=NAN_INF,
-    _first_char=frozenset(decimal_chars + list(ASCII_NUMS + ".")),
+    _first_char=POTENTIAL_FIRST_CHAR,
 ):
     """
     Convert a string to a float quickly, return input as-is if not possible.
@@ -89,7 +90,7 @@ def fast_int(
     x,
     key=lambda x: x,
     _uni=unicodedata.digit,
-    _first_char=frozenset(decimal_chars + list(ASCII_NUMS)),
+    _first_char=POTENTIAL_FIRST_CHAR,
 ):
     """
     Convert a string to a int quickly, return input as-is if not possible.

@@ -2,7 +2,7 @@
 """
 Pre-determine the collection of unicode decimals, digits, and numerals.
 """
-from __future__ import division, print_function, absolute_import, unicode_literals
+from __future__ import absolute_import, division, print_function, unicode_literals
 
 import unicodedata
 

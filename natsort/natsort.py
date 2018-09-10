@@ -640,7 +640,7 @@ def order_by_index(seq, index, iter=False):
 if float(sys.version[:3]) < 3:
     # pylint: disable=unused-variable
     # noinspection PyUnresolvedReferences,PyPep8Naming
-    class natcmp(object):
+    class natcmp(object):  # noqa: N801
         """
         Compare two objects using a key and an algorithm.
 

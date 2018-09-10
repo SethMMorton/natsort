@@ -637,9 +637,12 @@ def final_data_transform_factory(alg, sep, pre_sep):
         return lambda split_val, val: tuple(split_val)
 
 
+lower_function = methodcaller("casefold" if NEWPY else "lower")
+
+
 # noinspection PyIncorrectDocstring
 @u_format
-def groupletters(x, _low=methodcaller("casefold" if NEWPY else "lower")):
+def groupletters(x, _low=lower_function):
     """
     Double all characters, making doubled letters lowercase.
 

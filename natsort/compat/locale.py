@@ -3,7 +3,7 @@
 Interface for natsort to access locale functionality without
 having to worry about if it is using PyICU or the built-in locale.
 """
-from __future__ import print_function, division, unicode_literals, absolute_import
+from __future__ import absolute_import, division, print_function, unicode_literals
 
 # Std. lib imports.
 import sys
@@ -20,7 +20,7 @@ null_string_max = py23_unichr(sys.maxunicode) * 20
 # Make the strxfrm function from strcoll on Python2
 # It can be buggy (especially on BSD-based systems),
 # so prefer icu if available.
-try:
+try:  # noqa: C901
     import icu
     from locale import getlocale
 
