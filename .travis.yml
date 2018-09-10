@@ -1,5 +1,6 @@
 language: python
-matrix:
+
+jobs:
   include:
     - python: "2.7"
       dist: trusty
@@ -41,6 +42,12 @@ matrix:
       dist: xenial
       sudo: true
       env: WITH_EXTRAS=""
+    - stage: code-quality
+      python: "3.6"
+      dist: trusty
+      sudo: false
+      install: pip install flake8 flake8-import-order flake8-bugbear pep8-naming
+      script: flake8
 
 install:
 - pip install -U pip
@@ -48,6 +55,10 @@ install:
 
 script:
 - tox
+
+stages:
+- code-quality
+- test
 
 after_success:
 - coverage xml
