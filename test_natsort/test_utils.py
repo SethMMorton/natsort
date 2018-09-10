@@ -59,7 +59,7 @@ def test_args_to_enum(kwargs, expected):
     ],
 )
 def test_regex_chooser_returns_correct_regular_expression_object(alg, expected):
-    assert utils.regex_chooser(alg) == expected
+    assert utils.regex_chooser(alg).pattern == expected.pattern
 
 
 @pytest.mark.parametrize(
