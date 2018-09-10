@@ -41,7 +41,8 @@ def test_args_to_enum_raises_typeerror_for_invalid_argument():
     ],
 )
 def test_args_to_enum(kwargs, expected):
-    assert utils.args_to_enum(**kwargs) == expected
+    with pytest.warns(DeprecationWarning):
+        assert utils.args_to_enum(**kwargs) == expected
 
 
 @pytest.mark.parametrize(
