@@ -2,7 +2,10 @@
 
 If you have an idea for how to improve `natsort`, please contribute! It can
 be as simple as a bug fix or documentation update, or as complicated as a more
-robust algorithm.
+robust algorithm. Contributions that change the public API of
+`natsort` will have to ensure that the library does not become
+less usable after the contribution and is backwards-compatible (unless there is
+a good reason not to be).
 
 I do not have strong opinions on how one should contribute, so
 I have copy/pasted some text verbatim from the
