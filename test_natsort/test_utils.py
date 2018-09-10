@@ -11,7 +11,7 @@ import pytest
 from hypothesis import given
 from hypothesis.strategies import integers, lists, sampled_from, text
 from natsort import utils
-from natsort.compat.py23 import py23_cmp, py23_str, py23_lower, py23_int
+from natsort.compat.py23 import py23_cmp, py23_int, py23_lower, py23_str
 from natsort.ns_enum import ns
 
 

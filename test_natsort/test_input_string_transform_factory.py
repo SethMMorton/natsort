@@ -3,7 +3,7 @@
 from __future__ import unicode_literals
 
 import pytest
-from hypothesis import given, example
+from hypothesis import example, given
 from hypothesis.strategies import integers, text
 from natsort.compat.py23 import NEWPY
 from natsort.ns_enum import ns, ns_DUMB

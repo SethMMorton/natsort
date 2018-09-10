@@ -2,8 +2,9 @@
 Fixtures for pytest.
 """
 
-import pytest
 import locale
+
+import pytest
 
 
 def load_locale(x):

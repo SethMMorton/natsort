@@ -10,7 +10,7 @@ import pytest
 from hypothesis import given
 from hypothesis.strategies import floats, integers, lists
 from natsort import ns
-from natsort.compat.py23 import py23_cmp, PY_VERSION
+from natsort.compat.py23 import PY_VERSION, py23_cmp
 
 if PY_VERSION < 3:
     from natsort import natcmp

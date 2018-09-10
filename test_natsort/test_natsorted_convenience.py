@@ -5,9 +5,9 @@ See the README or the natsort homepage for more details.
 """
 from __future__ import print_function, unicode_literals
 
-import pytest
 from operator import itemgetter
 
+import pytest
 from natsort import (
     as_ascii,
     as_utf8,

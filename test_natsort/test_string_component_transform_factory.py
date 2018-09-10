@@ -17,13 +17,15 @@ from natsort.utils import groupletters, string_component_transform_factory
 # library on BSD systems that has nothing to do with natsort (a ValueError is
 # raised by strxfrm). Let's filter them out.
 try:
-    bad_uni_chars = set(py23_unichr(x) for x in py23_range(0X10fefd, 0X10ffff + 1))
+    bad_uni_chars = frozenset(
+        py23_unichr(x) for x in py23_range(0X10fefd, 0X10ffff + 1)
+    )
 except ValueError:
     # Narrow unicode build... no worries.
-    bad_uni_chars = set()
+    bad_uni_chars = frozenset()
 
 
-def no_bad_uni_chars(x, _bad_chars=frozenset(bad_uni_chars)):
+def no_bad_uni_chars(x, _bad_chars=bad_uni_chars):
     """Ensure text does not contain bad unicode characters"""
     return not any(y in _bad_chars for y in x)
 

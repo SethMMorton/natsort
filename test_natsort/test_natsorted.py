@@ -8,7 +8,7 @@ from __future__ import print_function, unicode_literals
 from operator import itemgetter
 
 import pytest
-from natsort import natsorted, ns, as_utf8
+from natsort import as_utf8, natsorted, ns
 from natsort.compat.py23 import PY_VERSION
 from pytest import raises
 

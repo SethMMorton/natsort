@@ -147,7 +147,7 @@ def test_sort_and_print_entries(options, order, mocker):
 # and a test that uses the hypothesis module.
 
 
-def test_range_check_returns_range_as_is_but_with_floats_if_first_is_less_than_second_example():
+def test_range_check_returns_range_as_is_but_with_floats_example():
     assert range_check(10, 11) == (10.0, 11.0)
     assert range_check(6.4, 30) == (6.4, 30.0)
 
