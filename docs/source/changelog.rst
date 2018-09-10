@@ -3,6 +3,12 @@
 Changelog
 ---------
 
+XX-XX-XXXX v. X.X.X
++++++++++++++++++++
+
+   - Fix error in a newly added test.
+   - Changed code format and quality checking infrastructure.
+
 09-06-2018 v. 5.4.0
 +++++++++++++++++++
 
