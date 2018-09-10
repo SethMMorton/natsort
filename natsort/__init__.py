@@ -25,7 +25,7 @@ from natsort.utils import chain_functions
 if float(sys.version[:3]) < 3:
     from natsort.natsort import natcmp
 
-__version__ = "5.4.0"
+__version__ = "5.4.1"
 
 __all__ = [
     "natsort_key",

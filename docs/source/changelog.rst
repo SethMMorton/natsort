@@ -3,7 +3,7 @@
 Changelog
 ---------
 
-XX-XX-XXXX v. X.X.X
+09-09-2018 v. 5.4.1
 +++++++++++++++++++
 
    - Fix error in a newly added test.
