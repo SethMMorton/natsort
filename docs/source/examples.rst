@@ -90,7 +90,7 @@ you may need to use the ``ns.PATH`` option:
 Locale-Aware Sorting (Human Sorting)
 ------------------------------------
 
-.. note:: 
+.. note::
     Please read :ref:`locale_issues` before using ``ns.LOCALE``, :func:`humansorted`,
     or :func:`index_humansorted`.
 

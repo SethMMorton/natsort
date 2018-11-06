@@ -5,4 +5,3 @@
 ===============================
 
 .. autofunction:: order_by_index
-

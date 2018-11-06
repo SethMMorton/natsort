@@ -88,7 +88,7 @@ to bad analysis.  To remedy this, use ``natsort``::
     $ natsort *.out
     mode744.43.out
     mode943.54.out
-    mode1000.35.out 
+    mode1000.35.out
     mode1243.34.out
     $ natsort -t r *.out | xargs your_program
 
@@ -114,7 +114,7 @@ options.  These three options are used as follows::
     mode1000.35.out mode1243.34.out mode744.43.out mode943.54.out
     $ natsort -t r *.out -f 900 1100 # Select only numbers between 900-1100
     mode943.54.out
-    mode1000.35.out 
+    mode1000.35.out
     $ natsort -t r *.out -F 900 1100 # Select only numbers NOT between 900-1100
     mode744.43.out
     mode1243.34.out
@@ -144,4 +144,3 @@ If you are sorting paths with OS-generated filenames, you may require the
     ./folder (1)/file.txt
     ./folder (2)/file.txt
     ./folder (10)/file.txt
-

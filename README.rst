@@ -316,7 +316,7 @@ Shell script
 ------------
 
 ``natsort`` comes with a shell script called ``natsort``, or can also be called
-from the command line with ``python -m natsort``. 
+from the command line with ``python -m natsort``.
 
 Requirements
 ------------
