@@ -130,7 +130,7 @@ class _NSEnum(collections.namedtuple("_NSEnum", enum_field_names)):
         default "NFD". This will transform characters such as '⑦' into
         '7'. Please see https://stackoverflow.com/a/7934397/1399279,
         https://stackoverflow.com/a/7931547/1399279,
-        and http://unicode.org/reports/tr15/ for full details into unicode
+        and https://unicode.org/reports/tr15/ for full details into unicode
         normalization.
     LOCALE, L
         Tell `natsort` to be locale-aware when sorting. This includes both

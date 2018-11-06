@@ -818,11 +818,11 @@ assumes you at least read the StackOverflow answers.
 Looking back at our 'é' example, we can see that the two versions were
 constructed with the byte strings ``b'\xc3\xa9'`` and ``b'\x65\xcc\x81'``.
 The former representation is actually
-`LATIN SMALL LETTER E WITH ACUTE <http://www.fileformat.info/info/unicode/char/e9/index.htm>`_
+`LATIN SMALL LETTER E WITH ACUTE <https://www.fileformat.info/info/unicode/char/e9/index.htm>`_
 and is a single character in the Unicode standard. This is known as the
 *compressed form* and corresponds to the 'NFC' normalization scheme.
 The latter representation is actually the letter 'e' followed by
-`COMBINING ACUTE ACCENT <http://www.fileformat.info/info/unicode/char/0301/index.htm>`_
+`COMBINING ACUTE ACCENT <https://www.fileformat.info/info/unicode/char/0301/index.htm>`_
 and so is two characters in the Unicode standard. This is known as the
 *decompressed form* and corresponds to the 'NFD' normalization scheme.
 Since the first character in the decompressed form is actually the letter 'e',
@@ -1079,18 +1079,18 @@ what the rest of the world assumes.
     to construting the :mod:`natsort` algorithm as opposed to the procedural approach
     illustrated in :ref:`TL;DR 1 <tldr1>` and :ref:`TL;DR 2 <tldr2>`.
 
-.. _ASCII table: http://www.asciitable.com/
+.. _ASCII table: https://www.asciitable.com/
 .. _getting sorting right is surprisingly hard: http://www.compciv.org/guides/python/fundamentals/sorting-collections-with-sorted/
 .. _This astonished: https://github.com/SethMMorton/natsort/issues/19
-.. _a lot: http://stackoverflow.com/questions/29548742/python-natsort-sort-strings-recursively
-.. _of people: http://stackoverflow.com/questions/24045348/sort-set-of-numbers-in-the-form-xx-yy-in-python
+.. _a lot: https://stackoverflow.com/questions/29548742/python-natsort-sort-strings-recursively
+.. _of people: https://stackoverflow.com/questions/24045348/sort-set-of-numbers-in-the-form-xx-yy-in-python
 .. _and some people aren't very nice when they are astonished:
     https://github.com/xolox/python-naturalsort/blob/ed3e6b6ffaca3bdea3b76e08acbb8bd2a5fee463/README.rst#why-another-natsort-module
 .. _fastnumbers: https://github.com/SethMMorton/fastnumbers
 .. _as part of my testing: https://github.com/SethMMorton/natsort/blob/master/test_natsort/slow_splitters.py
-.. _this one for coercion: http://stackoverflow.com/questions/736043/checking-if-a-string-can-be-converted-to-float-in-python
-.. _this one for checking: http://stackoverflow.com/questions/354038/how-do-i-check-if-a-string-is-a-number-float-in-python
-.. _most natural sort solutions for python on Stack Overflow: http://stackoverflow.com/q/4836710/1399279
+.. _this one for coercion: https://stackoverflow.com/questions/736043/checking-if-a-string-can-be-converted-to-float-in-python
+.. _this one for checking: https://stackoverflow.com/questions/354038/how-do-i-check-if-a-string-is-a-number-float
+.. _most natural sort solutions for python on Stack Overflow: https://stackoverflow.com/q/4836710/1399279
 .. _80%/20%: https://en.wikipedia.org/wiki/Pareto_principle
 .. _The first major special case I encountered was sorting filesystem paths: https://github.com/SethMMorton/natsort/issues/3
 .. _The second major special case I encountered was sorting of different types: https://github.com/SethMMorton/natsort/issues/7
@@ -1109,5 +1109,5 @@ what the rest of the world assumes.
 .. _natsort.compat.locale.py: https://github.com/SethMMorton/natsort/blob/master/natsort/compat/locale.py
 .. _Thousands separator support: https://github.com/SethMMorton/natsort/issues/36
 .. _really good: https://hypothesis.readthedocs.io/en/latest/
-.. _testing strategy: http://doc.pytest.org/en/latest/
-.. _check out some official Unicode documentation: http://unicode.org/reports/tr15/
+.. _testing strategy: https://docs.pytest.org/en/latest/
+.. _check out some official Unicode documentation: https://unicode.org/reports/tr15/

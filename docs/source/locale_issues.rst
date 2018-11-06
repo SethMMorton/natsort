@@ -75,10 +75,10 @@ The `locale <https://docs.python.org/3.5/library/locale.html>`_ Module Is Broken
 It's not Python's fault, but the OS... the locale library for BSD-based systems
 (of which Mac OS X is one) is broken. See the following links:
 
-  - http://stackoverflow.com/questions/3412933/python-not-sorting-unicode-properly-strcoll-doesnt-help
-  - http://bugs.python.org/issue23195
+  - https://stackoverflow.com/questions/3412933/python-not-sorting-unicode-properly-strcoll-doesnt-help
+  - https://bugs.python.org/issue23195
   - https://github.com/SethMMorton/natsort/issues/21 (contains instructons on installing)
-  - http://stackoverflow.com/questions/33459384/unicode-character-not-in-range-when-calling-locale-strxfrm
+  - https://stackoverflow.com/questions/33459384/unicode-character-not-in-range-when-calling-locale-strxfrm
   - https://github.com/SethMMorton/natsort/issues/34
 
 Of course, installing `PyICU <https://pypi.org/project/PyICU>`_ fixes this,

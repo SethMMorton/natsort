@@ -23,11 +23,11 @@ Simple yet flexible natural sorting in Python.
 
     - Source Code: https://github.com/SethMMorton/natsort
     - Downloads: https://pypi.org/project/natsort/
-    - Documentation: http://natsort.readthedocs.io/
+    - Documentation: https://natsort.readthedocs.io/
 
-      - `Examples and Recipes <http://natsort.readthedocs.io/en/master/examples.html>`_
-      - `How Does Natsort Work? <http://natsort.readthedocs.io/en/master/howitworks.html>`_
-      - `API <http://natsort.readthedocs.io/en/master/api.html>`_
+      - `Examples and Recipes <https://natsort.readthedocs.io/en/master/examples.html>`_
+      - `How Does Natsort Work? <https://natsort.readthedocs.io/en/master/howitworks.html>`_
+      - `API <https://natsort.readthedocs.io/en/master/api.html>`_
 
     - `FAQ`_
     - `Optional Dependencies`_
@@ -66,9 +66,9 @@ Using ``natsorted`` is simple:
 
 ``natsorted`` identifies numbers anywhere in a string and sorts them
 naturally. Below are some other things you can do with ``natsort``
-(also see the `examples <http://natsort.readthedocs.io/en/master/examples.html>`_
+(also see the `examples <https://natsort.readthedocs.io/en/master/examples.html>`_
 for a quick start guide, or the
-`api <http://natsort.readthedocs.io/en/master/api.html>`_ for complete details).
+`api <https://natsort.readthedocs.io/en/master/api.html>`_ for complete details).
 
 **Note**: ``natsorted`` is designed to be a drop-in replacement for the built-in
 ``sorted`` function. Like ``sorted``, ``natsorted`` `does not sort in-place`.
@@ -104,7 +104,7 @@ This is handled properly by default (as of ``natsort`` version >= 4.0.0):
     ['version-1.9', 'version-1.10', 'version-1.11', 'version-2.0']
 
 If you need to sort release candidates, please see
-`this useful hack <http://natsort.readthedocs.io/en/master/examples.html#rc-sorting>`_.
+`this useful hack <https://natsort.readthedocs.io/en/master/examples.html#rc-sorting>`_.
 
 Sorting by Real Numbers (i.e. Signed Floats)
 ++++++++++++++++++++++++++++++++++++++++++++
@@ -150,7 +150,7 @@ This can be achieved with the ``humansorted`` function:
 
 You may find you need to explicitly set the locale to get this to work
 (as shown in the example).
-Please see `locale issues <http://natsort.readthedocs.io/en/master/locale_issues.html>`_ and the
+Please see `locale issues <https://natsort.readthedocs.io/en/master/locale_issues.html>`_ and the
 `Optional Dependencies`_ section below before using the ``humansorted`` function.
 
 Further Customizing Natsort
@@ -175,7 +175,7 @@ bitwise OR operator (``|``). For example,
     True
 
 All of the available customizations can be found in the documentation for
-`the ns enum <http://natsort.readthedocs.io/en/master/ns_class.html>`_.
+`the ns enum <https://natsort.readthedocs.io/en/master/ns_class.html>`_.
 
 You can also add your own custom transformation functions with the ``key`` argument.
 These can be used with ``alg`` if you wish.
@@ -248,9 +248,9 @@ Other Useful Things
 
  - recursively descend into lists of lists
  - automatic unicode normalization of input data
- - `controlling the case-sensitivity <http://natsort.readthedocs.io/en/master/examples.html#case-sort>`_
- - `sorting file paths correctly <http://natsort.readthedocs.io/en/master/examples.html#path-sort>`_
- - `allow custom sorting keys <http://natsort.readthedocs.io/en/master/examples.html#custom-sort>`_
+ - `controlling the case-sensitivity <https://natsort.readthedocs.io/en/master/examples.html#case-sort>`_
+ - `sorting file paths correctly <https://natsort.readthedocs.io/en/master/examples.html#path-sort>`_
+ - `allow custom sorting keys <https://natsort.readthedocs.io/en/master/examples.html#custom-sort>`_
 
 FAQ
 ---
@@ -261,7 +261,7 @@ How do I debug ``natsort.natsorted()``?
     exactly what is being done with their input using this key - it is highly recommended
     to `look at this issue describing how to debug <https://github.com/SethMMorton/natsort/issues/13#issuecomment-50422375>`_
     for *how* to debug, and also to review the
-    `How Does Natsort Work? <http://natsort.readthedocs.io/en/master/howitworks.html>`_
+    `How Does Natsort Work? <https://natsort.readthedocs.io/en/master/howitworks.html>`_
     page for *why* ``natsort`` is doing that to your data.
 
     If you are trying to sort custom classes and running into trouble, please take a look at
@@ -272,7 +272,7 @@ How do I debug ``natsort.natsorted()``?
     use the ``natsort`` key as part of your rich comparison operator definition.
 
 How *does* ``natsort`` work?
-    If you don't want to read `How Does Natsort Work? <http://natsort.readthedocs.io/en/master/howitworks.html>`_,
+    If you don't want to read `How Does Natsort Work? <https://natsort.readthedocs.io/en/master/howitworks.html>`_,
     here is a quick primer.
 
     ``natsort`` provides a `key function <https://docs.python.org/3/howto/sorting.html#key-functions>`_
@@ -344,7 +344,7 @@ PyICU
 
 It is recommended that you install `PyICU <https://pypi.org/project/PyICU>`_
 if you wish to sort in a locale-dependent manner, see
-http://natsort.readthedocs.io/en/master/locale_issues.html for an explanation why.
+https://natsort.readthedocs.io/en/master/locale_issues.html for an explanation why.
 
 Installation
 ------------
@@ -406,4 +406,4 @@ Seth M. Morton
 History
 -------
 
-Please visit the `changelog <http://natsort.readthedocs.io/en/master/changelog.html>`_.
+Please visit the `changelog <https://natsort.readthedocs.io/en/master/changelog.html>`_.

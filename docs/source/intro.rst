@@ -8,7 +8,7 @@ Simple yet flexible natural sorting in Python.
 
     - Source Code: https://github.com/SethMMorton/natsort
     - Downloads: https://pypi.org/project/natsort/
-    - Documentation: http://natsort.readthedocs.io/
+    - Documentation: https://natsort.readthedocs.io/
     - Optional Dependencies:
 
       - `fastnumbers <https://pypi.org/project/fastnumbers>`_ >= 2.0.0
@@ -24,10 +24,10 @@ want to sort it naturally.
 contained signed floating point numbers in the names. There was a lack of
 algorithms out there that could perform a natural sort on `floats` but
 plenty for `ints`; check out
-`this StackOverflow question <http://stackoverflow.com/q/4836710/1399279>`_
+`this StackOverflow question <https://stackoverflow.com/q/4836710/1399279>`_
 and its answers and links therein,
-`this ActiveState forum <http://code.activestate.com/recipes/285264-natural-string-sorting/>`_,
-and of course `this great article on natural sorting <http://blog.codinghorror.com/sorting-for-humans-natural-sort-order/>`_
+`this ActiveState forum <https://code.activestate.com/recipes/285264-natural-string-sorting/>`_,
+and of course `this great article on natural sorting <https://blog.codinghorror.com/sorting-for-humans-natural-sort-order/>`_
 from CodingHorror.com for examples of what I mean.
 :mod:`natsort` was created to fill in this gap, but has since expanded to handle
 just about any definition of a number, as well as other sorting customizations.
@@ -259,7 +259,7 @@ How do I debug :func:`~natsorted`?
     exactly what is being done with their input using this key - it is highly recommended
     to `look at this issue describing how to debug <https://github.com/SethMMorton/natsort/issues/13#issuecomment-50422375>`_
     for *how* to debug, and also to review the
-    `How Does Natsort Work? <http://natsort.readthedocs.io/en/master/howitworks.html>`_
+    `How Does Natsort Work? <https://natsort.readthedocs.io/en/master/howitworks.html>`_
     page for *why* :mod:`natsort` is doing that to your data.
 
     If you are trying to sort custom classes and running into trouble, please take a look at
@@ -270,7 +270,7 @@ How do I debug :func:`~natsorted`?
     use the :mod:`natsort` key as part of your rich comparison operator definition.
 
 How *does* :mod:`natsort` work?
-    If you don't want to read `How Does Natsort Work? <http://natsort.readthedocs.io/en/master/howitworks.html>`_,
+    If you don't want to read `How Does Natsort Work? <https://natsort.readthedocs.io/en/master/howitworks.html>`_,
     here is a quick primer.
 
     :mod:`natsort` provides a `key function <https://docs.python.org/3/howto/sorting.html#key-functions>`_
@@ -342,7 +342,7 @@ PyICU
 
 It is recommended that you install `PyICU <https://pypi.org/project/PyICU>`_
 if you wish to sort in a locale-dependent manner, see
-http://natsort.readthedocs.io/en/master/locale_issues.html for an explanation why.
+https://natsort.readthedocs.io/en/master/locale_issues.html for an explanation why.
 
 Installation
 ------------

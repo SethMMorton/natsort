@@ -362,5 +362,5 @@ so you cannot simply pass :func:`natsort_keygen` to a Pandas DataFrame and sort.
 This request has been made to the Pandas devs; see
 `issue 3942 <https://github.com/pydata/pandas/issues/3942>`_ if you are interested.
 If you need to sort a Pandas DataFrame, please check out
-`this answer on StackOverflow <http://stackoverflow.com/a/29582718/1399279>`_
+`this answer on StackOverflow <https://stackoverflow.com/a/29582718/1399279>`_
 for ways to do this without the ``key`` argument to ``sort``.
