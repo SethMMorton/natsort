@@ -5,4 +5,3 @@
 ============================
 
 .. autofunction:: natsort_key
-

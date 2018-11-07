@@ -148,7 +148,7 @@ This can be achieved with the :func:`~humansorted` function:
 
 You may find you need to explicitly set the locale to get this to work
 (as shown in the example).
-Please see :ref:`locale_issues` and the Installation section 
+Please see :ref:`locale_issues` and the Installation section
 below before using the :func:`~humansorted` function.
 
 Further Customizing Natsort
@@ -314,7 +314,7 @@ Shell script
 ------------
 
 :mod:`natsort` comes with a shell script called :mod:`natsort`, or can also be called
-from the command line with ``python -m natsort``. 
+from the command line with ``python -m natsort``.
 
 Requirements
 ------------

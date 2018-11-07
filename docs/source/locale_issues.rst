@@ -34,7 +34,7 @@ If you change locale, the old function will not work as expected.
 The `locale <https://docs.python.org/3.5/library/locale.html>`_ library works
 with a global state. When :func:`~natsort.natsort_keygen` is called it does the
 best job that it can to make the returned function as static as possible and
-independent of the global state, but the 
+independent of the global state, but the
 `strxfrm <https://docs.python.org/3.5/library/locale.html#locale.strxfrm>`_
 function must access this global state to work; therefore, if you change
 locale and use ``ns.LOCALE`` then you should discard the old key.

@@ -17,4 +17,3 @@ quickly decode `bytes` to `str` so that sorting is possible.
 .. autofunction:: as_ascii
 
 .. autofunction:: as_utf8
-

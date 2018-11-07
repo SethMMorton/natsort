@@ -16,7 +16,7 @@ A clear and concise description of what you expected to happen.
  - If the bug involves `LOCALE` or `humansorted`:
     - Is `PyICU` installed?
     - Do you have a locale set? If so, to what?
- 
+
 **To Reproduce**
 Include a Minimum, Complete, Verifiable Example. If there is a traceback (or error message), **please** include the *entire* traceback (or error message), even if you think it is too big.
 

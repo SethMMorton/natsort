@@ -13,4 +13,3 @@ used internally to :mod:`natsort`, and has been exposed publically for
 the convenience of the user.
 
 .. autofunction:: chain_functions
-

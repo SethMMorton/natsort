@@ -5,4 +5,3 @@
 =================================
 
 .. autofunction:: index_realsorted
-
