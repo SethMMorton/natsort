@@ -938,7 +938,7 @@ So, how to deal with this situation? There are two ways to do so.
     turn on *LOWERCASEFIRST* and *GROUPLETTERS*.
 #.  Use an alternate library if installed. `ICU <http://site.icu-project.org/>`_
     is a great and powerful library that has a pretty decent Python port
-    called (you guessed it) `PyICU <https://pypi.python.org/pypi/PyICU/>`_.
+    called (you guessed it) `PyICU <https://pypi.org/project/PyICU/>`_.
     If a user has this library installed on their computer, :mod:`natsort`
     chooses to use that instead of :mod:`locale`. With a little bit of
     planning, one can write a set of wrapper functions that call

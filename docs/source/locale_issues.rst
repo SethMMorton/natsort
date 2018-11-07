@@ -39,7 +39,7 @@ independent of the global state, but the
 function must access this global state to work; therefore, if you change
 locale and use ``ns.LOCALE`` then you should discard the old key.
 
-.. note:: If you use `PyICU <https://pypi.python.org/pypi/PyICU>`_ then you
+.. note:: If you use `PyICU <https://pypi.org/project/PyICU/>`_ then you
           may be able to reuse keys after changing locale.
 
 The `locale <https://docs.python.org/3.5/library/locale.html>`_ Module From the StdLib Has Issues
