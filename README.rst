@@ -321,8 +321,7 @@ from the command line with ``python -m natsort``.
 Requirements
 ------------
 
-``natsort`` requires Python version 2.6 or greater or Python 3.3 or greater.
-It may run on (but is not tested against) Python 3.2.
+``natsort`` requires Python version 2.7 or Python 3.4 or greater.
 
 Optional Dependencies
 ---------------------

@@ -159,7 +159,7 @@ def natsort_keygen(key=None, alg=ns.DEFAULT, **_kwargs):
         alg = utils.args_to_enum(**_kwargs) | alg
     except TypeError:
         msg = "natsort_keygen: 'alg' argument must be from the enum 'ns'"
-        raise ValueError(msg + ", got {0}".format(py23_str(alg)))
+        raise ValueError(msg + ", got {}".format(py23_str(alg)))
 
     # Add the _DUMB option if the locale library is broken.
     if alg & ns.LOCALEALPHA and natsort.compat.locale.dumb_sort():
@@ -683,7 +683,7 @@ if float(sys.version[:3]) < 3:
                 alg = utils.args_to_enum(**kwargs) | alg
             except TypeError:
                 msg = "natsort_keygen: 'alg' argument must be " "from the enum 'ns'"
-                raise ValueError(msg + ", got {0}".format(py23_str(alg)))
+                raise ValueError(msg + ", got {}".format(py23_str(alg)))
 
             # Add the _DUMB option if the locale library is broken.
             if alg & ns.LOCALEALPHA and natsort.compat.locale.dumb_sort():

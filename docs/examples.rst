@@ -221,7 +221,7 @@ sort key so that:
     ...    def __init__(self, bar):
     ...        self.bar = bar
     ...    def __repr__(self):
-    ...        return "Foo('{0}')".format(self.bar)
+    ...        return "Foo('{}')".format(self.bar)
     >>> b = [Foo('num3'), Foo('num5'), Foo('num2')]
     >>> natsorted(b, key=attrgetter('bar'))
     [Foo('num2'), Foo('num3'), Foo('num5')]
