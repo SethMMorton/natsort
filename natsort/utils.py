@@ -50,7 +50,6 @@ from os import pardir as os_pardir
 from os.path import split as path_split
 from os.path import splitext as path_splitext
 from unicodedata import normalize
-from warnings import warn
 
 from natsort.compat.fastnumbers import fast_float, fast_int
 from natsort.compat.locale import get_decimal_point, get_strxfrm, get_thousands_sep
