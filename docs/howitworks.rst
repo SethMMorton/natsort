@@ -356,7 +356,8 @@ can see why this happens:
 
 This isn't very convenient... how do we solve it? We can split the path
 across the path separators and then sort. A convenient way do to this is
-with the `Path.parts`_ method from :mod:`pathlib`:
+with the :data:`Path.parts <pathlib.PurePath.parts>` property from
+:mod:`pathlib`:
 
 .. code-block:: pycon
 
@@ -365,8 +366,9 @@ with the `Path.parts`_ method from :mod:`pathlib`:
     ['/p/Folder/file.tar.gz', '/p/Folder (1)/file (1).tar.gz', '/p/Folder (1)/file.tar.gz', '/p/Folder (10)/file.tar.gz']
 
 Almost! It seems like there is some funny business going on in the final
-filename component as well. We can solve that nicely and quickly with `Path.suffixes`_
-and `Path.stem`_.
+filename component as well. We can solve that nicely and quickly with
+:data:`Path.suffixes <pathlib.PurePath.suffixes>` and :data:`Path.stem
+<pathlib.PurePath.stem>`.
 
 .. code-block:: pycon
 
@@ -1097,9 +1099,6 @@ what the rest of the world assumes.
 .. _The second major special case I encountered was sorting of different types: https://github.com/SethMMorton/natsort/issues/7
 .. _A rather unexpected special case I encountered was sorting collections containing NaN:
    https://github.com/SethMMorton/natsort/issues/27
-.. _Path.parts: https://docs.python.org/3/library/pathlib.html#pathlib.PurePath.parts
-.. _Path.suffixes: https://docs.python.org/3/library/pathlib.html#pathlib.PurePath.suffixes
-.. _Path.stem: https://docs.python.org/3/library/pathlib.html#pathlib.PurePath.stem
 .. _It's hard to compare floating point numbers: http://www.drdobbs.com/cpp/its-hard-to-compare-floating-point-numbe/240149806
 .. _caught a bit off guard when the request was initially made: https://github.com/SethMMorton/natsort/issues/14
 .. _at the code: https://github.com/SethMMorton/natsort/tree/master/natsort
