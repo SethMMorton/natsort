@@ -39,21 +39,20 @@ independent of the global state, but the
 function must access this global state to work; therefore, if you change
 locale and use ``ns.LOCALE`` then you should discard the old key.
 
-.. note:: If you use `PyICU <https://pypi.org/project/PyICU/>`_ then you
-          may be able to reuse keys after changing locale.
+.. note:: If you use `PyICU`_ then you may be able to reuse keys after changing
+          locale.
 
 The `locale <https://docs.python.org/3.5/library/locale.html>`_ Module From the StdLib Has Issues
 -------------------------------------------------------------------------------------------------
 
-:mod:`natsort` will use `PyICU <https://pypi.org/project/PyICU>`_ for
-:func:`~natsort.humansorted` or ``ns.LOCALE`` if it is installed. If not,
-it will fall back on the `locale <https://docs.python.org/3.5/library/locale.html>`_
-library from the Python stdlib. If you do not have
-`PyICU <https://pypi.org/project/PyICU>`_ installed, please keep the
-following known problems and issues in mind.
+:mod:`natsort` will use `PyICU`_ for :func:`~natsort.humansorted` or
+``ns.LOCALE`` if it is installed. If not, it will fall back on the `locale
+<https://docs.python.org/3.5/library/locale.html>`_ library from the Python
+stdlib. If you do not have `PyICU`_ installed, please keep the following known
+problems and issues in mind.
 
-.. note:: Remember, if you have `PyICU <https://pypi.org/project/PyICU>`_
-          installed you shouldn't need to worry about any of these.
+.. note:: Remember, if you have `PyICU`_ installed you shouldn't need to worry
+          about any of these.
 
 Explicitly Set the Locale Before Using :func:`~natsort.humansorted` or ``ns.LOCALE``
 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -81,8 +80,8 @@ It's not Python's fault, but the OS... the locale library for BSD-based systems
   - https://stackoverflow.com/questions/33459384/unicode-character-not-in-range-when-calling-locale-strxfrm
   - https://github.com/SethMMorton/natsort/issues/34
 
-Of course, installing `PyICU <https://pypi.org/project/PyICU>`_ fixes this,
-but if you don't want to or cannot install this there is some hope.
+Of course, installing `PyICU`_ fixes this, but if you don't want to or cannot
+install this there is some hope.
 
     1. As of ``natsort`` version 4.0.0, ``natsort`` is configured
        to compensate for a broken ``locale`` library. When sorting non-numbers
@@ -94,3 +93,5 @@ but if you don't want to or cannot install this there is some hope.
     2. Use "\*.ISO8859-1" locale (i.e. 'en_US.ISO8859-1') rather than "\*.UTF-8"
        locale. I have found that these have fewer issues than "UTF-8", but
        your mileage may vary.
+
+.. _PyICU: https://pypi.org/project/PyICU
