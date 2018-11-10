@@ -175,16 +175,10 @@ class _NSEnum(collections.namedtuple("_NSEnum", enum_fields.keys())):
         If an NaN shows up in the input, this instructs `natsort` to
         treat these as +Infinity and place them after all the other numbers.
         By default, an NaN be treated as -Infinity and be placed first.
-    TYPESAFE, T
-        Deprecated as of `natsort` version 5.0.0; this option is now
-        a no-op because it is always true. It will be removed in `natsort`
-        version 6.0.0.
     VERSION, V
         Deprecated as of `natsort` version 5.0.0; this option is now
         a no-op because it is the default. It will be removed in `natsort`
         version 6.0.0.
-    DIGIT, D
-        Same as `VERSION` above. It will be removed in `natsort` version 6.0.0.
 
     Notes
     -----
@@ -210,26 +204,6 @@ class _NSEnum(collections.namedtuple("_NSEnum", enum_fields.keys())):
     @property
     def VERSION(self):  # noqa: N802
         warnings.warn(self._msg.format("VERSION"), DeprecationWarning, stacklevel=2)
-        return 0
-
-    @property
-    def T(self):  # noqa: N802
-        warnings.warn(self._msg.format("T"), DeprecationWarning, stacklevel=2)
-        return 0
-
-    @property
-    def TYPESAFE(self):  # noqa: N802
-        warnings.warn(self._msg.format("TYPESAFE"), DeprecationWarning, stacklevel=2)
-        return 0
-
-    @property
-    def D(self):  # noqa: N802
-        warnings.warn(self._msg.format("D"), DeprecationWarning, stacklevel=2)
-        return 0
-
-    @property
-    def DIGIT(self):  # noqa: N802
-        warnings.warn(self._msg.format("DIGIT"), DeprecationWarning, stacklevel=2)
         return 0
 
 

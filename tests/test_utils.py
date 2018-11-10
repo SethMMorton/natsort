@@ -97,7 +97,7 @@ def test_ns_enum_values_and_aliases(alg, value_or_alias):
     assert alg == value_or_alias
 
 
-@pytest.mark.parametrize("alg", ["V", "VERSION", "T", "TYPESAFE", "D", "DIGIT"])
+@pytest.mark.parametrize("alg", ["V", "VERSION"])
 def test_deprecated_ns_enum_values_and_aliases_produce_warning(alg):
     with pytest.warns(DeprecationWarning, match="please simply remove"):
         assert getattr(ns, alg) == 0
