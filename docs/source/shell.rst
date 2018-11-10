@@ -14,7 +14,7 @@ Below is the usage and some usage examples for the ``natsort`` shell script.
 Usage
 -----
 
-::
+.. code-block:: none
 
     usage: natsort [-h] [--version] [-p] [-f LOW HIGH] [-F LOW HIGH] [-e EXCLUDE]
                    [-r] [-t {digit,int,float,version,ver}] [--nosign] [--noexp]
@@ -74,7 +74,9 @@ Description
 
 ``natsort`` was originally written to aid in computational chemistry
 research so that it would be easy to analyze large sets of output files
-named after the parameter used::
+named after the parameter used:
+
+.. code-block:: console
 
     $ ls *.out
     mode1000.35.out mode1243.34.out mode744.43.out mode943.54.out
@@ -83,7 +85,9 @@ named after the parameter used::
 that the shell sorts in lexicographical order.  This is the behavior of programs like
 ``find`` as well as ``ls``.  The problem is passing these files to an
 analysis program causes them not to appear in numerical order, which can lead
-to bad analysis.  To remedy this, use ``natsort``::
+to bad analysis.  To remedy this, use ``natsort``:
+
+.. code-block:: console
 
     $ natsort *.out
     mode744.43.out
@@ -93,11 +97,15 @@ to bad analysis.  To remedy this, use ``natsort``::
     $ natsort -t r *.out | xargs your_program
 
 ``-t r`` is short for ``--number-type real``. You can also place natsort in
-the middle of a pipe::
+the middle of a pipe:
+
+.. code-block:: console
 
     $ find . -name "*.out" | natsort -t r | xargs your_program
 
-To sort version numbers, use the default ``--number-type``::
+To sort version numbers, use the default ``--number-type``:
+
+.. code-block:: console
 
     $ ls *
     prog-1.10.zip prog-1.9.zip prog-2.0.zip
@@ -108,7 +116,9 @@ To sort version numbers, use the default ``--number-type``::
 
 In general, all ``natsort`` shell script options mirror the :func:`~natsorted` API,
 with notable exception of the ``--filter``, ``--reverse-filter``, and ``--exclude``
-options.  These three options are used as follows::
+options.  These three options are used as follows:
+
+.. code-block:: console
 
     $ ls *.out
     mode1000.35.out mode1243.34.out mode744.43.out mode943.54.out
@@ -124,7 +134,9 @@ options.  These three options are used as follows::
     mode1243.34.out
 
 If you are sorting paths with OS-generated filenames, you may require the
-``--paths``/``-p`` option::
+``--paths``/``-p`` option:
+
+.. code-block:: console
 
     $ find . ! -path . -type f
     ./folder/file (1).txt

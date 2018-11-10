@@ -39,7 +39,7 @@ When you try to sort a list of strings that contain numbers, the normal python
 sort algorithm sorts lexicographically, so you might not get the results that you
 expect:
 
-.. code-block:: python
+.. code-block:: pycon
 
     >>> a = ['2 ft 7 in', '1 ft 5 in', '10 ft 2 in', '2 ft 11 in', '7 ft 6 in']
     >>> sorted(a)
@@ -54,7 +54,7 @@ letters (i.e. 'b', 'ba', 'c').
 sorting based on meaning and not computer code point)..
 Using :func:`~natsorted` is simple:
 
-.. code-block:: python
+.. code-block:: pycon
 
     >>> from natsort import natsorted
     >>> a = ['2 ft 7 in', '1 ft 5 in', '10 ft 2 in', '2 ft 11 in', '7 ft 6 in']
@@ -73,7 +73,7 @@ for more details).
     `does not sort in-place`. To sort a list and assign the output to the
     same variable, you must explicitly assign the output to a variable:
 
-    .. code-block:: python
+    .. code-block:: pycon
 
         >>> a = ['2 ft 7 in', '1 ft 5 in', '10 ft 2 in', '2 ft 11 in', '7 ft 6 in']
         >>> natsorted(a)
@@ -95,7 +95,7 @@ Sorting Versions
 
 This is handled properly by default (as of :mod:`natsort` version >= 4.0.0):
 
-.. code-block:: python
+.. code-block:: pycon
 
     >>> a = ['version-1.9', 'version-2.0', 'version-1.11', 'version-1.10']
     >>> natsorted(a)
@@ -111,7 +111,7 @@ This is useful in scientific data analysis and was
 the default behavior of :func:`~natsorted` for :mod:`natsort`
 version < 4.0.0. Use the :func:`~realsorted` function:
 
-.. code-block:: python
+.. code-block:: pycon
 
     >>> from natsort import realsorted, ns
     >>> # Note that when interpreting as signed floats, the below numbers are
@@ -132,7 +132,7 @@ not on their ordinal value, and a locale-dependent thousands separator and decim
 separator is accounted for in the number.
 This can be achieved with the :func:`~humansorted` function:
 
-.. code-block:: python
+.. code-block:: pycon
 
     >>> a = ['Apple', 'apple15', 'Banana', 'apple14,689', 'banana']
     >>> natsorted(a)
@@ -158,7 +158,7 @@ If you need to combine multiple algorithm modifiers (such as ``ns.REAL``,
 ``ns.LOCALE``, and ``ns.IGNORECASE``), you can combine the options using the
 bitwise OR operator (``|``). For example,
 
-.. code-block:: python
+.. code-block:: pycon
 
     >>> a = ['Apple', 'apple15', 'Banana', 'apple14,689', 'banana']
     >>> natsorted(a, alg=ns.REAL | ns.LOCALE | ns.IGNORECASE)
@@ -178,7 +178,7 @@ the :class:`~natsort.ns` enum.
 You can also add your own custom transformation functions with the ``key`` argument.
 These can be used with ``alg`` if you wish:
 
-.. code-block:: python
+.. code-block:: pycon
 
     >>> a = ['apple2.50', '2.3apple']
     >>> natsorted(a, key=lambda x: x.replace('apple', ''), alg=ns.REAL)
@@ -190,7 +190,7 @@ Sorting Mixed Types
 You can mix and match ``int``, ``float``, and ``str`` (or ``unicode``) types
 when you sort:
 
-.. code-block:: python
+.. code-block:: pycon
 
     >>> a = ['4.5', 6, 2.0, '5', 'a']
     >>> natsorted(a)
@@ -204,7 +204,7 @@ Handling Bytes on Python 3
 :mod:`natsort` does not officially support the `bytes` type on Python 3, but
 convenience functions are provided that help you decode to `str` first:
 
-.. code-block:: python
+.. code-block:: pycon
 
     >>> from natsort import as_utf8
     >>> a = [b'a', 14.0, 'b']
@@ -227,7 +227,7 @@ key using :func:`~natsort_keygen` and then passes that to the built-in
 generate a custom sorting key to sort in-place using the :meth:`list.sort`
 method.
 
-.. code-block:: python
+.. code-block:: pycon
 
     >>> from natsort import natsort_keygen
     >>> natsort_key = natsort_keygen()
@@ -280,7 +280,7 @@ How *does* :mod:`natsort` work?
     key generator :func:`natsort.natsort_keygen`.  :func:`natsort.natsorted` is essentially
     a wrapper for the following code:
 
-    .. code-block:: python
+    .. code-block:: pycon
 
         >>> from natsort import natsort_keygen
         >>> natsort_key = natsort_keygen()

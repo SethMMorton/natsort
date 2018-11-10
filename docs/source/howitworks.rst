@@ -28,13 +28,15 @@ First, How Does Natural Sorting Work At a High Level?
 
 If I want to compare '2 ft 7 in' to '2 ft 11 in', I might do the following
 
-.. code-block:: python
+.. code-block:: pycon
 
     >>> '2 ft 7 in' < '2 ft 11 in'
     False
 
 We as humans know that the above should be true, but why does Python think it
-is false?  Here is how it is performing the comparison::
+is false?  Here is how it is performing the comparison:
+
+.. code-block:: none
 
     '2' <=> '2' ==> equal, so keep going
     ' ' <=> ' ' ==> equal, so keep going
@@ -55,12 +57,14 @@ right thing." Luckily, it handles sorting lists of strings right out-of-the-box,
 so the only hard part is actually making this string-to-list transformation
 and then Python will handle the rest.
 
-::
+.. code-block:: none
 
     '2 ft 7 in'  ==> (2, ' ft ', 7,  ' in')
     '2 ft 11 in' ==> (2, ' ft ', 11, ' in')
 
-When Python compares the two, it roughly follows the below logic::
+When Python compares the two, it roughly follows the below logic:
+
+.. code-block:: none
 
     2       <=> 2      ==> equal, so keep going
     ' ft '  <=> ' ft ' ==> a string is a special type of sequence - evaluate each character individually
@@ -93,7 +97,7 @@ Remarkably, this turns out to be the easy part, owing mostly to Python's easy ac
 to regular expressions.  Breaking an arbitrary string based on a pattern is pretty
 straightforward.
 
-.. code-block:: python
+.. code-block:: pycon
 
     >>> import re
     >>> re.split(r'(\d+)', '2 ft 11 in')
@@ -107,7 +111,7 @@ unsigned integers as the above example contains. By real numbers, I mean those l
 ``-45.4920E-23``. :mod:`natsort` can handle just about any number definition;
 to that end, here are all the regular expressions used in :mod:`natsort`:
 
-.. code-block:: python
+.. code-block:: pycon
 
     >>> unsigned_int               = r'([0-9]+)'
     >>> signed_int                 = r'([-+]?[0-9]+)'
@@ -120,7 +124,7 @@ Note that ``"inf"`` and ``"nan"`` are deliberately omitted from the float defini
 wouldn't want (for example) ``"banana"`` to be converted into ``['ba', 'nan', 'a']``,
 Let's see an example:
 
-.. code-block:: python
+.. code-block:: pycon
 
     >>> re.split(signed_float, 'The mass of 3 electrons is 2.732815068E-30 kg')
     ['The mass of ', '3', ' electrons is ', '2.732815068E-30', ' kg']
@@ -155,7 +159,7 @@ coerce a string to a number if it can be coerced, and leaving it alone otherwise
 (see `this one for coercion`_ and `this one for checking`_ for some high traffic questions),
 but it mostly boils down to two different solutions, shown here:
 
-.. code-block:: python
+.. code-block:: pycon
 
     >>> def coerce_try_except(x):
     ...     try:
@@ -171,7 +175,7 @@ but it mostly boils down to two different solutions, shown here:
 
 Here are some timing results run on my machine:
 
-::
+.. code-block:: pycon
 
     In [0]: numbers = list(map(str, range(100)))  # A list of numbers as strings
 
@@ -212,7 +216,7 @@ into numeric and non-numeric content *before* being passed to this coercion func
 the assumption can be made that *if a string begins with a digit or a sign, it
 can be coerced into a number*.
 
-.. code-block:: python
+.. code-block:: pycon
 
     >>> def coerce_to_int(x):
     ...     if x[0] in '0123456789+-':
@@ -226,7 +230,7 @@ can be coerced into a number*.
 
 So how does this perform compared to the standard coercion methods?
 
-::
+.. code-block:: pycon
 
     In [6]: %timeit [coerce_to_int(x) for x in numbers]
     10000 loops, best of 3: 71.6 µs per loop
@@ -244,7 +248,7 @@ if I could get any faster writing a C extension. It's called
 `fastnumbers`_ and contains a C implementation of the above coercion functions
 called :func:`fast_int`. How does it fair? Pretty well.
 
-::
+.. code-block:: pycon
 
     In [8]: %timeit [fast_int(x) for x in numbers]
     10000 loops, best of 3: 30.9 µs per loop
@@ -264,7 +268,7 @@ and otherwise the hybrid method will be used.
 
     Modifying the hybrid coercion function for floats is straightforward.
 
-    .. code-block:: python
+    .. code-block:: pycon
 
         >>> def coerce_to_float(x):
         ...     if x[0] in '.0123456789+-' or x.lower().lstrip()[:3] in ('nan', 'inf'):
@@ -283,7 +287,7 @@ TL;DR 1 - The Simple "No Special Cases" Algorithm
 
 At this point, our :mod:`natsort` algorithm is essentially the following:
 
-.. code-block:: python
+.. code-block:: pycon
 
     >>> import re
     >>> def natsort_key(x, as_float=False, signed=False):
@@ -327,7 +331,7 @@ to :mod:`natsort`). Let's apply the :func:`natsort_key` from above to some
 filesystem paths that you might see being auto-generated from your operating
 system:
 
-.. code-block:: python
+.. code-block:: pycon
 
     >>> paths = ['/p/Folder (10)/file.tar.gz',
     ...          '/p/Folder/file.tar.gz',
@@ -343,7 +347,7 @@ space character (number 32) comes before the ``/`` character (number 47). If
 we remove the common prefix in all of the above strings (``'/p/Folder'``), we
 can see why this happens:
 
-.. code-block:: python
+.. code-block:: pycon
 
     >>> ' (1)/file.tar.gz' < '/file.tar.gz'
     True
@@ -354,7 +358,7 @@ This isn't very convenient... how do we solve it? We can split the path
 across the path separators and then sort. A convenient way do to this is
 with the `Path.parts`_ method from :mod:`pathlib`:
 
-.. code-block:: python
+.. code-block:: pycon
 
     >>> import pathlib
     >>> sorted(paths, key=lambda x: tuple(natsort_key(s) for s in pathlib.Path(x).parts))
@@ -364,7 +368,7 @@ Almost! It seems like there is some funny business going on in the final
 filename component as well. We can solve that nicely and quickly with `Path.suffixes`_
 and `Path.stem`_.
 
-.. code-block:: python
+.. code-block:: pycon
 
     >>> def decompose_path_into_components(x):
     ...     path_split = list(pathlib.Path(x).parts)
@@ -392,7 +396,7 @@ separated components is sent to the :mod:`natsort` algorithm, so the result is
 a tuple of tuples. Once that is done, we can see how comparisons can be done in
 the expected manner.
 
-.. code-block:: python
+.. code-block:: pycon
 
     >>> a = natsort_key_with_path_support('/p/Folder (1)/file (1).tar.gz')
     >>> a
@@ -420,7 +424,7 @@ strings is walking a dangerous line if it does not have special handling for
 comparing numbers and strings. My imagination was not so great at first.
 Let's take a look at all the ways this can fail with real-world data.
 
-.. code-block:: python
+.. code-block:: pycon
 
     >>> def natsort_key_with_poor_real_number_support(x):
     ...     split_input = re.split(signed_float, x)
@@ -471,7 +475,7 @@ any non-empty string, and we typically want numbers to come before strings.
 
 Let's take a look at how this works out.
 
-.. code-block:: python
+.. code-block:: pycon
 
     >>> from natsort.utils import sep_inserter
     >>> list(sep_inserter(iter(['apples']), ''))
@@ -504,7 +508,7 @@ Handling NaN
 Let's see what happens when you try to sort a plain old list of numbers when there
 is a **NaN** floating around in there.
 
-.. code-block:: python
+.. code-block:: pycon
 
     >>> danger = [7, float('nan'), 22.7, 19, -14, 59.123, 4]
     >>> sorted(danger)
@@ -514,7 +518,7 @@ Clearly that isn't correct, and for once it isn't my fault!
 `It's hard to compare floating point numbers`_. By definition, **NaN** is unorderable
 to any other number, and is never equal to any other number, including itself.
 
-.. code-block:: python
+.. code-block:: pycon
 
     >>> nan = float('nan')
     >>> 5 > nan
@@ -544,7 +548,7 @@ some other value. But what value is *least* astonishing? I chose to replace
 **NaN** with :math:`-\infty` so that these poorly behaved elements always
 end up at the front where the users will most likely be alerted to their presence.
 
-.. code-block:: python
+.. code-block:: pycon
 
     >>> def fix_nan(x):
     ...     if x != x:  # only true for NaN
@@ -601,7 +605,7 @@ input like ``['/home/me', 42]``.
 
 Let's take it out for a spin!
 
-.. code-block:: python
+.. code-block:: pycon
 
     >>> danger = [7, float('nan'), 22.7, '19', '-14', '59.123', 4]
     >>> sorted(danger, key=lambda x: natsort_key(x, as_float=True, signed=True))
@@ -675,7 +679,7 @@ Without even thinking about the mess that is adding :mod:`locale` support,
 First, let's take a look at how it is sorted by default (due to
 where characters lie on the `ASCII table`_).
 
-.. code-block:: python
+.. code-block:: pycon
 
     >>> a = ['Apple', 'corn', 'Corn', 'Banana', 'apple', 'banana']
     >>> sorted(a)
@@ -692,7 +696,7 @@ Some believe that both should be true ☹. Some people don't care at all [#f4]_.
 Solving the first case (I call it *LOWERCASEFIRST*) is actually pretty
 easy... just call the :meth:`str.swapcase` method on the input.
 
-.. code-block:: python
+.. code-block:: pycon
 
     >>> sorted(a, key=lambda x: x.swapcase())
     ['apple', 'banana', 'corn', 'Apple', 'Banana', 'Corn']
@@ -705,7 +709,7 @@ a good thing that in Python 3.3
 all case information from unicode characters in
 non-latin alphabets.
 
-.. code-block:: python
+.. code-block:: pycon
 
     >>> def remove_case(x):
     ...     try:
@@ -720,7 +724,7 @@ The middle case (I call it *GROUPLETTERS*) is less straightforward.
 The most efficient way to handle this is to duplicate each character
 with its lowercase version and then the original character.
 
-.. code-block:: python
+.. code-block:: pycon
 
     >>> import itertools
     >>> def groupletters(x):
@@ -741,7 +745,7 @@ appropriately with respect to each other.
 There's a problem with this, though. Within the context of :mod:`natsort`
 we are trying to correctly sort numbers and those should be left alone.
 
-.. code-block:: python
+.. code-block:: pycon
 
     >>> a = ['Apple5', 'apple', 'Apple4E10', 'Banana']
     >>> sorted(a, key=lambda x: natsort_key(x, as_float=True))
@@ -756,7 +760,7 @@ We messed up the numbers! Looks like :func:`groupletters` needs to be applied
 how this is done here, but basically it requires applying the function in
 the ``else:`` block of :func:`coerce_to_int`/:func:`coerce_to_float`.
 
-.. code-block:: python
+.. code-block:: pycon
 
     >>> better_groupletters = natsort_keygen(alg=ns.GROUPLETTERS | ns.REAL)
     >>> better_groupletters('Apple4E10')
@@ -772,7 +776,7 @@ Basic Unicode Support
 
 Unicode is hard and complicated. Here's an example.
 
-.. code-block:: python
+.. code-block:: pycon
 
     >>> b = [b'\x66', b'\x65', b'\xc3\xa9', b'\x65\xcc\x81', b'\x61', b'\x7a']
     >>> a = [x.decode('utf8') for x in b]
@@ -787,7 +791,7 @@ In fact, many characters have multiple representations. This is a challenge
 because comparing the two representations would return ``False`` even though
 they *look* the same.
 
-.. code-block:: python
+.. code-block:: pycon
 
     >>> a[2] == a[3]
     False
@@ -834,7 +838,7 @@ It seems that most Unicode data is stored and shared in the compressed form
 which makes it challenging to sort. This can be solved by normalizing all
 incoming Unicode data to the decompressed form ('NFD') and *then* sorting.
 
-.. code-block:: python
+.. code-block:: pycon
 
     >>> import unicodedata
     >>> c = [unicodedata.normalize('NFD', x) for x in a]
@@ -861,7 +865,7 @@ First, how to use :mod:`locale` to compare strings? It's actually
 pretty straightforward. Simply run the input through the :mod:`locale`
 transformation function :func:`locale.strxfrm`.
 
-.. code-block:: python
+.. code-block:: pycon
 
     >>> import locale, sys
     >>> locale.setlocale(locale.LC_ALL, 'en_US.UTF-8')
@@ -906,7 +910,7 @@ fixed?), and so :mod:`locale` does not work as expected.
 
 How do I define doesn't work as expected?
 
-.. code-block:: python
+.. code-block:: pycon
 
     >>> a = ['apple', 'Banana', 'banana', 'Apple']
     >>> sorted(a)
@@ -926,7 +930,7 @@ So, how to deal with this situation? There are two ways to do so.
 #.  Detect if :mod:`locale` is sorting incorrectly (i.e. ``dumb``) by seeing
     if ``'A'`` is sorted before ``'a'`` (incorrect) or not.
 
-    .. code-block:: python
+    .. code-block:: pycon
 
         >>> # This is genuinely the name of this function.
         >>> # See natsort.compat.locale.py
@@ -964,7 +968,7 @@ So what is the problem? Consider the number ``1,234,567`` (assuming the
 and you will get a :exc:`ValueError`. To handle this properly the thousands
 separators must be removed.
 
-.. code-block:: python
+.. code-block:: pycon
 
     >>> float('1,234,567'.replace(',', ''))
     1234567.0
@@ -972,7 +976,7 @@ separators must be removed.
 What if, in our current locale, the thousands separator is ``'.'`` and
 the ``','`` is the decimal separator (like for the German locale *de_DE*)?
 
-.. code-block:: python
+.. code-block:: pycon
 
     >>> float('1.234.567'.replace('.', '').replace(',', '.'))
     1234567.0
@@ -985,7 +989,7 @@ use this method under its hood?
 Well, let's take a look at what would happen if we send some possible
 :mod:`natsort` input through our the above function:
 
-.. code-block:: python
+.. code-block:: pycon
 
     >>> natsort_key('1,234 apples, please.'.replace(',', ''))
     ('', 1234, ' apples please.')
@@ -1012,7 +1016,7 @@ shown previously will work.
 
 Beware, these regular expressions will make your eyes bleed.
 
-.. code-block:: python
+.. code-block:: pycon
 
     >>> decimal = ','  # Assume German locale, so decimal separator is ','
     >>> # Look-behind assertions cannot accept range modifiers, so instead of i.e.

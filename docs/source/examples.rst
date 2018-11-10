@@ -18,7 +18,7 @@ Basic Usage
 In the most basic use case, simply import :func:`~natsorted` and use
 it as you would :func:`sorted`:
 
-.. code-block:: python
+.. code-block:: pycon
 
     >>> a = ['2 ft 7 in', '1 ft 5 in', '10 ft 2 in', '2 ft 11 in', '7 ft 6 in']
     >>> sorted(a)
@@ -42,7 +42,7 @@ Sorting with Alpha, Beta, and Release Candidates
 By default, if you wish to sort versions with a non-strict versioning
 scheme, you may not get the results you expect:
 
-.. code-block:: python
+.. code-block:: pycon
 
     >>> a = ['1.2', '1.2rc1', '1.2beta2', '1.2beta1', '1.2alpha', '1.2.1', '1.1', '1.3']
     >>> natsorted(a)
@@ -51,7 +51,7 @@ scheme, you may not get the results you expect:
 To make the '1.2' pre-releases come before '1.2.1', you need to use the following
 recipe:
 
-.. code-block:: python
+.. code-block:: pycon
 
     >>> natsorted(a, key=lambda x: x.replace('.', '~'))
     ['1.1', '1.2', '1.2alpha', '1.2beta1', '1.2beta2', '1.2rc1', '1.2.1', '1.3']
@@ -59,7 +59,7 @@ recipe:
 If you also want '1.2' after all the alpha, beta, and rc candidates, you can
 modify the above recipe:
 
-.. code-block:: python
+.. code-block:: pycon
 
     >>> natsorted(a, key=lambda x: x.replace('.', '~')+'z')
     ['1.1', '1.2alpha', '1.2beta1', '1.2beta2', '1.2rc1', '1.2', '1.2.1', '1.3']
@@ -76,7 +76,7 @@ In some cases when sorting file paths with OS-Generated names, the default
 :mod:`~natsorted` algorithm may not be sufficient.  In cases like these,
 you may need to use the ``ns.PATH`` option:
 
-.. code-block:: python
+.. code-block:: pycon
 
     >>> a = ['./folder/file (1).txt',
     ...      './folder/file.txt',
@@ -100,7 +100,7 @@ characters, it will also properly interpret non-'.' decimal separators
 and also properly order case.  It may be more convenient to just use
 the :func:`humansorted` function:
 
-.. code-block:: python
+.. code-block:: pycon
 
     >>> from natsort import humansorted
     >>> import locale
@@ -125,7 +125,7 @@ Controlling Case When Sorting
 For non-numbers, by default :mod:`natsort` used ordinal sorting (i.e.
 it sorts by the character's value in the ASCII table).  For example:
 
-.. code-block:: python
+.. code-block:: pycon
 
     >>> a = ['Apple', 'corn', 'Corn', 'Banana', 'apple', 'banana']
     >>> natsorted(a)
@@ -134,7 +134,7 @@ it sorts by the character's value in the ASCII table).  For example:
 There are times when you wish to ignore the case when sorting,
 you can easily do this with the ``ns.IGNORECASE`` option:
 
-.. code-block:: python
+.. code-block:: pycon
 
     >>> natsorted(a, alg=ns.IGNORECASE)
     ['Apple', 'apple', 'Banana', 'banana', 'corn', 'Corn']
@@ -147,7 +147,7 @@ Upper-case letters appear first in the ASCII table, but many natural
 sorting methods place lower-case first.  To do this, use
 ``ns.LOWERCASEFIRST``:
 
-.. code-block:: python
+.. code-block:: pycon
 
     >>> natsorted(a, alg=ns.LOWERCASEFIRST)
     ['apple', 'banana', 'corn', 'Apple', 'Banana', 'Corn']
@@ -157,7 +157,7 @@ and the lower-case letters grouped together; most would expect all
 "a"s to bet together regardless of case, and all "b"s, and so on. To
 achieve this, use ``ns.GROUPLETTERS``:
 
-.. code-block:: python
+.. code-block:: pycon
 
     >>> natsorted(a, alg=ns.GROUPLETTERS)
     ['Apple', 'apple', 'Banana', 'banana', 'Corn', 'corn']
@@ -165,7 +165,7 @@ achieve this, use ``ns.GROUPLETTERS``:
 You might combine this with ``ns.LOWERCASEFIRST`` to get what most
 would expect to be "natural" sorting:
 
-.. code-block:: python
+.. code-block:: pycon
 
     >>> natsorted(a, alg=ns.G | ns.LF)
     ['apple', 'Apple', 'banana', 'Banana', 'corn', 'Corn']
@@ -178,7 +178,7 @@ a valid Python float literal, such as 5, 0.4, -4.78, +4.2E-34, etc.
 using the ``ns.FLOAT`` key. You can disable the exponential component
 of the number with ``ns.NOEXP``.
 
-.. code-block:: python
+.. code-block:: pycon
 
     >>> a = ['a50', 'a51.', 'a+50.4', 'a5.034e1', 'a+50.300']
     >>> natsorted(a, alg=ns.FLOAT)
@@ -195,7 +195,7 @@ function. Please note that the behavior of the :func:`~realsorted` function
 was the default behavior of :func:`~natsorted` for :mod:`natsort`
 version < 4.0.0:
 
-.. code-block:: python
+.. code-block:: pycon
 
     >>> natsorted(a, alg=ns.REAL)
     ['a50', 'a+50.300', 'a5.034e1', 'a+50.4', 'a51.']
@@ -211,7 +211,7 @@ Using a Custom Sorting Key
 Like the built-in ``sorted`` function, ``natsorted`` can accept a custom
 sort key so that:
 
-.. code-block:: python
+.. code-block:: pycon
 
     >>> from operator import attrgetter, itemgetter
     >>> a = [['a', 'num4'], ['b', 'num8'], ['c', 'num2']]
@@ -233,7 +233,7 @@ If you need to sort a list in-place, you cannot use :func:`~natsorted`; you
 need to pass a key to the :meth:`list.sort` method. The function
 :func:`~natsort_keygen` is a convenient way to generate these keys for you:
 
-.. code-block:: python
+.. code-block:: pycon
 
     >>> from natsort import natsort_keygen
     >>> a = ['a50', 'a51.', 'a50.4', 'a5.034e1', 'a50.300']
@@ -256,7 +256,7 @@ Natural Sorting with ``cmp`` (Python 2 only)
 If you are using a legacy codebase that requires you to use :func:`cmp` instead
 of a key-function, you can use :func:`~natcmp`.
 
-.. code-block:: python
+.. code-block:: pycon
 
     >>> import sys
     >>> a = ['2 ft 7 in', '1 ft 5 in', '10 ft 2 in', '2 ft 11 in', '7 ft 6 in']
@@ -279,7 +279,7 @@ To achieve this you could use the :func:`~index_natsorted` in combination
 with the convenience function
 :func:`~order_by_index`:
 
-.. code-block:: python
+.. code-block:: pycon
 
     >>> from natsort import index_natsorted, order_by_index
     >>> a = ['a2', 'a9', 'a1', 'a4', 'a10']
@@ -299,7 +299,7 @@ Returning Results in Reverse Order
 Just like the :func:`sorted` built-in function, you can supply the
 ``reverse`` option to return the results in reverse order:
 
-.. code-block:: python
+.. code-block:: pycon
 
     >>> a = ['a2', 'a9', 'a1', 'a4', 'a10']
     >>> natsorted(a, reverse=True)
@@ -320,7 +320,7 @@ will allow :mod:`natsort` to convert byte arrays to strings for sorting;
 these functions know not to raise an error if the input is not a byte
 array, so you can use the key on any arbitrary collection of data.
 
-.. code-block:: python
+.. code-block:: pycon
 
     >>> from natsort import as_ascii
     >>> a = [b'a', 14.0, 'b']
@@ -335,7 +335,7 @@ run :mod:`natsort` on a list of bytes, you will get results that are like
 Python's default sorting behavior. Of course, you can use the decoding
 functions to solve this:
 
-.. code-block:: python
+.. code-block:: pycon
 
     >>> from natsort import as_utf8
     >>> a = [b'a56', b'a5', b'a6', b'a40']
@@ -347,7 +347,7 @@ functions to solve this:
 If you need a codec different from ASCII or UTF-8, you can use
 :func:`decoder` to generate a custom key:
 
-.. code-block:: python
+.. code-block:: pycon
 
     >>> from natsort import decoder
     >>> a = [b'a56', b'a5', b'a6', b'a40']
