@@ -21,30 +21,6 @@ def test_do_decoding_decodes_bytes_string_to_unicode():
     assert utils.do_decoding(b"bytes", "ascii") == b"bytes".decode("ascii")
 
 
-def test_args_to_enum_raises_typeerror_for_invalid_argument():
-    with pytest.raises(TypeError):
-        utils.args_to_enum(**{"alf": 0})
-
-
-@pytest.mark.parametrize(
-    "kwargs, expected",
-    [
-        ({"number_type": float, "signed": True, "exp": True}, ns.F | ns.S),
-        ({"number_type": float, "signed": True, "exp": False}, ns.F | ns.N | ns.S),
-        ({"number_type": float, "signed": False, "exp": True}, ns.F | ns.U),
-        ({"number_type": float, "signed": False, "exp": True}, ns.F),
-        ({"number_type": float, "signed": False, "exp": False}, ns.F | ns.U | ns.N),
-        ({"number_type": float, "as_path": True}, ns.F | ns.P),
-        ({"number_type": int, "as_path": True}, ns.I | ns.P),
-        ({"number_type": int, "signed": False}, ns.I | ns.U),
-        ({"number_type": None, "exp": True}, ns.I | ns.U),
-    ],
-)
-def test_args_to_enum(kwargs, expected):
-    with pytest.warns(DeprecationWarning):
-        assert utils.args_to_enum(**kwargs) == expected
-
-
 @pytest.mark.parametrize(
     "alg, expected",
     [
