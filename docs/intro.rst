@@ -271,12 +271,11 @@ How do I debug :func:`~natsorted`?
 How *does* :mod:`natsort` work?
     If you don't want to read :ref:`howitworks`, here is a quick primer.
 
-    :mod:`natsort` provides a `key function <https://docs.python.org/3/howto/sorting.html#key-functions>`_
-    that can be passed to `list.sort() <https://docs.python.org/3/library/stdtypes.html#list.sort>`_
-    or `sorted() <https://docs.python.org/3/library/functions.html#sorted>`_ in order to
-    modify the default sorting behavior. This key is generated on-demand with the
-    key generator :func:`natsort.natsort_keygen`.  :func:`natsort.natsorted` is essentially
-    a wrapper for the following code:
+    :mod:`natsort` provides a :term:`key function` that can be passed to
+    :meth:`list.sort` or :func:`sorted` in order to modify the default sorting
+    behavior. This key is generated on-demand with the key generator
+    :func:`natsort.natsort_keygen`. :func:`natsort.natsorted` is essentially a
+    wrapper for the following code:
 
     .. code-block:: pycon
 

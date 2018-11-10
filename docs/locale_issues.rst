@@ -31,25 +31,23 @@ Corollary: Do Not Reuse :func:`~natsort.natsort_keygen` After Changing Locale
 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 If you change locale, the old function will not work as expected.
-The `locale <https://docs.python.org/3.5/library/locale.html>`_ library works
-with a global state. When :func:`~natsort.natsort_keygen` is called it does the
-best job that it can to make the returned function as static as possible and
-independent of the global state, but the
-`strxfrm <https://docs.python.org/3.5/library/locale.html#locale.strxfrm>`_
-function must access this global state to work; therefore, if you change
-locale and use ``ns.LOCALE`` then you should discard the old key.
+The :mod:`locale` library works with a global state. When
+:func:`~natsort.natsort_keygen` is called it does the best job that it can to
+make the returned function as static as possible and independent of the global
+state, but the :func:`locale.strxfrm` function must access this global state to
+work; therefore, if you change locale and use ``ns.LOCALE`` then you should
+discard the old key.
 
 .. note:: If you use `PyICU`_ then you may be able to reuse keys after changing
           locale.
 
-The `locale <https://docs.python.org/3.5/library/locale.html>`_ Module From the StdLib Has Issues
--------------------------------------------------------------------------------------------------
+The :mod:`locale` Module From the StdLib Has Issues
+---------------------------------------------------
 
 :mod:`natsort` will use `PyICU`_ for :func:`~natsort.humansorted` or
-``ns.LOCALE`` if it is installed. If not, it will fall back on the `locale
-<https://docs.python.org/3.5/library/locale.html>`_ library from the Python
-stdlib. If you do not have `PyICU`_ installed, please keep the following known
-problems and issues in mind.
+``ns.LOCALE`` if it is installed. If not, it will fall back on the
+:mod:`locale` library from the Python stdlib. If you do not have `PyICU`_
+installed, please keep the following known problems and issues in mind.
 
 .. note:: Remember, if you have `PyICU`_ installed you shouldn't need to worry
           about any of these.
@@ -70,8 +68,8 @@ locale):
 
 .. _bug_note:
 
-The `locale <https://docs.python.org/3.5/library/locale.html>`_ Module Is Broken on Mac OS X
-++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+The :mod:`locale` Module Is Broken on Mac OS X
+++++++++++++++++++++++++++++++++++++++++++++++
 
 It's not Python's fault, but the OS... the locale library for BSD-based systems
 (of which Mac OS X is one) is broken. See the following links:
