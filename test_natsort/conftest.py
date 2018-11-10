@@ -10,9 +10,9 @@ import pytest
 def load_locale(x):
     """Convenience to load a locale, trying ISO8859-1 first."""
     try:
-        locale.setlocale(locale.LC_ALL, str("{0}.ISO8859-1".format(x)))
+        locale.setlocale(locale.LC_ALL, str("{}.ISO8859-1".format(x)))
     except locale.Error:
-        locale.setlocale(locale.LC_ALL, str("{0}.UTF-8".format(x)))
+        locale.setlocale(locale.LC_ALL, str("{}.UTF-8".format(x)))
 
 
 @pytest.fixture()

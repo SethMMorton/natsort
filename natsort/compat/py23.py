@@ -56,43 +56,6 @@ else:
     py23_map = itertools.imap
     py23_filter = itertools.ifilter
 
-# cmp_to_key was not created till 2.7, so require this for 2.6
-try:
-    from functools import cmp_to_key
-except ImportError:  # pragma: no cover
-
-    def cmp_to_key(mycmp):
-        """Convert a cmp= function into a key= function"""
-
-        class K(object):
-            __slots__ = ["obj"]
-
-            def __init__(self, obj):
-                self.obj = obj
-
-            def __lt__(self, other):
-                return mycmp(self.obj, other.obj) < 0
-
-            def __gt__(self, other):
-                return mycmp(self.obj, other.obj) > 0
-
-            def __eq__(self, other):
-                return mycmp(self.obj, other.obj) == 0
-
-            def __le__(self, other):
-                return mycmp(self.obj, other.obj) <= 0
-
-            def __ge__(self, other):
-                return mycmp(self.obj, other.obj) >= 0
-
-            def __ne__(self, other):
-                return mycmp(self.obj, other.obj) != 0
-
-            def __hash__(self):
-                raise TypeError("hash not implemented")
-
-        return K
-
 
 # This function is intended to decorate other functions that will modify
 # either a string directly, or a function's docstring.
