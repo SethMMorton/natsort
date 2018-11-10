@@ -258,9 +258,8 @@ How do I debug :func:`~natsorted`?
     with the same options being passed to :func:`~natsorted`. One can take a look at
     exactly what is being done with their input using this key - it is highly recommended
     to `look at this issue describing how to debug <https://github.com/SethMMorton/natsort/issues/13#issuecomment-50422375>`_
-    for *how* to debug, and also to review the
-    `How Does Natsort Work? <https://natsort.readthedocs.io/en/master/howitworks.html>`_
-    page for *why* :mod:`natsort` is doing that to your data.
+    for *how* to debug, and also to review the :ref:`howitworks` page for *why*
+    :mod:`natsort` is doing that to your data.
 
     If you are trying to sort custom classes and running into trouble, please take a look at
     https://github.com/SethMMorton/natsort/issues/60. In short,
@@ -270,8 +269,7 @@ How do I debug :func:`~natsorted`?
     use the :mod:`natsort` key as part of your rich comparison operator definition.
 
 How *does* :mod:`natsort` work?
-    If you don't want to read `How Does Natsort Work? <https://natsort.readthedocs.io/en/master/howitworks.html>`_,
-    here is a quick primer.
+    If you don't want to read :ref:`howitworks`, here is a quick primer.
 
     :mod:`natsort` provides a `key function <https://docs.python.org/3/howto/sorting.html#key-functions>`_
     that can be passed to `list.sort() <https://docs.python.org/3/library/stdtypes.html#list.sort>`_
@@ -341,8 +339,8 @@ PyICU
 +++++
 
 It is recommended that you install `PyICU <https://pypi.org/project/PyICU>`_
-if you wish to sort in a locale-dependent manner, see
-https://natsort.readthedocs.io/en/master/locale_issues.html for an explanation why.
+if you wish to sort in a locale-dependent manner, see :ref:`locale_issues` for
+an explanation why.
 
 Installation
 ------------
