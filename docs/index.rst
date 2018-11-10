@@ -16,6 +16,7 @@ Contents:
    howitworks.rst
    examples.rst
    api.rst
+   locale_issues.rst
    shell.rst
    changelog.rst
 

@@ -8,6 +8,7 @@ XX-XX-XXXX v. X.X.X
 
    - Removal of Python 2.6 and 3.3 compatibility (thanks @jdufresne)
    - Documentation, packaging, and CI cleanup (thanks @jdufresne)
+   - Consolidate API documentation into a single page
 
 09-09-2018 v. 5.4.1
 +++++++++++++++++++
