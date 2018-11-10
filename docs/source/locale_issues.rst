@@ -61,7 +61,9 @@ Explicitly Set the Locale Before Using :func:`~natsort.humansorted` or ``ns.LOCA
 I have found that unless you explicitly set a locale, the sorted order may not
 be what you expect. Setting this is straightforward
 (in the below example I use 'en_US.UTF-8', but you should use your
-locale)::
+locale):
+
+.. code-block:: pycon
 
     >>> import locale
     >>> locale.setlocale(locale.LC_ALL, 'en_US.UTF-8')
