@@ -175,7 +175,7 @@ bitwise OR operator (``|``). For example,
     True
 
 All of the available customizations can be found in the documentation for
-`the ns enum <https://natsort.readthedocs.io/en/master/ns_class.html>`_.
+`the ns enum <https://natsort.readthedocs.io/en/master/api.html#natsort.ns>`_.
 
 You can also add your own custom transformation functions with the ``key`` argument.
 These can be used with ``alg`` if you wish.
