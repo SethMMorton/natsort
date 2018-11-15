@@ -95,7 +95,12 @@ Examples
 Sorting Versions
 ++++++++++++++++
 
-This is handled properly by default (as of ``natsort`` version >= 4.0.0):
+``natsort`` does not actually *comprehend* version numbers.
+It just so happens that the most common versioning schemes are designed to
+work with standard natural sorting techniques; these schemes include
+``MAJOR.MINOR``, ``MAJOR.MINOR.PATCH``, ``YEAR.MONTH.DAY``. If your data
+conforms to a scheme like this, then it will work out-of-the-box with
+``natsorted`` (as of ``natsort`` version >= 4.0.0):
 
 .. code-block:: pycon
 
@@ -103,15 +108,15 @@ This is handled properly by default (as of ``natsort`` version >= 4.0.0):
     >>> natsorted(a)
     ['version-1.9', 'version-1.10', 'version-1.11', 'version-2.0']
 
-If you need to sort release candidates, please see
-`this useful hack <https://natsort.readthedocs.io/en/master/examples.html#rc-sorting>`_.
+If you need to versions that use a more complicated scheme, please see
+`these examples <https://natsort.readthedocs.io/en/master/examples.html#rc-sorting>`_.
 
 Sorting by Real Numbers (i.e. Signed Floats)
 ++++++++++++++++++++++++++++++++++++++++++++
 
-This is useful in scientific data analysis and was
+This is useful in scientific data analysis (and was
 the default behavior of ``natsorted`` for ``natsort``
-version < 4.0.0. Use the ``realsorted`` function:
+version < 4.0.0). Use the ``realsorted`` function:
 
 .. code-block:: pycon
 

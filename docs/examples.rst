@@ -30,17 +30,16 @@ it as you would :func:`sorted`:
 Sort Version Numbers
 --------------------
 
-As of :mod:`natsort` version >= 4.0.0, :func:`~natsorted` will now properly
-sort version numbers. The old function :func:`~versorted` exists for
-backwards compatibility but new development should use :func:`~natsorted`.
+As of :mod:`natsort` version >= 4.0.0, :func:`~natsorted` will work for
+well-behaved version numbers, like ``MAJOR.MINOR.PATCH``.
 
 .. _rc_sorting:
 
-Sorting with Alpha, Beta, and Release Candidates
-++++++++++++++++++++++++++++++++++++++++++++++++
+Sorting More Expressive Versioning Schemes
+++++++++++++++++++++++++++++++++++++++++++
 
-By default, if you wish to sort versions with a non-strict versioning
-scheme, you may not get the results you expect:
+By default, if you wish to sort versions that are not as simple as
+``MAJOR.MINOR.PATCH`` (or similar), you may not get the results you expect:
 
 .. code-block:: pycon
 
@@ -66,6 +65,26 @@ modify the above recipe:
 
 Please see `this issue <https://github.com/SethMMorton/natsort/issues/13>`_ to
 see why this works.
+
+Sorting Rigorously Defined Versioning Schemes (e.g. SemVer or PEP 440)
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+
+If you know you are using a versioning scheme that follows a well-defined format
+for which there is third-party module support, you should use those modules
+to assist in sorting. Some examples might be
+`PEP 440 <https://packaging.pypa.io/en/latest/version>`_ or
+`SemVer <https://python-semver.readthedocs.io/en/latest/api.html>`_.
+
+If we are being honest, using these methods to parse a version means you don't
+need to use :mod:`natsort` - you should probably just use :func:`sorted` directly.
+Here's an example with SemVer:
+
+.. code-block:: pycon
+
+    >>> from semver import parse_version_info
+    >>> a = ['3.4.5-pre.1', '3.4.5', '3.4.5-pre.2+build.4']
+    >>> sorted(a, key=parse_version_info)
+    ['3.4.5-pre.1', '3.4.5-pre.2+build.4', '3.4.5']
 
 .. _path_sort:
 
