@@ -422,10 +422,11 @@ code with the following flag
 
 .. code-block:: console
 
-    $ python -Werror::DeprecationWarning my-code.py
+    $ python -Wdefault::DeprecationWarning my-code.py
 
-This will turn any deprecation warnings into an error so that you can immediately
-find old APIs.
+By default :exc:`DeprecationWarnings` are not shown, but this will cause them to be shown.
+Alternatively, you can just set the environment variable ``PYTHONWARNINGS`` to
+"default::DeprecationWarning" and then run your code.
 
 Dropping Python 2.6 and 3.3 Support
 ===================================
