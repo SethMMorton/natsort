@@ -483,4 +483,6 @@ Seth M. Morton
 History
 -------
 
-Please visit the `changelog <https://natsort.readthedocs.io/en/master/changelog.html>`_.
+Please visit the changelog
+`on GitHub <https://github.com/SethMMorton/natsort/blob/master/CHANGELOG.rst>`_ or
+`in the documentation <https://natsort.readthedocs.io/en/master/changelog.html>`_.
