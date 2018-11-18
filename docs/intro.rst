@@ -404,6 +404,9 @@ Note that above I invoked ``python -m pytest`` instead of just ``pytest`` - this
 Deprecation Schedule
 --------------------
 
+Deprecated APIs
++++++++++++++++
+
 In :mod:`natsort` version 6.0.0, the following APIs and functions will be removed
 
  - ``number_type`` keyword argument (deprecated since 3.4.0)
@@ -429,12 +432,12 @@ Alternatively, you can just set the environment variable ``PYTHONWARNINGS`` to
 "default::DeprecationWarning" and then run your code.
 
 Dropping Python 2.6 and 3.3 Support
-===================================
++++++++++++++++++++++++++++++++++++
 
 :mod:`natsort` version 6.0.0 will drop support for Python 2.6 and Python 3.3.
 
 Dropping Python 2.7 Support
-===========================
++++++++++++++++++++++++++++
 
 :mod:`natsort` version 7.0.0 will drop support for Python 2.7.
 
