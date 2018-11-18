@@ -7,10 +7,9 @@ from __future__ import absolute_import, division, print_function, unicode_litera
 
 # Std. lib imports.
 import sys
-from functools import cmp_to_key
 
 # Local imports.
-from natsort.compat.py23 import PY_VERSION, py23_unichr
+from natsort.compat.py23 import PY_VERSION, cmp_to_key, py23_unichr
 
 # This string should be sorted after any other byte string because
 # it contains the max unicode character repeated 20 times.

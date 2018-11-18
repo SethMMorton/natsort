@@ -1743,7 +1743,7 @@ if __name__ == "__main__":
             a = py23_unichr(i)
         except ValueError:
             break
-        if a in "0123456789":
+        if a in set("0123456789"):
             continue
         if unicodedata.numeric(a, None) is not None:
             hex_chars.append(i)

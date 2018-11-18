@@ -24,7 +24,7 @@ def main(*arguments):
     parser.add_argument(
         "--version",
         action="version",
-        version="%(prog)s {}".format(natsort.__version__),
+        version="%(prog)s {0}".format(natsort.__version__),
     )
     parser.add_argument(
         "-p",

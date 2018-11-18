@@ -48,4 +48,5 @@ __all__ = [
 ]
 
 # Add the ns keys to this namespace for convenience.
-globals().update(ns._asdict())
+# A dict comprehension is not used for Python 2.6 compatibility.
+globals().update(dict((k, getattr(ns, k)) for k in dir(ns) if k.isupper()))

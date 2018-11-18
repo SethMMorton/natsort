@@ -7,6 +7,8 @@ from __future__ import absolute_import, division, print_function, unicode_litera
 
 import collections
 
+# NOTE: OrderedDict is not used below for compatibility with Python 2.6.
+
 # The below are the base ns options. The values will be stored as powers
 # of two so bitmasks can be used to extract the user's requested options.
 enum_options = [
@@ -58,25 +60,26 @@ enum_aliases = [
 ]
 
 # Construct the list of bitwise distinct enums with their fields.
-enum_fields = collections.OrderedDict(
-    (name, 1 << i) for i, name in enumerate(enum_options)
-)
-enum_fields.update((name, 0) for name in enum_do_nothing)
+enum_fields = [(name, 1 << i) for i, name in enumerate(enum_options)]
+enum_fields.extend((name, 0) for name in enum_do_nothing)
 
 for name, combo in enum_combos:
-    combined_value = enum_fields[combo[0]]
+    current_mapping = dict(enum_fields)
+    combined_value = current_mapping[combo[0]]
     for combo_name in combo[1:]:
-        combined_value |= enum_fields[combo_name]
-    enum_fields[name] = combined_value
+        combined_value |= current_mapping[combo_name]
+    enum_fields.append((name, combined_value))
 
-enum_fields.update(
-    (alias, enum_fields[name]) for alias, name in enum_aliases
-)
+current_mapping = dict(enum_fields)
+enum_fields.extend((alias, current_mapping[name]) for alias, name in enum_aliases)
+
+# Finally, extract out the enum field names and their values.
+enum_field_names, enum_field_values = zip(*enum_fields)
 
 
 # Subclass the namedtuple to improve the docstring.
 # noinspection PyUnresolvedReferences
-class _NSEnum(collections.namedtuple("_NSEnum", enum_fields.keys())):
+class _NSEnum(collections.namedtuple("_NSEnum", enum_field_names)):
     """
     Enum to control the `natsort` algorithm.
 
@@ -202,7 +205,7 @@ class _NSEnum(collections.namedtuple("_NSEnum", enum_fields.keys())):
 
 # Here is where the instance of the ns enum that will be exported is created.
 # It is a poor-man's singleton.
-ns = _NSEnum(*enum_fields.values())
+ns = _NSEnum(*enum_field_values)
 
 # The below is private for internal use only.
 ns_DUMB = 1 << 31

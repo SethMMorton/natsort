@@ -897,7 +897,10 @@ It turns out the there is a bug in the legacy Python implementation of
 input (https://bugs.python.org/issue2481). :func:`locale.strcoll` works,
 but is intended for use with ``cmp``, which does not exist in current Python
 implementations. Luckily, the :func:`functools.cmp_to_key` function
-makes :func:`locale.strcoll` behave like :func:`locale.strxfrm`.
+makes :func:`locale.strcoll` behave like :func:`locale.strxfrm` (that is, of course,
+unless you are on Python 2.6 where :func:`functools.cmp_to_key` doesn't exist,
+in which case you simply copy-paste the implementation from Python 2.7
+directly into your code ☹).
 
 Handling Broken Locale On OSX
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
