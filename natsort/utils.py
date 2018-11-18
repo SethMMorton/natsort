@@ -801,24 +801,27 @@ def args_to_enum(**kwargs):
         x = set(kwargs) - set(keys)
         raise TypeError("Invalid argument(s): " + ", ".join(x))
     if "number_type" in kwargs and kwargs["number_type"] is not int:
-        msg = "The 'number_type' argument is deprecated as of 3.5.0, "
+        msg = "The 'number_type' argument is deprecated as of 3.5.0 "
+        msg += "and will be removed in 6.0.0, "
         msg += "please use 'alg=ns.FLOAT', 'alg=ns.INT', or 'alg=ns.VERSION'"
         warn(msg, DeprecationWarning)
         alg |= ns.FLOAT * bool(kwargs["number_type"] is float)
         alg |= ns.INT * bool(kwargs["number_type"] in (int, None))
         alg |= ns.SIGNED * (kwargs["number_type"] not in (float, None))
     if "signed" in kwargs and kwargs["signed"] is not None:
-        msg = "The 'signed' argument is deprecated as of 3.5.0, "
+        msg = "The 'signed' argument is deprecated as of 3.5.0 "
+        msg += "and will be removed in 6.0.0, "
         msg += "please use 'alg=ns.SIGNED'."
         warn(msg, DeprecationWarning)
         alg |= ns.SIGNED * bool(kwargs["signed"])
     if "exp" in kwargs and kwargs["exp"] is not None:
-        msg = "The 'exp' argument is deprecated as of 3.5.0, "
+        msg = "The 'exp' argument is deprecated as of 3.5.0 "
+        msg += "and will be removed in 6.0.0, "
         msg += "please use 'alg=ns.NOEXP'."
-        warn(msg, DeprecationWarning)
         alg |= ns.NOEXP * (not kwargs["exp"])
     if "as_path" in kwargs and kwargs["as_path"] is not None:
-        msg = "The 'as_path' argument is deprecated as of 3.5.0, "
+        msg = "The 'as_path' argument is deprecated as of 3.5.0 "
+        msg += "and will be removed in 6.0.0, "
         msg += "please use 'alg=ns.PATH'."
         warn(msg, DeprecationWarning)
         alg |= ns.PATH * kwargs["as_path"]
