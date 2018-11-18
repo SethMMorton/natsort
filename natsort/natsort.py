@@ -284,7 +284,7 @@ def versorted(seq, key=None, reverse=False, alg=ns.DEFAULT, **_kwargs):
     """
     msg = "versorted is deprecated as of 5.5.0 and will be removed in 6.0.0, "
     msg += "please use natsorted instead."
-    warn(msg, DeprecationWarning)
+    warn(msg, DeprecationWarning, stacklevel=2)
     return natsorted(seq, key, reverse, alg, **_kwargs)
 
 
@@ -480,7 +480,7 @@ def index_versorted(seq, key=None, reverse=False, alg=ns.DEFAULT, **_kwargs):
     """
     msg = "index_versorted is deprecated as of 5.5.0 and will be removed in 6.0.0, "
     msg += "please use index_natsorted instead."
-    warn(msg, DeprecationWarning)
+    warn(msg, DeprecationWarning, stacklevel=2)
     return index_natsorted(seq, key, reverse, alg, **_kwargs)
 
 
