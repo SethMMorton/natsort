@@ -10,6 +10,7 @@ from __future__ import absolute_import, division, print_function, unicode_litera
 import sys
 from functools import partial
 from operator import itemgetter
+from warnings import warn
 
 import natsort.compat.locale
 from natsort import utils
@@ -273,14 +274,17 @@ def versorted(seq, key=None, reverse=False, alg=ns.DEFAULT, **_kwargs):
     """
     Identical to :func:`natsorted`.
 
-    This function exists for backwards compatibility with `natsort`
-    version < 4.0.0. Future development should use :func:`natsorted`.
+    This function is deprecated as of :mod:`natsort` 5.5.0, and will be
+    removed in 6.0.0.
 
     See Also
     --------
     natsorted
 
     """
+    msg = "versorted is deprecated as of 5.5.0 and will be removed in 6.0.0, "
+    msg += "please use natsorted instead."
+    warn(msg, DeprecationWarning, stacklevel=2)
     return natsorted(seq, key, reverse, alg, **_kwargs)
 
 
@@ -466,17 +470,17 @@ def index_versorted(seq, key=None, reverse=False, alg=ns.DEFAULT, **_kwargs):
     """
     Identical to :func:`index_natsorted`.
 
-    This function exists for backwards compatibility with
-    ``index_natsort`` version < 4.0.0. Future development should use
-    :func:`index_natsorted`.
-
-    Please see the :func:`index_natsorted` documentation for use.
+    This function is deprecated as of :mod:`natsort` 5.5.0, and will be
+    removed in 6.0.0.
 
     See Also
     --------
     index_natsorted
 
     """
+    msg = "index_versorted is deprecated as of 5.5.0 and will be removed in 6.0.0, "
+    msg += "please use index_natsorted instead."
+    warn(msg, DeprecationWarning, stacklevel=2)
     return index_natsorted(seq, key, reverse, alg, **_kwargs)
 
 

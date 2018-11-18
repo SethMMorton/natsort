@@ -6,6 +6,7 @@ what algorithm natsort uses.
 from __future__ import absolute_import, division, print_function, unicode_literals
 
 import collections
+import warnings
 
 # NOTE: OrderedDict is not used below for compatibility with Python 2.6.
 
@@ -28,17 +29,14 @@ enum_options = [
 ]
 
 # Following were previously options but are now defaults.
-enum_do_nothing = ["DEFAULT", "TYPESAFE", "INT", "VERSION", "DIGIT", "UNSIGNED"]
+enum_do_nothing = ["DEFAULT", "INT", "UNSIGNED"]
 
 # The following are bitwise-OR combinations of other fields.
 enum_combos = [("REAL", ("FLOAT", "SIGNED")), ("LOCALE", ("LOCALEALPHA", "LOCALENUM"))]
 
 # The following are aliases for other fields.
 enum_aliases = [
-    ("T", "TYPESAFE"),
     ("I", "INT"),
-    ("V", "VERSION"),
-    ("D", "DIGIT"),
     ("U", "UNSIGNED"),
     ("F", "FLOAT"),
     ("S", "SIGNED"),
@@ -182,12 +180,14 @@ class _NSEnum(collections.namedtuple("_NSEnum", enum_field_names)):
         By default, an NaN be treated as -Infinity and be placed first.
     TYPESAFE, T
         Deprecated as of `natsort` version 5.0.0; this option is now
-        a no-op because it is always true.
+        a no-op because it is always true. It will be removed in `natsort`
+        version 6.0.0.
     VERSION, V
         Deprecated as of `natsort` version 5.0.0; this option is now
-        a no-op because it is the default.
+        a no-op because it is the default. It will be removed in `natsort`
+        version 6.0.0.
     DIGIT, D
-        Same as `VERSION` above.
+        Same as `VERSION` above. It will be removed in `natsort` version 6.0.0.
 
     Notes
     -----
@@ -201,6 +201,39 @@ class _NSEnum(collections.namedtuple("_NSEnum", enum_field_names)):
         True
 
     """
+
+    _msg = "ns.{0} is deprecated and will be removed in natsort 6.0.0, "
+    _msg += "this option does nothing so please simply remove its use."
+
+    @property
+    def V(self):  # noqa: N802
+        warnings.warn(self._msg.format("V"), DeprecationWarning, stacklevel=2)
+        return 0
+
+    @property
+    def VERSION(self):  # noqa: N802
+        warnings.warn(self._msg.format("VERSION"), DeprecationWarning, stacklevel=2)
+        return 0
+
+    @property
+    def T(self):  # noqa: N802
+        warnings.warn(self._msg.format("T"), DeprecationWarning, stacklevel=2)
+        return 0
+
+    @property
+    def TYPESAFE(self):  # noqa: N802
+        warnings.warn(self._msg.format("TYPESAFE"), DeprecationWarning, stacklevel=2)
+        return 0
+
+    @property
+    def D(self):  # noqa: N802
+        warnings.warn(self._msg.format("D"), DeprecationWarning, stacklevel=2)
+        return 0
+
+    @property
+    def DIGIT(self):  # noqa: N802
+        warnings.warn(self._msg.format("DIGIT"), DeprecationWarning, stacklevel=2)
+        return 0
 
 
 # Here is where the instance of the ns enum that will be exported is created.

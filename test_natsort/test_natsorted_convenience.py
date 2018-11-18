@@ -68,7 +68,8 @@ def test_as_utf8_converts_bytes_to_utf8():
 
 def test_versorted_is_identical_to_natsorted(version_list):
     # versorted is retained for backwards compatibility
-    assert versorted(version_list) == natsorted(version_list)
+    with pytest.warns(DeprecationWarning, match="use natsorted instead"):
+        assert versorted(version_list) == natsorted(version_list)
 
 
 def test_realsorted_is_identical_to_natsorted_with_real_alg(float_list):
@@ -102,7 +103,8 @@ def test_index_natsorted_applies_key_function_before_sorting():
 
 def test_index_versorted_is_identical_to_index_natsorted(version_list):
     # index_versorted is retained for backwards compatibility
-    assert index_versorted(version_list) == index_natsorted(version_list)
+    with pytest.warns(DeprecationWarning, match="use index_natsorted instead"):
+        assert index_versorted(version_list) == index_natsorted(version_list)
 
 
 def test_index_realsorted_is_identical_to_index_natsorted_with_real_alg(float_list):
