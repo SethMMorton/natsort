@@ -6,7 +6,7 @@ Changelog
 XX-XX-XXXX v. X.X.X
 +++++++++++++++++++
 
-   - Removal of Python 2.6 and 3.3 compatibility (thanks @jdufresne)
+   - Formally deprecated old or misleading APIs
    - Documentation, packaging, and CI cleanup (thanks @jdufresne)
    - Consolidate API documentation into a single page
 
