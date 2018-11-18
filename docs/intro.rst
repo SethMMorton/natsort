@@ -449,6 +449,12 @@ By default :exc:`DeprecationWarnings` are not shown, but this will cause them to
 Alternatively, you can just set the environment variable ``PYTHONWARNINGS`` to
 "default::DeprecationWarning" and then run your code.
 
+Droping Pipenv for Development
+++++++++++++++++++++++++++++++
+
+:mod:`natsort` version 6.0.0 will not use `Pipenv <https://pipenv.readthedocs.io/en/latest/>`_
+to install development dependencies.
+
 Dropping Python 2.6 and 3.3 Support
 +++++++++++++++++++++++++++++++++++
 
