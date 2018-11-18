@@ -386,7 +386,8 @@ After installing ``tox``, running tests is as simple as executing the following 
 
 ``tox`` will create virtual a virtual environment for your tests and install all the
 needed testing requirements for you.  You can specify a particular python version
-with the ``-e`` flag, e.g. ``tox -e py36``.
+with the ``-e`` flag, e.g. ``tox -e py36``. Static analysis is done with ``tox -e flake8``.
+You can see all available testing environments with ``tox --listenvs``.
 
 If you do not wish to use ``tox``, you can install the testing dependencies and run the
 tests manually using `pytest <https://docs.pytest.org/en/latest/>`_ - ``natsort``
@@ -400,6 +401,23 @@ makes it easy for you to install the testing dependencies:
 
 Note that above I invoked ``python -m pytest`` instead of just ``pytest`` - this is because
 `the former puts the CWD on sys.path <https://docs.pytest.org/en/latest/usage.html#calling-pytest-through-python-m-pytest>`_.
+
+How to Build Documentation
+--------------------------
+
+If you want to build the documentation for :mod:`natsort`, it is recommended to use ``tox``:
+
+.. code-block:: console
+
+    $ tox -e docs
+
+This will place the documentation in ``build/sphinx/html``.  If you do not
+which to use ``tox``, you can do the following:
+
+.. code-block:: console
+
+    $ pip install sphinx sphinx_rtd_theme
+    $ python setup.py build_sphinx
 
 Deprecation Schedule
 --------------------
