@@ -35,6 +35,9 @@ Simple yet flexible natural sorting in Python.
       - `fastnumbers <https://pypi.org/project/fastnumbers>`_ >= 2.0.0
       - `PyICU <https://pypi.org/project/PyICU>`_ >= 1.0.0
 
+**NOTE**: Please see the `Deprecation Schedule`_ section for changes in the upcoming
+``natsort`` version 6.0.0 (early 2019) and then version 7.0.0.
+
 Quick Description
 -----------------
 
@@ -402,6 +405,50 @@ makes it easy for you to install the testing dependencies:
 
 Note that above I invoked ``python -m pytest`` instead of just ``pytest`` - this is because
 `the former puts the CWD on sys.path <https://docs.pytest.org/en/latest/usage.html#calling-pytest-through-python-m-pytest>`_.
+
+Deprecation Schedule
+--------------------
+
+Deprecated APIs
+===============
+
+In ``natsort`` version 6.0.0, the following APIs and functions will be removed
+
+ - ``number_type`` keyword argument (deprecated since 3.4.0)
+ - ``signed`` keyword argument (deprecated since 3.4.0)
+ - ``exp`` keyword argument (deprecated since 3.4.0)
+ - ``as_path`` keyword argument (deprecated since 3.4.0)
+ - ``py3_safe`` keyword argument (deprecated since 3.4.0)
+ - ``ns.TYPESAFE`` (deprecated since version 5.0.0)
+ - ``ns.DIGIT`` (deprecated since version 5.0.0)
+ - ``ns.VERSION`` (deprecated since version 5.0.0)
+ - ``versorted()`` (discouraged since version 4.0.0, officially deprecated since version 5.5.0)
+ - ``index_versorted()`` (discouraged since version 4.0.0, officially deprecated since version 5.5.0)
+
+If you want to determine if you are using any of the deprecated APIs, run your
+code with the following flag
+
+.. code-block:: console
+
+    $ python -Werror::DeprecationWarning my-code.py
+
+This will turn any deprecation warnings into an error so that you can immediately
+find old APIs.
+
+Dropping Python 2.6 and 3.3 Support
+===================================
+
+``natsort`` version 6.0.0 will drop support for Python 2.6 and Python 3.3.
+
+Dropping Python 2.7 Support
+===========================
+
+``natsort`` version 7.0.0 will drop support for Python 2.7.
+
+The version 6.X branch will remain as a "long term support" branch where bug fixes
+are applied so that users who cannot update from Python 2.7 will not be forced to
+use a buggy ``natsort`` version. Once version 7.0.0 is released, new features
+will not be added to version 6.X, only bug fixes.
 
 Author
 ------
