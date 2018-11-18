@@ -15,7 +15,7 @@ else:
 
 setup(
     name='natsort',
-    version='5.4.1',
+    version='5.5.0',
     packages=find_packages(),
     install_requires=install_requires,
     entry_points={'console_scripts': ['natsort = natsort.__main__:main']},

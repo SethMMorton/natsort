@@ -1,4 +1,4 @@
-XX-XX-XXXX v. X.X.X
+11-18-2018 v. 5.5.0
 +++++++++++++++++++
 
    - Formally deprecated old or misleading APIs (issue #83)
