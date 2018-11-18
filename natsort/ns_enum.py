@@ -206,32 +206,32 @@ class _NSEnum(collections.namedtuple("_NSEnum", enum_field_names)):
     _msg += "this option does nothing so please simply remove its use."
 
     @property
-    def V(self):
+    def V(self):  # noqa: N802
         warnings.warn(self._msg.format("V"), DeprecationWarning, stacklevel=2)
         return 0
 
     @property
-    def VERSION(self):
+    def VERSION(self):  # noqa: N802
         warnings.warn(self._msg.format("VERSION"), DeprecationWarning, stacklevel=2)
         return 0
 
     @property
-    def T(self):
+    def T(self):  # noqa: N802
         warnings.warn(self._msg.format("T"), DeprecationWarning, stacklevel=2)
         return 0
 
     @property
-    def TYPESAFE(self):
+    def TYPESAFE(self):  # noqa: N802
         warnings.warn(self._msg.format("TYPESAFE"), DeprecationWarning, stacklevel=2)
         return 0
 
     @property
-    def D(self):
+    def D(self):  # noqa: N802
         warnings.warn(self._msg.format("D"), DeprecationWarning, stacklevel=2)
         return 0
 
     @property
-    def DIGIT(self):
+    def DIGIT(self):  # noqa: N802
         warnings.warn(self._msg.format("DIGIT"), DeprecationWarning, stacklevel=2)
         return 0
 
@@ -242,4 +242,3 @@ ns = _NSEnum(*enum_field_values)
 
 # The below is private for internal use only.
 ns_DUMB = 1 << 31
-
