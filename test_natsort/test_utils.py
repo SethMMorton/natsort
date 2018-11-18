@@ -67,16 +67,10 @@ def test_regex_chooser_returns_correct_regular_expression_object(alg, expected):
     [
         # Defaults
         (ns.DEFAULT, 0),
-        (ns.TYPESAFE, 0),
         (ns.INT, 0),
-        (ns.VERSION, 0),
-        (ns.DIGIT, 0),
         (ns.UNSIGNED, 0),
         # Aliases
-        (ns.TYPESAFE, ns.T),
         (ns.INT, ns.I),
-        (ns.VERSION, ns.V),
-        (ns.DIGIT, ns.D),
         (ns.UNSIGNED, ns.U),
         (ns.FLOAT, ns.F),
         (ns.SIGNED, ns.S),
@@ -101,6 +95,12 @@ def test_regex_chooser_returns_correct_regular_expression_object(alg, expected):
 )
 def test_ns_enum_values_and_aliases(alg, value_or_alias):
     assert alg == value_or_alias
+
+
+@pytest.mark.parametrize("alg", ["V", "VERSION", "T", "TYPESAFE", "D", "DIGIT"])
+def test_deprecated_ns_enum_values_and_aliases_produce_warning(alg):
+    with pytest.warns(DeprecationWarning, match="please simply remove"):
+        assert getattr(ns, alg) == 0
 
 
 def test_chain_functions_is_a_no_op_if_no_functions_are_given():

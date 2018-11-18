@@ -49,8 +49,8 @@ def test_natsorted_can_sort_as_unsigned_and_ignore_exponents(float_list, alg):
     assert natsorted(float_list, alg=alg) == expected
 
 
-# INT, DIGIT, and VERSION are all equivalent.
-@pytest.mark.parametrize("alg", [ns.DEFAULT, ns.INT, ns.DIGIT, ns.VERSION])
+# DEFAULT and INT are all equivalent.
+@pytest.mark.parametrize("alg", [ns.DEFAULT, ns.INT])
 def test_natsorted_can_sort_as_unsigned_ints_which_is_default(float_list, alg):
     expected = ["a5.034e1", "a50", "a50.4", "a50.31", "a50.300", "a51.", "a-50"]
     assert natsorted(float_list, alg=alg) == expected
@@ -70,11 +70,10 @@ def test_natsorted_can_sort_with_or_without_accounting_for_sign(alg, expected):
     assert natsorted(given, alg=alg) == expected
 
 
-@pytest.mark.parametrize("alg", [ns.DEFAULT, ns.VERSION])
-def test_natsorted_can_sort_as_version_numbers(alg):
+def test_natsorted_can_sort_as_version_numbers():
     given = ["1.9.9a", "1.11", "1.9.9b", "1.11.4", "1.10.1"]
     expected = ["1.9.9a", "1.9.9b", "1.10.1", "1.11", "1.11.4"]
-    assert natsorted(given, alg=alg) == expected
+    assert natsorted(given) == expected
 
 
 @pytest.mark.parametrize(
