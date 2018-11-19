@@ -13,6 +13,6 @@ include .gitignore
 include .bumpversion.cfg
 graft docs
 graft natsort
-graft test_natsort
+graft tests
 global-exclude *.py[cod] __pycache__ *.so
 prune .github

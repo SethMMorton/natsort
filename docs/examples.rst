@@ -7,7 +7,7 @@ Examples and Recipes
 ====================
 
 If you want more detailed examples than given on this page, please see
-https://github.com/SethMMorton/natsort/tree/master/test_natsort.
+https://github.com/SethMMorton/natsort/tree/master/tests.
 
 .. contents::
     :local:
