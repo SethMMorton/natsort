@@ -393,15 +393,14 @@ needed testing requirements for you.  You can specify a particular python versio
 with the ``-e`` flag, e.g. ``tox -e py36``. Static analysis is done with ``tox -e flake8``.
 You can see all available testing environments with ``tox --listenvs``.
 
-If you do not wish to use ``tox``, you can install the testing dependencies and run the
-tests manually using `pytest <https://docs.pytest.org/en/latest/>`_ - ``natsort``
-contains a ``Pipfile`` for use with `pipenv <https://github.com/pypa/pipenv>`_ that
-makes it easy for you to install the testing dependencies:
+If you do not wish to use ``tox``, you can install the testing dependencies with the
+``dev-requirements.txt`` file and then run the tests manually using
+`pytest <https://docs.pytest.org/en/latest/>`_.
 
 .. code-block:: console
 
-    $ pipenv install --skip-lock --dev
-    $ pipenv run python -m pytest
+    $ pip install -r dev-requirements.txt
+    $ python -m pytest
 
 Note that above I invoked ``python -m pytest`` instead of just ``pytest`` - this is because
 `the former puts the CWD on sys.path <https://docs.pytest.org/en/latest/usage.html#calling-pytest-through-python-m-pytest>`_.
