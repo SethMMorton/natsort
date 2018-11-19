@@ -1,7 +1,8 @@
-include README.rst
 include LICENSE
-include *.md
+include CODE_OF_CONDUCT.md
+include CONTRIBUTING.md
 include *.sh
+include *.rst
 include Pipfile
 include setup.py
 include setup.cfg
@@ -14,3 +15,4 @@ graft docs
 graft natsort
 graft test_natsort
 global-exclude *.py[cod] __pycache__ *.so
+prune .github
