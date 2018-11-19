@@ -3,7 +3,6 @@
 Interface for natsort to access locale functionality without
 having to worry about if it is using PyICU or the built-in locale.
 """
-from __future__ import absolute_import, division, print_function, unicode_literals
 
 # Std. lib imports.
 import sys

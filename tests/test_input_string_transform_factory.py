@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 """These test the utils.py functions."""
-from __future__ import unicode_literals
 
 import pytest
 from hypothesis import example, given

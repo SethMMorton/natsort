@@ -2,7 +2,6 @@
 """\
 Test the fake fastnumbers module.
 """
-from __future__ import unicode_literals
 
 import unicodedata
 from math import isnan

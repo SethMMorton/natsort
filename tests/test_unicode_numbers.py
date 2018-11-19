@@ -2,7 +2,6 @@
 """\
 Test the Unicode numbers module.
 """
-from __future__ import unicode_literals
 
 import unicodedata
 

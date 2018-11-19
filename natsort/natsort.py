@@ -5,7 +5,6 @@ natsort public API.
 
 The majority of the "work" is defined in utils.py.
 """
-from __future__ import absolute_import, division, print_function, unicode_literals
 
 import sys
 from functools import partial

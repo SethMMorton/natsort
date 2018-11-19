@@ -3,7 +3,6 @@
 This file contains functions to profile natsorted with different
 inputs and different settings.
 """
-from __future__ import print_function
 
 import cProfile
 import locale

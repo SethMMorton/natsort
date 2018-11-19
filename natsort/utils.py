@@ -38,7 +38,6 @@ that ensures "val" is a local variable instead of global variable
 and thus has a slightly improved performance at runtime.
 
 """
-from __future__ import absolute_import, division, print_function, unicode_literals
 
 import re
 from collections import deque

@@ -3,7 +3,6 @@
 Interface for natsort to access fastnumbers functions without
 having to worry if it is actually installed.
 """
-from __future__ import absolute_import, division, print_function, unicode_literals
 
 from distutils.version import StrictVersion
 

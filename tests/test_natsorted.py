@@ -3,7 +3,6 @@
 Here are a collection of examples of how this module can be used.
 See the README or the natsort homepage for more details.
 """
-from __future__ import print_function, unicode_literals
 
 from operator import itemgetter
 

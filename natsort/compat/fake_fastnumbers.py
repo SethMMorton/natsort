@@ -3,7 +3,6 @@
 This module is intended to replicate some of the functionality
 from the fastnumbers module in the event that module is not installed.
 """
-from __future__ import absolute_import, division, print_function, unicode_literals
 
 # Std. lib imports.
 import unicodedata
