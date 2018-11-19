@@ -10,7 +10,6 @@ from __future__ import absolute_import, division, print_function, unicode_litera
 import sys
 from functools import partial
 from operator import itemgetter
-from warnings import warn
 
 import natsort.compat.locale
 from natsort import utils
@@ -269,25 +268,6 @@ def natsorted(seq, key=None, reverse=False, alg=ns.DEFAULT):
 
 
 @u_format
-def versorted(seq, key=None, reverse=False, alg=ns.DEFAULT):
-    """
-    Identical to :func:`natsorted`.
-
-    This function is deprecated as of :mod:`natsort` 5.5.0, and will be
-    removed in 6.0.0.
-
-    See Also
-    --------
-    natsorted
-
-    """
-    msg = "versorted is deprecated as of 5.5.0 and will be removed in 6.0.0, "
-    msg += "please use natsorted instead."
-    warn(msg, DeprecationWarning, stacklevel=2)
-    return natsorted(seq, key, reverse, alg)
-
-
-@u_format
 def humansorted(seq, key=None, reverse=False, alg=ns.DEFAULT):
     """
     Convenience function to properly sort non-numeric characters.
@@ -462,25 +442,6 @@ def index_natsorted(seq, key=None, reverse=False, alg=ns.DEFAULT):
     index_seq_pair = [[x, y] for x, y in enumerate(seq)]
     index_seq_pair.sort(reverse=reverse, key=natsort_keygen(newkey, alg))
     return [x for x, _ in index_seq_pair]
-
-
-@u_format
-def index_versorted(seq, key=None, reverse=False, alg=ns.DEFAULT):
-    """
-    Identical to :func:`index_natsorted`.
-
-    This function is deprecated as of :mod:`natsort` 5.5.0, and will be
-    removed in 6.0.0.
-
-    See Also
-    --------
-    index_natsorted
-
-    """
-    msg = "index_versorted is deprecated as of 5.5.0 and will be removed in 6.0.0, "
-    msg += "please use index_natsorted instead."
-    warn(msg, DeprecationWarning, stacklevel=2)
-    return index_natsorted(seq, key, reverse, alg)
 
 
 @u_format

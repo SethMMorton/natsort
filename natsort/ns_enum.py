@@ -6,7 +6,6 @@ what algorithm natsort uses.
 from __future__ import absolute_import, division, print_function, unicode_literals
 
 import collections
-import warnings
 
 # The below are the base ns options. The values will be stored as powers
 # of two so bitmasks can be used to extract the user's requested options.
@@ -175,10 +174,6 @@ class _NSEnum(collections.namedtuple("_NSEnum", enum_fields.keys())):
         If an NaN shows up in the input, this instructs `natsort` to
         treat these as +Infinity and place them after all the other numbers.
         By default, an NaN be treated as -Infinity and be placed first.
-    VERSION, V
-        Deprecated as of `natsort` version 5.0.0; this option is now
-        a no-op because it is the default. It will be removed in `natsort`
-        version 6.0.0.
 
     Notes
     -----
@@ -192,19 +187,6 @@ class _NSEnum(collections.namedtuple("_NSEnum", enum_fields.keys())):
         True
 
     """
-
-    _msg = "ns.{0} is deprecated and will be removed in natsort 6.0.0, "
-    _msg += "this option does nothing so please simply remove its use."
-
-    @property
-    def V(self):  # noqa: N802
-        warnings.warn(self._msg.format("V"), DeprecationWarning, stacklevel=2)
-        return 0
-
-    @property
-    def VERSION(self):  # noqa: N802
-        warnings.warn(self._msg.format("VERSION"), DeprecationWarning, stacklevel=2)
-        return 0
 
 
 # Here is where the instance of the ns enum that will be exported is created.

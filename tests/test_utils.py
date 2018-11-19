@@ -73,12 +73,6 @@ def test_ns_enum_values_and_aliases(alg, value_or_alias):
     assert alg == value_or_alias
 
 
-@pytest.mark.parametrize("alg", ["V", "VERSION"])
-def test_deprecated_ns_enum_values_and_aliases_produce_warning(alg):
-    with pytest.warns(DeprecationWarning, match="please simply remove"):
-        assert getattr(ns, alg) == 0
-
-
 def test_chain_functions_is_a_no_op_if_no_functions_are_given():
     x = 2345
     assert utils.chain_functions([])(x) is x
