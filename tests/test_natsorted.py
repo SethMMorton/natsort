@@ -8,7 +8,6 @@ from operator import itemgetter
 
 import pytest
 from natsort import as_utf8, natsorted, ns
-from natsort.compat.py23 import PY_VERSION
 from pytest import raises
 
 
@@ -100,7 +99,6 @@ def test_natsorted_handles_nan(alg, expected, slc):
     assert natsorted(given, alg=alg)[slc] == expected[slc]
 
 
-@pytest.mark.skipif(PY_VERSION < 3.0, reason="error is only raised on Python 3")
 def test_natsorted_with_mixed_bytes_and_str_input_raises_type_error():
     with raises(TypeError, match="bytes"):
         natsorted(["ä", b"b"])

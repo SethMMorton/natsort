@@ -5,7 +5,6 @@ Test the Unicode numbers module.
 
 import unicodedata
 
-from natsort.compat.py23 import py23_range, py23_unichr
 from natsort.unicode_numbers import (
     decimal_chars,
     decimals,
@@ -39,9 +38,9 @@ def test_numeric_chars_contains_all_valid_unicode_numeric_and_digit_characters()
     set_numeric_chars = set(numeric_chars)
     set_digit_chars = set(digit_chars)
     set_decimal_chars = set(decimal_chars)
-    for i in py23_range(0X110000):
+    for i in range(0X110000):
         try:
-            a = py23_unichr(i)
+            a = chr(i)
         except ValueError:
             break
         if a in "0123456789":

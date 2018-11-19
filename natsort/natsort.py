@@ -6,13 +6,11 @@ natsort public API.
 The majority of the "work" is defined in utils.py.
 """
 
-import sys
 from functools import partial
 from operator import itemgetter
 
 import natsort.compat.locale
 from natsort import utils
-from natsort.compat.py23 import py23_str
 from natsort.ns_enum import NS_DUMB, ns
 
 
@@ -153,7 +151,7 @@ def natsort_keygen(key=None, alg=ns.DEFAULT):
         ns.DEFAULT | alg
     except TypeError:
         msg = "natsort_keygen: 'alg' argument must be from the enum 'ns'"
-        raise ValueError(msg + ", got {}".format(py23_str(alg)))
+        raise ValueError(msg + ", got {}".format(str(alg)))
 
     # Add the NS_DUMB option if the locale library is broken.
     if alg & ns.LOCALEALPHA and natsort.compat.locale.dumb_sort():

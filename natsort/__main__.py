@@ -3,7 +3,6 @@
 import sys
 
 import natsort
-from natsort.compat.py23 import py23_str
 from natsort.utils import regex_chooser
 
 
@@ -190,7 +189,7 @@ def check_filters(filters):
     try:
         return [range_check(f[0], f[1]) for f in filters]
     except ValueError as err:
-        raise ValueError("Error in --filter: " + py23_str(err))
+        raise ValueError("Error in --filter: " + str(err))
 
 
 def keep_entry_range(entry, lows, highs, converter, regex):
@@ -309,6 +308,6 @@ if __name__ == "__main__":
     try:
         main()
     except ValueError as a:
-        sys.exit(py23_str(a))
+        sys.exit(str(a))
     except KeyboardInterrupt:
         sys.exit(1)

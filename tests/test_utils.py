@@ -11,12 +11,11 @@ import pytest
 from hypothesis import given
 from hypothesis.strategies import integers, lists, sampled_from, text
 from natsort import utils
-from natsort.compat.py23 import py23_cmp, py23_int, py23_lower, py23_str
 from natsort.ns_enum import ns
 
 
 def test_do_decoding_decodes_bytes_string_to_unicode():
-    assert type(utils.do_decoding(b"bytes", "ascii")) is py23_str
+    assert type(utils.do_decoding(b"bytes", "ascii")) is str
     assert utils.do_decoding(b"bytes", "ascii") == "bytes"
     assert utils.do_decoding(b"bytes", "ascii") == b"bytes".decode("ascii")
 
@@ -100,7 +99,7 @@ def test_groupletters_returns_letters_with_lowercase_transform_of_letter_example
 @given(text().filter(bool))
 def test_groupletters_returns_letters_with_lowercase_transform_of_letter(x):
     assert utils.groupletters(x) == "".join(
-        chain.from_iterable([py23_lower(y), y] for y in x)
+        chain.from_iterable([y.casefold(), y] for y in x)
     )
 
 
@@ -124,8 +123,8 @@ def test_sep_inserter_inserts_separator_between_two_numbers(x):
     result = list(utils.sep_inserter(iter(x), ""))
     for i, pos in enumerate(result[1:-1], 1):
         if pos == "":
-            assert isinstance(result[i - 1], py23_int)
-            assert isinstance(result[i + 1], py23_int)
+            assert isinstance(result[i - 1], int)
+            assert isinstance(result[i + 1], int)
 
 
 def test_path_splitter_splits_path_string_by_separator_example():
@@ -138,7 +137,7 @@ def test_path_splitter_splits_path_string_by_separator_example():
 
 @given(lists(sampled_from(string.ascii_letters), min_size=2).filter(all))
 def test_path_splitter_splits_path_string_by_separator(x):
-    z = py23_str(pathlib.Path(*x))
+    z = str(pathlib.Path(*x))
     assert tuple(utils.path_splitter(z)) == tuple(pathlib.Path(z).parts)
 
 
@@ -150,16 +149,9 @@ def test_path_splitter_splits_path_string_by_separator_and_removes_extension_exa
 
 @given(lists(sampled_from(string.ascii_letters), min_size=3).filter(all))
 def test_path_splitter_splits_path_string_by_separator_and_removes_extension(x):
-    z = py23_str(pathlib.Path(*x[:-2])) + "." + x[-1]
+    z = str(pathlib.Path(*x[:-2])) + "." + x[-1]
     y = tuple(pathlib.Path(z).parts)
     assert tuple(utils.path_splitter(z)) == y[:-1] + (
         pathlib.Path(z).stem,
         pathlib.Path(z).suffix,
     )
-
-
-@given(integers())
-def test_py23_cmp(x):
-    assert py23_cmp(x, x) == 0
-    assert py23_cmp(x, x + 1) < 0
-    assert py23_cmp(x, x - 1) > 0

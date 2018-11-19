@@ -9,10 +9,6 @@ from math import isnan
 from hypothesis import given
 from hypothesis.strategies import floats, integers, text
 from natsort.compat.fake_fastnumbers import fast_float, fast_int
-from natsort.compat.py23 import PY_VERSION
-
-if PY_VERSION >= 3:
-    long = int
 
 
 def is_float(x):
@@ -38,7 +34,7 @@ def is_int(x):
         return x.is_integer()
     except AttributeError:
         try:
-            long(x)
+            int(x)
         except ValueError:
             try:
                 unicodedata.digit(x)

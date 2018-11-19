@@ -48,18 +48,8 @@ from unicodedata import normalize
 
 from natsort.compat.fastnumbers import fast_float, fast_int
 from natsort.compat.locale import get_decimal_point, get_strxfrm, get_thousands_sep
-from natsort.compat.py23 import (
-    NEWPY,
-    PY_VERSION,
-    py23_filter,
-    py23_map,
-    py23_str,
-)
 from natsort.ns_enum import NS_DUMB, ns
 from natsort.unicode_numbers import digits_no_decimals, numeric_no_decimals
-
-if PY_VERSION >= 3:
-    long = int
 
 
 class NumericalRegularExpressions(object):
@@ -168,11 +158,7 @@ def _normalize_input_factory(alg):
 
     """
     normalization_form = "NFKD" if alg & ns.COMPATIBILITYNORMALIZE else "NFD"
-    wrapped = partial(normalize, normalization_form)
-    if NEWPY:
-        return wrapped
-    else:
-        return lambda x, _f=wrapped: _f(x) if isinstance(x, py23_str) else x
+    return partial(normalize, normalization_form)
 
 
 def natsort_key(val, key, string_func, bytes_func, num_func):
@@ -382,8 +368,8 @@ def parse_string_factory(
         x = normalize_input(x)
         x, original = input_transform(x), original_func(x)
         x = splitter(x)  # Split string into components.
-        x = py23_filter(None, x)  # Remove empty strings.
-        x = py23_map(component_transform, x)  # Apply transform on components.
+        x = filter(None, x)  # Remove empty strings.
+        x = map(component_transform, x)  # Apply transform on components.
         x = sep_inserter(x, sep)  # Insert '' between numbers.
         return final_transform(x, original)  # Apply the final transform.
 
@@ -414,7 +400,7 @@ def parse_path_factory(str_split):
     parse_string_factory
 
     """
-    return lambda x: tuple(py23_map(str_split, path_splitter(x)))
+    return lambda x: tuple(map(str_split, path_splitter(x)))
 
 
 def sep_inserter(iterable, sep):
@@ -438,7 +424,7 @@ def sep_inserter(iterable, sep):
         # Get the first element. A StopIteration indicates an empty iterable.
         # Since we are controlling the types of the input, 'type' is used
         # instead of 'isinstance' for the small speed advantage it offers.
-        types = (int, float, long)
+        types = (int, float)
         first = next(iterable)
         if type(first) in types:
             yield sep
@@ -492,10 +478,7 @@ def input_string_transform_factory(alg):
         function_chain.append(methodcaller("swapcase"))
 
     if alg & ns.IGNORECASE:
-        if NEWPY:
-            function_chain.append(methodcaller("casefold"))
-        else:
-            function_chain.append(methodcaller("lower"))
+        function_chain.append(methodcaller("casefold"))
 
     if alg & ns.LOCALENUM:
         # Create a regular expression that will remove thousands separators.
@@ -629,7 +612,7 @@ def final_data_transform_factory(alg, sep, pre_sep):
         return lambda split_val, val: tuple(split_val)
 
 
-lower_function = methodcaller("casefold" if NEWPY else "lower")
+lower_function = methodcaller("casefold")
 
 
 # noinspection PyIncorrectDocstring
