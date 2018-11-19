@@ -6,19 +6,14 @@ having to worry about if it is using PyICU or the built-in locale.
 
 # Std. lib imports.
 import sys
-from functools import cmp_to_key
-
-# Local imports.
-from natsort.compat.py23 import PY_VERSION, py23_unichr
 
 # This string should be sorted after any other byte string because
 # it contains the max unicode character repeated 20 times.
 # You would need some odd data to come after that.
 null_string = ""
-null_string_max = py23_unichr(sys.maxunicode) * 20
+null_string_max = chr(sys.maxunicode) * 20
 
-# Make the strxfrm function from strcoll on Python2
-# It can be buggy (especially on BSD-based systems),
+# strxfrm can be buggy (especially on BSD-based systems),
 # so prefer icu if available.
 try:  # noqa: C901
     import icu
@@ -55,33 +50,10 @@ try:  # noqa: C901
 
 except ImportError:
     import locale
+    from locale import strxfrm
 
-    if PY_VERSION < 3:
-        from locale import strcoll
-
-        sentinel = object()
-
-        def custom_strcoll(a, b, last=sentinel):
-            """strcoll that can handle a sentinel that is always last."""
-            if a is last:
-                return 0 if a is b else 1
-            elif b is last:  # a cannot also be sentinel b/c above logic
-                return -1
-            else:  # neither are sentinel
-                return strcoll(a, b)
-
-        strxfrm = cmp_to_key(custom_strcoll)
-        null_string_locale = strxfrm("")
-        null_string_locale_max = strxfrm(sentinel)
-    else:
-        from locale import strxfrm
-
-        null_string_locale = ""
-
-        # This string should be sorted after any other byte string because
-        # it contains the max unicode character repeated 20 times.
-        # You would need some odd data to come after that.
-        null_string_locale_max = py23_unichr(sys.maxunicode) * 20
+    null_string_locale = null_string
+    null_string_locale_max = null_string_max
 
     # On some systems, locale is broken and does not sort in the expected
     # order. We will try to detect this and compensate.
