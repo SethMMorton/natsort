@@ -1,18 +1,9 @@
 include LICENSE
-include CODE_OF_CONDUCT.md
-include CONTRIBUTING.md
-include *.sh
-include *.rst
+include CHANGELOG.rst
+include clean.sh
 include dev-requirements.txt
-include setup.py
-include setup.cfg
 include tox.ini
-include .travis.yml
-include .coveragerc
-include .gitignore
-include .bumpversion.cfg
 graft docs
 graft natsort
 graft tests
 global-exclude *.py[cod] __pycache__ *.so
-prune .github
