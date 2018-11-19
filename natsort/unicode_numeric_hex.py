@@ -1735,7 +1735,6 @@ numeric_hex = (
 # Some code that can be used to create the above list of hex numbers.
 if __name__ == "__main__":
     import unicodedata
-    from natsort.compat.py23 import range, chr
 
     hex_chars = []
     for i in range(0X110000):
