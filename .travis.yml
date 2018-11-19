@@ -6,7 +6,6 @@ cache:
   - directories:
     - $HOME/.pyenv_cache
 python:
-  - 2.7
   - 3.4
   - 3.5
   - 3.6
@@ -19,16 +18,8 @@ env: WITH_EXTRAS=""
 jobs:
   include:
 
-    # For Python 2.7 and 3.7, do some extra configurations.
+    # For Python 3.7 do some extra configurations.
     # Linux with both "icu" and "fastnumbers"
-    - python: "2.7"
-      env: WITH_EXTRAS="fast,icu"
-      addons:
-        apt:
-          packages:
-          - libicu-dev
-          - language-pack-de
-          - language-pack-en
     - python: "3.7"
       env: WITH_EXTRAS="fast,icu"
       addons:
