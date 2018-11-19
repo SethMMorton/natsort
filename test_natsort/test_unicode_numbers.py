@@ -45,7 +45,7 @@ def test_numeric_chars_contains_all_valid_unicode_numeric_and_digit_characters()
             a = py23_unichr(i)
         except ValueError:
             break
-        if a in set("0123456789"):
+        if a in "0123456789":
             continue
         if unicodedata.numeric(a, None) is not None:
             assert i in set_numeric_hex

@@ -54,4 +54,4 @@ __all__ = [
 # them to natsort's main namespace.
 with warnings.catch_warnings():
     warnings.simplefilter("ignore")
-    globals().update(dict((k, getattr(ns, k)) for k in dir(ns) if k.isupper()))
+    globals().update(ns._asdict())
