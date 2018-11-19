@@ -134,12 +134,14 @@ def test_natsorted_returns_list_in_reversed_order_with_reverse_option(float_list
 def test_natsorted_handles_filesystem_paths():
     given = [
         "/p/Folder (10)/file.tar.gz",
-        "/p/Folder/file.tar.gz",
         "/p/Folder (1)/file (1).tar.gz",
+        "/p/Folder/file.x1.9.tar.gz",
         "/p/Folder (1)/file.tar.gz",
+        "/p/Folder/file.x1.10.tar.gz",
     ]
     expected_correct = [
-        "/p/Folder/file.tar.gz",
+        "/p/Folder/file.x1.10.tar.gz",
+        "/p/Folder/file.x1.9.tar.gz",
         "/p/Folder (1)/file.tar.gz",
         "/p/Folder (1)/file (1).tar.gz",
         "/p/Folder (10)/file.tar.gz",
@@ -148,12 +150,13 @@ def test_natsorted_handles_filesystem_paths():
         "/p/Folder (1)/file (1).tar.gz",
         "/p/Folder (1)/file.tar.gz",
         "/p/Folder (10)/file.tar.gz",
-        "/p/Folder/file.tar.gz",
+        "/p/Folder/file.x1.10.tar.gz",
+        "/p/Folder/file.x1.9.tar.gz",
     ]
     # Is incorrect by default.
-    assert natsorted(given) == expected_incorrect
+    assert natsorted(given, alg=ns.FLOAT) == expected_incorrect
     # Need ns.PATH to make it correct.
-    assert natsorted(given, alg=ns.PATH) == expected_correct
+    assert natsorted(given, alg=ns.FLOAT | ns.PATH) == expected_correct
 
 
 def test_natsorted_handles_numbers_and_filesystem_paths_simultaneously():

@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 """These test the utils.py functions."""
 
+import os
 import pathlib
 import string
 from itertools import chain
@@ -128,10 +129,11 @@ def test_sep_inserter_inserts_separator_between_two_numbers(x):
 
 
 def test_path_splitter_splits_path_string_by_separator_example():
-    z = "/this/is/a/path"
-    assert tuple(utils.path_splitter(z)) == tuple(pathlib.Path(z).parts)
-    z = pathlib.Path("/this/is/a/path")
-    assert tuple(utils.path_splitter(z)) == tuple(pathlib.Path(z).parts)
+    given = "/this/is/a/path"
+    expected = (os.sep, "this", "is", "a", "path")
+    assert tuple(utils.path_splitter(given)) == tuple(expected)
+    given = pathlib.Path(given)
+    assert tuple(utils.path_splitter(given)) == tuple(expected)
 
 
 @given(lists(sampled_from(string.ascii_letters), min_size=2).filter(all))
@@ -141,12 +143,9 @@ def test_path_splitter_splits_path_string_by_separator(x):
 
 
 def test_path_splitter_splits_path_string_by_separator_and_removes_extension_example():
-    z = "/this/is/a/path/file.exe"
-    y = tuple(pathlib.Path(z).parts)
-    assert tuple(utils.path_splitter(z)) == y[:-1] + (
-        pathlib.Path(z).stem,
-        pathlib.Path(z).suffix,
-    )
+    given = "/this/is/a/path/file.x1.10.tar.gz"
+    expected = (os.sep, "this", "is", "a", "path", "file.x1.10", ".tar", ".gz")
+    assert tuple(utils.path_splitter(given)) == tuple(expected)
 
 
 @given(lists(sampled_from(string.ascii_letters), min_size=3).filter(all))

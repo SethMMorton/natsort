@@ -40,20 +40,14 @@ and thus has a slightly improved performance at runtime.
 """
 
 import re
-from collections import deque
 from functools import partial, reduce
 from itertools import chain as ichain
 from operator import methodcaller
-from os import curdir as os_curdir
-from os import pardir as os_pardir
-from os import sep as os_sep
-from os.path import split as path_split
-from os.path import splitext as path_splitext
+from pathlib import PurePath
 from unicodedata import normalize
 
 from natsort.compat.fastnumbers import fast_float, fast_int
 from natsort.compat.locale import get_decimal_point, get_strxfrm, get_thousands_sep
-from natsort.compat.pathlib import PurePath, has_pathlib
 from natsort.compat.py23 import (
     NEWPY,
     PY_VERSION,
@@ -747,44 +741,22 @@ def path_splitter(s, _d_match=re.compile(r"\.\d").match):
         ({u}'this', {u}'thing', {u}'.ext')
 
     """
-    if has_pathlib and isinstance(s, PurePath):
-        s = py23_str(s)
-    path_parts = deque()
-    p_appendleft = path_parts.appendleft
-    # Continue splitting the path from the back until we have reached
-    # '..' or '.', or until there is nothing left to split.
-    path_location = s
-    while path_location != os_curdir and path_location != os_pardir:
-        parent_path = path_location
-        path_location, child_path = path_split(parent_path)
-        if path_location == parent_path:
-            break
-        p_appendleft(child_path)
+    if not isinstance(s, PurePath):
+        s = PurePath(s)
 
-    # This last append is the base path.
-    # Only append if the string is non-empty.
-    # Make sure the proper path separator for this OS is used
-    # no matter what was actually given.
-    if path_location:
-        p_appendleft(py23_str(os_sep))
+    # Split the path into parts.
+    *path_parts, base = s.parts
 
-    # Now, split off the file extensions using a similar method to above.
-    # Continue splitting off file extensions until we reach a decimal number
-    # or there are no more extensions.
-    # We are not using built-in functionality of PathLib here because of
-    # the recursive splitting up to a decimal.
-    base = path_parts.pop()
-    base_parts = deque()
-    b_appendleft = base_parts.appendleft
-    while True:
-        front = base
-        base, ext = path_splitext(front)
-        if _d_match(ext) or not ext:
-            # Reset base to before the split if the split is invalid.
-            base = front
-            break
-        b_appendleft(ext)
-    b_appendleft(base)
+    # Now, split off the file extensions until we reach a decimal number at
+    # the beginning of the suffix or there are no more extensions.
+    suffixes = PurePath(base).suffixes
+    try:
+        digit_index = next(i for i, x in enumerate(reversed(suffixes)) if _d_match(x))
+    except StopIteration:
+        pass
+    else:
+        digit_index = len(suffixes) - digit_index
+        suffixes = suffixes[digit_index:]
 
-    # Return the split parent paths and then the split basename.
-    return ichain(path_parts, base_parts)
+    base = base.replace("".join(suffixes), "")
+    return filter(None, ichain(path_parts, [base], suffixes))
