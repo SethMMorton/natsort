@@ -1,15 +1,13 @@
+dist: xenial
+sudo: false
 language: python
 cache: pip
 
 jobs:
   include:
     - python: "2.7"
-      dist: trusty
-      sudo: false
       env: WITH_EXTRAS=""
     - python: "2.7"
-      dist: trusty
-      sudo: false
       env: WITH_EXTRAS="fast,icu"
       addons:
         apt:
@@ -18,20 +16,12 @@ jobs:
           - language-pack-de
           - language-pack-en
     - python: "3.4"
-      dist: trusty
-      sudo: false
       env: WITH_EXTRAS=""
     - python: "3.5"
-      dist: trusty
-      sudo: false
       env: WITH_EXTRAS=""
     - python: "3.6"
-      dist: trusty
-      sudo: false
       env: WITH_EXTRAS=""
     - python: "3.6"
-      dist: trusty
-      sudo: false
       env: WITH_EXTRAS="fast,icu"
       addons:
         apt:
@@ -40,13 +30,9 @@ jobs:
           - language-pack-de
           - language-pack-en
     - python: "3.7"
-      dist: xenial
-      sudo: true
       env: WITH_EXTRAS=""
     - stage: code-quality
       python: "3.6"
-      dist: trusty
-      sudo: false
       install: pip install flake8 flake8-import-order flake8-bugbear pep8-naming
       script: flake8
 
