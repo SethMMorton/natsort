@@ -14,8 +14,8 @@ Simple yet flexible natural sorting in Python.
       - `fastnumbers <https://pypi.org/project/fastnumbers>`_ >= 2.0.0
       - `PyICU <https://pypi.org/project/PyICU>`_ >= 1.0.0
 
-**NOTE**: Please see the `Deprecation Schedule`_ section for changes in the upcoming
-:mod:`natsort` version 6.0.0 (early 2019) and then version 7.0.0.
+**NOTE**: Please see the `Deprecation Schedule`_ section for changes in
+:mod:`natsort` version 6.0.0 and in the upcoming version 7.0.0.
 
 :mod:`natsort` is a general utility for sorting lists *naturally*; the definition
 of "naturally" is not well-defined, but the most common definition is that numbers
@@ -420,10 +420,20 @@ which to use ``tox``, you can do the following:
 Deprecation Schedule
 --------------------
 
+Dropping Python 2.7 Support
++++++++++++++++++++++++++++
+
+:mod:`natsort` version 7.0.0 will drop support for Python 2.7.
+
+The version 6.X branch will remain as a "long term support" branch where bug fixes
+are applied so that users who cannot update from Python 2.7 will not be forced to
+use a buggy :mod:`natsort` version. Once version 7.0.0 is released, new features
+will not be added to version 6.X, only bug fixes.
+
 Deprecated APIs
 +++++++++++++++
 
-In :mod:`natsort` version 6.0.0, the following APIs and functions will be removed
+In :mod:`natsort` version 6.0.0, the following APIs and functions were removed
 
  - ``number_type`` keyword argument (deprecated since 3.4.0)
  - ``signed`` keyword argument (deprecated since 3.4.0)
@@ -436,7 +446,7 @@ In :mod:`natsort` version 6.0.0, the following APIs and functions will be remove
  - :func:`~natsort.versorted` (discouraged since version 4.0.0, officially deprecated since version 5.5.0)
  - :func:`~natsort.index_versorted` (discouraged since version 4.0.0, officially deprecated since version 5.5.0)
 
-If you want to determine if you are using any of the deprecated APIs, run your
+In general, if you want to determine if you are using deprecated APIs you can run your
 code with the following flag
 
 .. code-block:: console
@@ -447,23 +457,13 @@ By default :exc:`DeprecationWarnings` are not shown, but this will cause them to
 Alternatively, you can just set the environment variable ``PYTHONWARNINGS`` to
 "default::DeprecationWarning" and then run your code.
 
-Droping Pipenv for Development
+Dropped Pipenv for Development
 ++++++++++++++++++++++++++++++
 
-:mod:`natsort` version 6.0.0 will not use `Pipenv <https://pipenv.readthedocs.io/en/latest/>`_
+:mod:`natsort` version 6.0.0 no longer uses `Pipenv <https://pipenv.readthedocs.io/en/latest/>`_
 to install development dependencies.
 
-Dropping Python 2.6 and 3.3 Support
-+++++++++++++++++++++++++++++++++++
+Dropped Python 2.6 and 3.3 Support
+++++++++++++++++++++++++++++++++++
 
-:mod:`natsort` version 6.0.0 will drop support for Python 2.6 and Python 3.3.
-
-Dropping Python 2.7 Support
-+++++++++++++++++++++++++++
-
-:mod:`natsort` version 7.0.0 will drop support for Python 2.7.
-
-The version 6.X branch will remain as a "long term support" branch where bug fixes
-are applied so that users who cannot update from Python 2.7 will not be forced to
-use a buggy :mod:`natsort` version. Once version 7.0.0 is released, new features
-will not be added to version 6.X, only bug fixes.
+:mod:`natsort` version 6.0.0 dropped support for Python 2.6 and Python 3.3.
