@@ -1,3 +1,12 @@
+XX-XX-2019 v. X.X.X
++++++++++++++++++++
+
+  - Drop support for Python 2.6 and 3.3 (thanks @jdufresne) (issue #70)
+  - Remove deprecated APIs (kwargs number_type, signed, exp, as_path, py3_safe; enums ns.TYPESAFE, ns.DIGIT, ns.VERSION; functions versorted, index_versorted) (issue #81)
+  - Remove pipenv as a dependency for building (issue #86)
+  - Simply Travis-CI configuration (thanks @jdufresne) (issue #88)
+  - Fix README rendering in PyPI (thanks @altendky) (issue #89)
+
 11-18-2018 v. 5.5.0
 +++++++++++++++++++
 
