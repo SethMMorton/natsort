@@ -33,8 +33,12 @@ jobs:
       env: WITH_EXTRAS=""
     - stage: code-quality
       python: "3.6"
-      install: pip install flake8 flake8-import-order flake8-bugbear pep8-naming
-      script: flake8
+      install: pip install flake8 flake8-import-order flake8-bugbear pep8-naming twine check-manifest
+      script:
+      - flake8
+      - check-manifest --ignore ".github*,*.md,.coveragerc"
+      - python setup.py sdist
+      - twine check dist/*
 
 install:
 - pip install -U pip
