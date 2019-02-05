@@ -238,4 +238,4 @@ class _NSEnum(collections.namedtuple("_NSEnum", enum_fields.keys())):
 ns = _NSEnum(*enum_fields.values())
 
 # The below is private for internal use only.
-ns_DUMB = 1 << 31
+NS_DUMB = 1 << 31

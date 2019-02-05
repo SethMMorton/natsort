@@ -9,7 +9,7 @@ from hypothesis import given
 from hypothesis.strategies import floats, integers, lists, text
 from natsort.compat.fastnumbers import fast_float
 from natsort.compat.py23 import py23_str
-from natsort.ns_enum import ns, ns_DUMB
+from natsort.ns_enum import NS_DUMB, ns
 from natsort.utils import NumericalRegularExpressions as NumRegex
 from natsort.utils import parse_string_factory
 
@@ -62,7 +62,7 @@ def test_parse_string_factory_raises_type_error_if_given_number(x, parse_string_
     [
         (ns.DEFAULT, lambda x: x.upper()),
         (ns.LOCALE, lambda x: x.upper()),
-        (ns.LOCALE | ns_DUMB, lambda x: x),  # This changes the "original" handling.
+        (ns.LOCALE | NS_DUMB, lambda x: x),  # This changes the "original" handling.
     ],
     indirect=["parse_string_func"],
 )

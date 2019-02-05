@@ -10,7 +10,7 @@ from hypothesis.strategies import floats, integers, text
 from natsort.compat.fastnumbers import fast_float, fast_int
 from natsort.compat.locale import get_strxfrm
 from natsort.compat.py23 import py23_range, py23_str, py23_unichr
-from natsort.ns_enum import ns, ns_DUMB
+from natsort.ns_enum import NS_DUMB, ns
 from natsort.utils import groupletters, string_component_transform_factory
 
 # There are some unicode values that are known failures with the builtin locale
@@ -49,8 +49,8 @@ def no_null(x):
             partial(fast_int, key=lambda x: get_strxfrm()(groupletters(x))),
         ),
         (
-            ns_DUMB | ns.LOCALE,
-            partial(fast_int, key=lambda x: get_strxfrm()(groupletters(x))),
+                NS_DUMB | ns.LOCALE,
+                partial(fast_int, key=lambda x: get_strxfrm()(groupletters(x))),
         ),
         (
             ns.GROUPLETTERS | ns.LOCALE | ns.FLOAT | ns.NANLAST,

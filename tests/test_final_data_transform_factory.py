@@ -6,7 +6,7 @@ import pytest
 from hypothesis import example, given
 from hypothesis.strategies import floats, integers, text
 from natsort.compat.py23 import py23_str
-from natsort.ns_enum import ns, ns_DUMB
+from natsort.ns_enum import NS_DUMB, ns
 from natsort.utils import final_data_transform_factory
 
 
@@ -25,11 +25,11 @@ def test_final_data_transform_factory_default(x, y, alg):
     "alg, func",
     [
         (ns.UNGROUPLETTERS | ns.LOCALE, lambda x: x),
-        (ns.LOCALE | ns.UNGROUPLETTERS | ns_DUMB, lambda x: x),
+        (ns.LOCALE | ns.UNGROUPLETTERS | NS_DUMB, lambda x: x),
         (ns.LOCALE | ns.UNGROUPLETTERS | ns.LOWERCASEFIRST, lambda x: x),
         (
-            ns.LOCALE | ns.UNGROUPLETTERS | ns_DUMB | ns.LOWERCASEFIRST,
-            lambda x: x.swapcase(),
+                ns.LOCALE | ns.UNGROUPLETTERS | NS_DUMB | ns.LOWERCASEFIRST,
+                lambda x: x.swapcase(),
         ),
     ],
 )

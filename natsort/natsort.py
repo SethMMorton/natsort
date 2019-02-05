@@ -15,7 +15,7 @@ from warnings import warn
 import natsort.compat.locale
 from natsort import utils
 from natsort.compat.py23 import py23_cmp, py23_str, u_format
-from natsort.ns_enum import ns, ns_DUMB
+from natsort.ns_enum import NS_DUMB, ns
 
 
 @u_format
@@ -162,9 +162,9 @@ def natsort_keygen(key=None, alg=ns.DEFAULT, **_kwargs):
         msg = "natsort_keygen: 'alg' argument must be from the enum 'ns'"
         raise ValueError(msg + ", got {}".format(py23_str(alg)))
 
-    # Add the _DUMB option if the locale library is broken.
+    # Add the NS_DUMB option if the locale library is broken.
     if alg & ns.LOCALEALPHA and natsort.compat.locale.dumb_sort():
-        alg |= ns_DUMB
+        alg |= NS_DUMB
 
     # Set some variables that will be passed to the factory functions
     if alg & ns.NUMAFTER:
@@ -691,7 +691,7 @@ if float(sys.version[:3]) < 3:
 
             # Add the _DUMB option if the locale library is broken.
             if alg & ns.LOCALEALPHA and natsort.compat.locale.dumb_sort():
-                alg |= ns_DUMB
+                alg |= NS_DUMB
 
             if alg not in cls.cached_keys:
                 cls.cached_keys[alg] = natsort_keygen(alg=alg)

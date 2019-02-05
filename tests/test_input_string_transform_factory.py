@@ -6,7 +6,7 @@ import pytest
 from hypothesis import example, given
 from hypothesis.strategies import integers, text
 from natsort.compat.py23 import NEWPY
-from natsort.ns_enum import ns, ns_DUMB
+from natsort.ns_enum import NS_DUMB, ns
 from natsort.utils import input_string_transform_factory
 
 
@@ -39,9 +39,9 @@ def test_input_string_transform_factory_is_no_op_for_no_alg_options(x):
     "alg, example_func",
     [
         (ns.IGNORECASE, lower),
-        (ns_DUMB, lambda x: x.swapcase()),
+        (NS_DUMB, lambda x: x.swapcase()),
         (ns.LOWERCASEFIRST, lambda x: x.swapcase()),
-        (ns_DUMB | ns.LOWERCASEFIRST, lambda x: x),  # No-op
+        (NS_DUMB | ns.LOWERCASEFIRST, lambda x: x),  # No-op
         (ns.IGNORECASE | ns.LOWERCASEFIRST, lambda x: lower(x.swapcase())),
     ],
 )
