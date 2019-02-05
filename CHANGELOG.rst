@@ -1,4 +1,4 @@
-XX-XX-2019 v. X.X.X
+XX-XX-XXXX v. X.X.X
 +++++++++++++++++++
 
   - Drop support for Python 2.6 and 3.3 (thanks @jdufresne) (issue #70)
