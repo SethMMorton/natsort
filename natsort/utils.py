@@ -50,7 +50,6 @@ from os import pardir as os_pardir
 from os.path import split as path_split
 from os.path import splitext as path_splitext
 from unicodedata import normalize
-from warnings import warn
 
 from natsort.compat.fastnumbers import fast_float, fast_int
 from natsort.compat.locale import get_decimal_point, get_strxfrm, get_thousands_sep
@@ -787,43 +786,3 @@ def path_splitter(s, _d_match=re.compile(r"\.\d").match):
 
     # Return the split parent paths and then the split basename.
     return ichain(path_parts, base_parts)
-
-
-def args_to_enum(**kwargs):
-    """
-    A function to convert input booleans to an enum-type argument.
-
-    For internal use only - will be deprecated in a future release.
-    """
-    alg = 0
-    keys = ("number_type", "signed", "exp", "as_path", "py3_safe")
-    if any(x not in keys for x in kwargs):
-        x = set(kwargs) - set(keys)
-        raise TypeError("Invalid argument(s): " + ", ".join(x))
-    if "number_type" in kwargs and kwargs["number_type"] is not int:
-        msg = "The 'number_type' argument is deprecated as of 3.5.0 "
-        msg += "and will be removed in 6.0.0, "
-        msg += "please use 'alg=ns.FLOAT', 'alg=ns.INT', or 'alg=ns.VERSION'"
-        warn(msg, DeprecationWarning, stacklevel=3)
-        alg |= ns.FLOAT * bool(kwargs["number_type"] is float)
-        alg |= ns.INT * bool(kwargs["number_type"] in (int, None))
-        alg |= ns.SIGNED * (kwargs["number_type"] not in (float, None))
-    if "signed" in kwargs and kwargs["signed"] is not None:
-        msg = "The 'signed' argument is deprecated as of 3.5.0 "
-        msg += "and will be removed in 6.0.0, "
-        msg += "please use 'alg=ns.SIGNED'."
-        warn(msg, DeprecationWarning, stacklevel=3)
-        alg |= ns.SIGNED * bool(kwargs["signed"])
-    if "exp" in kwargs and kwargs["exp"] is not None:
-        msg = "The 'exp' argument is deprecated as of 3.5.0 "
-        msg += "and will be removed in 6.0.0, "
-        msg += "please use 'alg=ns.NOEXP'."
-        warn(msg, DeprecationWarning, stacklevel=3)
-        alg |= ns.NOEXP * (not kwargs["exp"])
-    if "as_path" in kwargs and kwargs["as_path"] is not None:
-        msg = "The 'as_path' argument is deprecated as of 3.5.0 "
-        msg += "and will be removed in 6.0.0, "
-        msg += "please use 'alg=ns.PATH'."
-        warn(msg, DeprecationWarning, stacklevel=3)
-        alg |= ns.PATH * kwargs["as_path"]
-    return alg

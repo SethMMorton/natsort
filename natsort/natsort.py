@@ -10,7 +10,6 @@ from __future__ import absolute_import, division, print_function, unicode_litera
 import sys
 from functools import partial
 from operator import itemgetter
-from warnings import warn
 
 import natsort.compat.locale
 from natsort import utils
@@ -109,7 +108,7 @@ def as_utf8(s):
 
 
 @u_format
-def natsort_keygen(key=None, alg=ns.DEFAULT, **_kwargs):
+def natsort_keygen(key=None, alg=ns.DEFAULT):
     """
     Generate a key to sort strings and numbers naturally.
 
@@ -155,9 +154,8 @@ def natsort_keygen(key=None, alg=ns.DEFAULT, **_kwargs):
         [{u}'num-3', {u}'num2', {u}'num5.10', {u}'num5.3']
 
     """
-    # Transform old arguments to the ns enum.
     try:
-        alg = utils.args_to_enum(**_kwargs) | alg
+        ns.DEFAULT | alg
     except TypeError:
         msg = "natsort_keygen: 'alg' argument must be from the enum 'ns'"
         raise ValueError(msg + ", got {}".format(py23_str(alg)))
@@ -221,7 +219,7 @@ natsort_keygen
 
 
 @u_format
-def natsorted(seq, key=None, reverse=False, alg=ns.DEFAULT, **_kwargs):
+def natsorted(seq, key=None, reverse=False, alg=ns.DEFAULT):
     """
     Sorts an iterable naturally.
 
@@ -265,27 +263,8 @@ def natsorted(seq, key=None, reverse=False, alg=ns.DEFAULT, **_kwargs):
         [{u}'num2', {u}'num3', {u}'num5']
 
     """
-    key = natsort_keygen(key, alg, **_kwargs)
+    key = natsort_keygen(key, alg)
     return sorted(seq, reverse=reverse, key=key)
-
-
-@u_format
-def versorted(seq, key=None, reverse=False, alg=ns.DEFAULT, **_kwargs):
-    """
-    Identical to :func:`natsorted`.
-
-    This function is deprecated as of :mod:`natsort` 5.5.0, and will be
-    removed in 6.0.0.
-
-    See Also
-    --------
-    natsorted
-
-    """
-    msg = "versorted is deprecated as of 5.5.0 and will be removed in 6.0.0, "
-    msg += "please use natsorted instead."
-    warn(msg, DeprecationWarning, stacklevel=2)
-    return natsorted(seq, key, reverse, alg, **_kwargs)
 
 
 @u_format
@@ -396,7 +375,7 @@ def realsorted(seq, key=None, reverse=False, alg=ns.DEFAULT):
 
 
 @u_format
-def index_natsorted(seq, key=None, reverse=False, alg=ns.DEFAULT, **_kwargs):
+def index_natsorted(seq, key=None, reverse=False, alg=ns.DEFAULT):
     """
     Determine the list of the indexes used to sort the input sequence.
 
@@ -461,27 +440,8 @@ def index_natsorted(seq, key=None, reverse=False, alg=ns.DEFAULT, **_kwargs):
 
     # Pair the index and sequence together, then sort by element
     index_seq_pair = [[x, y] for x, y in enumerate(seq)]
-    index_seq_pair.sort(reverse=reverse, key=natsort_keygen(newkey, alg, **_kwargs))
+    index_seq_pair.sort(reverse=reverse, key=natsort_keygen(newkey, alg))
     return [x for x, _ in index_seq_pair]
-
-
-@u_format
-def index_versorted(seq, key=None, reverse=False, alg=ns.DEFAULT, **_kwargs):
-    """
-    Identical to :func:`index_natsorted`.
-
-    This function is deprecated as of :mod:`natsort` 5.5.0, and will be
-    removed in 6.0.0.
-
-    See Also
-    --------
-    index_natsorted
-
-    """
-    msg = "index_versorted is deprecated as of 5.5.0 and will be removed in 6.0.0, "
-    msg += "please use index_natsorted instead."
-    warn(msg, DeprecationWarning, stacklevel=2)
-    return index_natsorted(seq, key, reverse, alg, **_kwargs)
 
 
 @u_format
@@ -682,11 +642,11 @@ if float(sys.version[:3]) < 3:
 
         cached_keys = {}
 
-        def __new__(cls, x, y, alg=ns.DEFAULT, *args, **kwargs):
+        def __new__(cls, x, y, alg=ns.DEFAULT):
             try:
-                alg = utils.args_to_enum(**kwargs) | alg
+                ns.DEFAULT | alg
             except TypeError:
-                msg = "natsort_keygen: 'alg' argument must be " "from the enum 'ns'"
+                msg = "natsort_keygen: 'alg' argument must be from the enum 'ns'"
                 raise ValueError(msg + ", got {}".format(py23_str(alg)))
 
             # Add the _DUMB option if the locale library is broken.

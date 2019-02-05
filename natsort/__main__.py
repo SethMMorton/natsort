@@ -78,13 +78,12 @@ def main(*arguments):
         "--number-type",
         "--number_type",
         dest="number_type",
-        choices=("digit", "int", "float", "version", "ver", "real", "f", "i", "r", "d"),
+        choices=("int", "float", "real", "f", "i", "r"),
         default="int",
         help='Choose the type of number to search for. "float" will search '
         'for floating-point numbers.  "int" will only search for '
-        'integers. "digit", "version", and "ver" are synonyms for "int".'
-        '"real" is a shortcut for "float" with --sign. '
-        '"i" and "d" are synonyms for "int", "f" is a synonym for '
+        'integers. "real" is a shortcut for "float" with --sign. '
+        '"i" is a synonym for "int", "f" is a synonym for '
         '"float", and "r" is a synonym for "real".'
         "The default is %(default)s.",
     )
