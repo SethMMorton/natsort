@@ -1,4 +1,4 @@
-XX-XX-XXXX v. X.X.X
+02-04-2019 v. 6.0.0
 +++++++++++++++++++
 
   - Drop support for Python 2.6 and 3.3 (thanks @jdufresne) (issue #70)

@@ -57,7 +57,7 @@ copyright = u'2014, Seth M. Morton'
 # built documents.
 #
 # The full version, including alpha/beta/rc tags.
-release = '5.5.0'
+release = '6.0.0'
 # The short X.Y version.
 version = '.'.join(release.split('.')[0:2])
 
