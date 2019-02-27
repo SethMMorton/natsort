@@ -12,8 +12,12 @@ python:
 # By default do not build "extras". Builds with "extras" will be included manually below.
 env: WITH_EXTRAS=""
 
+# Explicitly include other jobs/configurations not defined by the above settings
 jobs:
   include:
+
+    # For Python 2.7 and 3.7, do some extra configurations.
+    # Linux with both "icu" and "fastnumbers"
     - python: "2.7"
       env: WITH_EXTRAS="fast,icu"
       addons:
@@ -30,6 +34,9 @@ jobs:
           - libicu-dev
           - language-pack-de
           - language-pack-en
+
+    # This "code-quality" stage does static analysis and formatting checks.
+    # Platform- and Python-version-independent.
     - stage: code-quality
       python: "3.6"
       install: pip install flake8 flake8-import-order flake8-bugbear pep8-naming twine check-manifest
@@ -38,6 +45,8 @@ jobs:
       - check-manifest --ignore ".github*,*.md,.coveragerc"
       - python setup.py sdist
       - twine check dist/*
+
+# The remainder of the code should be the same no matter the configuration/OS
 
 install:
 - pip install -U pip
