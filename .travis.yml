@@ -2,12 +2,19 @@ dist: xenial
 sudo: false
 language: python
 cache: pip
+python:
+  - 2.7
+  - 3.4
+  - 3.5
+  - 3.6
+  - 3.7
+
+# By default do not build "extras". Builds with "extras" will be included manually below.
+env: WITH_EXTRAS=""
 
 jobs:
   include:
     - python: "2.7"
-      env: WITH_EXTRAS=""
-    - python: "2.7"
       env: WITH_EXTRAS="fast,icu"
       addons:
         apt:
@@ -15,12 +22,6 @@ jobs:
           - libicu-dev
           - language-pack-de
           - language-pack-en
-    - python: "3.4"
-      env: WITH_EXTRAS=""
-    - python: "3.5"
-      env: WITH_EXTRAS=""
-    - python: "3.6"
-      env: WITH_EXTRAS=""
     - python: "3.6"
       env: WITH_EXTRAS="fast,icu"
       addons:
@@ -29,8 +30,6 @@ jobs:
           - libicu-dev
           - language-pack-de
           - language-pack-en
-    - python: "3.7"
-      env: WITH_EXTRAS=""
     - stage: code-quality
       python: "3.6"
       install: pip install flake8 flake8-import-order flake8-bugbear pep8-naming twine check-manifest
