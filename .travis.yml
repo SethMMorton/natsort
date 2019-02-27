@@ -1,7 +1,10 @@
 dist: xenial
 sudo: false
 language: python
-cache: pip
+cache:
+  - pip
+  - directories:
+    - $HOME/.pyenv_cache
 python:
   - 2.7
   - 3.4
@@ -35,6 +38,20 @@ jobs:
           - language-pack-de
           - language-pack-en
 
+    # For MacOS, only run Python 3.7 without "icu" because native locale
+    # handling is poor on MacOS and should be validated.
+    - python: "3.7"
+      language: sh
+      os: osx
+      env:
+        - WITH_EXTRAS=""
+        - TOXENV=py37
+        - PYENV_VERSION="3.7.1"
+      before_install:
+        - export PYENV_VERSION_STRING="Python ${PYENV_VERSION}"
+        - wget https://github.com/praekeltfoundation/travis-pyenv/releases/download/0.4.0/setup-pyenv.sh
+        - source setup-pyenv.sh
+
     # This "code-quality" stage does static analysis and formatting checks.
     # Platform- and Python-version-independent.
     - stage: code-quality
@@ -50,7 +67,7 @@ jobs:
 
 install:
 - pip install -U pip
-- pip install tox-travis codacy-coverage codecov
+- pip install tox tox-travis codacy-coverage codecov
 
 script:
 - tox
