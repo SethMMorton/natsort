@@ -38,8 +38,7 @@ jobs:
           - language-pack-de
           - language-pack-en
 
-    # For MacOS, only run Python 3.7 without "icu" because native locale
-    # handling is poor on MacOS and should be validated.
+    # For MacOS and Windows, only run Python 3.7 without "icu" to test native locales
     - python: "3.7"
       language: sh
       os: osx
@@ -51,6 +50,19 @@ jobs:
         - export PYENV_VERSION_STRING="Python ${PYENV_VERSION}"
         - wget https://github.com/praekeltfoundation/travis-pyenv/releases/download/0.4.0/setup-pyenv.sh
         - source setup-pyenv.sh
+    - python: "3.7"
+      language: cpp
+      os: windows
+      filter_secrets: false
+      env:
+        - WITH_EXTRAS=""
+        - TOXENV=py37
+      before_install:
+        - choco install python --version 3.7.1
+        - export PATH="/c/Python37:/c/Python37/Scripts:$PATH"
+      install:
+        - py -m pip install -U pip
+        - py -m pip install tox tox-travis codacy-coverage codecov
 
     # This "code-quality" stage does static analysis and formatting checks.
     # Platform- and Python-version-independent.
