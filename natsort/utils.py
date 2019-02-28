@@ -47,6 +47,7 @@ from itertools import chain as ichain
 from operator import methodcaller
 from os import curdir as os_curdir
 from os import pardir as os_pardir
+from os import sep as os_sep
 from os.path import split as path_split
 from os.path import splitext as path_splitext
 from unicodedata import normalize
@@ -743,8 +744,8 @@ def path_splitter(s, _d_match=re.compile(r"\.\d").match):
     Examples
     --------
 
-        >>> tuple(path_splitter("/this/thing.ext"))
-        ({u}'/', {u}'this', {u}'thing', {u}'.ext')
+        >>> tuple(path_splitter("this/thing.ext"))
+        ({u}'this', {u}'thing', {u}'.ext')
 
     """
     if has_pathlib and isinstance(s, PurePath):
@@ -763,8 +764,10 @@ def path_splitter(s, _d_match=re.compile(r"\.\d").match):
 
     # This last append is the base path.
     # Only append if the string is non-empty.
+    # Make sure the proper path separator for this OS is used
+    # no matter what was actually given.
     if path_location:
-        p_appendleft(path_location)
+        p_appendleft(py23_str(os_sep))
 
     # Now, split off the file extensions using a similar method to above.
     # Continue splitting off file extensions until we reach a decimal number

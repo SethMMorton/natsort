@@ -1,27 +1,27 @@
 dist: xenial
 sudo: false
 language: python
-cache: pip
+cache:
+  - pip
+  - directories:
+    - $HOME/.pyenv_cache
+python:
+  - 2.7
+  - 3.4
+  - 3.5
+  - 3.6
+  - 3.7
 
+# By default do not build "extras". Builds with "extras" will be included manually below.
+env: WITH_EXTRAS=""
+
+# Explicitly include other jobs/configurations not defined by the above settings
 jobs:
   include:
+
+    # For Python 2.7 and 3.7, do some extra configurations.
+    # Linux with both "icu" and "fastnumbers"
     - python: "2.7"
-      env: WITH_EXTRAS=""
-    - python: "2.7"
-      env: WITH_EXTRAS="fast,icu"
-      addons:
-        apt:
-          packages:
-          - libicu-dev
-          - language-pack-de
-          - language-pack-en
-    - python: "3.4"
-      env: WITH_EXTRAS=""
-    - python: "3.5"
-      env: WITH_EXTRAS=""
-    - python: "3.6"
-      env: WITH_EXTRAS=""
-    - python: "3.6"
       env: WITH_EXTRAS="fast,icu"
       addons:
         apt:
@@ -30,9 +30,44 @@ jobs:
           - language-pack-de
           - language-pack-en
     - python: "3.7"
-      env: WITH_EXTRAS=""
+      env: WITH_EXTRAS="fast,icu"
+      addons:
+        apt:
+          packages:
+          - libicu-dev
+          - language-pack-de
+          - language-pack-en
+
+    # For MacOS and Windows, only run Python 3.7 without "icu" to test native locales
+    - python: "3.7"
+      language: sh
+      os: osx
+      env:
+        - WITH_EXTRAS=""
+        - TOXENV=py37
+        - PYENV_VERSION="3.7.1"
+      before_install:
+        - export PYENV_VERSION_STRING="Python ${PYENV_VERSION}"
+        - wget https://github.com/praekeltfoundation/travis-pyenv/releases/download/0.4.0/setup-pyenv.sh
+        - source setup-pyenv.sh
+    - python: "3.7"
+      language: cpp
+      os: windows
+      filter_secrets: false
+      env:
+        - WITH_EXTRAS=""
+        - TOXENV=py37
+      before_install:
+        - choco install python --version 3.7.1
+        - export PATH="/c/Python37:/c/Python37/Scripts:$PATH"
+      install:
+        - py -m pip install -U pip
+        - py -m pip install tox tox-travis codacy-coverage codecov
+
+    # This "code-quality" stage does static analysis and formatting checks.
+    # Platform- and Python-version-independent.
     - stage: code-quality
-      python: "3.6"
+      python: "3.7"
       install: pip install flake8 flake8-import-order flake8-bugbear pep8-naming twine check-manifest
       script:
       - flake8
@@ -40,9 +75,11 @@ jobs:
       - python setup.py sdist
       - twine check dist/*
 
+# The remainder of the code should be the same no matter the configuration/OS
+
 install:
 - pip install -U pip
-- pip install tox-travis codacy-coverage codecov
+- pip install tox tox-travis codacy-coverage codecov
 
 script:
 - tox
