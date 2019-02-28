@@ -5,10 +5,12 @@ See the README or the natsort homepage for more details.
 """
 from __future__ import print_function, unicode_literals
 
+import os
+
 import pytest
 from natsort import natsort_key, natsort_keygen, natsorted, ns
 from natsort.compat.locale import get_strxfrm, null_string_locale
-from natsort.compat.py23 import PY_VERSION
+from natsort.compat.py23 import PY_VERSION, py23_str
 
 
 @pytest.fixture
@@ -72,7 +74,7 @@ def test_natsort_keygen_returns_natsort_key_that_parses_input(alg, expected):
             ns.PATH | ns.GROUPLETTERS,
             (
                 (("", 6, "aA--", 5, "..", 34, "ee++", 1),),
-                (("//",), ("fFoollddeerr  ((", 1, "))"), ("fFoooo",)),
+                ((2 * py23_str(os.sep),), ("fFoollddeerr  ((", 1, "))"), ("fFoooo",)),
                 (("", 56.7),),
             ),
         ),
