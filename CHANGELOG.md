@@ -1,17 +1,18 @@
 ## 6.0.0 - 02-04-2019
 
- - Drop support for Python 2.6 and 3.3 (thanks @jdufresne) (issue #70)
+ - Drop support for Python 2.6 and 3.3 ([@jdufresne](https://github.com/jdufresne), issue #70)
  - Remove deprecated APIs (kwargs `number_type`, `signed`, `exp`, `as_path`,
-     `py3_safe`; enums `ns.TYPESAFE`, `ns.DIGIT`, `ns.VERSION`; functions `versorted`,
-     `index_versorted`) (issue #81)
+       `py3_safe`; enums `ns.TYPESAFE`, `ns.DIGIT`, `ns.VERSION`; functions `versorted`,
+       `index_versorted`) (issue #81)
  - Remove `pipenv` as a dependency for building (issue #86)
- - Simply Travis-CI configuration (thanks @jdufresne) (issue #88)
- - Fix README rendering in PyPI (thanks @altendky) (issue #89)
+ - Simply Travis-CI configuration ([@jdufresne](https://github.com/jdufresne), issue #88)
+ - Fix README rendering in PyPI ([@altendky](https://github.com/altendky), issue #89)
 
 ## 5.5.0 - 11-18-2018
 
  - Formally deprecated old or misleading APIs (issue #83)
- - Documentation, packaging, and CI cleanup (thanks @jdufresne) (issues #69, #71-#80)
+ - Documentation, packaging, and CI cleanup
+       ([@jdufresne](https://github.com/jdufresne), issues #69, #71-#80)
  - Consolidate API documentation into a single page (issue #82)
  - Add a `CHANGELOG.rst` to the top-level of the repository (issue #85)
  - Add back support for very old versions of setuptools (issue #84)
@@ -51,13 +52,13 @@
 ## 5.3.0 - 04-20-2018
 
  - Fix bug in assessing [`fastnumbers`](https://github.com/SethMMorton/fastnumbers)
-     version at import-time (thanks @hholzgra) (issues #51, #53)
+      version at import-time ([@hholzgra](https://github.com/hholzgra), issues #51, #53)
  - Add ability to consider unicode-decimal numbers as numbers (issues #52, #54)
 
 ## 5.2.0 - 02-14-2018
 
  - Add `ns.NUMAFTER` to cause numbers to be placed after non-numbers (issues #48, #49)
- - Add `natcmp` function (Python 2 only) (thanks @rinslow) (issue #47)
+ - Add `natcmp` function (Python 2 only) ([@rinslow](https://github.com/rinslow), issue #47)
 
 ## 5.1.1 - 11-11-2017
 
@@ -66,7 +67,8 @@
 
 ## 5.1.0 - 08-19-2017
 
- - Fixed `StopIteration` warning on Python 3.6+ (thanks @lykinsbd) (issues #42, #43)
+ - Fixed `StopIteration` warning on Python 3.6+
+       ([@lykinsbd](https://github.com/lykinsbd), issues #42, #43)
  - All Unicode input is now normalized (issue #44, #45)
 
 ## 5.0.3 - 04-30-2017
@@ -118,7 +120,7 @@
 ## 4.0.2 - 06-24-2015
 
  - Added back Python 2.6 and Python 3.2 compatibility. Unit testing is now
-      performed for these versions (thanks @dpetzold) (issue #29)
+      performed for these versions ([@dpetzold](https://github.com/dpetzold), issue #29)
  - Consolidated under-the-hood compatibility functionality
 
 ## 4.0.1 - 06-04-2015
