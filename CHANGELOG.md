@@ -1,4 +1,4 @@
-[Unreleased]
+Unreleased
 ---
 
 ### Changed
@@ -474,7 +474,7 @@ a pipeline by which to filter
 ### Changed
  - Sorting algorithm to support floats (including exponentials) and basic version number support
 
-[Unreleased]: https://github.com/SethMMorton/natsort/compare/6.0.0...HEAD
+<!---Comparison links-->
 [6.0.0]: https://github.com/SethMMorton/natsort/compare/5.5.0...6.0.0
 [5.5.0]: https://github.com/SethMMorton/natsort/compare/5.4.1...5.5.0
 [5.4.1]: https://github.com/SethMMorton/natsort/compare/5.4.0...5.4.1
