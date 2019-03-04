@@ -4,7 +4,7 @@ Unreleased
 ### Changed
  - Update CHANGELOG format to style from https://keepachangelog.com/
 
-[6.0.0] - 02-04-2019
+[6.0.0] - 2019-02-04
 ---
 
 ### Changed
@@ -20,7 +20,7 @@ Unreleased
    `index_versorted`) (issue #81)
  - Remove `pipenv` as a dependency for building (issue #86)
 
-[5.5.0] - 11-18-2018
+[5.5.0] - 2018-11-18
 ---
 
 ### Added
@@ -37,7 +37,7 @@ Unreleased
 ### Fixed
  - Add back support for very old versions of setuptools (issue #84)
 
-[5.4.1] - 09-09-2018
+[5.4.1] - 2018-09-09
 ---
 
 ### Changed
@@ -46,7 +46,7 @@ Unreleased
 ### Fixed
  - Error in a newly added test (issues #65, #67)
 
-[5.4.0] - 09-06-2018
+[5.4.0] - 2018-09-06
 ---
 
 ### Changed
@@ -55,7 +55,7 @@ Unreleased
  - Refactor tests (issue #66)
  - Bump allowed [`fastnumbers`](https://github.com/SethMMorton/fastnumbers) version
 
-[5.3.3] - 07-07-2018
+[5.3.3] - 2018-07-07
 ---
 
 ### Added
@@ -68,7 +68,7 @@ Unreleased
  - `StopIteration` error in the testing code
 
 
-[5.3.2] - 05-17-2018
+[5.3.2] - 2018-05-17
 ---
 
 ### Fixed
@@ -76,7 +76,7 @@ Unreleased
  - Revert layout from `src/natsort/` back to `natsort/` to make user
    testing simpler (issues #57, #58)
 
-[5.3.1] - 05-14-2018
+[5.3.1] - 2018-05-14
 ---
 
 ### Added
@@ -88,7 +88,7 @@ Unreleased
  - Move to defining dependencies with `Pipfile`
  - Development layout is now `src/natsort/` instead of `natsort/`
 
-[5.3.0] - 04-20-2018
+[5.3.0] - 2018-04-20
 ---
 
 ### Added
@@ -98,21 +98,21 @@ Unreleased
  - Bug in assessing [`fastnumbers`](https://github.com/SethMMorton/fastnumbers)
    version at import-time ([@hholzgra](https://github.com/hholzgra), issues #51, #53)
 
-[5.2.0] - 02-14-2018
+[5.2.0] - 2018-02-14
 ---
 
 ### Added
  - `ns.NUMAFTER` to cause numbers to be placed after non-numbers (issues #48, #49)
  - `natcmp` function (Python 2 only) ([@rinslow](https://github.com/rinslow), issue #47)
 
-[5.1.1] - 11-11-2017
+[5.1.1] - 2017-11-11
 ---
 
 ### Added
  - Additional unicode number support for Python 3.7
  - Information on how to install and test (issue #46)
 
-[5.1.0] - 08-19-2017
+[5.1.0] - 2017-08-19
 ---
 
 ### Changed
@@ -122,13 +122,13 @@ Unreleased
  - `StopIteration` warning on Python 3.6+
    ([@lykinsbd](https://github.com/lykinsbd), issues #42, #43)
 
-[5.0.3] - 04-30-2017
+[5.0.3] - 2017-04-30
 ---
 
  - Improved development infrastructure
  - Migrated documentation to ReadTheDocs
 
-[5.0.2] - 01-02-2017
+[5.0.2] - 2017-01-02
 ---
 
 ### Added
@@ -139,7 +139,7 @@ Unreleased
  - Renamed several internal functions and variables to improve clarity
  - Improved documentation examples
 
-[5.0.1] - 06-04-2016
+[5.0.1] - 2016-06-04
 ---
 
 ### Added
@@ -149,7 +149,7 @@ Unreleased
  - Bug with the `from natsort import *` mechanism
  - Bug with using `natsort` with `python -OO` (issues #38, #39)
 
-[5.0.0] - 05-08-2016
+[5.0.0] - 2016-05-08
 ---
 
 ### Added
@@ -172,7 +172,7 @@ Unreleased
  - `ns.TYPESAFE` option as it is now always on (due to a new
    iterator-based algorithm, the typesafe function is now cheap)
 
-[4.0.4] - 11-01-2015
+[4.0.4] - 2015-11-01
 ---
 
 ### Changed
@@ -182,13 +182,13 @@ Unreleased
 ### Fixed
  - Compatibility issues with Python 3.5
 
-[4.0.3] - 06-25-2015
+[4.0.3] - 2015-06-25
 ---
 
 ### Fixed
  - Bad install on last release (sorry guys!) (issue #30)
 
-[4.0.2] - 06-24-2015
+[4.0.2] - 2015-06-24
 ---
 
 ### Changed
@@ -198,13 +198,13 @@ Unreleased
  - Python 2.6 and Python 3.2 compatibility. Unit testing is now
    performed for these versions ([@dpetzold](https://github.com/dpetzold), issue #29)
 
-[4.0.1] - 06-04-2015
+[4.0.1] - 2015-06-04
 ---
 
 ### Added
  - Support for sorting NaN by internally converting to -Infinity or +Infinity (issue #27)
 
-[4.0.0] - 05-17-2015
+[4.0.0] - 2015-05-17
 ---
 
 ### Changed
@@ -216,7 +216,7 @@ Unreleased
    underlying locale library is broken (issue #34))
  - Greatly improved all unit tests by adding the `hypothesis` library
 
-[3.5.6] - 04-06-2015
+[3.5.6] - 2015-04-06
 ---
 
 ### Added
@@ -225,7 +225,7 @@ Unreleased
  - Convenience functions `decoder`, `as_ascii`, and `as_utf8` for
    dealing with bytes types
 
-[3.5.5] - 04-04-2015
+[3.5.5] - 2015-04-04
 ---
 
 ### Added
@@ -234,14 +234,14 @@ Unreleased
 ### Changed
  - Made explanation of when to use `TYPESAFE` more clear in the docs
 
-[3.5.4] - 04-02-2015
+[3.5.4] - 2015-04-02
 ---
 
 ### Fixed
  - Bug where a `TypeError` was raised if a string containing a leading
    number was sorted with alpha-only strings when `LOCALE` is used (issue #22)
 
-[3.5.3] - 03-26-2015
+[3.5.3] - 2015-03-26
 ---
 
 ### Changed
@@ -253,13 +253,13 @@ Unreleased
  - Bug where `--reverse-filter` option in shell script was not
    getting checked for correctness
 
-[3.5.2] - 01-13-2015
+[3.5.2] - 2015-01-13
 ---
 
 ### Added
  - A `pathlib.Path` object is converted to a `str` if `ns.PATH` is enabled (issue #16)
 
-[3.5.1] - 09-25-2014
+[3.5.1] - 2014-09-25
 ---
 
 ### Changed
@@ -270,7 +270,7 @@ Unreleased
  - Bug that caused list/tuples to fail when using `ns.LOWECASEFIRST`
    or `ns.IGNORECASE` (issue #15)
 
-[3.5.0] - 09-02-2014
+[3.5.0] - 2014-09-02
 ---
 
 ### Added
@@ -286,7 +286,7 @@ Unreleased
    allows `natsort` to perform true "human sorting" (issue #14)
  - Locale functionality to the shell script
 
-[3.4.1] - 08-12-2014
+[3.4.1] - 2014-08-12
 ---
 
 ### Changed
@@ -296,7 +296,7 @@ Unreleased
  - Made documentation point to more `natsort` resources, and also added a
    new example in the examples section
 
-[3.4.0] - 07-19-2014
+[3.4.0] - 2014-07-19
 ---
 
 ### Added
@@ -323,10 +323,10 @@ Unreleased
  - Reworked the documentation, moving most of it to PyPI's hosting platform
 
 ### Fixed
- - Bug that caused user's options to the 'natsort_key' to not be
-   passed on to recursive calls of 'natsort_key' (issue #12)
+ - Bug that caused user's options to the `natsort_key` to not be
+   passed on to recursive calls of `natsort_key` (issue #12)
 
-[3.3.0] - 06-28-2014
+[3.3.0] - 2014-06-28
 ---
 
 ### Added
@@ -341,14 +341,14 @@ Unreleased
  - Made docstrings for public functions mirror the README API
  - Connected `natsort` development to Travis-CI to help ensure quality releases
 
-[3.2.1] - 06-20-2014
+[3.2.1] - 2014-06-20
 ---
 
 ### Fixed
  - Re-"Fixed" unorderable types issue on Python 3.x - this workaround
    is for when the problem occurs in the middle of the string (issue #7 again)
 
-[3.2.0] - 05-07-2014
+[3.2.0] - 2014-05-07
 ---
 
 ### Fixed
@@ -360,14 +360,14 @@ Unreleased
  - Now explicitly excluding `__pycache__` from releases by adding a prune statement
    to MANIFEST.in
 
-[3.1.2] - 05-05-2014
+[3.1.2] - 2014-05-05
 ---
 
 ### Added
  - `setup.cfg` to support universal wheels (issue #6)
  - Python 3.0 and Python 3.1 as requiring the argparse module
 
-[3.1.1] - 03-01-2014
+[3.1.1] - 2014-03-01
 ---
 
 ### Added
@@ -376,7 +376,7 @@ Unreleased
 ### Changed
  - Cleaned up import statements
 
-[3.1.0] - 01-20-2014
+[3.1.0] - 2014-01-20
 ---
 
 ### Added
@@ -398,7 +398,7 @@ Unreleased
  - The shell script filesystem-based options because these can be achieved better though
 a pipeline by which to filter
 
-[3.0.2] - 10-01-2013
+[3.0.2] - 2013-10-01
 ---
 
 ### Changed
@@ -408,7 +408,7 @@ a pipeline by which to filter
 ### Fixed
  - Outdated comments
 
-[3.0.1] - 8-15-2013
+[3.0.1] - 2013-08-15
 ---
 
 ### Added
@@ -420,7 +420,7 @@ a pipeline by which to filter
 ### Removed
  - Extraneous `string2int` function
 
-[3.0.0] - 7-13-2013
+[3.0.0] - 2013-07-13
 ---
 
 ### Added
@@ -430,7 +430,7 @@ a pipeline by which to filter
 ### Changed
  - Reworked the documentation
 
-[2.2.0] - 6-25-2013
+[2.2.0] - 2013-06-25
 ---
 
 ### Added
@@ -439,7 +439,7 @@ a pipeline by which to filter
  - Tests to reflect the new functionality, as well as tests demonstrating how to get similar
    functionality using `natsort_key`
 
-[2.1.0] - 12-5-2012
+[2.1.0] - 2012-12-05
 ---
 
 ### Changed
@@ -447,15 +447,15 @@ a pipeline by which to filter
  - Now using a platform independent shell script generator (`entry_points` from distribute)
  - Can now execute `natsort` from command line with `python -m natsort` as well
 
-[2.0.2] - 11-30-2012
+[2.0.2] - 2012-11-30
 ---
 
 ### Added
- - The use_2to3 option to `setup.py`
+ - The `use_2to3` option to `setup.py`
  - Include `distribute_setup.py` to the distribution
  - Dependency to the `argparse` module (for python2.6)
 
-[2.0.1] - 11-21-2012
+[2.0.1] - 2012-11-21
 ---
 
 ### Added
@@ -464,7 +464,7 @@ a pipeline by which to filter
 ### Changed
  - Reorganized directory structure
 
-[2.0.0] - 11-16-2012
+[2.0.0] - 2012-11-16
 ---
 
 ### Added
