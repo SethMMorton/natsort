@@ -4,6 +4,9 @@ Unreleased
 ### Changed
  - Update CHANGELOG format to style from https://keepachangelog.com/
 
+### Removed
+ - Support for Python 2
+
 [6.0.0] - 2019-02-04
 ---
 
