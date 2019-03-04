@@ -1,6 +1,6 @@
 include LICENSE
-include CHANGELOG.rst
-include clean.sh
+include CHANGELOG.md
+include *.sh
 include dev-requirements.txt
 include tox.ini
 graft docs
