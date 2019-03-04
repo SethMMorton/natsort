@@ -1,8 +1,7 @@
 include LICENSE
 include CHANGELOG.md
-include *.sh
-include dev-requirements.txt
 include tox.ini
+graft dev
 graft docs
 graft natsort
 graft tests

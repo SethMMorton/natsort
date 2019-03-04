@@ -389,12 +389,12 @@ with the ``-e`` flag, e.g. ``tox -e py36``. Static analysis is done with ``tox -
 You can see all available testing environments with ``tox --listenvs``.
 
 If you do not wish to use ``tox``, you can install the testing dependencies with the
-``dev-requirements.txt`` file and then run the tests manually using
+``dev/requirements.txt`` file and then run the tests manually using
 `pytest <https://docs.pytest.org/en/latest/>`_.
 
 .. code-block:: console
 
-    $ pip install -r dev-requirements.txt
+    $ pip install -r dev/requirements.txt
     $ python -m pytest
 
 Note that above I invoked ``python -m pytest`` instead of just ``pytest`` - this is because
