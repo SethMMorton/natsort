@@ -661,9 +661,9 @@ These can be summed up as follows:
 #. Proper handling of Unicode is complicated.
 #. Proper handling of :mod:`locale` is complicated.
 
-Easily over half of the the code in :mod:`natsort` is in some way dealing with some
-aspect of :mod:`locale` or basic case handling. It would have been
-impossible to get right without a `really good`_ `testing strategy`_.
+Easily over half of the code in :mod:`natsort` is in some way dealing with some
+aspect of :mod:`locale` or basic case handling. It would have been impossible
+to get right without a `really good`_ `testing strategy`_.
 
 Don't expect any more TL;DR's... if you want to see how all this is fully
 incorporated into the :mod:`natsort` algorithm then please take a look
