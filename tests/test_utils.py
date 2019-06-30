@@ -119,8 +119,8 @@ def test_sep_inserter_inserts_separator_string_between_two_numbers_example():
 
 @given(lists(elements=text().filter(bool) | integers(), min_size=3))
 def test_sep_inserter_inserts_separator_between_two_numbers(x):
-    # Rather than just replicating the the results in a different
-    # algorithm, validate that the "shape" of the output is as expected.
+    # Rather than just replicating the results in a different algorithm,
+    # validate that the "shape" of the output is as expected.
     result = list(utils.sep_inserter(iter(x), ""))
     for i, pos in enumerate(result[1:-1], 1):
         if pos == "":
