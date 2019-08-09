@@ -482,5 +482,5 @@ History
 -------
 
 Please visit the changelog
-`on GitHub <https://github.com/SethMMorton/natsort/blob/master/CHANGELOG.rst>`_ or
+`on GitHub <https://github.com/SethMMorton/natsort/blob/master/CHANGELOG.md>`_ or
 `in the documentation <https://natsort.readthedocs.io/en/master/changelog.html>`_.
