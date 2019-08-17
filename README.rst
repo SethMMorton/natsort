@@ -329,7 +329,7 @@ from the command line with ``python -m natsort``.
 Requirements
 ------------
 
-``natsort`` requires Python version 2.7 or Python 3.4 or greater.
+``natsort`` requires Python 3.4 or greater.
 
 Optional Dependencies
 ---------------------
@@ -428,7 +428,7 @@ Deprecation Schedule
 Dropping Python 2.7 Support
 +++++++++++++++++++++++++++
 
-``natsort`` version 7.0.0 will drop support for Python 2.7.
+``natsort`` version 7.0.0 drops support for Python 2.7.
 
 The version 6.X branch will remain as a "long term support" branch where bug fixes
 are applied so that users who cannot update from Python 2.7 will not be forced to
