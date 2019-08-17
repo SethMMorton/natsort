@@ -52,7 +52,7 @@ from natsort.ns_enum import NS_DUMB, ns
 from natsort.unicode_numbers import digits_no_decimals, numeric_no_decimals
 
 
-class NumericalRegularExpressions(object):
+class NumericalRegularExpressions:
     """
     Container of regular expressions that match numbers.
 
