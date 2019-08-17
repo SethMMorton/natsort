@@ -41,7 +41,7 @@ Simple yet flexible natural sorting in Python.
 Quick Description
 -----------------
 
-When you try to sort a list of strings that contain numbers, the normal python
+When you try to sort a list of strings that contain numbers, the normal Python
 sort algorithm sorts lexicographically, so you might not get the results that you
 expect:
 
@@ -329,7 +329,7 @@ from the command line with ``python -m natsort``.
 Requirements
 ------------
 
-``natsort`` requires Python version 2.7 or Python 3.4 or greater.
+``natsort`` requires Python version 2.7 or Python 3.5 or greater.
 
 Optional Dependencies
 ---------------------
