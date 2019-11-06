@@ -601,6 +601,25 @@ def order_by_index(seq, index, iter=False):
     return (seq[i] for i in index) if iter else [seq[i] for i in index]
 
 
+def numeric_regex_chooser(alg):
+    """
+    Select an appropriate regex for the type of number of interest.
+
+    Parameters
+    ----------
+    alg : ns enum
+        Used to indicate the regular expression to select.
+
+    Returns
+    -------
+    regex : str
+        Regular expression string that matches the desired number type.
+
+    """
+    # Remove the leading and trailing parens
+    return utils.regex_chooser(alg).pattern[1:-1]
+
+
 if float(sys.version[:3]) < 3:
     # pylint: disable=unused-variable
     # noinspection PyUnresolvedReferences,PyPep8Naming

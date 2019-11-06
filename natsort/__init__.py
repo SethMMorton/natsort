@@ -15,6 +15,7 @@ from natsort.natsort import (
     natsort_keygen,
     natsorted,
     ns,
+    numeric_regex_chooser,
     order_by_index,
     realsorted,
 )
@@ -41,6 +42,7 @@ __all__ = [
     "as_utf8",
     "ns",
     "chain_functions",
+    "numeric_regex_chooser",
 ]
 
 # Add the ns keys to this namespace for convenience.
