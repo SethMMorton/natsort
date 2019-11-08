@@ -276,7 +276,7 @@ expression that will parse numbers in the same manner as :mod:`natsort` itself.
     >>> # This regular expression searches for numbers and units
     >>> all_units = "|".join(conversion_mapping.keys())
     >>> float_re = natsort.numeric_regex_chooser(natsort.FLOAT | natsort.SIGNED)
-    >>> unit_finder = re.compile(ur"({})\s*({})".format(float_re, all_units), flags=re.U | re.I)
+    >>> unit_finder = re.compile(r"({})\s*({})".format(float_re, all_units), re.IGNORECASE)
     >>>
     >>> def unit_replacer(matchobj):
     ...     """
