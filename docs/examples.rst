@@ -292,7 +292,7 @@ expression that will parse numbers in the same manner as :mod:`natsort` itself.
     >>> [unit_finder.sub(unit_replacer, x) for x in data]
     ['12.0 in', '5.0 in', '120.0 in', '2.0 in']
     >>>
-    >>> natsorted.natsort(data, key=lambda x: unit_finder.sub(unit_replacer, x))
+    >>> natsort.natsorted(data, key=lambda x: unit_finder.sub(unit_replacer, x))
     ['2 in', '5 in', '1 ft', '10 ft']
 
 Generating a Natsort Key
