@@ -3,7 +3,7 @@
 from __future__ import unicode_literals
 
 import pytest
-from hypothesis import given
+from hypothesis import HealthCheck, given, settings
 from hypothesis.strategies import binary
 from natsort.ns_enum import ns
 from natsort.utils import parse_bytes_factory
@@ -19,7 +19,8 @@ from natsort.utils import parse_bytes_factory
         (ns.PATH | ns.IGNORECASE, lambda x: ((x.lower(),),)),
     ],
 )
+@settings(suppress_health_check=[HealthCheck.too_slow])
 @given(x=binary())
-def test_parse_bytest_factory_makes_function_that_returns_tuple(x, alg, example_func):
+def test_parse_bytes_factory_makes_function_that_returns_tuple(x, alg, example_func):
     parse_bytes_func = parse_bytes_factory(alg)
     assert parse_bytes_func(x) == example_func(x)
