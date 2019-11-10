@@ -110,7 +110,7 @@ on_rtd = os.environ.get('READTHEDOCS') == 'True'
 if on_rtd:
     html_theme = 'default'
 else:
-    import sphinx_rtd_theme
+    import sphinx_rtd_theme  # noqa: F401
 
     html_theme = 'sphinx_rtd_theme'
     # html_theme = 'solar'
