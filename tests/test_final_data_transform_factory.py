@@ -3,7 +3,7 @@
 from __future__ import unicode_literals
 
 import pytest
-from hypothesis import HealthCheck, example, given, settings
+from hypothesis import example, given
 from hypothesis.strategies import floats, integers, text
 from natsort.compat.py23 import py23_str
 from natsort.ns_enum import NS_DUMB, ns
@@ -11,7 +11,6 @@ from natsort.utils import final_data_transform_factory
 
 
 @pytest.mark.parametrize("alg", [ns.DEFAULT, ns.UNGROUPLETTERS, ns.LOCALE])
-@settings(suppress_health_check=[HealthCheck.too_slow])
 @given(x=text(), y=floats(allow_nan=False, allow_infinity=False) | integers())
 @pytest.mark.usefixtures("with_locale_en_us")
 def test_final_data_transform_factory_default(x, y, alg):
