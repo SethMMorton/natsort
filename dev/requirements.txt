@@ -5,5 +5,3 @@ pytest-mock >= 1.1
 hypothesis >= 3.8.0
 pytest-faulthandler; platform_python_implementation == 'CPython'
 semver
-# These packages are standard on newer python versions.
-pathlib; python_version < '3.4'

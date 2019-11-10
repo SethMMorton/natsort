@@ -1,7 +1,4 @@
 # -*- coding: utf-8 -*-
-from __future__ import absolute_import, division, print_function, unicode_literals
-
-import sys
 
 from natsort.natsort import (
     as_ascii,
@@ -21,9 +18,6 @@ from natsort.natsort import (
 )
 from natsort.utils import chain_functions
 
-if float(sys.version[:3]) < 3:
-    from natsort.natsort import natcmp
-
 __version__ = "6.1.0"
 
 __all__ = [
@@ -37,7 +31,6 @@ __all__ = [
     "index_realsorted",
     "order_by_index",
     "decoder",
-    "natcmp",
     "as_ascii",
     "as_utf8",
     "ns",

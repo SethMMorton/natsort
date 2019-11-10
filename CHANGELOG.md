@@ -17,6 +17,9 @@ Unreleased
  - Removed dependency on `sudo` in TravisCI configuration ([@hugovk](https://github.com/hugovk), issue #99)
  - Documentation typos ([@jdufresne](https://github.com/jdufresne), issue #94) ([@cpburnz](https://github.com/cpburnz), issue #95)
 
+### Removed
+ - Support for Python 2
+
 [6.0.0] - 2019-02-04
 ---
 

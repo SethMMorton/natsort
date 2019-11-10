@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 """These test the splitting regular expressions."""
-from __future__ import unicode_literals
 
 import pytest
 from natsort import ns, numeric_regex_chooser
