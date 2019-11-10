@@ -428,7 +428,7 @@ def index_natsorted(seq, key=None, reverse=False, alg=ns.DEFAULT):
             return key(itemgetter(1)(x))
 
     # Pair the index and sequence together, then sort by element
-    index_seq_pair = [[x, y] for x, y in enumerate(seq)]
+    index_seq_pair = [(x, y) for x, y in enumerate(seq)]
     index_seq_pair.sort(reverse=reverse, key=natsort_keygen(newkey, alg))
     return [x for x, _ in index_seq_pair]
 
