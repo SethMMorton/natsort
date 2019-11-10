@@ -3,6 +3,7 @@
 from __future__ import unicode_literals
 
 import pytest
+from natsort import ns, numeric_regex_chooser
 from natsort.utils import NumericalRegularExpressions as NumRegex
 
 
@@ -98,3 +99,22 @@ labels = ["{}-{}".format(given, regex_names[regex]) for given, _, regex in regex
 def test_regex_splits_correctly(x, expected, regex):
     # noinspection PyUnresolvedReferences
     assert regex.split(x) == expected
+
+
+@pytest.mark.parametrize(
+    "given, expected",
+    [
+        (ns.INT, NumRegex.int_nosign()),
+        (ns.INT | ns.UNSIGNED, NumRegex.int_nosign()),
+        (ns.INT | ns.SIGNED, NumRegex.int_sign()),
+        (ns.INT | ns.NOEXP, NumRegex.int_nosign()),
+        (ns.FLOAT, NumRegex.float_nosign_exp()),
+        (ns.FLOAT | ns.UNSIGNED, NumRegex.float_nosign_exp()),
+        (ns.FLOAT | ns.SIGNED, NumRegex.float_sign_exp()),
+        (ns.FLOAT | ns.NOEXP, NumRegex.float_nosign_noexp()),
+        (ns.FLOAT | ns.SIGNED | ns.NOEXP, NumRegex.float_sign_noexp()),
+        (ns.FLOAT | ns.UNSIGNED | ns.NOEXP, NumRegex.float_nosign_noexp()),
+    ],
+)
+def test_regex_chooser(given, expected):
+    assert numeric_regex_chooser(given) == expected.pattern[1:-1]  # remove parens
