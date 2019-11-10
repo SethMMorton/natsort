@@ -282,6 +282,10 @@ How do I debug ``natsort.natsorted()``?
     ``natsort``, or use the ``natsort`` key as part of your rich comparison
     operator definition.
 
+``natsort`` gave me results I didn't expect, and it's a terrible library!
+    Did you try to debug using the above advice? If so, and you still cannot figure out
+    the error, then please `file an issue <https://github.com/SethMMorton/natsort/issues/new>`_.
+
 How *does* ``natsort`` work?
     If you don't want to read `How Does Natsort Work? <https://natsort.readthedocs.io/en/master/howitworks.html>`_,
     here is a quick primer.
@@ -318,10 +322,6 @@ How *does* ``natsort`` work?
 
     Because a ``tuple`` is always returned, a ``TypeError`` should not be common
     unless one tries to do something odd like sort an ``int`` against a ``list``.
-
-``natsort`` gave me results I didn't expect, and it's a terrible library!
-    Did you try to debug using the above advice? If so, and you still cannot figure out
-    the error, then please `file an issue <https://github.com/SethMMorton/natsort/issues/new>`_.
 
 Shell script
 ------------

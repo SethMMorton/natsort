@@ -279,6 +279,10 @@ How do I debug :func:`~natsorted`?
     :mod:`natsort`, or use the :mod:`natsort` key as part of your rich
     comparison operator definition.
 
+:mod:`natsort` gave me results I didn't expect, and it's a terrible library!
+    Did you try to debug using the above advice? If so, and you still cannot figure out
+    the error, then please `file an issue <https://github.com/SethMMorton/natsort/issues/new>`_.
+
 How *does* :mod:`natsort` work?
     If you don't want to read :ref:`howitworks`, here is a quick primer.
 
@@ -313,10 +317,6 @@ How *does* :mod:`natsort` work?
 
     Because a :class:`tuple` is always returned, a :exc:`TypeError` should not be common
     unless one tries to do something odd like sort an :class:`int` against a :class:`list`.
-
-:mod:`natsort` gave me results I didn't expect, and it's a terrible library!
-    Did you try to debug using the above advice? If so, and you still cannot figure out
-    the error, then please `file an issue <https://github.com/SethMMorton/natsort/issues/new>`_.
 
 Shell script
 ------------
