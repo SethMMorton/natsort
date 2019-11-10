@@ -335,18 +335,18 @@ system:
 
 .. code-block:: pycon
 
-    >>> paths = ['/p/Folder (10)/file.tar.gz',
-    ...          '/p/Folder/file.tar.gz',
-    ...          '/p/Folder (1)/file (1).tar.gz',
-    ...          '/p/Folder (1)/file.tar.gz']
+    >>> paths = ['Folder (10)/file.tar.gz',
+    ...          'Folder/file.tar.gz',
+    ...          'Folder (1)/file (1).tar.gz',
+    ...          'Folder (1)/file.tar.gz']
     >>> sorted(paths, key=natsort_key)
-    ['/p/Folder (1)/file (1).tar.gz', '/p/Folder (1)/file.tar.gz', '/p/Folder (10)/file.tar.gz', '/p/Folder/file.tar.gz']
+    ['Folder (1)/file (1).tar.gz', 'Folder (1)/file.tar.gz', 'Folder (10)/file.tar.gz', 'Folder/file.tar.gz']
 
-Well that's not right! What is ``'/p/Folder/file.tar.gz'`` doing at the end?
+Well that's not right! What is ``'Folder/file.tar.gz'`` doing at the end?
 It has to do with the numerical ASCII code assigned to the space and
 ``/`` characters in the `ASCII table`_. According to the `ASCII table`_, the
 space character (number 32) comes before the ``/`` character (number 47). If
-we remove the common prefix in all of the above strings (``'/p/Folder'``), we
+we remove the common prefix in all of the above strings (``'Folder'``), we
 can see why this happens:
 
 .. code-block:: pycon
@@ -365,7 +365,7 @@ with the :data:`Path.parts <pathlib.PurePath.parts>` property from
 
     >>> import pathlib
     >>> sorted(paths, key=lambda x: tuple(natsort_key(s) for s in pathlib.Path(x).parts))
-    ['/p/Folder/file.tar.gz', '/p/Folder (1)/file (1).tar.gz', '/p/Folder (1)/file.tar.gz', '/p/Folder (10)/file.tar.gz']
+    ['Folder/file.tar.gz', 'Folder (1)/file (1).tar.gz', 'Folder (1)/file.tar.gz', 'Folder (10)/file.tar.gz']
 
 Almost! It seems like there is some funny business going on in the final
 filename component as well. We can solve that nicely and quickly with
@@ -392,7 +392,7 @@ filename component as well. We can solve that nicely and quickly with
     ...     return tuple(natsort_key(s) for s in decompose_path_into_components(x))
     ...
     >>> sorted(paths, key=natsort_key_with_path_support)
-    ['/p/Folder/file.tar.gz', '/p/Folder (1)/file.tar.gz', '/p/Folder (1)/file (1).tar.gz', '/p/Folder (10)/file.tar.gz']
+    ['Folder/file.tar.gz', 'Folder (1)/file.tar.gz', 'Folder (1)/file (1).tar.gz', 'Folder (10)/file.tar.gz']
 
 This works because in addition to breaking the input by path separators,
 the final filename component is separated from its extensions as well
@@ -402,13 +402,13 @@ is done, we can see how comparisons can be done in the expected manner.
 
 .. code-block:: pycon
 
-    >>> a = natsort_key_with_path_support('/p/Folder (1)/file (1).tar.gz')
+    >>> a = natsort_key_with_path_support('Folder (1)/file (1).tar.gz')
     >>> a
-    (('/',), ('p',), ('Folder (', 1, ')'), ('file (', 1, ')'), ('tar',), ('gz',))
+    (('Folder (', 1, ')'), ('file (', 1, ')'), ('tar',), ('gz',))
     >>>
-    >>> b = natsort_key_with_path_support('/p/Folder/file.tar.gz')
+    >>> b = natsort_key_with_path_support('Folder/file.tar.gz')
     >>> b
-    (('/',), ('p',), ('Folder',), ('file',), ('tar',), ('gz',))
+    (('Folder',), ('file',), ('tar',), ('gz',))
     >>>
     >>> a > b
     True
@@ -621,11 +621,11 @@ Let's take it out for a spin!
     >>> sorted(danger, key=lambda x: natsort_key(x, as_float=True, signed=True))
     [nan, '-14', 4, 7, '19', 22.7, '59.123']
     >>>
-    >>> paths = ['/p/Folder (1)/file.tar.gz',
-    ...          '/p/Folder/file.tar.gz',
+    >>> paths = ['Folder (1)/file.tar.gz',
+    ...          'Folder/file.tar.gz',
     ...          123456]
     >>> sorted(paths, key=lambda x: natsort_key(x, as_path=True))
-    [123456, '/p/Folder/file.tar.gz', '/p/Folder (1)/file.tar.gz']
+    [123456, 'Folder/file.tar.gz', 'Folder (1)/file.tar.gz']
 
 Here Be Dragons: Adding Locale Support
 --------------------------------------
