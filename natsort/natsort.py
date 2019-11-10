@@ -604,4 +604,3 @@ def numeric_regex_chooser(alg):
     """
     # Remove the leading and trailing parens
     return utils.regex_chooser(alg).pattern[1:-1]
-
