@@ -17,11 +17,11 @@ Simple yet flexible natural sorting in Python.
 **NOTE**: Please see the `Deprecation Schedule`_ section for changes in
 :mod:`natsort` version 6.0.0 and in the upcoming version 7.0.0.
 
-:mod:`natsort` is a general utility for sorting lists *naturally*; the definition
-of "naturally" is not well-defined, but the most common definition is that numbers
-contained within the string should be sorted as numbers and not as you would
-other characters. If you need to present sorted output to a user, you probably
-want to sort it naturally.
+:mod:`natsort` is a general utility for sorting lists *naturally*; the
+definition of "naturally" is not well-defined, but the most common definition
+is that numbers contained within the string should be sorted as numbers and not
+as you would other characters. If you need to present sorted output to a user,
+you probably want to sort it naturally.
 
 :mod:`natsort` was initially created for sorting scientific output filenames that
 contained signed floating point numbers in the names. There was a lack of
@@ -32,8 +32,9 @@ and its answers and links therein,
 `this ActiveState forum <https://code.activestate.com/recipes/285264-natural-string-sorting/>`_,
 and of course `this great article on natural sorting <https://blog.codinghorror.com/sorting-for-humans-natural-sort-order/>`_
 from CodingHorror.com for examples of what I mean.
-:mod:`natsort` was created to fill in this gap, but has since expanded to handle
-just about any definition of a number, as well as other sorting customizations.
+:mod:`natsort` was created to fill in this gap, but has since expanded to
+handle just about any definition of a number, as well as other sorting
+customizations.
 
 Quick Description
 -----------------
@@ -183,8 +184,8 @@ bitwise OR operator (``|``). For example,
 All of the available customizations can be found in the documentation for
 the :class:`~natsort.ns` enum.
 
-You can also add your own custom transformation functions with the ``key`` argument.
-These can be used with ``alg`` if you wish:
+You can also add your own custom transformation functions with the ``key``
+argument. These can be used with ``alg`` if you wish:
 
 .. code-block:: pycon
 
@@ -246,8 +247,9 @@ method.
     >>> a
     ['1 ft 5 in', '2 ft 7 in', '2 ft 11 in', '7 ft 6 in', '10 ft 2 in']
 
-All of the algorithm customizations mentioned in the `Further Customizing Natsort`_
-section can also be applied to :func:`~natsort_keygen` through the *alg* keyword option.
+All of the algorithm customizations mentioned in the
+`Further Customizing Natsort`_ section can also be applied to :func:`~natsort_keygen`
+through the *alg* keyword option.
 
 Other Useful Things
 +++++++++++++++++++
@@ -263,18 +265,19 @@ FAQ
 
 How do I debug :func:`~natsorted`?
     The best way to debug :func:`~natsorted` is to generate a key using :func:`~natsort_keygen`
-    with the same options being passed to :func:`~natsorted`. One can take a look at
-    exactly what is being done with their input using this key - it is highly recommended
-    to `look at this issue describing how to debug <https://github.com/SethMMorton/natsort/issues/13#issuecomment-50422375>`_
+    with the same options being passed to :func:`~natsorted`. One can take a
+    look at exactly what is being done with their input using this key - it is
+    highly recommended to `look at this issue describing how to debug <https://github.com/SethMMorton/natsort/issues/13#issuecomment-50422375>`_
     for *how* to debug, and also to review the :ref:`howitworks` page for *why*
     :mod:`natsort` is doing that to your data.
 
-    If you are trying to sort custom classes and running into trouble, please take a look at
-    https://github.com/SethMMorton/natsort/issues/60. In short,
+    If you are trying to sort custom classes and running into trouble, please
+    take a look at https://github.com/SethMMorton/natsort/issues/60. In short,
     custom classes are not likely to be sorted correctly if one relies
-    on the behavior of ``__lt__`` and the other rich comparison operators in their
-    custom class - it is better to use a ``key`` function with :mod:`natsort`, or
-    use the :mod:`natsort` key as part of your rich comparison operator definition.
+    on the behavior of ``__lt__`` and the other rich comparison operators in
+    their custom class - it is better to use a ``key`` function with
+    :mod:`natsort`, or use the :mod:`natsort` key as part of your rich
+    comparison operator definition.
 
 How *does* :mod:`natsort` work?
     If you don't want to read :ref:`howitworks`, here is a quick primer.
@@ -318,8 +321,8 @@ How *does* :mod:`natsort` work?
 Shell script
 ------------
 
-:mod:`natsort` comes with a shell script called :mod:`natsort`, or can also be called
-from the command line with ``python -m natsort``.
+:mod:`natsort` comes with a shell script called :mod:`natsort`, or can also be
+called from the command line with ``python -m natsort``.
 
 Requirements
 ------------
@@ -335,9 +338,9 @@ fastnumbers
 The most efficient sorting can occur if you install the
 `fastnumbers <https://pypi.org/project/fastnumbers>`_ package
 (version >=2.0.0); it helps with the string to number conversions.
-:mod:`natsort` will still run (efficiently) without the package, but if you need
-to squeeze out that extra juice it is recommended you include this as a dependency.
-:mod:`natsort` will not require (or check) that
+:mod:`natsort` will still run (efficiently) without the package, but if you
+need to squeeze out that extra juice it is recommended you include this as a
+dependency. :mod:`natsort` will not require (or check) that
 `fastnumbers <https://pypi.org/project/fastnumbers>`_ is installed
 at installation.
 
@@ -373,20 +376,22 @@ at installation time to install those dependencies as well - use ``fast`` for
 How to Run Tests
 ----------------
 
-Please note that :mod:`natsort` is NOT set-up to support ``python setup.py test``.
+Please note that :mod:`natsort` is NOT set-up to support
+``python setup.py test``.
 
 The recommended way to run tests is with `tox <https://tox.readthedocs.io/en/latest/>`_.
-After installing ``tox``, running tests is as simple as executing the following in the
-``natsort`` directory:
+After installing ``tox``, running tests is as simple as executing the following
+in the ``natsort`` directory:
 
 .. code-block:: sh
 
     $ tox
 
-``tox`` will create virtual a virtual environment for your tests and install all the
-needed testing requirements for you.  You can specify a particular python version
-with the ``-e`` flag, e.g. ``tox -e py36``. Static analysis is done with ``tox -e flake8``.
-You can see all available testing environments with ``tox --listenvs``.
+``tox`` will create virtual a virtual environment for your tests and install
+all the needed testing requirements for you.  You can specify a particular
+python version with the ``-e`` flag, e.g. ``tox -e py36``. Static analysis is
+done with ``tox -e flake8``. You can see all available testing environments
+with ``tox --listenvs``.
 
 If you do not wish to use ``tox``, you can install the testing dependencies with the
 ``dev/requirements.txt`` file and then run the tests manually using
@@ -403,7 +408,8 @@ Note that above I invoked ``python -m pytest`` instead of just ``pytest`` - this
 How to Build Documentation
 --------------------------
 
-If you want to build the documentation for :mod:`natsort`, it is recommended to use ``tox``:
+If you want to build the documentation for :mod:`natsort`, it is recommended to
+use ``tox``:
 
 .. code-block:: console
 
@@ -425,10 +431,10 @@ Dropping Python 2.7 Support
 
 :mod:`natsort` version 7.0.0 will drop support for Python 2.7.
 
-The version 6.X branch will remain as a "long term support" branch where bug fixes
-are applied so that users who cannot update from Python 2.7 will not be forced to
-use a buggy :mod:`natsort` version. Once version 7.0.0 is released, new features
-will not be added to version 6.X, only bug fixes.
+The version 6.X branch will remain as a "long term support" branch where bug
+fixes are applied so that users who cannot update from Python 2.7 will not be
+forced to use a buggy :mod:`natsort` version. Once version 7.0.0 is released,
+new features will not be added to version 6.X, only bug fixes.
 
 Deprecated APIs
 +++++++++++++++
@@ -443,19 +449,21 @@ In :mod:`natsort` version 6.0.0, the following APIs and functions were removed
  - ``ns.TYPESAFE`` (deprecated since version 5.0.0)
  - ``ns.DIGIT`` (deprecated since version 5.0.0)
  - ``ns.VERSION`` (deprecated since version 5.0.0)
- - :func:`~natsort.versorted` (discouraged since version 4.0.0, officially deprecated since version 5.5.0)
- - :func:`~natsort.index_versorted` (discouraged since version 4.0.0, officially deprecated since version 5.5.0)
+ - :func:`~natsort.versorted` (discouraged since version 4.0.0,
+   officially deprecated since version 5.5.0)
+ - :func:`~natsort.index_versorted` (discouraged since version 4.0.0,
+   officially deprecated since version 5.5.0)
 
-In general, if you want to determine if you are using deprecated APIs you can run your
-code with the following flag
+In general, if you want to determine if you are using deprecated APIs you can
+run your code with the following flag
 
 .. code-block:: console
 
     $ python -Wdefault::DeprecationWarning my-code.py
 
-By default :exc:`DeprecationWarnings` are not shown, but this will cause them to be shown.
-Alternatively, you can just set the environment variable ``PYTHONWARNINGS`` to
-"default::DeprecationWarning" and then run your code.
+By default :exc:`DeprecationWarnings` are not shown, but this will cause them
+to be shown. Alternatively, you can just set the environment variable
+``PYTHONWARNINGS`` to "default::DeprecationWarning" and then run your code.
 
 Dropped Pipenv for Development
 ++++++++++++++++++++++++++++++
