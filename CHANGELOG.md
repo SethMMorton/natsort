@@ -1,8 +1,18 @@
 Unreleased
 ---
 
+### Added
+ - Expose `numeric_regex_chooser` as a public function for ease in making
+   key functions
+ - Example in the documentation on how to sort numbers with units
+ - Automated testing support for macos and Windows (issue #91)
+
 ### Changed
- - Update CHANGELOG format to style from https://keepachangelog.com/
+ - Update CHANGELOG format to style from https://keepachangelog.com/ (issue #92)
+
+### Fixed
+ - Removed dependency on `sudo` in TravisCI configuration ([@hugovk](https://github.com/hugovk), issue #99)
+ - Documentation typos ([@jdufresne](https://github.com/jdufresne), issue #94) ([@cpburnz](https://github.com/cpburnz), issue #95)
 
 [6.0.0] - 2019-02-04
 ---
