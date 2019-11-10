@@ -1,6 +1,13 @@
 Unreleased
 ---
 
+### Changed
+ - `index_natsorted` internally now uses tuples for index-element pairs
+   instead of lists
+
+### Removed
+ - Support for Python 2
+
 [6.1.0] - 2019-11-09
 ---
 
@@ -16,9 +23,6 @@ Unreleased
 ### Fixed
  - Removed dependency on `sudo` in TravisCI configuration ([@hugovk](https://github.com/hugovk), issue #99)
  - Documentation typos ([@jdufresne](https://github.com/jdufresne), issue #94) ([@cpburnz](https://github.com/cpburnz), issue #95)
-
-### Removed
- - Support for Python 2
 
 [6.0.0] - 2019-02-04
 ---
