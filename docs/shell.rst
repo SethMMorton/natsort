@@ -14,7 +14,7 @@ Below is the usage and some usage examples for the ``natsort`` shell script.
 Usage
 -----
 
-.. code-block:: none
+.. code-block::
 
     usage: natsort [-h] [--version] [-p] [-f LOW HIGH] [-F LOW HIGH] [-e EXCLUDE]
                    [-r] [-t {digit,int,float,version,ver}] [--nosign] [--noexp]
@@ -81,7 +81,7 @@ named after the parameter used:
     $ ls *.out
     mode1000.35.out mode1243.34.out mode744.43.out mode943.54.out
 
-(Obviously, in reality there would be more files, but you get the idea.)  Notice
+(Obviously, in reality there would be more files, but you get the idea.) Notice
 that the shell sorts in lexicographical order.  This is the behavior of programs like
 ``find`` as well as ``ls``.  The problem is passing these files to an
 analysis program causes them not to appear in numerical order, which can lead
@@ -114,8 +114,8 @@ To sort version numbers, use the default ``--number-type``:
     prog-1.10.zip
     prog-2.0.zip
 
-In general, all ``natsort`` shell script options mirror the :func:`~natsorted` API,
-with notable exception of the ``--filter``, ``--reverse-filter``, and ``--exclude``
+In general, all ``natsort`` shell script options mirror the :func:`~natsorted`
+API, with notable exception of the ``--filter``, ``--reverse-filter``, and ``--exclude``
 options.  These three options are used as follows:
 
 .. code-block:: console

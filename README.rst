@@ -42,8 +42,8 @@ Quick Description
 -----------------
 
 When you try to sort a list of strings that contain numbers, the normal python
-sort algorithm sorts lexicographically, so you might not get the results that you
-expect:
+sort algorithm sorts lexicographically, so you might not get the results that
+you expect:
 
 .. code-block:: pycon
 
@@ -73,10 +73,10 @@ naturally. Below are some other things you can do with ``natsort``
 for a quick start guide, or the
 `api <https://natsort.readthedocs.io/en/master/api.html>`_ for complete details).
 
-**Note**: ``natsorted`` is designed to be a drop-in replacement for the built-in
-``sorted`` function. Like ``sorted``, ``natsorted`` `does not sort in-place`.
-To sort a list and assign the output to the same variable, you must
-explicitly assign the output to a variable:
+**Note**: ``natsorted`` is designed to be a drop-in replacement for the
+built-in ``sorted`` function. Like ``sorted``, ``natsorted``
+`does not sort in-place`. To sort a list and assign the output to the same
+variable, you must explicitly assign the output to a variable:
 
 .. code-block:: pycon
 
@@ -137,9 +137,9 @@ version < 4.0.0). Use the ``realsorted`` function:
 Locale-Aware Sorting (or "Human Sorting")
 +++++++++++++++++++++++++++++++++++++++++
 
-This is where the non-numeric characters are also ordered based on their meaning,
-not on their ordinal value, and a locale-dependent thousands separator and decimal
-separator is accounted for in the number.
+This is where the non-numeric characters are also ordered based on their
+meaning, not on their ordinal value, and a locale-dependent thousands
+separator and decimal separator is accounted for in the number.
 This can be achieved with the ``humansorted`` function:
 
 .. code-block:: pycon
@@ -185,8 +185,8 @@ bitwise OR operator (``|``). For example,
 All of the available customizations can be found in the documentation for
 `the ns enum <https://natsort.readthedocs.io/en/master/api.html#natsort.ns>`_.
 
-You can also add your own custom transformation functions with the ``key`` argument.
-These can be used with ``alg`` if you wish.
+You can also add your own custom transformation functions with the ``key``
+argument. These can be used with ``alg`` if you wish.
 
 .. code-block:: pycon
 
@@ -248,8 +248,9 @@ method.
     >>> a
     ['1 ft 5 in', '2 ft 7 in', '2 ft 11 in', '7 ft 6 in', '10 ft 2 in']
 
-All of the algorithm customizations mentioned in the `Further Customizing Natsort`_
-section can also be applied to ``natsort_keygen`` through the *alg* keyword option.
+All of the algorithm customizations mentioned in the
+`Further Customizing Natsort`_ section can also be applied to
+``natsort_keygen`` through the *alg* keyword option.
 
 Other Useful Things
 +++++++++++++++++++
@@ -266,18 +267,24 @@ FAQ
 How do I debug ``natsort.natsorted()``?
     The best way to debug ``natsorted()`` is to generate a key using ``natsort_keygen()``
     with the same options being passed to ``natsorted``. One can take a look at
-    exactly what is being done with their input using this key - it is highly recommended
+    exactly what is being done with their input using this key - it is highly
+    recommended
     to `look at this issue describing how to debug <https://github.com/SethMMorton/natsort/issues/13#issuecomment-50422375>`_
     for *how* to debug, and also to review the
     `How Does Natsort Work? <https://natsort.readthedocs.io/en/master/howitworks.html>`_
     page for *why* ``natsort`` is doing that to your data.
 
-    If you are trying to sort custom classes and running into trouble, please take a look at
-    https://github.com/SethMMorton/natsort/issues/60. In short,
+    If you are trying to sort custom classes and running into trouble, please
+    take a look at https://github.com/SethMMorton/natsort/issues/60. In short,
     custom classes are not likely to be sorted correctly if one relies
-    on the behavior of ``__lt__`` and the other rich comparison operators in their
-    custom class - it is better to use a ``key`` function with ``natsort``, or
-    use the ``natsort`` key as part of your rich comparison operator definition.
+    on the behavior of ``__lt__`` and the other rich comparison operators in
+    their custom class - it is better to use a ``key`` function with
+    ``natsort``, or use the ``natsort`` key as part of your rich comparison
+    operator definition.
+
+``natsort`` gave me results I didn't expect, and it's a terrible library!
+    Did you try to debug using the above advice? If so, and you still cannot figure out
+    the error, then please `file an issue <https://github.com/SethMMorton/natsort/issues/new>`_.
 
 How *does* ``natsort`` work?
     If you don't want to read `How Does Natsort Work? <https://natsort.readthedocs.io/en/master/howitworks.html>`_,
@@ -286,9 +293,9 @@ How *does* ``natsort`` work?
     ``natsort`` provides a `key function <https://docs.python.org/3/howto/sorting.html#key-functions>`_
     that can be passed to `list.sort() <https://docs.python.org/3/library/stdtypes.html#list.sort>`_
     or `sorted() <https://docs.python.org/3/library/functions.html#sorted>`_ in order to
-    modify the default sorting behavior. This key is generated on-demand with the
-    key generator ``natsort.natsort_keygen()``.  ``natsort.natsorted()`` is essentially
-    a wrapper for the following code:
+    modify the default sorting behavior. This key is generated on-demand with
+    the key generator ``natsort.natsort_keygen()``.  ``natsort.natsorted()``
+    is essentially a wrapper for the following code:
 
     .. code-block:: pycon
 
@@ -316,10 +323,6 @@ How *does* ``natsort`` work?
     Because a ``tuple`` is always returned, a ``TypeError`` should not be common
     unless one tries to do something odd like sort an ``int`` against a ``list``.
 
-``natsort`` gave me results I didn't expect, and it's a terrible library!
-    Did you try to debug using the above advice? If so, and you still cannot figure out
-    the error, then please `file an issue <https://github.com/SethMMorton/natsort/issues/new>`_.
-
 Shell script
 ------------
 
@@ -341,8 +344,8 @@ The most efficient sorting can occur if you install the
 `fastnumbers <https://pypi.org/project/fastnumbers>`_ package
 (version >=2.0.0); it helps with the string to number conversions.
 ``natsort`` will still run (efficiently) without the package, but if you need
-to squeeze out that extra juice it is recommended you include this as a dependency.
-``natsort`` will not require (or check) that
+to squeeze out that extra juice it is recommended you include this as a
+dependency. ``natsort`` will not require (or check) that
 `fastnumbers <https://pypi.org/project/fastnumbers>`_ is installed
 at installation.
 
@@ -381,17 +384,18 @@ How to Run Tests
 Please note that ``natsort`` is NOT set-up to support ``python setup.py test``.
 
 The recommended way to run tests is with `tox <https://tox.readthedocs.io/en/latest/>`_.
-After installing ``tox``, running tests is as simple as executing the following in the
-``natsort`` directory:
+After installing ``tox``, running tests is as simple as executing the following
+in the ``natsort`` directory:
 
 .. code-block:: console
 
     $ tox
 
-``tox`` will create virtual a virtual environment for your tests and install all the
-needed testing requirements for you.  You can specify a particular python version
-with the ``-e`` flag, e.g. ``tox -e py36``. Static analysis is done with ``tox -e flake8``.
-You can see all available testing environments with ``tox --listenvs``.
+``tox`` will create virtual a virtual environment for your tests and install
+all the needed testing requirements for you.  You can specify a particular
+python version with the ``-e`` flag, e.g. ``tox -e py36``. Static analysis
+is done with ``tox -e flake8``. You can see all available testing environments
+with ``tox --listenvs``.
 
 If you do not wish to use ``tox``, you can install the testing dependencies with the
 ``dev/requirements.txt`` file and then run the tests manually using
@@ -408,7 +412,8 @@ Note that above I invoked ``python -m pytest`` instead of just ``pytest`` - this
 How to Build Documentation
 --------------------------
 
-If you want to build the documentation for ``natsort``, it is recommended to use ``tox``:
+If you want to build the documentation for ``natsort``, it is recommended to
+use ``tox``:
 
 .. code-block:: console
 
@@ -430,10 +435,10 @@ Dropping Python 2.7 Support
 
 ``natsort`` version 7.0.0 drops support for Python 2.7.
 
-The version 6.X branch will remain as a "long term support" branch where bug fixes
-are applied so that users who cannot update from Python 2.7 will not be forced to
-use a buggy ``natsort`` version. Once version 7.0.0 is released, new features
-will not be added to version 6.X, only bug fixes.
+The version 6.X branch will remain as a "long term support" branch where bug
+fixes are applied so that users who cannot update from Python 2.7 will not be
+forced to use a buggy ``natsort`` version. Once version 7.0.0 is released, new
+features will not be added to version 6.X, only bug fixes.
 
 Deprecated APIs
 +++++++++++++++
@@ -448,19 +453,21 @@ In ``natsort`` version 6.0.0, the following APIs and functions were removed
  - ``ns.TYPESAFE`` (deprecated since version 5.0.0)
  - ``ns.DIGIT`` (deprecated since version 5.0.0)
  - ``ns.VERSION`` (deprecated since version 5.0.0)
- - ``versorted()`` (discouraged since version 4.0.0, officially deprecated since version 5.5.0)
- - ``index_versorted()`` (discouraged since version 4.0.0, officially deprecated since version 5.5.0)
+ - ``versorted()`` (discouraged since version 4.0.0,
+   officially deprecated since version 5.5.0)
+ - ``index_versorted()`` (discouraged since version 4.0.0,
+   officially deprecated since version 5.5.0)
 
-In general, if you want to determine if you are using deprecated APIs you can run your
-code with the following flag
+In general, if you want to determine if you are using deprecated APIs you
+can run your code with the following flag
 
 .. code-block:: console
 
     $ python -Wdefault::DeprecationWarning my-code.py
 
-By default ``DeprecationWarnings`` are not shown, but this will cause them to be shown.
-Alternatively, you can just set the environment variable ``PYTHONWARNINGS`` to
-"default::DeprecationWarning" and then run your code.
+By default ``DeprecationWarnings`` are not shown, but this will cause them
+to be shown. Alternatively, you can just set the environment variable
+``PYTHONWARNINGS`` to "default::DeprecationWarning" and then run your code.
 
 Dropped Pipenv for Development
 ++++++++++++++++++++++++++++++
@@ -482,5 +489,5 @@ History
 -------
 
 Please visit the changelog
-`on GitHub <https://github.com/SethMMorton/natsort/blob/master/CHANGELOG.rst>`_ or
+`on GitHub <https://github.com/SethMMorton/natsort/blob/master/CHANGELOG.md>`_ or
 `in the documentation <https://natsort.readthedocs.io/en/master/changelog.html>`_.

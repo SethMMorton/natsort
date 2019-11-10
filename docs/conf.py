@@ -58,7 +58,7 @@ copyright = '2014, Seth M. Morton'
 # built documents.
 #
 # The full version, including alpha/beta/rc tags.
-release = '6.0.0'
+release = '6.1.0'
 # The short X.Y version.
 version = '.'.join(release.split('.')[0:2])
 
@@ -110,7 +110,7 @@ on_rtd = os.environ.get('READTHEDOCS') == 'True'
 if on_rtd:
     html_theme = 'default'
 else:
-    import sphinx_rtd_theme
+    import sphinx_rtd_theme  # noqa: F401
 
     html_theme = 'sphinx_rtd_theme'
     # html_theme = 'solar'

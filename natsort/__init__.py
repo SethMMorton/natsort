@@ -12,12 +12,13 @@ from natsort.natsort import (
     natsort_keygen,
     natsorted,
     ns,
+    numeric_regex_chooser,
     order_by_index,
     realsorted,
 )
 from natsort.utils import chain_functions
 
-__version__ = "6.0.0"
+__version__ = "6.1.0"
 
 __all__ = [
     "natsort_key",
@@ -34,6 +35,7 @@ __all__ = [
     "as_utf8",
     "ns",
     "chain_functions",
+    "numeric_regex_chooser",
 ]
 
 # Add the ns keys to this namespace for convenience.

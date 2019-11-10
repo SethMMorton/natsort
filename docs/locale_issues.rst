@@ -9,9 +9,9 @@ Possible Issues with :func:`~natsort.humansorted` or ``ns.LOCALE``
 Being Locale-Aware Means Both Numbers and Non-Numbers
 -----------------------------------------------------
 
-In addition to modifying how characters are sorted, ``ns.LOCALE`` will take into
-account locale-dependent thousands separators (and locale-dependent decimal
-separators if ``ns.FLOAT`` is enabled). This means that if you are in a
+In addition to modifying how characters are sorted, ``ns.LOCALE`` will take
+into account locale-dependent thousands separators (and locale-dependent
+decimal separators if ``ns.FLOAT`` is enabled). This means that if you are in a
 locale that uses commas as the thousands separator, a number like
 ``123,456`` will be interpreted as ``123456``.  If this is not what you want,
 you may consider using ``ns.LOCALEALPHA`` which will only enable locale-aware
@@ -52,8 +52,8 @@ installed, please keep the following known problems and issues in mind.
 .. note:: Remember, if you have `PyICU`_ installed you shouldn't need to worry
           about any of these.
 
-Explicitly Set the Locale Before Using :func:`~natsort.humansorted` or ``ns.LOCALE``
-++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+Explicitly Set the Locale Before Using ``ns.LOCALE``
+++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 I have found that unless you explicitly set a locale, the sorted order may not
 be what you expect. Setting this is straightforward
@@ -90,8 +90,8 @@ install this there is some hope.
        a built-in lookup table of thousands separators that are incorrect
        on OS X/BSD (but is possible it is not complete... please file an
        issue if you see it is not complete)
-    2. Use "\*.ISO8859-1" locale (i.e. 'en_US.ISO8859-1') rather than "\*.UTF-8"
-       locale. I have found that these have fewer issues than "UTF-8", but
-       your mileage may vary.
+    2. Use "\*.ISO8859-1" locale (i.e. 'en_US.ISO8859-1') rather than
+       "\*.UTF-8" locale. I have found that these have fewer issues than
+       "UTF-8", but your mileage may vary.
 
 .. _PyICU: https://pypi.org/project/PyICU

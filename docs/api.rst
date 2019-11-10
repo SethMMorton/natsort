@@ -89,9 +89,16 @@ Help With Creating Function Keys
 ++++++++++++++++++++++++++++++++
 
 If you need to create a complicated *key* argument to (for example)
-:func:`natsorted` that is actually multiple functions called one after the other,
-the following function can help you easily perform this action. It is
-used internally to :mod:`natsort`, and has been exposed publically for
+:func:`natsorted` that is actually multiple functions called one after the
+other, the following function can help you easily perform this action. It is
+used internally to :mod:`natsort`, and has been exposed publicly for
 the convenience of the user.
 
 .. autofunction:: chain_functions
+
+If you need to be able to search your input for numbers using the same
+definition as :mod:`natsort`, you can do so using the following function.
+Given your chosen algorithm (selected using the :class:`~natsort.ns` enum),
+the corresponding regular expression to locate numbers will be returned.
+
+.. autofunction:: numeric_regex_chooser

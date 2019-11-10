@@ -36,7 +36,7 @@ If I want to compare '2 ft 7 in' to '2 ft 11 in', I might do the following
 We as humans know that the above should be true, but why does Python think it
 is false?  Here is how it is performing the comparison:
 
-.. code-block:: none
+.. code-block::
 
     '2' <=> '2' ==> equal, so keep going
     ' ' <=> ' ' ==> equal, so keep going
@@ -53,18 +53,18 @@ The best way to handle this is to break the string into sub-components
 of numbers and non-numbers, and then convert the numeric parts into
 :func:`float` or :func:`int` types. This will force Python to
 actually understand the context of what it is sorting and then "do the
-right thing." Luckily, it handles sorting lists of strings right out-of-the-box,
-so the only hard part is actually making this string-to-list transformation
-and then Python will handle the rest.
+right thing." Luckily, it handles sorting lists of strings right
+out-of-the-box, so the only hard part is actually making this string-to-list
+transformation and then Python will handle the rest.
 
-.. code-block:: none
+.. code-block::
 
     '2 ft 7 in'  ==> (2, ' ft ', 7,  ' in')
     '2 ft 11 in' ==> (2, ' ft ', 11, ' in')
 
 When Python compares the two, it roughly follows the below logic:
 
-.. code-block:: none
+.. code-block::
 
     2       <=> 2      ==> equal, so keep going
     ' ft '  <=> ' ft ' ==> a string is a special type of sequence - evaluate each character individually
@@ -92,10 +92,10 @@ Natsort's Approach
 Decomposing Strings Into Sub-Components
 +++++++++++++++++++++++++++++++++++++++
 
-The first major hurtle to overcome is to decompose the string into sub-components.
-Remarkably, this turns out to be the easy part, owing mostly to Python's easy access
-to regular expressions.  Breaking an arbitrary string based on a pattern is pretty
-straightforward.
+The first major hurtle to overcome is to decompose the string into
+sub-components. Remarkably, this turns out to be the easy part, owing mostly
+to Python's easy access to regular expressions. Breaking an arbitrary string
+based on a pattern is pretty straightforward.
 
 .. code-block:: pycon
 
@@ -106,10 +106,11 @@ straightforward.
 Clear (assuming you can read regular expressions) and concise.
 
 The reason I began developing :mod:`natsort` in the first place was because I
-needed to handle the natural sorting of strings containing *real numbers*, not just
-unsigned integers as the above example contains. By real numbers, I mean those like
-``-45.4920E-23``. :mod:`natsort` can handle just about any number definition;
-to that end, here are all the regular expressions used in :mod:`natsort`:
+needed to handle the natural sorting of strings containing *real numbers*, not
+just unsigned integers as the above example contains. By real numbers, I mean
+those like ``-45.4920E-23``. :mod:`natsort` can handle just about any number
+definition; to that end, here are all the regular expressions used in
+:mod:`natsort`:
 
 .. code-block:: pycon
 
@@ -120,9 +121,9 @@ to that end, here are all the regular expressions used in :mod:`natsort`:
     >>> unsigned_float_no_exponent = r'((?:[0-9]+\.?[0-9]*|\.[0-9]+))'
     >>> signed_float_no_exponent   = r'([-+]?(?:[0-9]+\.?[0-9]*|\.[0-9]+))'
 
-Note that ``"inf"`` and ``"nan"`` are deliberately omitted from the float definition because you
-wouldn't want (for example) ``"banana"`` to be converted into ``['ba', 'nan', 'a']``,
-Let's see an example:
+Note that ``"inf"`` and ``"nan"`` are deliberately omitted from the float
+definition because you wouldn't want (for example) ``"banana"`` to be converted
+into ``['ba', 'nan', 'a']``, Let's see an example:
 
 .. code-block:: pycon
 
@@ -135,21 +136,21 @@ Let's see an example:
     actual code there is also handling for non-ASCII unicode characters (such as ⑦),
     but I will ignore that aspect of :mod:`natsort` in this discussion.
 
-Now, when the user wants to change the definition of a number, it is as easy as changing
-the pattern supplied to the regular expression engine.
+Now, when the user wants to change the definition of a number, it is as easy as
+changing the pattern supplied to the regular expression engine.
 
-Choosing the right default is hard, though (well, in this case it shouldn't have been
-but I was rather thick-headed).
-In retrospect, it should have been obvious that since essentially all the code examples
-I had/have seen for natural sorting were for *unsigned integers*, I should have made the default
-definition of a number an *unsigned integer*. But, in the brash days of my youth I assumed
-that since my use case was real numbers, everyone else would be happier sorting by real numbers;
-so, I made the default definition of a number a *signed float with exponent*.
-`This astonished`_ `a lot`_ `of people`_
+Choosing the right default is hard, though (well, in this case it shouldn't
+have been but I was rather thick-headed). In retrospect, it should have been
+obvious that since essentially all the code examples I had/have seen for
+natural sorting were for *unsigned integers*, I should have made the default
+definition of a number an *unsigned integer*. But, in the brash days of my
+youth I assumed that since my use case was real numbers, everyone else would
+be happier sorting by real numbers; so, I made the default definition of a
+number a *signed float with exponent*. `This astonished`_ `a lot`_ `of people`_
 (`and some people aren't very nice when they are astonished`_).
 Starting with :mod:`natsort` version 4.0.0 the default number definition was
-changed to an *unsigned integer* which satisfies the "least astonishment" principle, and
-I have not heard a complaint since.
+changed to an *unsigned integer* which satisfies the "least astonishment"
+principle, and I have not heard a complaint since.
 
 Coercing Strings Containing Numbers Into Numbers
 ++++++++++++++++++++++++++++++++++++++++++++++++
@@ -193,28 +194,29 @@ Here are some timing results run on my machine:
     In [5]: %timeit [coerce_regex(x) for x in numbers]
     10000 loops, best of 3: 123 µs per loop
 
-What can we learn from this? The ``try: except`` method (arguably the most "pythonic"
-of the solutions) is best for numeric input, but performs over 5X slower for non-numeric
-input. Conversely, the regular expression method, though slower than ``try: except`` for
-both input types, is more efficient for non-numeric input than for input that can be
-converted to an ``int``. Further, even though the regular expression method is slower
-for both input types, it is always at least twice as fast as the worst case for the
-``try: except``.
+What can we learn from this? The ``try: except`` method (arguably the most
+"pythonic" of the solutions) is best for numeric input, but performs over 5X
+slower for non-numeric input. Conversely, the regular expression method, though
+slower than ``try: except`` for both input types, is more efficient for
+non-numeric input than for input that can be converted to an ``int``. Further,
+even though the regular expression method is slower for both input types, it is
+always at least twice as fast as the worst case for the ``try: except``.
 
-Why do I care? Shouldn't I just pick a method and not worry about it? Probably. However,
-I am very conscious about the performance of :mod:`natsort`, and want it to be a true
-drop-in replacement for :func:`sorted` without having to incur a performance penalty.
-For the purposes of :mod:`natsort`, there is no clear winner between the two algorithms -
-the data being passed to this function will likely be a mix of numeric and non-numeric
-string content. Do I use the ``try: except`` method and hope the speed gains on
-numbers will offset the non-number performance, or do I use regular expressions and
-take the more stable performance?
+Why do I care? Shouldn't I just pick a method and not worry about it? Probably.
+However, I am very conscious about the performance of :mod:`natsort`, and want
+it to be a true drop-in replacement for :func:`sorted` without having to incur
+a performance penalty. For the purposes of :mod:`natsort`, there is no clear
+winner between the two algorithms - the data being passed to this function will
+likely be a mix of numeric and non-numeric string content. Do I use the
+``try: except`` method and hope the speed gains on numbers will offset the
+non-number performance, or do I use regular expressions and take the more
+stable performance?
 
 It turns out that within the context of :mod:`natsort`, some assumptions can be
 made that make a hybrid approach attractive. Because all strings are pre-split
-into numeric and non-numeric content *before* being passed to this coercion function,
-the assumption can be made that *if a string begins with a digit or a sign, it
-can be coerced into a number*.
+into numeric and non-numeric content *before* being passed to this coercion
+function, the assumption can be made that *if a string begins with a digit or a
+sign, it can be coerced into a number*.
 
 .. code-block:: pycon
 
@@ -238,9 +240,9 @@ So how does this perform compared to the standard coercion methods?
     In [7]: %timeit [coerce_to_int(x) for x in not_numbers]
     10000 loops, best of 3: 26.4 µs per loop
 
-The hybrid method eliminates most of the time wasted on numbers checking that it
-is in fact a number before passing to :func:`int`, and eliminates the time wasted
-in the exception stack for input that is not a number.
+The hybrid method eliminates most of the time wasted on numbers checking
+that it is in fact a number before passing to :func:`int`, and eliminates
+the time wasted in the exception stack for input that is not a number.
 
 That's as fast as we can get, right? In pure Python, probably. At least, it's
 close. But because I am crazy and a glutton for punishment, I decided to see
@@ -257,12 +259,12 @@ called :func:`fast_int`. How does it fair? Pretty well.
     10000 loops, best of 3: 30 µs per loop
 
 During development of :mod:`natsort`, I wanted to ensure that using it did not
-get in the way of a user's program by introducing a performance penalty to their code.
-To that end, I do not feel like my adventures down the rabbit hole of optimization
-of coercion functions was a waste; I can confidently look users in the eye and
-say I considered every option in ensuring :mod:`natsort` is as efficient as possible.
-This is why if `fastnumbers`_ is installed it will be used for this step,
-and otherwise the hybrid method will be used.
+get in the way of a user's program by introducing a performance penalty to
+their code. To that end, I do not feel like my adventures down the rabbit hole
+of optimization of coercion functions was a waste; I can confidently look users
+in the eye and say I considered every option in ensuring :mod:`natsort` is as
+efficient as possible. This is why if `fastnumbers`_ is installed it will be
+used for this step, and otherwise the hybrid method will be used.
 
 .. note::
 
@@ -392,11 +394,11 @@ filename component as well. We can solve that nicely and quickly with
     >>> sorted(paths, key=natsort_key_with_path_support)
     ['/p/Folder/file.tar.gz', '/p/Folder (1)/file.tar.gz', '/p/Folder (1)/file (1).tar.gz', '/p/Folder (10)/file.tar.gz']
 
-This works because in addition to breaking the input by path separators, the final
-filename component is separated from its extensions as well [#f1]_. *Then*, each of these
-separated components is sent to the :mod:`natsort` algorithm, so the result is
-a tuple of tuples. Once that is done, we can see how comparisons can be done in
-the expected manner.
+This works because in addition to breaking the input by path separators,
+the final filename component is separated from its extensions as well
+[#f1]_. *Then*, each of these separated components is sent to the
+:mod:`natsort` algorithm, so the result is a tuple of tuples. Once that
+is done, we can see how comparisons can be done in the expected manner.
 
 .. code-block:: pycon
 
@@ -455,22 +457,24 @@ Let's break these down.
 #. ``natsort_key_with_poor_real_number_support('12 apples') < natsort_key_with_poor_real_number_support('apples')``
    is the same as ``(12.0, ' apples') < ('apples',)``, and thus a number gets
    compared to a string [#f2]_ which also is a no-no.
-#. This one scores big on the astonishment scale, especially if one accidentally
-   uses signed integers or real numbers when they mean to use unsigned integers.
+#. This one scores big on the astonishment scale, especially if one
+   accidentally uses signed integers or real numbers when they mean
+   to use unsigned integers.
    ``natsort_key_with_poor_real_number_support('version5.3.0') < natsort_key_with_poor_real_number_support('version5.3rc1')``
-   is the same as ``('version', 5.3, 0.0) < ('version', 5.3, 'rc', 1.0)``, so in the
-   third element a number gets compared to a string, once again the same
-   old no-no. (The same would happen with ``'version5-3'`` and ``'version5-a'``,
-   which would be come ``('version', 5, -3)`` and ``('version', 5, '-a')``).
+   is the same as ``('version', 5.3, 0.0) < ('version', 5.3, 'rc', 1.0)``,
+   so in the third element a number gets compared to a string, once again
+   the same old no-no. (The same would happen with ``'version5-3'`` and
+   ``'version5-a'``, which would become ``('version', 5, -3)`` and
+   ``('version', 5, '-a')``).
 
-As you might expect, the solution to the first issue is to wrap the ``re.split``
-call in a ``try: except:`` block and handle the number specially if a
-:exc:`TypeError` is raised. The second and third cases *could* be handled
+As you might expect, the solution to the first issue is to wrap the
+``re.split`` call in a ``try: except:`` block and handle the number specially
+if a :exc:`TypeError` is raised. The second and third cases *could* be handled
 in a "special case" manner, meaning only respond and do something different
 if these problems are detected. But a less error-prone method is to ensure
 that the data is correct-by-construction, and this can be done by ensuring
 that the returned tuples *always* start with a string, and then alternate
-in a string-number-string-number-string patter;n this can be achieved by
+in a string-number-string-number-string pattern; this can be achieved by
 adding an empty string wherever the pattern is not followed [#f3]_. This ends
 up working out pretty nicely because empty strings are always "less" than
 any non-empty string, and we typically want numbers to come before strings.
@@ -501,7 +505,8 @@ Let's take a look at how this works out.
     >>> sorted(['version5.3.0', 'version5.3rc1'], key=natsort_key_with_good_real_number_support)
     ['version5.3.0', 'version5.3rc1']
 
-How the "good" version works will be given in `TL;DR 2 - Handling Crappy, Real-World Input`_.
+How the "good" version works will be given in
+`TL;DR 2 - Handling Crappy, Real-World Input`_.
 
 Handling NaN
 ++++++++++++
@@ -548,7 +553,8 @@ to know how **NaN** will behave in a sorting algorithm). The simplest way to
 satisfy the "least astonishment" principle is to substitute **NaN** with
 some other value. But what value is *least* astonishing? I chose to replace
 **NaN** with :math:`-\infty` so that these poorly behaved elements always
-end up at the front where the users will most likely be alerted to their presence.
+end up at the front where the users will most likely be alerted to their
+presence.
 
 .. code-block:: pycon
 
@@ -570,6 +576,8 @@ TL;DR 2 - Handling Crappy, Real-World Input
 Let's see how our elegant key function from :ref:`TL;DR 1 <tldr1>` has
 become bastardized in order to support handling mixed real-world data
 and user customizations.
+
+.. code-block:: pycon
 
     >>> def natsort_key(x, as_float=False, signed=False, as_path=False):
     ...     if as_float:
@@ -600,10 +608,10 @@ and user customizations.
     ...         return tuple(sep_inserter(coerced_input, ''))
     ...
 
-And this doesn't even show handling :class:`bytes` type!  Notice that we have
+And this doesn't even show handling :class:`bytes` type! Notice that we have
 to do non-obvious things like modify the return form of numbers when ``as_path``
-is given, just to avoid comparing strings and numbers for the case in which a user provides
-input like ``['/home/me', 42]``.
+is given, just to avoid comparing strings and numbers for the case in which a
+user provides input like ``['/home/me', 42]``.
 
 Let's take it out for a spin!
 
@@ -629,9 +637,10 @@ Probably the most challenging special case I had to handle was getting
 :mod:`natsort` to handle sorting the non-numerical parts of input
 correctly, and also allowing it to sort the numerical bits in different
 locales. This was in no way what I originally set out to do with this
-library, so I was `caught a bit off guard when the request was initially made`_.
-I discovered the :mod:`locale` library, and assumed that if it's part of Python's
-StdLib there can't be too many dragons, right?
+library, so I was
+`caught a bit off guard when the request was initially made`_.
+I discovered the :mod:`locale` library, and assumed that if it's part of
+Python's StdLib there can't be too many dragons, right?
 
 .. admonition:: INCOMPLETE LIST OF DRAGONS
 
@@ -653,17 +662,19 @@ These can be summed up as follows:
 #. :mod:`locale` is a thin wrapper over your operating system's *locale*
    library, so if *that* is broken (like it is on BSD and OSX) then
    :mod:`locale` is broken in Python.
-#. Because of a bug in legacy Python (i.e. Python 2), there is no uniform way to use
-   the :mod:`locale` sorting functionality between legacy Python and Python 3.
-#. People have differing opinions of how capitalization should affect word order.
+#. Because of a bug in legacy Python (i.e. Python 2), there is no uniform
+   way to use the :mod:`locale` sorting functionality between legacy Python
+   and Python 3.
+#. People have differing opinions of how capitalization should affect word
+   order.
 #. There is no built-in way to handle locale-dependent thousands separators
    and decimal points *robustly*.
 #. Proper handling of Unicode is complicated.
 #. Proper handling of :mod:`locale` is complicated.
 
-Easily over half of the the code in :mod:`natsort` is in some way dealing with some
-aspect of :mod:`locale` or basic case handling. It would have been
-impossible to get right without a `really good`_ `testing strategy`_.
+Easily over half of the code in :mod:`natsort` is in some way dealing with some
+aspect of :mod:`locale` or basic case handling. It would have been impossible
+to get right without a `really good`_ `testing strategy`_.
 
 Don't expect any more TL;DR's... if you want to see how all this is fully
 incorporated into the :mod:`natsort` algorithm then please take a look
@@ -692,7 +703,8 @@ so all capitalized words appear first. Not everyone agrees that this
 is the correct order. Some believe that the capitalized words should
 be last (``['apple', 'banana', 'corn', 'Apple', 'Banana', 'Corn']``).
 Some believe that both the lowercase and uppercase versions
-should appear together (``['Apple', 'apple', 'Banana', 'banana', 'Corn', 'corn']``).
+should appear together
+(``['Apple', 'apple', 'Banana', 'banana', 'Corn', 'corn']``).
 Some believe that both should be true ☹. Some people don't care at all [#f4]_.
 
 Solving the first case (I call it *LOWERCASEFIRST*) is actually pretty
@@ -787,7 +799,6 @@ Unicode is hard and complicated. Here's an example.
     >>> sorted(a)  # doctest: +SKIP
     ['a', 'e', 'é', 'f', 'z', 'é']
 
-
 There are more than one way to represent the character 'é' in Unicode.
 In fact, many characters have multiple representations. This is a challenge
 because comparing the two representations would return ``False`` even though
@@ -806,12 +817,14 @@ The original approach that :mod:`natsort` took with respect to non-ASCII
 Unicode characters was to say "just use
 the :mod:`locale` or :mod:`PyICU` library" and then cross it's fingers
 and hope those libraries take care of it. As you will find in the following
-sections, that comes with its own baggage, and turned out to not always work anyway
-(see https://stackoverflow.com/q/45734562/1399279). A more robust approach is to
-handle the Unicode out-of-the-box without invoking a heavy-handed library
-like :mod:`locale` or :mod:`PyICU`. To do this, we must use *normalization*.
+sections, that comes with its own baggage, and turned out to not always work
+anyway (see https://stackoverflow.com/q/45734562/1399279). A more robust
+approach is to handle the Unicode out-of-the-box without invoking a
+heavy-handed library like :mod:`locale` or :mod:`PyICU`.
+To do this, we must use *normalization*.
 
-To fully understand Unicode normalization, `check out some official Unicode documentation`_.
+To fully understand Unicode normalization,
+`check out some official Unicode documentation`_.
 Just kidding... that's too much text. The following StackOverflow answers do
 a good job at explaining Unicode normalization in simple terms:
 https://stackoverflow.com/a/7934397/1399279 and
@@ -1076,11 +1089,12 @@ what the rest of the world assumes.
     :func:`sep_inserter` in `util.py`_.
 .. [#f4]
     Handling each of these is straightforward, but coupled with the rapidly
-    fracturing execution paths presented in :ref:`TL;DR 2 <tldr2>` one can imagine
-    this will get out of hand quickly. If you take a look at `natsort.py`_ and
-    `util.py`_ you can observe that to avoid this I take a more functional approach
-    to construting the :mod:`natsort` algorithm as opposed to the procedural approach
-    illustrated in :ref:`TL;DR 1 <tldr1>` and :ref:`TL;DR 2 <tldr2>`.
+    fracturing execution paths presented in :ref:`TL;DR 2 <tldr2>` one can
+    imagine this will get out of hand quickly. If you take a look at
+    `natsort.py`_ and `util.py`_ you can observe that to avoid this I take
+    a more functional approach to construting the :mod:`natsort` algorithm
+    as opposed to the procedural approach illustrated in
+    :ref:`TL;DR 1 <tldr1>` and :ref:`TL;DR 2 <tldr2>`.
 
 .. _ASCII table: https://www.asciitable.com/
 .. _getting sorting right is surprisingly hard: http://www.compciv.org/guides/python/fundamentals/sorting-collections-with-sorted/

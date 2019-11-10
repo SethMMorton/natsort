@@ -47,8 +47,8 @@ By default, if you wish to sort versions that are not as simple as
     >>> natsorted(a)
     ['1.1', '1.2', '1.2.1', '1.2alpha', '1.2beta1', '1.2beta2', '1.2rc1', '1.3']
 
-To make the '1.2' pre-releases come before '1.2.1', you need to use the following
-recipe:
+To make the '1.2' pre-releases come before '1.2.1', you need to use the
+following recipe:
 
 .. code-block:: pycon
 
@@ -76,8 +76,8 @@ to assist in sorting. Some examples might be
 `SemVer <https://python-semver.readthedocs.io/en/latest/api.html>`_.
 
 If we are being honest, using these methods to parse a version means you don't
-need to use :mod:`natsort` - you should probably just use :func:`sorted` directly.
-Here's an example with SemVer:
+need to use :mod:`natsort` - you should probably just use :func:`sorted`
+directly. Here's an example with SemVer:
 
 .. code-block:: pycon
 
@@ -245,6 +245,56 @@ sort key so that:
     >>> natsorted(b, key=attrgetter('bar'))
     [Foo('num2'), Foo('num3'), Foo('num5')]
 
+.. _unit_sorting:
+
+Accounting for Units When Sorting
++++++++++++++++++++++++++++++++++
+
+:mod:`natsort` does not come with any pre-built mechanism to sort units,
+but you can write your own `key` to do this. Below, I will demonstrate sorting
+imperial lengths (e.g. feet an inches), but of course you can extend this to any
+set of units you need. This example is based on code
+`from this issue <https://github.com/SethMMorton/natsort/issues/100#issuecomment-530659310>`_,
+and uses the function :func:`natsort.numeric_regex_chooser` to build a regular
+expression that will parse numbers in the same manner as :mod:`natsort` itself.
+
+.. code-block:: pycon
+
+    >>> import re
+    >>> import natsort
+    >>>
+    >>> # Define how each unit will be transformed
+    >>> conversion_mapping = {
+    ...         "in": 1,
+    ...         "inch": 1,
+    ...         "inches": 1,
+    ...         "ft": 12,
+    ...         "feet": 12,
+    ...         "foot": 12,
+    ... }
+    >>>
+    >>> # This regular expression searches for numbers and units
+    >>> all_units = "|".join(conversion_mapping.keys())
+    >>> float_re = natsort.numeric_regex_chooser(natsort.FLOAT | natsort.SIGNED)
+    >>> unit_finder = re.compile(r"({})\s*({})".format(float_re, all_units), re.IGNORECASE)
+    >>>
+    >>> def unit_replacer(matchobj):
+    ...     """
+    ...     Given a regex match object, return a replacement string where units are modified
+    ...     """
+    ...     number = matchobj.group(1)
+    ...     unit = matchobj.group(2)
+    ...     new_number = float(number) * conversion_mapping[unit]
+    ...     return "{} in".format(new_number)
+    ...
+    >>> # Demo time!
+    >>> data = ['1 ft', '5 in', '10 ft', '2 in']
+    >>> [unit_finder.sub(unit_replacer, x) for x in data]
+    ['12.0 in', '5.0 in', '120.0 in', '2.0 in']
+    >>>
+    >>> natsort.natsorted(data, key=lambda x: unit_finder.sub(unit_replacer, x))
+    ['2 in', '5 in', '1 ft', '10 ft']
+
 Generating a Natsort Key
 ------------------------
 
@@ -351,9 +401,9 @@ If you need a codec different from ASCII or UTF-8, you can use
 Sorting a Pandas DataFrame
 --------------------------
 
-As of Pandas version 0.16.0, the sorting methods do not accept a ``key`` argument,
-so you cannot simply pass :func:`natsort_keygen` to a Pandas DataFrame and sort.
-This request has been made to the Pandas devs; see
+As of Pandas version 0.16.0, the sorting methods do not accept a ``key``
+argument, so you cannot simply pass :func:`natsort_keygen` to a Pandas
+DataFrame and sort. This request has been made to the Pandas devs; see
 `issue 3942 <https://github.com/pydata/pandas/issues/3942>`_ if you are interested.
 If you need to sort a Pandas DataFrame, please check out
 `this answer on StackOverflow <https://stackoverflow.com/a/29582718/1399279>`_

@@ -1,8 +1,21 @@
 Unreleased
 ---
 
+[6.1.0] - 2019-11-09
+---
+
+### Added
+ - Expose `numeric_regex_chooser` as a public function for ease in making
+   key functions
+ - Example in the documentation on how to sort numbers with units
+ - Automated testing support for macos and Windows (issue #91)
+
 ### Changed
- - Update CHANGELOG format to style from https://keepachangelog.com/
+ - Update CHANGELOG format to style from https://keepachangelog.com/ (issue #92)
+
+### Fixed
+ - Removed dependency on `sudo` in TravisCI configuration ([@hugovk](https://github.com/hugovk), issue #99)
+ - Documentation typos ([@jdufresne](https://github.com/jdufresne), issue #94) ([@cpburnz](https://github.com/cpburnz), issue #95)
 
 ### Removed
  - Support for Python 2
@@ -478,6 +491,7 @@ a pipeline by which to filter
  - Sorting algorithm to support floats (including exponentials) and basic version number support
 
 <!---Comparison links-->
+[6.1.0]: https://github.com/SethMMorton/natsort/compare/6.0.0...6.1.0
 [6.0.0]: https://github.com/SethMMorton/natsort/compare/5.5.0...6.0.0
 [5.5.0]: https://github.com/SethMMorton/natsort/compare/5.4.1...5.5.0
 [5.4.1]: https://github.com/SethMMorton/natsort/compare/5.4.0...5.4.1
