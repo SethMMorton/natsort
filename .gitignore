@@ -39,3 +39,6 @@ pip-log.txt
 
 # PyCharm
 .idea
+
+# VSCode
+.vscode
