@@ -9,6 +9,7 @@ python:
   - 3.5
   - 3.6
   - 3.7
+  - 3.8
 
 # By default do not build "extras". Builds with "extras" will be included manually below.
 env: WITH_EXTRAS=""
