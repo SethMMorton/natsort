@@ -1,0 +1,7 @@
+coverage
+pytest
+pytest-cov
+pytest-mock
+hypothesis
+# pytest-faulthandler; platform_python_implementation == 'CPython'
+semver
