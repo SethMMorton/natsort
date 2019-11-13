@@ -12,3 +12,8 @@ bump2version "${1}"
 URL="https://github.com/SethMMorton/natsort/compare"
 sed -E "s|(<!---Comparison links-->)|\1\n[${new_version}]: ${URL}/${current_version}...${new_version}|" -i.bak CHANGELOG.md
 rm CHANGELOG.md.bak  # Remove backup created by in-place sed
+
+# Commit the change just made and then move the tag
+git add CHANGELOG.md
+git commit --amend --no-edit
+git tag --force "${new_version}" HEAD
