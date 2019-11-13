@@ -8,6 +8,7 @@ Unreleased
  - `index_natsorted` internally now uses tuples for index-element pairs
    instead of lists
  - Added a TOC to the README
+ - Python 3.4 is no longer included in testing
 
 ### Fixed
  - Pin testing dependencies to prevent CI breaking due to third-party

@@ -347,7 +347,9 @@ from the command line with ``python -m natsort``.
 Requirements
 ------------
 
-``natsort`` requires Python version 2.7 or Python 3.4 or greater.
+``natsort`` requires Python version 2.7 or Python 3.5 or greater. Python 3.4 is
+unofficially supported, meaning that support has not been removed, but it is no
+longer tested.
 
 Optional Dependencies
 ---------------------
