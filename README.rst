@@ -29,11 +29,16 @@ Simple yet flexible natural sorting in Python.
       - `How Does Natsort Work? <https://natsort.readthedocs.io/en/master/howitworks.html>`_
       - `API <https://natsort.readthedocs.io/en/master/api.html>`_
 
+    - `Quick Description`_
+    - `Examples`_
     - `FAQ`_
+    - `Requirements`_
     - `Optional Dependencies`_
-
-      - `fastnumbers <https://pypi.org/project/fastnumbers>`_ >= 2.0.0
-      - `PyICU <https://pypi.org/project/PyICU>`_ >= 1.0.0
+    - `Installation`_
+    - `How to Run Tests`_
+    - `How to Build Documentation`_
+    - `Deprecation Schedule`_
+    - `History`_
 
 **NOTE**: Please see the `Deprecation Schedule`_ section for changes in
 ``natsort`` version 6.0.0 and in the upcoming version 7.0.0.
@@ -94,6 +99,15 @@ an alternate way to sort in-place naturally.
 
 Examples
 --------
+
+- `Sorting Versions`_
+- `Sorting by Real Numbers (i.e. Signed Floats)`_
+- `Locale-Aware Sorting (or "Human Sorting")`_
+- `Further Customizing Natsort`_
+- `Sorting Mixed Types`_
+- `Handling Bytes on Python 3`_
+- `Generating a Reusable Sorting Key and Sorting In-Place`_
+- `Other Useful Things`_
 
 Sorting Versions
 ++++++++++++++++
@@ -260,6 +274,7 @@ Other Useful Things
  - `controlling the case-sensitivity <https://natsort.readthedocs.io/en/master/examples.html#case-sort>`_
  - `sorting file paths correctly <https://natsort.readthedocs.io/en/master/examples.html#path-sort>`_
  - `allow custom sorting keys <https://natsort.readthedocs.io/en/master/examples.html#custom-sort>`_
+ - `accounting for units <https://natsort.readthedocs.io/en/master/examples.html#accounting-for-units-when-sorting>`_
 
 FAQ
 ---
@@ -440,8 +455,8 @@ fixes are applied so that users who cannot update from Python 2.7 will not be
 forced to use a buggy ``natsort`` version. Once version 7.0.0 is released, new
 features will not be added to version 6.X, only bug fixes.
 
-Deprecated APIs
-+++++++++++++++
+Dropped Deprecated APIs
++++++++++++++++++++++++
 
 In ``natsort`` version 6.0.0, the following APIs and functions were removed
 

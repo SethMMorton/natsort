@@ -6,13 +6,25 @@
 natsort: Simple yet flexible natural sorting in Python.
 =======================================================
 
-Contents:
+    - Source Code: https://github.com/SethMMorton/natsort
+    - Downloads: https://pypi.org/project/natsort/
+    - Documentation: https://natsort.readthedocs.io/
+
+Please see the `GitHub main page <https://github.com/SethMMorton/natsort#natsort>`_
+for everything else, including
+
+    - Quick description
+    - Basic examples
+    - FAQ
+    - Requirements and optional dependencies
+    - Installation instructions
+    - Testing instructions
+    - Deprecation schedule
 
 .. toctree::
    :maxdepth: 2
    :numbered:
 
-   intro.rst
    howitworks.rst
    examples.rst
    api.rst
