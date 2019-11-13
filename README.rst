@@ -30,7 +30,7 @@ Simple yet flexible natural sorting in Python.
       - `API <https://natsort.readthedocs.io/en/master/api.html>`_
 
     - `Quick Description`_
-    - `Examples`_
+    - `Quick Examples`_
     - `FAQ`_
     - `Requirements`_
     - `Optional Dependencies`_
@@ -97,8 +97,8 @@ variable, you must explicitly assign the output to a variable:
 Please see `Generating a Reusable Sorting Key and Sorting In-Place`_ for
 an alternate way to sort in-place naturally.
 
-Examples
---------
+Quick Examples
+--------------
 
 - `Sorting Versions`_
 - `Sorting by Real Numbers (i.e. Signed Floats)`_
