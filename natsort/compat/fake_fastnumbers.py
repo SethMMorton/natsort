@@ -3,12 +3,18 @@
 This module is intended to replicate some of the functionality
 from the fastnumbers module in the event that module is not installed.
 """
+from __future__ import absolute_import, division, print_function, unicode_literals
 
 # Std. lib imports.
 import unicodedata
 
 # Local imports.
+from natsort.compat.py23 import PY_VERSION
 from natsort.unicode_numbers import decimal_chars
+
+if PY_VERSION >= 3:
+    long = int
+
 
 NAN_INF = [
     "INF",
@@ -106,7 +112,7 @@ def fast_int(
     """
     if x[0] in _first_char:
         try:
-            return int(x)
+            return long(x)
         except ValueError:
             try:
                 return _uni(x, key(x)) if len(x) == 1 else key(x)

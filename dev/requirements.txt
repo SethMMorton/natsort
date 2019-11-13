@@ -17,6 +17,7 @@ mock==3.0.5               # via pytest-mock
 more-itertools==5.0.0     # via pytest, zipp
 packaging==19.2           # via pytest
 pathlib2==2.3.5           # via importlib-metadata, pytest
+pathlib==1.0.1 ; python_version < "3.4"
 pluggy==0.13.0            # via pytest
 py==1.8.0                 # via pytest
 pyparsing==2.4.5          # via packaging

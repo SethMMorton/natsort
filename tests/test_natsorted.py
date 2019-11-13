@@ -3,11 +3,13 @@
 Here are a collection of examples of how this module can be used.
 See the README or the natsort homepage for more details.
 """
+from __future__ import print_function, unicode_literals
 
 from operator import itemgetter
 
 import pytest
 from natsort import as_utf8, natsorted, ns
+from natsort.compat.py23 import PY_VERSION
 from pytest import raises
 
 
@@ -99,6 +101,7 @@ def test_natsorted_handles_nan(alg, expected, slc):
     assert natsorted(given, alg=alg)[slc] == expected[slc]
 
 
+@pytest.mark.skipif(PY_VERSION < 3.0, reason="error is only raised on Python 3")
 def test_natsorted_with_mixed_bytes_and_str_input_raises_type_error():
     with raises(TypeError, match="bytes"):
         natsorted(["ä", b"b"])
@@ -132,14 +135,12 @@ def test_natsorted_returns_list_in_reversed_order_with_reverse_option(float_list
 def test_natsorted_handles_filesystem_paths():
     given = [
         "/p/Folder (10)/file.tar.gz",
+        "/p/Folder/file.tar.gz",
         "/p/Folder (1)/file (1).tar.gz",
-        "/p/Folder/file.x1.9.tar.gz",
         "/p/Folder (1)/file.tar.gz",
-        "/p/Folder/file.x1.10.tar.gz",
     ]
     expected_correct = [
-        "/p/Folder/file.x1.10.tar.gz",
-        "/p/Folder/file.x1.9.tar.gz",
+        "/p/Folder/file.tar.gz",
         "/p/Folder (1)/file.tar.gz",
         "/p/Folder (1)/file (1).tar.gz",
         "/p/Folder (10)/file.tar.gz",
@@ -148,13 +149,12 @@ def test_natsorted_handles_filesystem_paths():
         "/p/Folder (1)/file (1).tar.gz",
         "/p/Folder (1)/file.tar.gz",
         "/p/Folder (10)/file.tar.gz",
-        "/p/Folder/file.x1.10.tar.gz",
-        "/p/Folder/file.x1.9.tar.gz",
+        "/p/Folder/file.tar.gz",
     ]
     # Is incorrect by default.
-    assert natsorted(given, alg=ns.FLOAT) == expected_incorrect
+    assert natsorted(given) == expected_incorrect
     # Need ns.PATH to make it correct.
-    assert natsorted(given, alg=ns.FLOAT | ns.PATH) == expected_correct
+    assert natsorted(given, alg=ns.PATH) == expected_correct
 
 
 def test_natsorted_handles_numbers_and_filesystem_paths_simultaneously():

@@ -3,6 +3,7 @@
 This file contains functions to profile natsorted with different
 inputs and different settings.
 """
+from __future__ import print_function
 
 import cProfile
 import locale
@@ -10,9 +11,11 @@ import sys
 
 try:
     from natsort import ns, natsort_keygen
+    from natsort.compat.py23 import py23_range
 except ImportError:
     sys.path.insert(0, ".")
     from natsort import ns, natsort_keygen
+    from natsort.compat.py23 import py23_range
 
 locale.setlocale(locale.LC_ALL, "en_US.UTF-8")
 
@@ -34,7 +37,7 @@ locale_key = natsort_keygen(alg=ns.LOCALE)
 
 def prof_time_to_generate():
     print("*** Generate Plain Key ***")
-    for _ in range(100000):
+    for _ in py23_range(100000):
         natsort_keygen()
 
 
@@ -43,7 +46,7 @@ cProfile.run("prof_time_to_generate()", sort="time")
 
 def prof_parsing(a, msg, key=basic_key):
     print(msg)
-    for _ in range(100000):
+    for _ in py23_range(100000):
         key(a)
 
 

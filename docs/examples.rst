@@ -314,6 +314,31 @@ need to pass a key to the :meth:`list.sort` method. The function
 :func:`~natsort_keygen` has the same API as :func:`~natsorted` (minus the
 `reverse` option).
 
+Natural Sorting with ``cmp`` (Python 2 only)
+--------------------------------------------
+
+.. note::
+    This is a Python2-only feature! The :func:`natcmp` function is not
+    exposed on Python3. Because this documentation is built with
+    Python3, you will not find :func:`natcmp` in the API.
+
+If you are using a legacy codebase that requires you to use :func:`cmp` instead
+of a key-function, you can use :func:`~natcmp`.
+
+.. code-block:: pycon
+
+    >>> import sys
+    >>> a = ['2 ft 7 in', '1 ft 5 in', '10 ft 2 in', '2 ft 11 in', '7 ft 6 in']
+    >>> if sys.version_info[0] == 2:
+    ...     from natsort import natcmp
+    ...     sorted(a, cmp=natcmp)
+    ... else:
+    ...     natsorted(a)  # so docstrings don't fail
+    ['1 ft 5 in', '2 ft 7 in', '2 ft 11 in', '7 ft 6 in', '10 ft 2 in']
+
+:func:`natcmp` also accepts an ``alg`` argument so you can customize your
+sorting experience.
+
 Sorting Multiple Lists According to a Single List
 -------------------------------------------------
 

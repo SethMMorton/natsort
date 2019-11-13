@@ -1836,11 +1836,12 @@ numeric_hex = (
 # Some code that can be used to create the above list of hex numbers.
 if __name__ == "__main__":
     import unicodedata
+    from natsort.compat.py23 import py23_range, py23_unichr
 
     hex_chars = []
-    for i in range(0x110000):
+    for i in py23_range(0x110000):
         try:
-            a = chr(i)
+            a = py23_unichr(i)
         except ValueError:
             break
         if a in "0123456789":

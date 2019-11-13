@@ -5,9 +5,6 @@ Unreleased
  - `index_natsorted` internally now uses tuples for index-element pairs
    instead of lists
 
-### Removed
- - Support for Python 2
-
 [6.1.0] - 2019-11-09
 ---
 

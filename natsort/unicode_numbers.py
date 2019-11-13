@@ -2,9 +2,11 @@
 """
 Pre-determine the collection of unicode decimals, digits, and numerals.
 """
+from __future__ import absolute_import, division, print_function, unicode_literals
 
 import unicodedata
 
+from natsort.compat.py23 import py23_unichr
 from natsort.unicode_numeric_hex import numeric_hex
 
 # Convert each hex into the literal Unicode character.
@@ -14,7 +16,7 @@ from natsort.unicode_numeric_hex import numeric_hex
 numeric_chars = []
 for a in numeric_hex:
     try:
-        character = chr(a)
+        character = py23_unichr(a)
     except ValueError:  # pragma: no cover
         break
     if unicodedata.numeric(character, None) is None:

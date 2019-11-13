@@ -3,6 +3,7 @@
 This module defines the "ns" enum for natsort is used to determine
 what algorithm natsort uses.
 """
+from __future__ import absolute_import, division, print_function, unicode_literals
 
 import collections
 

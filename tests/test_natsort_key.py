@@ -1,13 +1,19 @@
 # -*- coding: utf-8 -*-
 """These test the utils.py functions."""
+from __future__ import unicode_literals
 
+import pytest
 from hypothesis import given
 from hypothesis.strategies import binary, floats, integers, lists, text
+from natsort.compat.py23 import PY_VERSION, py23_str
 from natsort.utils import natsort_key
+
+if PY_VERSION >= 3:
+    long = int
 
 
 def str_func(x):
-    if isinstance(x, str):
+    if isinstance(x, py23_str):
         return x
     else:
         raise TypeError("Not a str!")
@@ -22,6 +28,7 @@ def test_natsort_key_with_numeric_input_takes_number_path(x):
     assert natsort_key(x, None, str_func, fail, lambda y: y) is x
 
 
+@pytest.mark.skipif(PY_VERSION < 3, reason="only valid on python3")
 @given(binary().filter(bool))
 def test_natsort_key_with_bytes_input_takes_bytes_path(x):
     assert natsort_key(x, None, str_func, lambda y: y, fail) is x

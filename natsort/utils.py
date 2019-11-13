@@ -38,21 +38,39 @@ that ensures "val" is a local variable instead of global variable
 and thus has a slightly improved performance at runtime.
 
 """
+from __future__ import absolute_import, division, print_function, unicode_literals
 
 import re
+from collections import deque
 from functools import partial, reduce
 from itertools import chain as ichain
 from operator import methodcaller
-from pathlib import PurePath
+from os import curdir as os_curdir
+from os import pardir as os_pardir
+from os import sep as os_sep
+from os.path import split as path_split
+from os.path import splitext as path_splitext
 from unicodedata import normalize
 
 from natsort.compat.fastnumbers import fast_float, fast_int
 from natsort.compat.locale import get_decimal_point, get_strxfrm, get_thousands_sep
+from natsort.compat.pathlib import PurePath, has_pathlib
+from natsort.compat.py23 import (
+    NEWPY,
+    PY_VERSION,
+    py23_filter,
+    py23_map,
+    py23_str,
+    u_format,
+)
 from natsort.ns_enum import NS_DUMB, ns
 from natsort.unicode_numbers import digits_no_decimals, numeric_no_decimals
 
+if PY_VERSION >= 3:
+    long = int
 
-class NumericalRegularExpressions:
+
+class NumericalRegularExpressions(object):
     """
     Container of regular expressions that match numbers.
 
@@ -158,7 +176,11 @@ def _normalize_input_factory(alg):
 
     """
     normalization_form = "NFKD" if alg & ns.COMPATIBILITYNORMALIZE else "NFD"
-    return partial(normalize, normalization_form)
+    wrapped = partial(normalize, normalization_form)
+    if NEWPY:
+        return wrapped
+    else:
+        return lambda x, _f=wrapped: _f(x) if isinstance(x, py23_str) else x
 
 
 def natsort_key(val, key, string_func, bytes_func, num_func):
@@ -368,8 +390,8 @@ def parse_string_factory(
         x = normalize_input(x)
         x, original = input_transform(x), original_func(x)
         x = splitter(x)  # Split string into components.
-        x = filter(None, x)  # Remove empty strings.
-        x = map(component_transform, x)  # Apply transform on components.
+        x = py23_filter(None, x)  # Remove empty strings.
+        x = py23_map(component_transform, x)  # Apply transform on components.
         x = sep_inserter(x, sep)  # Insert '' between numbers.
         return final_transform(x, original)  # Apply the final transform.
 
@@ -400,7 +422,7 @@ def parse_path_factory(str_split):
     parse_string_factory
 
     """
-    return lambda x: tuple(map(str_split, path_splitter(x)))
+    return lambda x: tuple(py23_map(str_split, path_splitter(x)))
 
 
 def sep_inserter(iterable, sep):
@@ -424,7 +446,7 @@ def sep_inserter(iterable, sep):
         # Get the first element. A StopIteration indicates an empty iterable.
         # Since we are controlling the types of the input, 'type' is used
         # instead of 'isinstance' for the small speed advantage it offers.
-        types = (int, float)
+        types = (int, float, long)
         first = next(iterable)
         if type(first) in types:
             yield sep
@@ -478,7 +500,10 @@ def input_string_transform_factory(alg):
         function_chain.append(methodcaller("swapcase"))
 
     if alg & ns.IGNORECASE:
-        function_chain.append(methodcaller("casefold"))
+        if NEWPY:
+            function_chain.append(methodcaller("casefold"))
+        else:
+            function_chain.append(methodcaller("lower"))
 
     if alg & ns.LOCALENUM:
         # Create a regular expression that will remove thousands separators.
@@ -612,10 +637,11 @@ def final_data_transform_factory(alg, sep, pre_sep):
         return lambda split_val, val: tuple(split_val)
 
 
-lower_function = methodcaller("casefold")
+lower_function = methodcaller("casefold" if NEWPY else "lower")
 
 
 # noinspection PyIncorrectDocstring
+@u_format
 def groupletters(x, _low=lower_function):
     """
     Double all characters, making doubled letters lowercase.
@@ -632,7 +658,7 @@ def groupletters(x, _low=lower_function):
     --------
 
         >>> groupletters("Apple")
-        'aAppppllee'
+        {u}'aAppppllee'
 
     """
     return "".join(ichain.from_iterable((_low(y), y) for y in x))
@@ -699,6 +725,7 @@ def do_decoding(s, encoding):
 
 
 # noinspection PyIncorrectDocstring
+@u_format
 def path_splitter(s, _d_match=re.compile(r"\.\d").match):
     """
     Split a string into its path components.
@@ -718,25 +745,47 @@ def path_splitter(s, _d_match=re.compile(r"\.\d").match):
     --------
 
         >>> tuple(path_splitter("this/thing.ext"))
-        ('this', 'thing', '.ext')
+        ({u}'this', {u}'thing', {u}'.ext')
 
     """
-    if not isinstance(s, PurePath):
-        s = PurePath(s)
+    if has_pathlib and isinstance(s, PurePath):
+        s = py23_str(s)
+    path_parts = deque()
+    p_appendleft = path_parts.appendleft
+    # Continue splitting the path from the back until we have reached
+    # '..' or '.', or until there is nothing left to split.
+    path_location = s
+    while path_location != os_curdir and path_location != os_pardir:
+        parent_path = path_location
+        path_location, child_path = path_split(parent_path)
+        if path_location == parent_path:
+            break
+        p_appendleft(child_path)
 
-    # Split the path into parts.
-    *path_parts, base = s.parts
+    # This last append is the base path.
+    # Only append if the string is non-empty.
+    # Make sure the proper path separator for this OS is used
+    # no matter what was actually given.
+    if path_location:
+        p_appendleft(py23_str(os_sep))
 
-    # Now, split off the file extensions until we reach a decimal number at
-    # the beginning of the suffix or there are no more extensions.
-    suffixes = PurePath(base).suffixes
-    try:
-        digit_index = next(i for i, x in enumerate(reversed(suffixes)) if _d_match(x))
-    except StopIteration:
-        pass
-    else:
-        digit_index = len(suffixes) - digit_index
-        suffixes = suffixes[digit_index:]
+    # Now, split off the file extensions using a similar method to above.
+    # Continue splitting off file extensions until we reach a decimal number
+    # or there are no more extensions.
+    # We are not using built-in functionality of PathLib here because of
+    # the recursive splitting up to a decimal.
+    base = path_parts.pop()
+    base_parts = deque()
+    b_appendleft = base_parts.appendleft
+    while True:
+        front = base
+        base, ext = path_splitext(front)
+        if _d_match(ext) or not ext:
+            # Reset base to before the split if the split is invalid.
+            base = front
+            break
+        b_appendleft(ext)
+    b_appendleft(base)
 
-    base = base.replace("".join(suffixes), "")
-    return filter(None, ichain(path_parts, [base], suffixes))
+    # Return the split parent paths and then the split basename.
+    return ichain(path_parts, base_parts)

@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 """These test the utils.py functions."""
+from __future__ import unicode_literals
 
 from functools import partial
 
@@ -8,6 +9,7 @@ from hypothesis import example, given
 from hypothesis.strategies import floats, integers, text
 from natsort.compat.fastnumbers import fast_float, fast_int
 from natsort.compat.locale import get_strxfrm
+from natsort.compat.py23 import py23_range, py23_str, py23_unichr
 from natsort.ns_enum import NS_DUMB, ns
 from natsort.utils import groupletters, string_component_transform_factory
 
@@ -16,7 +18,7 @@ from natsort.utils import groupletters, string_component_transform_factory
 # raised by strxfrm). Let's filter them out.
 try:
     bad_uni_chars = frozenset(
-        chr(x) for x in range(0X10fefd, 0X10ffff + 1)
+        py23_unichr(x) for x in py23_range(0X10fefd, 0X10ffff + 1)
     )
 except ValueError:
     # Narrow unicode build... no worries.
@@ -47,8 +49,8 @@ def no_null(x):
             partial(fast_int, key=lambda x: get_strxfrm()(groupletters(x))),
         ),
         (
-            NS_DUMB | ns.LOCALE,
-            partial(fast_int, key=lambda x: get_strxfrm()(groupletters(x))),
+                NS_DUMB | ns.LOCALE,
+                partial(fast_int, key=lambda x: get_strxfrm()(groupletters(x))),
         ),
         (
             ns.GROUPLETTERS | ns.LOCALE | ns.FLOAT | ns.NANLAST,
@@ -70,7 +72,7 @@ def no_null(x):
 def test_string_component_transform_factory(x, alg, example_func):
     string_component_transform_func = string_component_transform_factory(alg)
     try:
-        assert string_component_transform_func(str(x)) == example_func(str(x))
+        assert string_component_transform_func(py23_str(x)) == example_func(py23_str(x))
     except ValueError as e:  # handle broken locale lib on BSD.
         if "is not in range" not in str(e):
             raise
