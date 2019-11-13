@@ -1,9 +1,20 @@
 Unreleased
 ---
 
+### Added
+ - Support for Python 3.8 ([@hugovk](https://github.com/hugovk), issue #104)
+
 ### Changed
  - `index_natsorted` internally now uses tuples for index-element pairs
    instead of lists
+ - Added a TOC to the README
+
+### Fixed
+ - Pin testing dependencies to prevent CI breaking due to third-party
+   library changes
+
+### Removed
+ - Introduction page in documentation
 
 [6.1.0] - 2019-11-09
 ---
