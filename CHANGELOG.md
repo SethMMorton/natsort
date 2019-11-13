@@ -1,6 +1,9 @@
 Unreleased
 ---
 
+[6.2.0] - 2019-11-13
+---
+
 ### Added
  - Support for Python 3.8 ([@hugovk](https://github.com/hugovk), issue #104)
 
@@ -504,6 +507,7 @@ a pipeline by which to filter
  - Sorting algorithm to support floats (including exponentials) and basic version number support
 
 <!---Comparison links-->
+[6.2.0]: https://github.com/SethMMorton/natsort/compare/6.1.0...6.2.0
 [6.1.0]: https://github.com/SethMMorton/natsort/compare/6.0.0...6.1.0
 [6.0.0]: https://github.com/SethMMorton/natsort/compare/5.5.0...6.0.0
 [5.5.0]: https://github.com/SethMMorton/natsort/compare/5.4.1...5.5.0
