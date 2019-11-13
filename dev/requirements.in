@@ -5,4 +5,3 @@ pytest-mock
 hypothesis
 # pytest-faulthandler; platform_python_implementation == 'CPython'
 semver
-pathlib; python_version < '3.4'

@@ -20,6 +20,9 @@ Unreleased
 ### Removed
  - Introduction page in documentation
 
+### Removed
+ - Support for Python 2
+
 [6.1.0] - 2019-11-09
 ---
 
