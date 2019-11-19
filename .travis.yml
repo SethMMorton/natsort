@@ -82,3 +82,28 @@ after_success:
 - coverage xml
 - python-codacy-coverage -r coverage.xml
 - codecov
+
+deploy:
+  - provider: pypi
+    server: https://test.pypi.org/legacy/
+    on:
+      tags: false
+      repo: SethMMorton/natsort
+      branch: master
+      python: 3.8
+    user: __token__
+    password:
+      secure: "TODO"
+    distributions: sdist --format=gztar bdist_wheel
+    skip_existing: true
+  - provider: pypi
+    on:
+      tags: true
+      repo: SethMMorton/natsort
+      branch: master
+      python: 3.8
+    user: __token__
+    password:
+      secure: "TODO"
+    distributions: sdist --format=gztar bdist_wheel
+    skip_existing: true
