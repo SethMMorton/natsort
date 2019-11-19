@@ -16,7 +16,7 @@ jobs:
 
     # For Python 3.7 do some extra configurations.
     # Linux with both "icu" and "fastnumbers"
-    - python: "3.7"
+    - python: 3.7
       env: WITH_EXTRAS="fast,icu"
       addons:
         apt:
@@ -26,8 +26,7 @@ jobs:
           - language-pack-en
 
     # For MacOS and Windows, only run Python 3.7 without "icu" to test native locales
-    - python: "3.7"
-      language: sh
+    - language: sh
       os: osx
       env:
         - TOXENV=py37
@@ -36,8 +35,7 @@ jobs:
         - export PYENV_VERSION_STRING="Python ${PYENV_VERSION}"
         - wget https://github.com/praekeltfoundation/travis-pyenv/releases/download/0.4.0/setup-pyenv.sh
         - source setup-pyenv.sh
-    - python: "3.7"
-      language: cpp
+    - language: sh
       os: windows
       env: TOXENV=py37
       before_install:
@@ -49,20 +47,18 @@ jobs:
 
     # This "code quality" stage does static analysis and formatting checks.
     # Platform- and Python-version-independent.
+    # No python version specified, will use the first listed in the python: list.
     - stage: code quality
       python: 3.6  # black requires >= 3.6
       name: "Formatting"
-      python: "3.7"
       install: pip install black
       script: black --quiet --check --diff
     - stage: code quality
       name: "Static Analysis"
-      python: "3.7"
       install: pip install flake8 flake8-import-order flake8-bugbear pep8-naming
       script: flake8
     - stage: code quality
       name: "Package Validation"
-      python: "3.7"
       install: pip install twine check-manifest
       script:
       - check-manifest --ignore ".github*,*.md,.coveragerc"
