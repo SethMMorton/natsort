@@ -10,9 +10,6 @@ python:
   - 3.7
   - 3.8
 
-# By default do not build "extras". Builds with "extras" will be included manually below.
-env: WITH_EXTRAS=""
-
 # Explicitly include other jobs/configurations not defined by the above settings
 jobs:
   include:
@@ -33,7 +30,6 @@ jobs:
       language: sh
       os: osx
       env:
-        - WITH_EXTRAS=""
         - TOXENV=py37
         - PYENV_VERSION="3.7.1"
       before_install:
@@ -44,9 +40,7 @@ jobs:
       language: cpp
       os: windows
       filter_secrets: false
-      env:
-        - WITH_EXTRAS=""
-        - TOXENV=py37
+      env: TOXENV=py37
       before_install:
         - choco install python --version 3.7.1
         - export PATH="/c/Python37:/c/Python37/Scripts:$PATH"
@@ -62,13 +56,11 @@ jobs:
       python: "3.7"
       install: pip install black
       script: black --quiet --check --diff
-      env: []  # no environment variables needed.
     - stage: code quality
       name: "Static Analysis"
       python: "3.7"
       install: pip install flake8 flake8-import-order flake8-bugbear pep8-naming
       script: flake8
-      env: []  # no environment variables needed.
     - stage: code quality
       name: "Package Validation"
       python: "3.7"
@@ -77,7 +69,6 @@ jobs:
       - check-manifest --ignore ".github*,*.md,.coveragerc"
       - python setup.py sdist
       - twine check dist/*
-      env: []  # no environment variables needed.
 
 # The remainder of the code should be the same no matter the configuration/OS
 
