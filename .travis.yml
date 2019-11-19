@@ -54,16 +54,30 @@ jobs:
         - py -m pip install -U pip
         - py -m pip install tox tox-travis codacy-coverage codecov
 
-    # This "code-quality" stage does static analysis and formatting checks.
+    # This "code quality" stage does static analysis and formatting checks.
     # Platform- and Python-version-independent.
-    - stage: code-quality
+    - stage: code quality
+      python: 3.6  # black requires >= 3.6
+      name: "Formatting"
       python: "3.7"
-      install: pip install flake8 flake8-import-order flake8-bugbear pep8-naming twine check-manifest
+      install: pip install black
+      script: black --quiet --check --diff
+      env: []  # no environment variables needed.
+    - stage: code quality
+      name: "Static Analysis"
+      python: "3.7"
+      install: pip install flake8 flake8-import-order flake8-bugbear pep8-naming
+      script: flake8
+      env: []  # no environment variables needed.
+    - stage: code quality
+      name: "Package Validation"
+      python: "3.7"
+      install: pip install twine check-manifest
       script:
-      - flake8
       - check-manifest --ignore ".github*,*.md,.coveragerc"
       - python setup.py sdist
       - twine check dist/*
+      env: []  # no environment variables needed.
 
 # The remainder of the code should be the same no matter the configuration/OS
 
@@ -75,7 +89,7 @@ script:
 - tox
 
 stages:
-- code-quality
+- code quality
 - test
 
 after_success:
