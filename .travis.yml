@@ -17,6 +17,7 @@ jobs:
     # For Python 3.7 do some extra configurations.
     # Linux with both "icu" and "fastnumbers"
     - python: 3.7
+      name: "Test with ICU and fastnumbers"
       env: WITH_EXTRAS="fast,icu"
       addons:
         apt:
@@ -28,6 +29,7 @@ jobs:
     # For MacOS and Windows, only run Python 3.7 without "icu" to test native locales
     - language: sh
       os: osx
+      name: "Test on MacOS"
       env:
         - TOXENV=py37
         - PYENV_VERSION="3.7.1"
@@ -37,6 +39,7 @@ jobs:
         - source setup-pyenv.sh
     - language: sh
       os: windows
+      name: "Test on Windows"
       env: TOXENV=py37
       before_install:
         - choco install python --version 3.7.1
