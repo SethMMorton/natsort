@@ -1,6 +1,17 @@
 Unreleased
 ---
 
+### Added
+ - Ability to deploy directly from TravisCI ([@hugovk](https://github.com/hugovk), issue #106)
+ - Release checklist in `RELEASING.md` ([@hugovk](https://github.com/hugovk), issue #106)
+
+### Changed
+ - Updated auxillary shell scripts to be written in python, and added
+   ability to call these from `tox`.
+
+### Removed
+ - Support for Python 2
+
 [6.2.0] - 2019-11-13
 ---
 
@@ -19,9 +30,6 @@ Unreleased
 
 ### Removed
  - Introduction page in documentation
-
-### Removed
- - Support for Python 2
 
 [6.1.0] - 2019-11-09
 ---
