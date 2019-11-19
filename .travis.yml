@@ -39,7 +39,6 @@ jobs:
     - python: "3.7"
       language: cpp
       os: windows
-      filter_secrets: false
       env: TOXENV=py37
       before_install:
         - choco install python --version 3.7.1
