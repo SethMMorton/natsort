@@ -7,7 +7,8 @@ Unreleased
 
 ### Changed
  - Updated auxillary shell scripts to be written in python, and added
-   ability to call these from `tox`.
+   ability to call these from `tox`
+ - Improved Travis-CI experience
 
 ### Removed
  - Support for Python 2
