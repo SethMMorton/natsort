@@ -79,6 +79,7 @@ jobs:
           password:
             secure: "Va9uj9+6uDHMH6qcB3Z35MKDvqBDSLai0+cQN2rWjAZfhYq1H3B2TKb/cToN1dhy96t2Q7u7sXeWy9ptiJRACUOXeabL0+Ao3tFpRAgF7YBV9WUsoz9ux7waDoyMRrv1Oztbztg8sR6T3Sltz7Utd9Uf1TlYINO6D8poO7g2Cdo="
           distributions: sdist --format=gztar bdist_wheel
+          skip_existing: true
           on:
             tags: false
             repo: SethMMorton/natsort
