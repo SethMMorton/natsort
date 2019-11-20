@@ -43,9 +43,6 @@ jobs:
       before_install:
         - choco install python --version 3.7.1
         - export PATH="/c/Python37:/c/Python37/Scripts:$PATH"
-      install:
-        - py -m pip install -U pip
-        - py -m pip install tox tox-travis codacy-coverage codecov
 
     # This "code quality" stage does static analysis and formatting checks.
     # Platform- and Python-version-independent.
@@ -70,8 +67,8 @@ jobs:
 # The remainder of the code should be the same no matter the configuration/OS
 
 install:
-- pip install -U pip
-- pip install tox tox-travis codacy-coverage codecov
+- python -m pip install -U pip
+- python -m pip install tox tox-travis codacy-coverage codecov
 
 script:
 - tox
