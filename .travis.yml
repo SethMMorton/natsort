@@ -30,10 +30,9 @@ jobs:
     - language: sh
       os: osx
       name: "Test on MacOS"
-      env:
-        - TOXENV=py37
-        - PYENV_VERSION="3.7.1"
+      env: TOXENV=py37
       before_install:
+        - export PYENV_VERSION="3.7.1"
         - export PYENV_VERSION_STRING="Python ${PYENV_VERSION}"
         - wget https://github.com/praekeltfoundation/travis-pyenv/releases/download/0.4.0/setup-pyenv.sh
         - source setup-pyenv.sh
