@@ -64,6 +64,37 @@ jobs:
       - python setup.py sdist
       - twine check dist/*
 
+    # The "deploy" stage will actually upload the package to PyPI.
+    # For non-tags, we deploy to the test PyPI, for tags it's for real.
+    # Platform- and Python-version-independent.
+    # No python version specified, will use the first listed in the python: list.
+    - stage: deploy
+      name: "Deploy to PyPI (real on tagged commits, test otherwise)"
+      install: skip
+      script: skip
+      deploy:
+        - provider: pypi
+          server: https://test.pypi.org/legacy/
+          user: SethMMorton
+          password:
+            secure: "Va9uj9+6uDHMH6qcB3Z35MKDvqBDSLai0+cQN2rWjAZfhYq1H3B2TKb/cToN1dhy96t2Q7u7sXeWy9ptiJRACUOXeabL0+Ao3tFpRAgF7YBV9WUsoz9ux7waDoyMRrv1Oztbztg8sR6T3Sltz7Utd9Uf1TlYINO6D8poO7g2Cdo="
+          distributions: sdist --format=gztar bdist_wheel
+          skip_existing: true
+          on:
+            tags: false
+            repo: SethMMorton/natsort
+            branch: master
+        - provider: pypi
+          user: SethMMorton
+          password:
+            secure: "Va9uj9+6uDHMH6qcB3Z35MKDvqBDSLai0+cQN2rWjAZfhYq1H3B2TKb/cToN1dhy96t2Q7u7sXeWy9ptiJRACUOXeabL0+Ao3tFpRAgF7YBV9WUsoz9ux7waDoyMRrv1Oztbztg8sR6T3Sltz7Utd9Uf1TlYINO6D8poO7g2Cdo="
+          distributions: sdist --format=gztar bdist_wheel
+          skip_existing: true
+          on:
+            tags: true
+            repo: SethMMorton/natsort
+            branch: master
+
 # The remainder of the code should be the same no matter the configuration/OS
 
 install:
@@ -76,33 +107,11 @@ script:
 stages:
 - code quality
 - test
+# Only deploy on master branch and from the main repository
+- name: deploy
+  if: branch = master AND repo = SethMMorton/natsort
 
 after_success:
 - coverage xml
 - python-codacy-coverage -r coverage.xml
 - codecov
-
-deploy:
-  - provider: pypi
-    server: https://test.pypi.org/legacy/
-    on:
-      tags: false
-      repo: SethMMorton/natsort
-      branch: master
-      python: 3.8
-    user: SethMMorton
-    password:
-      secure: "Va9uj9+6uDHMH6qcB3Z35MKDvqBDSLai0+cQN2rWjAZfhYq1H3B2TKb/cToN1dhy96t2Q7u7sXeWy9ptiJRACUOXeabL0+Ao3tFpRAgF7YBV9WUsoz9ux7waDoyMRrv1Oztbztg8sR6T3Sltz7Utd9Uf1TlYINO6D8poO7g2Cdo="
-    distributions: sdist --format=gztar bdist_wheel
-    skip_existing: true
-  - provider: pypi
-    on:
-      tags: true
-      repo: SethMMorton/natsort
-      branch: master
-      python: 3.8
-    user: SethMMorton
-    password:
-      secure: "Va9uj9+6uDHMH6qcB3Z35MKDvqBDSLai0+cQN2rWjAZfhYq1H3B2TKb/cToN1dhy96t2Q7u7sXeWy9ptiJRACUOXeabL0+Ao3tFpRAgF7YBV9WUsoz9ux7waDoyMRrv1Oztbztg8sR6T3Sltz7Utd9Uf1TlYINO6D8poO7g2Cdo="
-    distributions: sdist --format=gztar bdist_wheel
-    skip_existing: true
