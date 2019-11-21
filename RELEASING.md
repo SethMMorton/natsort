@@ -17,15 +17,23 @@
     This will take care of updating the `CHANGELOG.md` with the correct
     release information.
 
-- [ ] Push the bumped commit and the tag:
+- [ ] Push the bumped commit:
 
     ```bash
     git push
+    ```
+
+- [ ] Check that the [Travis CI build](https://travis-ci.org/SethMMorton/natsort) has
+      deployed correctly to [the test PyPI](https://test.pypi.org/project/natsort/#history).
+
+- [ ] Push the tag:
+
+    ```bash
     git push --tags
     ```
 
-- [ ] Check the tagged [Travis CI build](https://travis-ci.org/SethMMorton/natsort) has
-      deployed to [PyPI](https://pypi.org/project/natsort/#history).
+- [ ] Check that the tagged [Travis CI build](https://travis-ci.org/SethMMorton/natsort) has
+      deployed correctly to [PyPI](https://pypi.org/project/natsort/#history).
 
 - [ ] Check installation:
 
