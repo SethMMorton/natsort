@@ -149,9 +149,9 @@ def test_natsort_keygen_with_locale(mocker, arbitrary_input, alg, expected, is_d
             expected[1][1][i] = strxfrm(expected[1][1][i])
         expected = tuple(tuple(tuple(subsub) for subsub in sub) for sub in expected)
 
-    with mocker.patch("natsort.compat.locale.dumb_sort", return_value=is_dumb):
-        ns_key = natsort_keygen(alg=alg)
-        assert ns_key(arbitrary_input) == expected
+    mocker.patch("natsort.compat.locale.dumb_sort", return_value=is_dumb)
+    ns_key = natsort_keygen(alg=alg)
+    assert ns_key(arbitrary_input) == expected
 
 
 @pytest.mark.parametrize(
@@ -161,6 +161,6 @@ def test_natsort_keygen_with_locale(mocker, arbitrary_input, alg, expected, is_d
 @pytest.mark.usefixtures("with_locale_en_us")
 def test_natsort_keygen_with_locale_bytes(mocker, bytes_input, alg, is_dumb):
     expected = (b"6A-5.034e+1",)
-    with mocker.patch("natsort.compat.locale.dumb_sort", return_value=is_dumb):
-        ns_key = natsort_keygen(alg=alg)
-        assert ns_key(bytes_input) == expected
+    mocker.patch("natsort.compat.locale.dumb_sort", return_value=is_dumb)
+    ns_key = natsort_keygen(alg=alg)
+    assert ns_key(bytes_input) == expected
