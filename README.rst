@@ -11,7 +11,7 @@ natsort
     :target: https://github.com/SethMMorton/natsort/blob/master/LICENSE
 
 .. image:: https://img.shields.io/travis/SethMMorton/natsort/master.svg?label=travis-ci
-    :target: https://travis-ci.org/SethMMorton/natsort
+    :target: https://travis-ci.com/SethMMorton/natsort
 
 .. image:: https://codecov.io/gh/SethMMorton/natsort/branch/master/graph/badge.svg
     :target: https://codecov.io/gh/SethMMorton/natsort

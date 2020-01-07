@@ -1,8 +1,8 @@
 # Release Checklist
 
 - [ ] Get master to the appropriate code release state.
-      [Travis CI](https://travis-ci.org/SethMMorton/natsort) must be passing:
-      [![Build Status](https://travis-ci.org/SethMMorton/natsort.svg?branch=master)](https://travis-ci.org/SethMMorton/natsort)
+      [Travis CI](https://travis-ci.com/SethMMorton/natsort) must be passing:
+      [![Build Status](https://travis-ci.com/SethMMorton/natsort.svg?branch=master)](https://travis-ci.com/SethMMorton/natsort)
 
 - [ ] Ensure that the `CHANGELOG.md` includes the changes made since last release.
       Please follow the style outlined in https://keepachangelog.com/.
@@ -23,7 +23,7 @@
     git push
     ```
 
-- [ ] Check that the [Travis CI build](https://travis-ci.org/SethMMorton/natsort) has
+- [ ] Check that the [Travis CI build](https://travis-ci.com/SethMMorton/natsort) has
       deployed correctly to [the test PyPI](https://test.pypi.org/project/natsort/#history).
 
 - [ ] Push the tag:
@@ -32,7 +32,7 @@
     git push --tags
     ```
 
-- [ ] Check that the tagged [Travis CI build](https://travis-ci.org/SethMMorton/natsort) has
+- [ ] Check that the tagged [Travis CI build](https://travis-ci.com/SethMMorton/natsort) has
       deployed correctly to [PyPI](https://pypi.org/project/natsort/#history).
 
 - [ ] Check installation:
