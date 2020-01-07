@@ -9,6 +9,7 @@ Unreleased
  - Updated auxillary shell scripts to be written in python, and added
    ability to call these from `tox`
  - Improved Travis-CI experience
+ - Update testing dependency versions
 
 ### Removed
  - Support for Python 2
