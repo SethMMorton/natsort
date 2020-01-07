@@ -109,7 +109,7 @@ stages:
 - test
 # Only deploy on master branch and from the main repository
 - name: deploy
-  if: branch = master AND repo = SethMMorton/natsort
+  if: (branch = master OR tag IS present) AND repo = SethMMorton/natsort
 
 after_success:
 - coverage xml
