@@ -1,6 +1,9 @@
 Unreleased
 ---
 
+[7.0.0] - 2020-01-08
+---
+
 ### Added
  - Ability to deploy directly from TravisCI ([@hugovk](https://github.com/hugovk), issue #106)
  - Release checklist in `RELEASING.md` ([@hugovk](https://github.com/hugovk), issue #106)
@@ -520,6 +523,7 @@ a pipeline by which to filter
  - Sorting algorithm to support floats (including exponentials) and basic version number support
 
 <!---Comparison links-->
+[7.0.0]: https://github.com/SethMMorton/natsort/compare/6.2.0...7.0.0
 [6.2.0]: https://github.com/SethMMorton/natsort/compare/6.1.0...6.2.0
 [6.1.0]: https://github.com/SethMMorton/natsort/compare/6.0.0...6.1.0
 [6.0.0]: https://github.com/SethMMorton/natsort/compare/5.5.0...6.0.0
