@@ -41,7 +41,7 @@ Simple yet flexible natural sorting in Python.
     - `History`_
 
 **NOTE**: Please see the `Deprecation Schedule`_ section for changes in
-``natsort`` version 6.0.0 and in the upcoming version 7.0.0.
+``natsort`` version 7.0.0.
 
 Quick Description
 -----------------
@@ -446,15 +446,16 @@ which to use ``tox``, you can do the following:
 Deprecation Schedule
 --------------------
 
-Dropping Python 2.7 Support
-+++++++++++++++++++++++++++
+Dropped Python 2.7 Support
+++++++++++++++++++++++++++
 
-``natsort`` version 7.0.0 drops support for Python 2.7.
+``natsort`` version 7.0.0 dropped support for Python 2.7.
 
 The version 6.X branch will remain as a "long term support" branch where bug
 fixes are applied so that users who cannot update from Python 2.7 will not be
-forced to use a buggy ``natsort`` version. Once version 7.0.0 is released, new
-features will not be added to version 6.X, only bug fixes.
+forced to use a buggy ``natsort`` version (bug fixes will need to be requested;
+by default only the 7.X branch will be updated).
+New features would not be added to version 6.X, only bug fixes.
 
 Dropped Deprecated APIs
 +++++++++++++++++++++++
