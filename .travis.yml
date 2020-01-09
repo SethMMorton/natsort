@@ -14,9 +14,9 @@ python:
 jobs:
   include:
 
-    # For Python 3.7 do some extra configurations.
+    # For Python 3.8 do some extra configurations.
     # Linux with both "icu" and "fastnumbers"
-    - python: 3.7
+    - python: 3.8
       name: "Test with ICU and fastnumbers"
       env: WITH_EXTRAS="fast,icu"
       addons:
@@ -26,23 +26,23 @@ jobs:
           - language-pack-de
           - language-pack-en
 
-    # For MacOS and Windows, only run Python 3.7 without "icu" to test native locales
+    # For MacOS and Windows, only run Python 3.8 without "icu" to test native locales
     - language: sh
       os: osx
       name: "Test on MacOS"
-      env: TOXENV=py37
+      env: TOXENV=py38
       before_install:
-        - export PYENV_VERSION="3.7.4"
+        - export PYENV_VERSION="3.8.1"
         - export PYENV_VERSION_STRING="Python ${PYENV_VERSION}"
         - wget https://github.com/praekeltfoundation/travis-pyenv/releases/download/0.4.0/setup-pyenv.sh
         - source setup-pyenv.sh
     - language: sh
       os: windows
       name: "Test on Windows"
-      env: TOXENV=py37
+      env: TOXENV=py38
       before_install:
-        - choco install python --version 3.7.4
-        - export PATH="/c/Python37:/c/Python37/Scripts:$PATH"
+        - choco install python --version 3.8.1
+        - export PATH="/c/Python38:/c/Python38/Scripts:$PATH"
 
     # This "code quality" stage does static analysis and formatting checks.
     # Platform- and Python-version-independent.
