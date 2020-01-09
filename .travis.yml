@@ -41,7 +41,7 @@ jobs:
       name: "Test on Windows"
       env: TOXENV=py38
       before_install:
-        - choco install python --version 3.8.1
+        - choco install python --version=3.8.1
         - export PATH="/c/Python38:/c/Python38/Scripts:$PATH"
 
     # This "code quality" stage does static analysis and formatting checks.
