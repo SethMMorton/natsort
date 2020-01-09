@@ -36,13 +36,13 @@ jobs:
         - export PYENV_VERSION_STRING="Python ${PYENV_VERSION}"
         - wget https://github.com/praekeltfoundation/travis-pyenv/releases/download/0.4.0/setup-pyenv.sh
         - source setup-pyenv.sh
-    - language: sh
-      os: windows
-      name: "Test on Windows"
-      env: TOXENV=py38
-      before_install:
-        - choco install python --version=3.8.1
-        - export PATH="/c/Python38:/c/Python38/Scripts:$PATH"
+    # - language: sh
+    #   os: windows
+    #   name: "Test on Windows"
+    #   env: TOXENV=py38
+    #   before_install:
+    #     - choco install python --version=3.8.1
+    #     - export PATH="/c/Python38:/c/Python38/Scripts:$PATH"
 
     # This "code quality" stage does static analysis and formatting checks.
     # Platform- and Python-version-independent.
