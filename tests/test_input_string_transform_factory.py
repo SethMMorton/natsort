@@ -85,6 +85,20 @@ def test_input_string_transform_factory_handles_us_locale(x, expected):
 
 
 @pytest.mark.parametrize(
+    "x, expected",
+    [
+        ("12.543.642642,5345.34980", "12543.642642,5345.34980"),
+        ("12.59443.642.642,53.4534980", "12.59443.642642,53.4534980"),  # No change
+        ("12543.642.642,5.34534980", "12543.642642,5.34534980"),
+    ],
+)
+@pytest.mark.usefixtures("with_locale_de_de")
+def test_input_string_transform_factory_handles_de_locale(x, expected):
+    input_string_transform_func = input_string_transform_factory(ns.LOCALE)
+    assert input_string_transform_func(x) == expected
+
+
+@pytest.mark.parametrize(
     "alg, expected",
     [
         (ns.LOCALE, "1543,753"),  # Does nothing without FLOAT
