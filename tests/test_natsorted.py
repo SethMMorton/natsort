@@ -219,6 +219,14 @@ def test_natsorted_can_sort_locale_specific_numbers_de():
     assert natsorted(given, alg=ns.LOCALE | ns.F) == expected
 
 
+@pytest.mark.usefixtures("with_locale_de_de")
+def test_natsorted_locale_bug_regression_test_109():
+    # https://github.com/SethMMorton/natsort/issues/109
+    given = ["462166", "461761"]
+    expected = ["461761", "462166"]
+    assert natsorted(given, alg=ns.LOCALE) == expected
+
+
 @pytest.mark.parametrize(
     "alg, expected",
     [
