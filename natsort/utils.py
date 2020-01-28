@@ -495,13 +495,12 @@ def input_string_transform_factory(alg):
         if alg & ns.FLOAT:
             # Make a regular expression component that will ensure no
             # separators are removed after a decimal point.
-            d = get_decimal_point()
-            d = r"\." if d == r"." else d
+            d = re.escape(get_decimal_point())
             nodecimal += r"(?<!" + d + r"[0-9])"
             nodecimal += r"(?<!" + d + r"[0-9]{2})"
             nodecimal += r"(?<!" + d + r"[0-9]{3})"
         strip_thousands = strip_thousands.format(
-            thou=get_thousands_sep(), nodecimal=nodecimal
+            thou=re.escape(get_thousands_sep()), nodecimal=nodecimal
         )
         strip_thousands = re.compile(strip_thousands, flags=re.VERBOSE)
         function_chain.append(partial(strip_thousands.sub, ""))
@@ -511,7 +510,7 @@ def input_string_transform_factory(alg):
         decimal = get_decimal_point()
         if alg & ns.FLOAT and decimal != ".":
             switch_decimal = r"(?<=[0-9]){decimal}|{decimal}(?=[0-9])"
-            switch_decimal = switch_decimal.format(decimal=decimal)
+            switch_decimal = switch_decimal.format(decimal=re.escape(decimal))
             switch_decimal = re.compile(switch_decimal)
             function_chain.append(partial(switch_decimal.sub, "."))
 
