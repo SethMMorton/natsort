@@ -1,6 +1,9 @@
 Unreleased
 ---
 
+[6.2.1] - 2020-01-29
+---
+
 ### Fixed
  - Bug where that caused incorrect sorting when using locales
    that have a `"."` character as the thousands separator.
@@ -511,6 +514,7 @@ a pipeline by which to filter
  - Sorting algorithm to support floats (including exponentials) and basic version number support
 
 <!---Comparison links-->
+[6.2.1]: https://github.com/SethMMorton/natsort/compare/6.2.0...6.2.1
 [6.2.0]: https://github.com/SethMMorton/natsort/compare/6.1.0...6.2.0
 [6.1.0]: https://github.com/SethMMorton/natsort/compare/6.0.0...6.1.0
 [6.0.0]: https://github.com/SethMMorton/natsort/compare/5.5.0...6.0.0
