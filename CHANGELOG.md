@@ -1,6 +1,10 @@
 Unreleased
 ---
 
+### Fixed
+ - Bug where that caused incorrect sorting when using locales
+   that have a `"."` character as the thousands separator.
+
 [6.2.0] - 2019-11-13
 ---
 
