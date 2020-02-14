@@ -105,7 +105,7 @@ Unreleased
 ---
 
 ### Changed
- - Re-expose `natsort_key` as "public" and remove the associated `DepricationWarning`
+ - Re-expose `natsort_key` as "public" and remove the associated `DeprecationWarning`
  - Better developer documentation
  - Refactor tests (issue #66)
  - Bump allowed [`fastnumbers`](https://github.com/SethMMorton/fastnumbers) version
