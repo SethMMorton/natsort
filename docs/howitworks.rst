@@ -64,7 +64,7 @@ transformation and then Python will handle the rest.
 
 When Python compares the two, it roughly follows the below logic:
 
-k::
+::
 
     2       <=> 2      ==> equal, so keep going
     ' ft '  <=> ' ft ' ==> a string is a special type of sequence - evaluate each character individually
