@@ -36,7 +36,7 @@ If I want to compare '2 ft 7 in' to '2 ft 11 in', I might do the following
 We as humans know that the above should be true, but why does Python think it
 is false?  Here is how it is performing the comparison:
 
-.. code-block::
+::
 
     '2' <=> '2' ==> equal, so keep going
     ' ' <=> ' ' ==> equal, so keep going
@@ -57,14 +57,14 @@ right thing." Luckily, it handles sorting lists of strings right
 out-of-the-box, so the only hard part is actually making this string-to-list
 transformation and then Python will handle the rest.
 
-.. code-block::
+::
 
     '2 ft 7 in'  ==> (2, ' ft ', 7,  ' in')
     '2 ft 11 in' ==> (2, ' ft ', 11, ' in')
 
 When Python compares the two, it roughly follows the below logic:
 
-.. code-block::
+k::
 
     2       <=> 2      ==> equal, so keep going
     ' ft '  <=> ' ft ' ==> a string is a special type of sequence - evaluate each character individually
