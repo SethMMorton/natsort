@@ -395,8 +395,8 @@ filename component as well. We can solve that nicely and quickly with
     ['Folder/file.tar.gz', 'Folder (1)/file.tar.gz', 'Folder (1)/file (1).tar.gz', 'Folder (10)/file.tar.gz']
 
 This works because in addition to breaking the input by path separators,
-the final filename component is separated from its extensions as well
-[#f1]_. *Then*, each of these separated components is sent to the
+the final filename component is separated from its extensions as well.
+*Then*, each of these separated components is sent to the
 :mod:`natsort` algorithm, so the result is a tuple of tuples. Once that
 is done, we can see how comparisons can be done in the expected manner.
 
@@ -456,7 +456,7 @@ Let's break these down.
    or bytes, which is a no-no.
 #. ``natsort_key_with_poor_real_number_support('12 apples') < natsort_key_with_poor_real_number_support('apples')``
    is the same as ``(12.0, ' apples') < ('apples',)``, and thus a number gets
-   compared to a string [#f2]_ which also is a no-no.
+   compared to a string [#f1]_ which also is a no-no.
 #. This one scores big on the astonishment scale, especially if one
    accidentally uses signed integers or real numbers when they mean
    to use unsigned integers.
@@ -475,7 +475,7 @@ if these problems are detected. But a less error-prone method is to ensure
 that the data is correct-by-construction, and this can be done by ensuring
 that the returned tuples *always* start with a string, and then alternate
 in a string-number-string-number-string pattern; this can be achieved by
-adding an empty string wherever the pattern is not followed [#f3]_. This ends
+adding an empty string wherever the pattern is not followed [#f2]_. This ends
 up working out pretty nicely because empty strings are always "less" than
 any non-empty string, and we typically want numbers to come before strings.
 
@@ -705,7 +705,7 @@ be last (``['apple', 'banana', 'corn', 'Apple', 'Banana', 'Corn']``).
 Some believe that both the lowercase and uppercase versions
 should appear together
 (``['Apple', 'apple', 'Banana', 'banana', 'Corn', 'corn']``).
-Some believe that both should be true ☹. Some people don't care at all [#f4]_.
+Some believe that both should be true ☹. Some people don't care at all [#f3]_.
 
 Solving the first case (I call it *LOWERCASEFIRST*) is actually pretty
 easy... just call the :meth:`str.swapcase` method on the input.
@@ -1042,7 +1042,7 @@ Beware, these regular expressions will make your eyes bleed.
     ...     (?=[0-9]{{3}}    # Three numbers must follow
     ...      ([^0-9]|$)      # But a non-number after that
     ...     )
-    ... '''.format(nodecimal=nodecimal, thou='.')  # Thousands separator is '.' in German locale.
+    ... '''.format(nodecimal=nodecimal, thou=re.escape('.'))  # Thousands separator is '.' in German locale.
     ...
     >>> re.sub(strip_thousands, '', 'Sir, €1.234,50 please.', flags=re.X)
     'Sir, €1234,50 please.'
@@ -1073,21 +1073,17 @@ what the rest of the world assumes.
 .. rubric:: Footnotes
 
 .. [#f1]
-    To anyone looking through the actual code, you will note that I don't
-    actually use :mod:`pathlib` to split the paths... I wrote my own version
-    to avoid adding an external dependency of :mod:`pathlib` on Python < 3.4.
-.. [#f2]
     *"But if you hadn't removed the leading empty string from re.split this
     wouldn't have happened!!"* I can hear you saying. Well, that's true. I don't
     have a *great* reason for having done that except that in an earlier
     non-optimal incarnation of the algorithm I needed to it, and it kind of
     stuck, and it made other parts of the code easier if the assumption that
     there were no empty strings was valid.
-.. [#f3]
+.. [#f2]
     I'm not going to show how this is implemented in this document,
     but if you are interested you can look at the code to
     :func:`sep_inserter` in `util.py`_.
-.. [#f4]
+.. [#f3]
     Handling each of these is straightforward, but coupled with the rapidly
     fracturing execution paths presented in :ref:`TL;DR 2 <tldr2>` one can
     imagine this will get out of hand quickly. If you take a look at
