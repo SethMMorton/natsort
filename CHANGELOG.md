@@ -1,6 +1,10 @@
 Unreleased
 ---
 
+### Fixed
+ - Various typos, missing figures, and out-of-date information in the "How it works"
+ - Fix typo in CHANGELOG ([@graingert](https://github.com/graingert), issue #113)
+
 [7.0.1] - 2020-01-27
 ---
 
