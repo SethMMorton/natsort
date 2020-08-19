@@ -407,4 +407,14 @@ methods and sort:
 
 .. code-block:: pycon
 
-    >>> df.sort_index(key=natsort.natsort_keygen())
+    >>> import pandas as pd
+    >>> from natsort import natsort_keygen
+    >>> s = pd.Series(['2 ft 7 in', '1 ft 5 in', '10 ft 2 in', '2 ft 11 in', '7 ft 6 in'])
+    >>> s.sort_values(key=natsort_keygen())
+    Out[3]:
+    1     1 ft 5 in
+    0     2 ft 7 in
+    3    2 ft 11 in
+    4     7 ft 6 in
+    2    10 ft 2 in
+    dtype: object
