@@ -401,10 +401,27 @@ If you need a codec different from ASCII or UTF-8, you can use
 Sorting a Pandas DataFrame
 --------------------------
 
-As of Pandas version 0.16.0, the sorting methods do not accept a ``key``
-argument, so you cannot simply pass :func:`natsort_keygen` to a Pandas
-DataFrame and sort. This request has been made to the Pandas devs; see
-`issue 3942 <https://github.com/pydata/pandas/issues/3942>`_ if you are interested.
-If you need to sort a Pandas DataFrame, please check out
+Starting from Pandas version 1.1.0, the
+`sorting methods accept a "key" argument <https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.sort_values.html>`_,
+so you can simply pass :func:`natsort_keygen` to the sorting methods and sort:
+
+.. code-block:: python
+
+    import pandas as pd
+    from natsort import natsort_keygen
+    s = pd.Series(['2 ft 7 in', '1 ft 5 in', '10 ft 2 in', '2 ft 11 in', '7 ft 6 in'])
+    s.sort_values(key=natsort_keygen())
+    # 1     1 ft 5 in
+    # 0     2 ft 7 in
+    # 3    2 ft 11 in
+    # 4     7 ft 6 in
+    # 2    10 ft 2 in
+    # dtype: object
+
+Similarly, if you need to sort the index there is
+`sort_index <https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.sort_index.html>`_
+of a DataFrame.
+
+If you are on an older version of Pandas, check out please check out
 `this answer on StackOverflow <https://stackoverflow.com/a/29582718/1399279>`_
-for ways to do this without the ``key`` argument to ``sort``.
+for ways to do this without the ``key`` argument to ``sort_values``.
