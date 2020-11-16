@@ -5,7 +5,7 @@ import pytest
 from hypothesis import given
 from hypothesis.strategies import floats, integers
 from natsort.ns_enum import ns
-from natsort.utils import parse_number_factory
+from natsort.utils import parse_number_or_none_factory
 
 
 @pytest.mark.usefixtures("with_locale_en_us")
@@ -20,7 +20,7 @@ from natsort.utils import parse_number_factory
 )
 @given(x=floats(allow_nan=False) | integers())
 def test_parse_number_factory_makes_function_that_returns_tuple(x, alg, example_func):
-    parse_number_func = parse_number_factory(alg, "", "xx")
+    parse_number_func = parse_number_or_none_factory(alg, "", "xx")
     assert parse_number_func(x) == example_func(x)
 
 
@@ -30,8 +30,10 @@ def test_parse_number_factory_makes_function_that_returns_tuple(x, alg, example_
         (ns.DEFAULT, 57, ("", 57)),
         (ns.DEFAULT, float("nan"), ("", float("-inf"))),  # NaN transformed to -infinity
         (ns.NANLAST, float("nan"), ("", float("+inf"))),  # NANLAST makes it +infinity
+        (ns.DEFAULT, None, ("", float("-inf"))),  # None transformed to -infinity
+        (ns.NANLAST, None, ("", float("+inf"))),  # NANLAST makes it +infinity
     ],
 )
-def test_parse_number_factory_treats_nan_special(alg, x, result):
-    parse_number_func = parse_number_factory(alg, "", "xx")
+def test_parse_number_factory_treats_nan_and_none_special(alg, x, result):
+    parse_number_func = parse_number_or_none_factory(alg, "", "xx")
     assert parse_number_func(x) == result

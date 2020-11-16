@@ -184,7 +184,7 @@ def natsort_keygen(key=None, alg=ns.DEFAULT):
     if alg & ns.PATH:
         string_func = utils.parse_path_factory(string_func)
     bytes_func = utils.parse_bytes_factory(alg)
-    num_func = utils.parse_number_factory(alg, sep, pre_sep)
+    num_func = utils.parse_number_or_none_factory(alg, sep, pre_sep)
 
     # Return the natsort key with the parsing path pre-chosen.
     return partial(

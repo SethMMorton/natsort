@@ -6,6 +6,7 @@ Unreleased
 
 ### Changed
  - MacOS unit tests run on native Python
+ - Treate `None` like `NaN` internally to avoid `TypeError`
 
 ### Fixed
  - Various typos, missing figures, and out-of-date information in the "How it works"

@@ -262,9 +262,9 @@ def parse_bytes_factory(alg):
         return lambda x: (x,)
 
 
-def parse_number_factory(alg, sep, pre_sep):
+def parse_number_or_none_factory(alg, sep, pre_sep):
     """
-    Create a function that will format a number into a tuple.
+    Create a function that will format a number (or None) into a tuple.
 
     Parameters
     ----------
@@ -295,7 +295,7 @@ def parse_number_factory(alg, sep, pre_sep):
 
     def func(val, _nan_replace=nan_replace, _sep=sep):
         """Given a number, place it in a tuple with a leading null string."""
-        return _sep, _nan_replace if val != val else val
+        return _sep, (_nan_replace if val != val or val is None else val)
 
     # Return the function, possibly wrapping in tuple if PATH is selected.
     if alg & ns.PATH and alg & ns.UNGROUPLETTERS and alg & ns.LOCALEALPHA:

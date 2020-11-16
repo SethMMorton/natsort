@@ -173,6 +173,7 @@ class _NSEnum(collections.namedtuple("_NSEnum", enum_fields.keys())):
         If an NaN shows up in the input, this instructs `natsort` to
         treat these as +Infinity and place them after all the other numbers.
         By default, an NaN be treated as -Infinity and be placed first.
+        Note that this ``None`` is treated like NaN internally.
 
     Notes
     -----
