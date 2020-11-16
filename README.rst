@@ -486,17 +486,6 @@ By default ``DeprecationWarnings`` are not shown, but this will cause them
 to be shown. Alternatively, you can just set the environment variable
 ``PYTHONWARNINGS`` to "default::DeprecationWarning" and then run your code.
 
-Dropped Pipenv for Development
-++++++++++++++++++++++++++++++
-
-``natsort`` version 6.0.0 no longer uses `Pipenv <https://pipenv.readthedocs.io/en/latest/>`_
-to install development dependencies.
-
-Dropped Python 2.6 and 3.3 Support
-++++++++++++++++++++++++++++++++++
-
-``natsort`` version 6.0.0 dropped support for Python 2.6 and Python 3.3.
-
 Author
 ------
 
