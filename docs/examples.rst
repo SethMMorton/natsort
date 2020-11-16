@@ -405,16 +405,15 @@ Starting from Pandas version 1.1.0, the sorting methods accept a ``key``
 argument, so you can simply pass :func:`natsort_keygen` to the sorting
 methods and sort:
 
-.. code-block:: pycon
+.. code-block:: python
 
-    >>> import pandas as pd
-    >>> from natsort import natsort_keygen
-    >>> s = pd.Series(['2 ft 7 in', '1 ft 5 in', '10 ft 2 in', '2 ft 11 in', '7 ft 6 in'])
-    >>> s.sort_values(key=natsort_keygen())
-    Out[3]:
-    1     1 ft 5 in
-    0     2 ft 7 in
-    3    2 ft 11 in
-    4     7 ft 6 in
-    2    10 ft 2 in
-    dtype: object
+    import pandas as pd
+    from natsort import natsort_keygen
+    s = pd.Series(['2 ft 7 in', '1 ft 5 in', '10 ft 2 in', '2 ft 11 in', '7 ft 6 in'])
+    s.sort_values(key=natsort_keygen())
+    # 1     1 ft 5 in
+    # 0     2 ft 7 in
+    # 3    2 ft 11 in
+    # 4     7 ft 6 in
+    # 2    10 ft 2 in
+    # dtype: object
