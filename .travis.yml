@@ -27,16 +27,15 @@ jobs:
           - language-pack-de
           - language-pack-en
 
-    # For MacOS and Windows, only run Python 3.8 without "icu" to test native locales
+    # For MacOS and Windows, only run one Python version without "icu" to test native locales
     - language: sh
       os: osx
+      osx_image: xcode11.2  # Python 3.7.4 running on macOS 10.14.4
       name: "Test on MacOS"
-      env: TOXENV=py38
-      before_install:
-        - export PYENV_VERSION="3.8.1"
-        - export PYENV_VERSION_STRING="Python ${PYENV_VERSION}"
-        - wget https://github.com/praekeltfoundation/travis-pyenv/releases/download/0.4.0/setup-pyenv.sh
-        - source setup-pyenv.sh
+      env: TOXENV=py37
+      install:
+         - python3 -m pip install -U pip
+         - python3 -m pip install tox tox-travis codacy-coverage codecov
     - language: sh
       os: windows
       name: "Test on Windows"
