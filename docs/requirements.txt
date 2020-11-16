@@ -4,6 +4,6 @@
 #
 #    pip-compile
 #
-docutils==0.15.2
-git+https://github.com/crossnox/m2r@dev#egg=m2r
-mistune==0.8.4
+docutils==0.16            # via m2r
+git+https://github.com/crossnox/m2r@dev#egg=m2r  # via -r requirements.in
+mistune==0.8.4            # via m2r
