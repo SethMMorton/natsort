@@ -6,6 +6,8 @@ natsort public API.
 The majority of the "work" is defined in utils.py.
 """
 
+import os
+import platform
 from functools import partial
 from operator import itemgetter
 
@@ -604,3 +606,70 @@ def numeric_regex_chooser(alg):
     """
     # Remove the leading and trailing parens
     return utils.regex_chooser(alg).pattern[1:-1]
+
+
+# The windows sorting functions only work on Windows because of calls
+# to the Windows API. However, we expose the functions during docs generation
+# in order to make the documented.
+if platform.system() == "Windows" or os.environ.get('READTHEDOCS') == 'True':
+
+    from functools import cmp_to_key
+
+    # Don't import this during docs generation
+    if os.environ.get('READTHEDOCS') != 'True':
+        from ctypes import wintypes, windll
+
+    def winsort_key(val):
+        """
+        Sorting key to replicate the Windows Explorer sort order
+
+        Only available on Windows.
+
+        Parameters
+        ----------
+        val : str
+
+        """
+        windows_sort_cmp = windll.Shlwapi.StrCmpLogicalW
+        windows_sort_cmp.argtypes = [wintypes.LPWSTR, wintypes.LPWSTR]
+        windows_sort_cmp.restype = wintypes.INT
+        return cmp_to_key(windows_sort_cmp)
+
+    def winsorted(seq, key=None, reverse=False):
+        """
+        Sort elements in the same order as Windows Explorer
+
+        Only available on Windows.
+
+        Parameters
+        ----------
+        seq : iterable
+            The input to sort. Each element must be of type str.
+
+        key : callable, optional
+            A key used to determine how to sort each element of the sequence.
+            It should accept a single argument and return a single value.
+
+        reverse : {{True, False}}, optional
+            Return the list in reversed sorted order. The default is
+            `False`.
+
+        Returns
+        -------
+        out : list
+            The sorted input.
+
+        Examples
+        --------
+        Use `winsorted` just like the builtin `sorted`::
+
+            >>> a = ['num5.10', 'num-3', 'num5.3', 'num2']
+            >>> natsorted(a)
+            ['num2', 'num5.3', 'num5.10', 'num-3']
+            >>> winsorted(a)
+            ['num-3', 'num2', 'num5.10', 'num5.3']
+
+        """
+        if key is not None:
+            key = lambda x: winsort_key(key(x))  # noqa: E731
+        return sorted(seq, key=key, reverse=reverse)
