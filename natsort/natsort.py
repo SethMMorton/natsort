@@ -6,7 +6,6 @@ natsort public API.
 The majority of the "work" is defined in utils.py.
 """
 
-import os
 import platform
 from functools import partial
 from operator import itemgetter
@@ -247,6 +246,7 @@ def natsorted(seq, key=None, reverse=False, alg=ns.DEFAULT):
     realsorted : A wrapper for ``natsorted(seq, alg=ns.REAL)``.
     humansorted : A wrapper for ``natsorted(seq, alg=ns.LOCALE)``.
     index_natsorted : Returns the sorted indexes from `natsorted`.
+    os_sorted : Sort according to your operating system's rules.
 
     Examples
     --------
@@ -608,68 +608,109 @@ def numeric_regex_chooser(alg):
     return utils.regex_chooser(alg).pattern[1:-1]
 
 
-# The windows sorting functions only work on Windows because of calls
-# to the Windows API. However, we expose the functions during docs generation
-# in order to make the documented.
-if platform.system() == "Windows" or os.environ.get('READTHEDOCS') == 'True':
+# Choose the implementation based on the host OS
+if platform.system() == "Windows":
 
+    from ctypes import wintypes, windll
     from functools import cmp_to_key
 
-    # Don't import this during docs generation
-    if os.environ.get('READTHEDOCS') != 'True':
-        from ctypes import wintypes, windll
+    _windows_sort_cmp = windll.Shlwapi.StrCmpLogicalW
+    _windows_sort_cmp.argtypes = [wintypes.LPWSTR, wintypes.LPWSTR]
+    _windows_sort_cmp.restype = wintypes.INT
+    _winsort_key = cmp_to_key(_windows_sort_cmp)
 
-    def winsort_key(val):
-        """
-        Sorting key to replicate the Windows Explorer sort order
-
-        Only available on Windows.
-
-        Parameters
-        ----------
-        val : str
-
-        """
-        windows_sort_cmp = windll.Shlwapi.StrCmpLogicalW
-        windows_sort_cmp.argtypes = [wintypes.LPWSTR, wintypes.LPWSTR]
-        windows_sort_cmp.restype = wintypes.INT
-        return cmp_to_key(windows_sort_cmp)
-
-    def winsorted(seq, key=None, reverse=False):
-        """
-        Sort elements in the same order as Windows Explorer
-
-        Only available on Windows.
-
-        Parameters
-        ----------
-        seq : iterable
-            The input to sort. Each element must be of type str.
-
-        key : callable, optional
-            A key used to determine how to sort each element of the sequence.
-            It should accept a single argument and return a single value.
-
-        reverse : {{True, False}}, optional
-            Return the list in reversed sorted order. The default is
-            `False`.
-
-        Returns
-        -------
-        out : list
-            The sorted input.
-
-        Examples
-        --------
-        Use `winsorted` just like the builtin `sorted`::
-
-            >>> a = ['num5.10', 'num-3', 'num5.3', 'num2']
-            >>> natsorted(a)
-            ['num2', 'num5.3', 'num5.10', 'num-3']
-            >>> winsorted(a)
-            ['num-3', 'num2', 'num5.10', 'num5.3']
-
-        """
+    def os_sort_keygen(key=None):
         if key is not None:
-            key = lambda x: winsort_key(key(x))  # noqa: E731
-        return sorted(seq, key=key, reverse=reverse)
+            return lambda x: _winsort_key(str(key(x)))
+        else:
+            return lambda x: _winsort_key(str(x))
+
+else:
+
+    def os_sort_keygen(key=None):
+        return natsort_keygen(key=key, alg=ns.PATH)
+
+
+os_sort_keygen.__doc__ = """
+Generate a sorting key to replicate your file browser's sort order
+
+.. warning::
+
+    The resulting function will generate results that will be
+    differnt depending on your platform. This is intentional.
+
+On Windows, this will sort with the same order as Windows Explorer.
+
+It does *not* take into account if a path is a directory or a file
+when sorting.
+
+Parameters
+----------
+key: callable, optional
+    A key used to determine how to sort each element of the sequence.
+    It is **not** applied recursively.
+    It should accept a single argument and return a single value.
+
+Returns
+-------
+out : function
+    A function that parses input for OS path sorting that is
+    suitable for passing as the `key` argument to functions
+    such as `sorted`.
+
+See Also
+--------
+os_sort_key
+os_sorted
+
+Notes
+-----
+On Windows, this will implicitly coerce all inputs to str before
+collating.
+
+"""
+
+os_sort_key = os_sort_keygen()
+os_sort_key.__doc__ = """
+os_sort_key(val)
+The default key to replicate your file browser's sort order
+
+This is the output of :func:`os_sort_keygen` with default values.
+
+See Also
+--------
+os_sort_keygen
+
+"""
+
+
+def os_sorted(seq, key=None, reverse=False):
+    """
+    Sort elements in the same order as your operating system's file browser
+
+    Only available on Windows.
+
+    Parameters
+    ----------
+    seq : iterable
+        The input to sort. Each element must be of type str.
+
+    key : callable, optional
+        A key used to determine how to sort each element of the sequence.
+        It should accept a single argument and return a single value.
+
+    reverse : {{True, False}}, optional
+        Return the list in reversed sorted order. The default is
+        `False`.
+
+    Returns
+    -------
+    out : list
+        The sorted input.
+
+    See Also
+    --------
+    natsorted
+
+    """
+    return sorted(seq, key=os_sort_keygen(key), reverse=reverse)
