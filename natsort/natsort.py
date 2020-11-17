@@ -608,6 +608,12 @@ def numeric_regex_chooser(alg):
     return utils.regex_chooser(alg).pattern[1:-1]
 
 
+def _split_apply(v, key=None):
+    if key is not None:
+        v = key(v)
+    return utils.path_splitter(str(v))
+
+
 # Choose the implementation based on the host OS
 if platform.system() == "Windows":
 
@@ -620,36 +626,45 @@ if platform.system() == "Windows":
     _winsort_key = cmp_to_key(_windows_sort_cmp)
 
     def os_sort_keygen(key=None):
-        if key is not None:
-            return lambda x: _winsort_key(str(key(x)))
-        else:
-            return lambda x: _winsort_key(str(x))
+        return lambda x: tuple(map(_winsort_key, _split_apply(x, key)))
+
 
 else:
 
-    def os_sort_keygen(key=None):
-        return natsort_keygen(key=key, alg=ns.PATH)
+    # For UNIX-based platforms, ICU performs MUCH better than locale
+    # at replicating the file explorer's sort order. We will use
+    # ICU's ability to do basic natural sorting as it also better
+    # replicates than what natsort does by default.
+    #
+    # However, if the user does not have ICU installed then fall back
+    # on natsort's default handling for paths with locale turned on
+    # which will give good results in most cases (e.g. when there aren't
+    # a bunch of special characters).
+    try:
+        import icu
+
+    except ImportError:
+        # No ICU installed
+        def os_sort_keygen(key=None):
+            return natsort_keygen(
+                key=key, alg=ns.LOCALE | ns.PATH | ns.IGNORECASE
+            )
+
+    else:
+        # ICU installed
+        def os_sort_keygen(key=None):
+            loc = natsort.compat.locale.get_icu_locale()
+            collator = icu.Collator.createInstance(loc)
+            collator.setAttribute(
+                icu.UCollAttribute.NUMERIC_COLLATION, icu.UCollAttributeValue.ON
+            )
+            return lambda x: tuple(map(collator.getSortKey, _split_apply(x, key)))
 
 
 os_sort_keygen.__doc__ = """
 Generate a sorting key to replicate your file browser's sort order
 
-.. warning::
-
-    The resulting function will generate results that will be
-    differnt depending on your platform. This is intentional.
-
-On Windows, this will sort with the same order as Windows Explorer.
-
-It does *not* take into account if a path is a directory or a file
-when sorting.
-
-Parameters
-----------
-key: callable, optional
-    A key used to determine how to sort each element of the sequence.
-    It is **not** applied recursively.
-    It should accept a single argument and return a single value.
+See :func`:`os_sorted` for description and caveats.
 
 Returns
 -------
@@ -688,7 +703,30 @@ def os_sorted(seq, key=None, reverse=False):
     """
     Sort elements in the same order as your operating system's file browser
 
-    Only available on Windows.
+    .. warning::
+
+        The resulting function will generate results that will be
+        differnt depending on your platform. This is intentional.
+
+    On Windows, this will sort with the same order as Windows Explorer.
+
+    On MacOS/Linux, you will get different results depending on whether
+    or not you have :mod:`pyicu` installed.
+
+    - If you have :mod:`pyicu` installed, you will get results that are
+      the same as (or very close to) the same order as your operating
+      system's file browser.
+    - If you do not have :mod:`pyicu` installed, then this will give
+      the same results as if you used ``ns.LOCALE``, ``ns.PATH``,
+      and ``ns.IGNORECASE` with :func:`natsorted`. If you do not have
+      special characters this will give correct results, but once
+      special characters are added you should lower your expectations.
+
+    It is *strongly* reccommended to have :mod:`pyicu` installed on
+    MacOS/Linux if you want correct sort results.
+
+    It does *not* take into account if a path is a directory or a file
+    when sorting.
 
     Parameters
     ----------
@@ -711,6 +749,12 @@ def os_sorted(seq, key=None, reverse=False):
     See Also
     --------
     natsorted
+    os_sort_keygen
+
+    Notes
+    -----
+    On Windows, this will implicitly coerce all inputs to str before
+    collating.
 
     """
     return sorted(seq, key=os_sort_keygen(key), reverse=reverse)
