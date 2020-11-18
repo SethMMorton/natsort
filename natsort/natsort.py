@@ -664,7 +664,7 @@ else:
 os_sort_keygen.__doc__ = """
 Generate a sorting key to replicate your file browser's sort order
 
-See :func`:`os_sorted` for description and caveats.
+See :func:`os_sorted` for description and caveats.
 
 Returns
 -------
@@ -718,7 +718,7 @@ def os_sorted(seq, key=None, reverse=False):
       system's file browser.
     - If you do not have :mod:`pyicu` installed, then this will give
       the same results as if you used ``ns.LOCALE``, ``ns.PATH``,
-      and ``ns.IGNORECASE` with :func:`natsorted`. If you do not have
+      and ``ns.IGNORECASE`` with :func:`natsorted`. If you do not have
       special characters this will give correct results, but once
       special characters are added you should lower your expectations.
 
@@ -753,8 +753,7 @@ def os_sorted(seq, key=None, reverse=False):
 
     Notes
     -----
-    On Windows, this will implicitly coerce all inputs to str before
-    collating.
+    This will implicitly coerce all inputs to str before collating.
 
     """
     return sorted(seq, key=os_sort_keygen(key), reverse=reverse)
