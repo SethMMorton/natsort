@@ -41,15 +41,26 @@ def test_os_sorted_misc_no_fail():
 
 
 def test_os_sorted_key():
-    given = expected = ["foo0", "goo1", "foo2"]
+    given = ["foo0", "foo2", "goo1"]
+    expected = ["foo0", "goo1", "foo2"]
     result = natsort.os_sorted(given, key=lambda x: x.replace("g", "f"))
     assert result == expected
 
 
 # The following is a master list of things that might give trouble
 # when sorting like the file explorer.
-given = [
+given_characters = [
     "11111",
+    "aaaaa",
+    "foo0",
+    "foo_0",
+    "foo1",
+    "foo2",
+    "foo4",
+    "foo10",
+    "Foo3",
+]
+given_special = [
     "!",
     "#",
     "$",
@@ -71,9 +82,6 @@ given = [
     "^",
     "_",
     "`",
-    "aaaaa",
-    "foo0",
-    "foo_0",
     "{",
     "}",
     "~",
@@ -82,15 +90,11 @@ given = [
     "´",
     "µ",
     "€",
-    "foo1",
-    "foo2",
-    "foo4",
-    "foo10",
-    "Foo3",
 ]
 
 # The expceted values change based on the environment
 if platform.system() == "Windows":
+    given = given_characters + given_special
     expected = [
         "'",
         "-",
@@ -133,6 +137,7 @@ if platform.system() == "Windows":
     ]
 
 elif has_icu:
+    given = given_characters + given_special
     expected = [
         "_",
         "-",
@@ -179,7 +184,7 @@ else:
     # It's not really possible to predict the order across all
     # the different OS. To work around this, we will exclude
     # the special characters from the sort.
-    given = given[0:1] + given[22:25] + given[33:]
+    given = given_characters
     expected = [
         "11111",
         "aaaaa",
