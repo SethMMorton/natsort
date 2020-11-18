@@ -2,6 +2,9 @@ Unreleased
 ---
 
 ### Added
+ - ``os_sorted``, ``os_sort_keygen``, and ``os_sort_key`` to better support
+   sorting like the file browser on the current operating system - this
+   closes the long-standing issue #41
  - Support for Python 3.9 ([@swt2c](https://github.com/swt2c), issue #119)
 
 ### Changed
