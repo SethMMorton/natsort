@@ -40,6 +40,12 @@ def test_os_sorted_misc_no_fail():
     natsort.os_sorted([9, 4.3, None, float("nan")])
 
 
+def test_os_sorted_key():
+    given = expected = ["foo0", "goo1", "foo2"]
+    result = natsort.os_sorted(given, key=lambda x: x.replace("g", "f"))
+    assert result == expected
+
+
 # The following is a master list of things that might give trouble
 # when sorting like the file explorer.
 given = [
