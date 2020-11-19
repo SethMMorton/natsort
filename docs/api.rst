@@ -33,8 +33,23 @@ The :class:`~natsort.ns` enum
 
 .. autofunction:: natsort_keygen
 
+:func:`~natsort.os_sort_key`
+++++++++++++++++++++++++++++
+
+.. autofunction:: os_sort_key
+
+:func:`~natsort.os_sort_keygen`
++++++++++++++++++++++++++++++++
+
+.. autofunction:: os_sort_keygen
+
 Convenience Functions
 ---------------------
+
+:func:`~natsort.os_sorted`
++++++++++++++++++++++++++++
+
+.. autofunction:: os_sorted
 
 :func:`~natsort.realsorted`
 +++++++++++++++++++++++++++

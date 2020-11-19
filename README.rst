@@ -101,6 +101,7 @@ Quick Examples
 --------------
 
 - `Sorting Versions`_
+- `Sort Paths Like My File Browser (e.g. Windows Explorer on Windows)`_
 - `Sorting by Real Numbers (i.e. Signed Floats)`_
 - `Locale-Aware Sorting (or "Human Sorting")`_
 - `Further Customizing Natsort`_
@@ -127,6 +128,30 @@ conforms to a scheme like this, then it will work out-of-the-box with
 
 If you need to versions that use a more complicated scheme, please see
 `these examples <https://natsort.readthedocs.io/en/master/examples.html#rc-sorting>`_.
+
+Sort Paths Like My File Browser (e.g. Windows Explorer on Windows)
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+Prior to ``natsort`` version 7.1.0, it was a common request to be able to
+sort paths like Windows Explorer. As of ``natsort`` 7.1.0, the function
+``os_sorted`` has been added to provide users the ability to sort
+in the order that their file browser might sort (e.g Windows Explorer on
+Windows, Finder on MacOS, Dolphin/Nautilus/Thunar/etc. on Linux).
+
+.. code-block:: python
+
+    import os
+    from natsort import os_sorted
+    print(os_sorted(os.listdir()))
+    # The directory sorted like your file browser might show
+
+Output will be different depending on the operating system you are on.
+
+For users **not** on Windows (e.g. MacOS/Linux) it is **strongly** recommended
+to also install `PyICU <https://pypi.org/project/PyICU>`_, which will help
+``natsort`` give results that match most file browsers. If this is not installed,
+it will fall back on Python's built-in ``locale`` module and will give good
+results for most input, but will give poor restuls for special characters.
 
 Sorting by Real Numbers (i.e. Signed Floats)
 ++++++++++++++++++++++++++++++++++++++++++++

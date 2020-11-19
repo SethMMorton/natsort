@@ -14,6 +14,9 @@ from natsort.natsort import (
     ns,
     numeric_regex_chooser,
     order_by_index,
+    os_sort_key,
+    os_sort_keygen,
+    os_sorted,
     realsorted,
 )
 from natsort.utils import chain_functions
@@ -36,6 +39,9 @@ __all__ = [
     "ns",
     "chain_functions",
     "numeric_regex_chooser",
+    "os_sort_key",
+    "os_sort_keygen",
+    "os_sorted",
 ]
 
 # Add the ns keys to this namespace for convenience.
