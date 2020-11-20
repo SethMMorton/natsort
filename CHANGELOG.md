@@ -1,6 +1,9 @@
 Unreleased
 ---
 
+[7.1.0] - 2020-11-19
+---
+
 ### Added
  - ``os_sorted``, ``os_sort_keygen``, and ``os_sort_key`` to better support
    sorting like the file browser on the current operating system - this
@@ -547,6 +550,7 @@ a pipeline by which to filter
  - Sorting algorithm to support floats (including exponentials) and basic version number support
 
 <!---Comparison links-->
+[7.1.0]: https://github.com/SethMMorton/natsort/compare/7.0.1...7.1.0
 [7.0.1]: https://github.com/SethMMorton/natsort/compare/7.0.0...7.0.1
 [7.0.0]: https://github.com/SethMMorton/natsort/compare/6.2.0...7.0.0
 [6.2.0]: https://github.com/SethMMorton/natsort/compare/6.1.0...6.2.0

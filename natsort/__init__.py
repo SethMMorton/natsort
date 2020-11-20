@@ -21,7 +21,7 @@ from natsort.natsort import (
 )
 from natsort.utils import chain_functions
 
-__version__ = "7.0.1"
+__version__ = "7.1.0"
 
 __all__ = [
     "natsort_key",
