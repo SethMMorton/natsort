@@ -65,6 +65,8 @@ def test_missing_unicode_number_in_collection():
 Not all numeric unicode characters are represented in natsort/unicode_numeric_hex.py
 This can be addressed by running dev/generate_new_unicode_numbers.py with the current \
 version of Python.
+It would be much appreciated if you would submit a Pull Request to the natsort
+repository (https://github.com/SethMMorton/natsort) with the resulting change.
 """
         )
 
