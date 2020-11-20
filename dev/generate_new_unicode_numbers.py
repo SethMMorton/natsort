@@ -14,7 +14,7 @@ this_base = os.path.basename(this_file)
 cwd = os.path.abspath(os.getcwd())
 desired_this_file = os.path.join(cwd, "dev", this_base)
 if this_file != desired_this_file:
-    sys.exit(f"{this_base} must be called from project root")
+    sys.exit(this_base + " must be called from project root")
 
 # We will write the new numeric hex collection to a natsort package file.
 target = os.path.join(cwd, "natsort", "unicode_numeric_hex.py")
@@ -40,6 +40,6 @@ numeric_hex = (''',
         if a in "0123456789":
             continue
         if unicodedata.numeric(a, None) is not None:
-            print(f"    0x{i:X},", file=fl)
+            print("    0x{:X},".format(i), file=fl)
 
     print(")", file=fl)
