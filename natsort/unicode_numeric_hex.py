@@ -1859,20 +1859,3 @@ numeric_hex = (
     0x2626D,
     0x2F890,
 )
-
-# Some code that can be used to create the above list of hex numbers.
-if __name__ == "__main__":
-    import unicodedata
-
-    hex_chars = []
-    for i in range(0x110000):
-        try:
-            a = chr(i)
-        except ValueError:
-            break
-        if a in "0123456789":
-            continue
-        if unicodedata.numeric(a, None) is not None:
-            hex_chars.append(i)
-
-    print(", ".join(["0X{:X}".format(i) for i in hex_chars]))
