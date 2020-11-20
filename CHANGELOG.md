@@ -10,6 +10,7 @@ Unreleased
 ### Changed
  - MacOS unit tests run on native Python
  - Treate `None` like `NaN` internally to avoid `TypeError`
+ - No longer fail tests every time a new Python version is released (issue #122)
 
 ### Fixed
  - Various typos, missing figures, and out-of-date information in the "How it works"
