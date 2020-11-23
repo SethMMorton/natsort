@@ -1,12 +1,7 @@
 name: Tests
 
-# Run the tests only if the code quality checks pass
-on:
-  workflow_run:
-    workflows: ["Code Quality"]
-    types:
-      - completed
-
+# Run this workflow every time a new commit pushed to your repository
+on: push
 
 jobs:
   linux-tests:
