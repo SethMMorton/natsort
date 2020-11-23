@@ -151,11 +151,11 @@ def test_range_check_returns_range_as_is_but_with_floats_example():
     assert range_check(6.4, 30) == (6.4, 30.0)
 
 
-@given(x=floats(allow_nan=False, min_value=-1E8, max_value=1E8) | integers(), d=data())
+@given(x=floats(allow_nan=False, min_value=-1e8, max_value=1e8) | integers(), d=data())
 def test_range_check_returns_range_as_is_if_first_is_less_than_second(x, d):
     # Pull data such that the first is less than the second.
     if isinstance(x, float):
-        y = d.draw(floats(min_value=x + 1.0, max_value=1E9, allow_nan=False))
+        y = d.draw(floats(min_value=x + 1.0, max_value=1e9, allow_nan=False))
     else:
         y = d.draw(integers(min_value=x + 1))
     assert range_check(x, y) == (x, y)

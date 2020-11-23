@@ -26,8 +26,8 @@ def test_final_data_transform_factory_default(x, y, alg):
         (ns.LOCALE | ns.UNGROUPLETTERS | NS_DUMB, lambda x: x),
         (ns.LOCALE | ns.UNGROUPLETTERS | ns.LOWERCASEFIRST, lambda x: x),
         (
-                ns.LOCALE | ns.UNGROUPLETTERS | NS_DUMB | ns.LOWERCASEFIRST,
-                lambda x: x.swapcase(),
+            ns.LOCALE | ns.UNGROUPLETTERS | NS_DUMB | ns.LOWERCASEFIRST,
+            lambda x: x.swapcase(),
         ),
     ],
 )

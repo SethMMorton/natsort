@@ -646,9 +646,7 @@ else:
     except ImportError:
         # No ICU installed
         def os_sort_keygen(key=None):
-            return natsort_keygen(
-                key=key, alg=ns.LOCALE | ns.PATH | ns.IGNORECASE
-            )
+            return natsort_keygen(key=key, alg=ns.LOCALE | ns.PATH | ns.IGNORECASE)
 
     else:
         # ICU installed
