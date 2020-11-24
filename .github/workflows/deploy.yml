@@ -1,0 +1,33 @@
+name: Deploy
+
+# Only run on tagged commits
+on:
+  push:
+    branches:
+      - "*"
+    # tags:
+    #   - "*"
+
+jobs:
+  deploy:
+    name: Deploy
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: 3.9
+
+      - name: Build Source Distribution and Wheel
+        run: |
+          pip install wheel
+          python setup.py sdist --format=gztar bdist_wheel
+
+      - name: Publish to PyPI
+        uses: pypa/gh-action-pypi-publish@master
+        with:
+          user: __token__
+          password: ${{ secrets.pypi_token_password }}
