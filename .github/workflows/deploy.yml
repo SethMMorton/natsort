@@ -3,10 +3,8 @@ name: Deploy
 # Only run on tagged commits
 on:
   push:
-    branches:
+    tags:
       - "*"
-    # tags:
-    #   - "*"
 
 jobs:
   deploy:
