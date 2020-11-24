@@ -4,12 +4,16 @@ name: Tests
 on: [push, pull_request]
 
 jobs:
-  linux-tests:
-    name: Linux Tests
-    runs-on: ubuntu-latest
+  no-extras:
+    name: Tests Without Extras
+    runs-on: ${{ matrix.os }}
     strategy:
       matrix:
         python-version: [3.5, 3.6, 3.7, 3.8, 3.9]
+        os: [ubuntu-latest]
+        include:
+          - {python-version: 3.9, os: windows-latest}
+          - {python-version: 3.9, os: macos-latest}
 
     steps:
       - name: Checkout code
