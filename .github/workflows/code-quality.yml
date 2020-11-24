@@ -1,7 +1,13 @@
 name: Code Quality
 
-# Run this workflow every time a new commit pushed to your repository
-on: [push, pull_request]
+# Only run on branches (e.g. not tags)
+on:
+  push:
+    branches:
+      - "*"
+  pull_request:
+    branches:
+      - "*"
 
 jobs:
   formatting:
