@@ -1,6 +1,9 @@
 Unreleased
 ---
 
+### Changed
+ - Use GitHub Actions instead of Travis-CI (issue #125)
+
 [7.1.0] - 2020-11-19
 ---
 
