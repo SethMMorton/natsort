@@ -81,10 +81,7 @@ def fast_float(
 
 # noinspection PyIncorrectDocstring
 def fast_int(
-    x,
-    key=lambda x: x,
-    _uni=unicodedata.digit,
-    _first_char=POTENTIAL_FIRST_CHAR,
+    x, key=lambda x: x, _uni=unicodedata.digit, _first_char=POTENTIAL_FIRST_CHAR
 ):
     """
     Convert a string to a int quickly, return input as-is if not possible.

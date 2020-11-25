@@ -15,9 +15,7 @@ from natsort.utils import groupletters, string_component_transform_factory
 # library on BSD systems that has nothing to do with natsort (a ValueError is
 # raised by strxfrm). Let's filter them out.
 try:
-    bad_uni_chars = frozenset(
-        chr(x) for x in range(0X10fefd, 0X10ffff + 1)
-    )
+    bad_uni_chars = frozenset(chr(x) for x in range(0x10FEFD, 0x10FFFF + 1))
 except ValueError:
     # Narrow unicode build... no worries.
     bad_uni_chars = frozenset()

@@ -88,12 +88,12 @@ def test_natsorted_handles_mixed_types(mixed_list, alg, expected):
 @pytest.mark.parametrize(
     "alg, expected, slc",
     [
-        (ns.DEFAULT, [float("nan"), 5, "25", 1E40], slice(1, None)),
-        (ns.NANLAST, [5, "25", 1E40, float("nan")], slice(None, 3)),
+        (ns.DEFAULT, [float("nan"), 5, "25", 1e40], slice(1, None)),
+        (ns.NANLAST, [5, "25", 1e40, float("nan")], slice(None, 3)),
     ],
 )
 def test_natsorted_handles_nan(alg, expected, slc):
-    given = ["25", 5, float("nan"), 1E40]
+    given = ["25", 5, float("nan"), 1e40]
     # The slice is because NaN != NaN
     # noinspection PyUnresolvedReferences
     assert natsorted(given, alg=alg)[slc] == expected[slc]

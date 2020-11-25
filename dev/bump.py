@@ -33,7 +33,9 @@ def bumpversion(severity, *args, catch=False):
     cmd = ["bump2version", *args, severity]
     try:
         if catch:
-            return subprocess.run(cmd, check=True, capture_output=True, text=True).stdout
+            return subprocess.run(
+                cmd, check=True, capture_output=True, text=True
+            ).stdout
         else:
             subprocess.run(cmd, check=True, text=True)
     except subprocess.CalledProcessError as e:
@@ -57,8 +59,8 @@ with open("CHANGELOG.md") as fl:
         "<!---Comparison links-->\n[{new}]: {url}/{current}...{new}".format(
             new=data["new_version"],
             current=data["current_version"],
-            url="https://github.com/SethMMorton/natsort/compare"
-        )
+            url="https://github.com/SethMMorton/natsort/compare",
+        ),
     )
 with open("CHANGELOG.md", "w") as fl:
     fl.write(changelog)

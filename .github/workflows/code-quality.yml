@@ -1,0 +1,68 @@
+name: Code Quality
+
+# Only run on branches (e.g. not tags)
+on:
+  push:
+    branches:
+      - "*"
+  pull_request:
+    branches:
+      - "*"
+
+jobs:
+  formatting:
+    name: Formatting
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: '3.6'
+
+      - name: Install black
+        run: pip install black
+
+      - name: Run black
+        run: black --quiet --check --diff .
+
+  static-analysis:
+    name: Static Analysis
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: '3.5'
+
+      - name: Install Flake8
+        run: pip install flake8 flake8-import-order flake8-bugbear pep8-naming
+
+      - name: Run Flake8
+        run: flake8
+
+  package-validation:
+    name: Package Validation
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: '3.5'
+
+      - name: Install Validators
+        run: pip install twine check-manifest
+
+      - name: Run Validation
+        run: |
+          check-manifest --ignore ".github*,*.md,.coveragerc"
+          python setup.py sdist
+          twine check dist/*

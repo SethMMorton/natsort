@@ -10,14 +10,11 @@ natsort
 .. image:: https://img.shields.io/pypi/l/natsort.svg
     :target: https://github.com/SethMMorton/natsort/blob/master/LICENSE
 
-.. image:: https://img.shields.io/travis/SethMMorton/natsort/master.svg?label=travis-ci
-    :target: https://travis-ci.com/SethMMorton/natsort
+.. image:: https://github.com/SethMMorton/natsort/workflows/Tests/badge.svg
+    :target: https://github.com/SethMMorton/natsort/actions
 
 .. image:: https://codecov.io/gh/SethMMorton/natsort/branch/master/graph/badge.svg
     :target: https://codecov.io/gh/SethMMorton/natsort
-
-.. image:: https://api.codacy.com/project/badge/Grade/f2bf04b1fc5d4792bf546f6e497cf4b8
-    :target: https://www.codacy.com/app/SethMMorton/natsort
 
 Simple yet flexible natural sorting in Python.
 

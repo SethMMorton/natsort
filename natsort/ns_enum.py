@@ -65,9 +65,7 @@ for name, combo in enum_combos:
         combined_value |= enum_fields[combo_name]
     enum_fields[name] = combined_value
 
-enum_fields.update(
-    (alias, enum_fields[name]) for alias, name in enum_aliases
-)
+enum_fields.update((alias, enum_fields[name]) for alias, name in enum_aliases)
 
 
 # Subclass the namedtuple to improve the docstring.
