@@ -51,3 +51,12 @@ jobs:
 
       - name: Run Tests
         run: tox
+
+      - name: Generate Coverage Report
+        run: coverage xml
+
+      - name: Upload to CodeCov
+        uses: codecov/codecov-action@v1
+
+      - name: Upload to Codacy
+        run: bash <(curl -Ls https://coverage.codacy.com/get.sh)
