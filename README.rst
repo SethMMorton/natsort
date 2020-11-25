@@ -16,9 +16,6 @@ natsort
 .. image:: https://codecov.io/gh/SethMMorton/natsort/branch/master/graph/badge.svg
     :target: https://codecov.io/gh/SethMMorton/natsort
 
-.. image:: https://api.codacy.com/project/badge/Grade/f2bf04b1fc5d4792bf546f6e497cf4b8
-    :target: https://www.codacy.com/app/SethMMorton/natsort
-
 Simple yet flexible natural sorting in Python.
 
     - Source Code: https://github.com/SethMMorton/natsort
