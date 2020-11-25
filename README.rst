@@ -10,8 +10,8 @@ natsort
 .. image:: https://img.shields.io/pypi/l/natsort.svg
     :target: https://github.com/SethMMorton/natsort/blob/master/LICENSE
 
-.. image:: https://img.shields.io/travis/SethMMorton/natsort/master.svg?label=travis-ci
-    :target: https://travis-ci.com/SethMMorton/natsort
+.. image:: https://github.com/SethMMorton/natsort/workflows/Tests/badge.svg
+    :target: https://github.com/SethMMorton/natsort/actions
 
 .. image:: https://codecov.io/gh/SethMMorton/natsort/branch/master/graph/badge.svg
     :target: https://codecov.io/gh/SethMMorton/natsort
