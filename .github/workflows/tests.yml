@@ -43,7 +43,7 @@ jobs:
       - name: Install Dependencies
         run: |
           python -m pip install --upgrade pip
-          python -m pip install tox tox-gh-actions codacy-coverage codecov
+          python -m pip install tox tox-gh-actions codecov
 
       - name: Set Extras Environment
         if: matrix.extras
