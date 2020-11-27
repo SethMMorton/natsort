@@ -81,9 +81,9 @@ directly. Here's an example with SemVer:
 
 .. code-block:: pycon
 
-    >>> from semver import parse_version_info
+    >>> from semver import VersionInfo
     >>> a = ['3.4.5-pre.1', '3.4.5', '3.4.5-pre.2+build.4']
-    >>> sorted(a, key=parse_version_info)
+    >>> sorted(a, key=VersionInfo.parse)
     ['3.4.5-pre.1', '3.4.5-pre.2+build.4', '3.4.5']
 
 .. _path_sort:

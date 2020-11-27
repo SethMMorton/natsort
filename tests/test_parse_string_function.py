@@ -33,12 +33,11 @@ def final_transform(x, original):
     return t
 
 
-@pytest.fixture
-def parse_string_func(request):
+def parse_string_func_factory(alg):
     """A parse_string_factory result with sample arguments."""
     sep = ""
     return parse_string_factory(
-        request.param,  # algorirhm
+        alg,
         sep,
         NumRegex.int_nosign().split,
         input_transform,
@@ -47,22 +46,21 @@ def parse_string_func(request):
     )
 
 
-@pytest.mark.parametrize("parse_string_func", [ns.DEFAULT], indirect=True)
 @given(x=floats() | integers())
-def test_parse_string_factory_raises_type_error_if_given_number(x, parse_string_func):
+def test_parse_string_factory_raises_type_error_if_given_number(x):
+    parse_string_func = parse_string_func_factory(ns.DEFAULT)
     with pytest.raises(TypeError):
         assert parse_string_func(x)
 
 
 # noinspection PyCallingNonCallable
 @pytest.mark.parametrize(
-    "parse_string_func, orig_func",
+    "alg, orig_func",
     [
         (ns.DEFAULT, lambda x: x.upper()),
         (ns.LOCALE, lambda x: x.upper()),
         (ns.LOCALE | NS_DUMB, lambda x: x),  # This changes the "original" handling.
     ],
-    indirect=["parse_string_func"],
 )
 @given(
     x=lists(
@@ -70,7 +68,8 @@ def test_parse_string_factory_raises_type_error_if_given_number(x, parse_string_
     )
 )
 @pytest.mark.usefixtures("with_locale_en_us")
-def test_parse_string_factory_invariance(x, parse_string_func, orig_func):
+def test_parse_string_factory_invariance(x, alg, orig_func):
+    parse_string_func = parse_string_func_factory(alg)
     # parse_string_factory is the high-level combination of several dedicated
     # functions involved in splitting and manipulating a string. The details of
     # what those functions do is not relevant to testing parse_string_factory.
