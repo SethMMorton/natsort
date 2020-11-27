@@ -9,5 +9,3 @@ This file contains some files useful for development.
 - `clean.py` - This file cleans most files that are created during development.
   Run in the project home directory.
   It is not really intended to be called directly, but instead through `tox -e clean`.
-- `requirements.in` - Our direct requirements to run tests.
-- `requirements.txt` - All pinned requirements to run tests.
