@@ -9,3 +9,5 @@ This file contains some files useful for development.
 - `clean.py` - This file cleans most files that are created during development.
   Run in the project home directory.
   It is not really intended to be called directly, but instead through `tox -e clean`.
+- `generate_new_unicode_numbers.py` is used to update `natsort/unicode_numeric_hex.py`
+  when new Python versions are released.
