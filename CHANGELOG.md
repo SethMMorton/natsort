@@ -3,6 +3,10 @@ Unreleased
 
 ### Changed
  - Use GitHub Actions instead of Travis-CI (issue #125)
+ - No longer pin testing dependencies (issue #126)
+
+### Fixed
+ - Correct a minor typo ([@madphysicist](https://github.com/madphysicist), issue #127)
 
 [7.1.0] - 2020-11-19
 ---
