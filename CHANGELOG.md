@@ -1,6 +1,9 @@
 Unreleased
 ---
 
+[7.1.1] - 2021-01-24
+---
+
 ### Changed
  - Use GitHub Actions instead of Travis-CI (issue #125)
  - No longer pin testing dependencies (issue #126)
@@ -557,6 +560,7 @@ a pipeline by which to filter
  - Sorting algorithm to support floats (including exponentials) and basic version number support
 
 <!---Comparison links-->
+[7.1.1]: https://github.com/SethMMorton/natsort/compare/7.1.0...7.1.1
 [7.1.0]: https://github.com/SethMMorton/natsort/compare/7.0.1...7.1.0
 [7.0.1]: https://github.com/SethMMorton/natsort/compare/7.0.0...7.0.1
 [7.0.0]: https://github.com/SethMMorton/natsort/compare/6.2.0...7.0.0
