@@ -34,7 +34,9 @@ jobs:
 
       - name: Install Locales
         if: matrix.os == 'ubuntu-latest'
-        run: sudo apt-get install language-pack-de language-pack-en
+        run: |
+          sudo apt-get update
+          sudo apt-get install language-pack-de language-pack-en
 
       - name: Install ICU
         if: matrix.extras
