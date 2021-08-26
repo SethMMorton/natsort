@@ -148,7 +148,7 @@ For users **not** on Windows (e.g. MacOS/Linux) it is **strongly** recommended
 to also install `PyICU <https://pypi.org/project/PyICU>`_, which will help
 ``natsort`` give results that match most file browsers. If this is not installed,
 it will fall back on Python's built-in ``locale`` module and will give good
-results for most input, but will give poor restuls for special characters.
+results for most input, but will give poor results for special characters.
 
 Sorting by Real Numbers (i.e. Signed Floats)
 ++++++++++++++++++++++++++++++++++++++++++++
