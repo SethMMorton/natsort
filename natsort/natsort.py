@@ -622,7 +622,7 @@ def _split_apply(v, key=None):
 # Choose the implementation based on the host OS
 if platform.system() == "Windows":
 
-    from ctypes import wintypes, windll
+    from ctypes import wintypes, windll  # type: ignore
     from functools import cmp_to_key
 
     _windows_sort_cmp = windll.Shlwapi.StrCmpLogicalW

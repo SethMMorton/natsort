@@ -10,7 +10,7 @@ import unicodedata
 # Local imports.
 from natsort.unicode_numbers import decimal_chars
 
-NAN_INF = [
+_NAN_INF = [
     "INF",
     "INf",
     "Inf",
@@ -28,8 +28,8 @@ NAN_INF = [
     "nAN",
     "Nan",
 ]
-NAN_INF.extend(["+" + x[:2] for x in NAN_INF] + ["-" + x[:2] for x in NAN_INF])
-NAN_INF = frozenset(NAN_INF)
+_NAN_INF.extend(["+" + x[:2] for x in _NAN_INF] + ["-" + x[:2] for x in _NAN_INF])
+NAN_INF = frozenset(_NAN_INF)
 ASCII_NUMS = "0123456789+-"
 POTENTIAL_FIRST_CHAR = frozenset(decimal_chars + list(ASCII_NUMS + "."))
 
