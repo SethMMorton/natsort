@@ -9,10 +9,15 @@ The majority of the "work" is defined in utils.py.
 import platform
 from functools import partial
 from operator import itemgetter
+from typing import Callable, Iterable, TypeVar
+
+from _typeshed import SupportsLessThan
 
 import natsort.compat.locale
 from natsort import utils
 from natsort.ns_enum import NS_DUMB, ns
+
+_T = TypeVar("_T")
 
 
 def decoder(encoding):
@@ -212,7 +217,7 @@ natsort_keygen
 """
 
 
-def natsorted(seq, key=None, reverse=False, alg=ns.DEFAULT):
+def natsorted(seq: Iterable[_T], key: Callable[[_T], SupportsLessThan]=None, reverse=False, alg=ns.DEFAULT):
     """
     Sorts an iterable naturally.
 
