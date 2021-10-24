@@ -1,6 +1,11 @@
 Unreleased
 ---
 
+### Changed
+
+ - The `ns` enum is now implemented as an `enum.IntEnum` instead of a
+   `collections.namedtuple`
+
 ### Removed
 
  - Support for Python 3.4 and Python 3.5
