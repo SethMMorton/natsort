@@ -3,7 +3,6 @@
 Interface for natsort to access fastnumbers functions without
 having to worry if it is actually installed.
 """
-
 import re
 
 

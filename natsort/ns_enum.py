@@ -6,6 +6,7 @@ what algorithm natsort uses.
 
 import enum
 import itertools
+import typing
 
 
 _counter = itertools.count(0)
@@ -126,6 +127,7 @@ class ns(enum.IntEnum):  # noqa: N801
         True
 
     """
+
     # The below are the base ns options. The values will be stored as powers
     # of two so bitmasks can be used to extract the user's requested options.
     FLOAT = F = 1 << next(_counter)
@@ -154,3 +156,7 @@ class ns(enum.IntEnum):  # noqa: N801
 
 # The below is private for internal use only.
 NS_DUMB = 1 << 31
+
+# An integer can be used in place of the ns enum so make the
+# type to use for this enum a union of it and an inteter.
+NS_t = typing.Union[ns, int]

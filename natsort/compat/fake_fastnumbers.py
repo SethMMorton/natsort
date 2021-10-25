@@ -3,11 +3,9 @@
 This module is intended to replicate some of the functionality
 from the fastnumbers module in the event that module is not installed.
 """
-
-# Std. lib imports.
 import unicodedata
+from typing import Callable, FrozenSet, Union
 
-# Local imports.
 from natsort.unicode_numbers import decimal_chars
 
 _NAN_INF = [
@@ -33,16 +31,19 @@ NAN_INF = frozenset(_NAN_INF)
 ASCII_NUMS = "0123456789+-"
 POTENTIAL_FIRST_CHAR = frozenset(decimal_chars + list(ASCII_NUMS + "."))
 
+StrOrFloat = Union[str, float]
+StrOrInt = Union[str, int]
+
 
 # noinspection PyIncorrectDocstring
 def fast_float(
-    x,
-    key=lambda x: x,
-    nan=None,
-    _uni=unicodedata.numeric,
-    _nan_inf=NAN_INF,
-    _first_char=POTENTIAL_FIRST_CHAR,
-):
+    x: str,
+    key: Callable[[str], StrOrFloat] = lambda x: x,
+    nan: StrOrFloat = None,
+    _uni: Callable[[str, StrOrFloat], StrOrFloat] = unicodedata.numeric,
+    _nan_inf: FrozenSet[str] = NAN_INF,
+    _first_char: FrozenSet[str] = POTENTIAL_FIRST_CHAR,
+) -> StrOrFloat:
     """
     Convert a string to a float quickly, return input as-is if not possible.
 
@@ -65,8 +66,8 @@ def fast_float(
     """
     if x[0] in _first_char or x.lstrip()[:3] in _nan_inf:
         try:
-            x = float(x)
-            return nan if nan is not None and x != x else x
+            ret = float(x)
+            return nan if nan is not None and ret != ret else ret
         except ValueError:
             try:
                 return _uni(x, key(x)) if len(x) == 1 else key(x)
@@ -81,8 +82,11 @@ def fast_float(
 
 # noinspection PyIncorrectDocstring
 def fast_int(
-    x, key=lambda x: x, _uni=unicodedata.digit, _first_char=POTENTIAL_FIRST_CHAR
-):
+    x: str,
+    key: Callable[[str], StrOrInt] = lambda x: x,
+    _uni: Callable[[str, StrOrInt], StrOrInt] = unicodedata.digit,
+    _first_char: FrozenSet[str] = POTENTIAL_FIRST_CHAR,
+) -> StrOrInt:
     """
     Convert a string to a int quickly, return input as-is if not possible.
 
