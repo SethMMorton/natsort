@@ -1,6 +1,9 @@
 # -*- coding: utf-8 -*-
 
 from natsort.natsort import (
+    NatsortKeyType,
+    OSSortKeyType,
+    PathKeyType,
     as_ascii,
     as_utf8,
     decoder,
@@ -19,7 +22,7 @@ from natsort.natsort import (
     os_sorted,
     realsorted,
 )
-from natsort.utils import chain_functions
+from natsort.utils import KeyType, NatsortInType, NatsortOutType, chain_functions
 
 __version__ = "7.1.1"
 
@@ -42,6 +45,12 @@ __all__ = [
     "os_sort_key",
     "os_sort_keygen",
     "os_sorted",
+    "NatsortKeyType",
+    "OSSortKeyType",
+    "PathKeyType",
+    "KeyType",
+    "NatsortInType",
+    "NatsortOutType",
 ]
 
 # Add the ns keys to this namespace for convenience.
