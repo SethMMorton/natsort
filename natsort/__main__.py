@@ -216,7 +216,11 @@ def check_filters(filters: NumPairIter) -> Optional[List[NumPair]]:
 
 
 def keep_entry_range(
-    entry: str, lows: NumIter, highs: NumIter, converter: NumConverter, regex: Pattern
+    entry: str,
+    lows: NumIter,
+    highs: NumIter,
+    converter: NumConverter,
+    regex: Pattern[str],
 ) -> bool:
     """
     Check if an entry falls into a desired range.
@@ -250,7 +254,7 @@ def keep_entry_range(
 
 
 def keep_entry_value(
-    entry: str, values: NumIter, converter: NumConverter, regex: Pattern
+    entry: str, values: NumIter, converter: NumConverter, regex: Pattern[str]
 ) -> bool:
     """
     Check if an entry does not match a given value.

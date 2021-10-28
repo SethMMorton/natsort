@@ -14,7 +14,6 @@ from natsort.natsort import (
     natsort_key,
     natsort_keygen,
     natsorted,
-    ns,
     numeric_regex_chooser,
     order_by_index,
     os_sort_key,
@@ -22,6 +21,7 @@ from natsort.natsort import (
     os_sorted,
     realsorted,
 )
+from natsort.ns_enum import ns
 from natsort.utils import KeyType, NatsortInType, NatsortOutType, chain_functions
 
 __version__ = "7.1.1"

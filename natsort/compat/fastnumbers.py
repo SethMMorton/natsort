@@ -5,6 +5,8 @@ having to worry if it is actually installed.
 """
 import re
 
+__all__ = ["fast_float", "fast_int"]
+
 
 def is_supported_fastnumbers(fastnumbers_version: str) -> bool:
     match = re.match(

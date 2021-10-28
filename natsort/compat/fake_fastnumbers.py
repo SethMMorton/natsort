@@ -4,7 +4,7 @@ This module is intended to replicate some of the functionality
 from the fastnumbers module in the event that module is not installed.
 """
 import unicodedata
-from typing import Callable, FrozenSet, Union
+from typing import Callable, FrozenSet, Optional, Union
 
 from natsort.unicode_numbers import decimal_chars
 
@@ -39,7 +39,7 @@ StrOrInt = Union[str, int]
 def fast_float(
     x: str,
     key: Callable[[str], StrOrFloat] = lambda x: x,
-    nan: StrOrFloat = None,
+    nan: Optional[StrOrFloat] = None,
     _uni: Callable[[str, StrOrFloat], StrOrFloat] = unicodedata.numeric,
     _nan_inf: FrozenSet[str] = NAN_INF,
     _first_char: FrozenSet[str] = POTENTIAL_FIRST_CHAR,
