@@ -1,20 +1,20 @@
 # -*- coding: utf-8 -*-
 """These test the utils.py functions."""
-from typing import Any as Any_t, List, NoReturn, Tuple, Union
+from typing import Any, List, NoReturn, Tuple, Union
 
 from hypothesis import given
 from hypothesis.strategies import binary, floats, integers, lists, text
 from natsort.utils import natsort_key
 
 
-def str_func(x: Any_t) -> Tuple[str]:
+def str_func(x: Any) -> Tuple[str]:
     if isinstance(x, str):
         return (x,)
     else:
         raise TypeError("Not a str!")
 
 
-def fail(_: Any_t) -> NoReturn:
+def fail(_: Any) -> NoReturn:
     raise AssertionError("This should never be reached!")
 
 

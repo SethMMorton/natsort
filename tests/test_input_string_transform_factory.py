@@ -5,7 +5,7 @@ from typing import Callable
 import pytest
 from hypothesis import example, given
 from hypothesis.strategies import integers, text
-from natsort.ns_enum import NS_DUMB, NS_t, ns
+from natsort.ns_enum import NS_DUMB, NSType, ns
 from natsort.utils import input_string_transform_factory
 
 
@@ -38,7 +38,7 @@ def test_input_string_transform_factory_is_no_op_for_no_alg_options(x: str) -> N
 )
 @given(x=text())
 def test_input_string_transform_factory(
-    x: str, alg: NS_t, example_func: Callable[[str], str]
+    x: str, alg: NSType, example_func: Callable[[str], str]
 ) -> None:
     input_string_transform_func = input_string_transform_factory(alg)
     assert input_string_transform_func(x) == example_func(x)
@@ -105,7 +105,7 @@ def test_input_string_transform_factory_handles_de_locale(
 )
 @pytest.mark.usefixtures("with_locale_de_de")
 def test_input_string_transform_factory_handles_german_locale(
-    alg: NS_t, expected: str
+    alg: NSType, expected: str
 ) -> None:
     input_string_transform_func = input_string_transform_factory(alg)
     assert input_string_transform_func("1543,753") == expected

@@ -2,14 +2,14 @@
 """These test the utils.py functions."""
 
 from functools import partial
-from typing import Any as Any_t, Callable, FrozenSet, Union
+from typing import Any, Callable, FrozenSet, Union
 
 import pytest
 from hypothesis import example, given
 from hypothesis.strategies import floats, integers, text
 from natsort.compat.fastnumbers import fast_float, fast_int
 from natsort.compat.locale import get_strxfrm
-from natsort.ns_enum import NS_DUMB, NS_t, ns
+from natsort.ns_enum import NS_DUMB, NSType, ns
 from natsort.utils import groupletters, string_component_transform_factory
 
 # There are some unicode values that are known failures with the builtin locale
@@ -67,7 +67,7 @@ def no_null(x: str) -> bool:
 )
 @pytest.mark.usefixtures("with_locale_en_us")
 def test_string_component_transform_factory(
-    x: Union[str, float, int], alg: NS_t, example_func: Callable[[str], Any_t]
+    x: Union[str, float, int], alg: NSType, example_func: Callable[[str], Any]
 ) -> None:
     string_component_transform_func = string_component_transform_factory(alg)
     try:

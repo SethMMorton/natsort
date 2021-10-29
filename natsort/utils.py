@@ -44,7 +44,7 @@ from itertools import chain as ichain
 from operator import methodcaller
 from pathlib import PurePath
 from typing import (
-    Any as Any_t,
+    Any,
     Callable,
     Dict,
     Iterable,
@@ -67,14 +67,15 @@ from natsort.compat.locale import (
     get_strxfrm,
     get_thousands_sep,
 )
-from natsort.ns_enum import NS_DUMB, NS_t, ns
+from natsort.natsort import NatsortKeyType
+from natsort.ns_enum import NS_DUMB, NSType, ns
 from natsort.unicode_numbers import digits_no_decimals, numeric_no_decimals
 
 #
 # Pre-define a slew of aggregate types which makes the type hinting below easier
 #
 StrToStr = Callable[[str], str]
-AnyCall = Callable[[Any_t], Any_t]
+AnyCall = Callable[[Any], Any]
 
 # For the bytes transform factory
 BytesTuple = Tuple[bytes]
@@ -98,10 +99,10 @@ StrTransformer = Callable[[str], StrBytesNum]
 
 # For the final data transform factory
 TwoBlankTuple = Tuple[Tuple[()], Tuple[()]]
-TupleOfAny = Tuple[Any_t, ...]
+TupleOfAny = Tuple[Any, ...]
 TupleOfStrAnyPair = Tuple[Tuple[str], TupleOfAny]
 FinalTransform = Union[TwoBlankTuple, TupleOfAny, TupleOfStrAnyPair]
-FinalTransformer = Callable[[Iterable[Any_t], str], FinalTransform]
+FinalTransformer = Callable[[Iterable[Any], str], FinalTransform]
 
 # For the string parsing factory
 StrSplitter = Callable[[str], Iterable[str]]
@@ -115,7 +116,7 @@ MatchFn = Callable[[str], Optional[Match]]
 PathSplitter = Callable[[PathArg], Tuple[FinalTransform, ...]]
 
 # For the natsort key
-NatsortIterType = Iterable[Union[StrBytesNum, Iterable[Any_t]]]
+NatsortIterType = Iterable[Union[StrBytesNum, Iterable[Any]]]
 NatsortInType = Union[StrBytesNum, NatsortIterType]
 NatsortOutElement = Union[
     FinalTransform,
@@ -124,8 +125,10 @@ NatsortOutElement = Union[
     MaybeNumTransform,
     BytesTransform,
 ]
-NatsortOutType = Union[NatsortOutElement, Tuple[Union[NatsortOutElement, tuple], ...]]
-KeyType = Callable[[Any_t], NatsortInType]
+NatsortOutType = Union[
+    NatsortOutElement, Tuple[Union[NatsortOutElement, Tuple[Any]], ...]
+]
+KeyType = Callable[[Any], NatsortInType]
 MaybeKeyType = Optional[KeyType]
 
 
@@ -183,7 +186,7 @@ class NumericalRegularExpressions:
         return cls._construct_regex(r"({float_num}|[{numeric}])")
 
 
-def regex_chooser(alg: NS_t) -> Pattern[str]:
+def regex_chooser(alg: NSType) -> Pattern[str]:
     """
     Select an appropriate regex for the type of number of interest.
 
@@ -213,12 +216,12 @@ def regex_chooser(alg: NS_t) -> Pattern[str]:
     }[alg]
 
 
-def _no_op(x: Any_t) -> Any_t:
+def _no_op(x: Any) -> Any:
     """A function that does nothing and returns the input as-is."""
     return x
 
 
-def _normalize_input_factory(alg: NS_t) -> StrToStr:
+def _normalize_input_factory(alg: NSType) -> StrToStr:
     """
     Create a function that will normalize unicode input data.
 
@@ -251,7 +254,7 @@ def natsort_key(
 
 @overload
 def natsort_key(
-    val: Any_t,
+    val: Any,
     key: KeyType,
     string_func: Union[StrParser, PathSplitter],
     bytes_func: BytesTransformer,
@@ -261,7 +264,7 @@ def natsort_key(
 
 
 def natsort_key(
-    val: Union[NatsortInType, Any_t],
+    val: Union[NatsortInType, Any],
     key: MaybeKeyType,
     string_func: Union[StrParser, PathSplitter],
     bytes_func: BytesTransformer,
@@ -335,7 +338,7 @@ def natsort_key(
             return num_func(cast(NumType, val))
 
 
-def parse_bytes_factory(alg: NS_t) -> BytesTransformer:
+def parse_bytes_factory(alg: NSType) -> BytesTransformer:
     """
     Create a function that will format a *bytes* object into a tuple.
 
@@ -369,7 +372,7 @@ def parse_bytes_factory(alg: NS_t) -> BytesTransformer:
 
 
 def parse_number_or_none_factory(
-    alg: NS_t, sep: StrOrBytes, pre_sep: str
+    alg: NSType, sep: StrOrBytes, pre_sep: str
 ) -> MaybeNumTransformer:
     """
     Create a function that will format a number (or None) into a tuple.
@@ -419,7 +422,7 @@ def parse_number_or_none_factory(
 
 
 def parse_string_factory(
-    alg: NS_t,
+    alg: NSType,
     sep: StrOrBytes,
     splitter: StrSplitter,
     input_transform: StrToStr,
@@ -518,7 +521,7 @@ def parse_path_factory(str_split: StrParser) -> PathSplitter:
     return lambda x: tuple(map(str_split, path_splitter(x)))
 
 
-def sep_inserter(iterator: Iterator[Any_t], sep: StrOrBytes) -> Iterator[Any_t]:
+def sep_inserter(iterator: Iterator[Any], sep: StrOrBytes) -> Iterator[Any]:
     """
     Insert '' between numbers in an iterator.
 
@@ -563,7 +566,7 @@ def sep_inserter(iterator: Iterator[Any_t], sep: StrOrBytes) -> Iterator[Any_t]:
         return
 
 
-def input_string_transform_factory(alg: NS_t) -> StrToStr:
+def input_string_transform_factory(alg: NSType) -> StrToStr:
     """
     Create a function to transform a string.
 
@@ -633,7 +636,7 @@ def input_string_transform_factory(alg: NS_t) -> StrToStr:
     return chain_functions(function_chain)
 
 
-def string_component_transform_factory(alg: NS_t) -> StrTransformer:
+def string_component_transform_factory(alg: NSType) -> StrTransformer:
     """
     Create a function to either transform a string or convert to a number.
 
@@ -678,7 +681,7 @@ def string_component_transform_factory(alg: NS_t) -> StrTransformer:
 
 
 def final_data_transform_factory(
-    alg: NS_t, sep: StrOrBytes, pre_sep: str
+    alg: NSType, sep: StrOrBytes, pre_sep: str
 ) -> FinalTransformer:
     """
     Create a function to transform a tuple.

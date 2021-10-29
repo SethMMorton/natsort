@@ -159,4 +159,4 @@ NS_DUMB = 1 << 31
 
 # An integer can be used in place of the ns enum so make the
 # type to use for this enum a union of it and an inteter.
-NS_t = typing.Union[ns, int]
+NSType = typing.Union[ns, int]

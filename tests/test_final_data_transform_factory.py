@@ -5,7 +5,7 @@ from typing import Callable, Union
 import pytest
 from hypothesis import example, given
 from hypothesis.strategies import floats, integers, text
-from natsort.ns_enum import NS_DUMB, NS_t, ns
+from natsort.ns_enum import NS_DUMB, NSType, ns
 from natsort.utils import final_data_transform_factory
 
 
@@ -13,7 +13,7 @@ from natsort.utils import final_data_transform_factory
 @given(x=text(), y=floats(allow_nan=False, allow_infinity=False) | integers())
 @pytest.mark.usefixtures("with_locale_en_us")
 def test_final_data_transform_factory_default(
-    x: str, y: Union[int, float], alg: NS_t
+    x: str, y: Union[int, float], alg: NSType
 ) -> None:
     final_data_transform_func = final_data_transform_factory(alg, "", "::")
     value = (x, y)
@@ -38,7 +38,7 @@ def test_final_data_transform_factory_default(
 @example(x="İ", y=0)
 @pytest.mark.usefixtures("with_locale_en_us")
 def test_final_data_transform_factory_ungroup_and_locale(
-    x: str, y: Union[int, float], alg: NS_t, func: Callable[[str], str]
+    x: str, y: Union[int, float], alg: NSType, func: Callable[[str], str]
 ) -> None:
     final_data_transform_func = final_data_transform_factory(alg, "", "::")
     value = (x, y)

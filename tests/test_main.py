@@ -5,7 +5,7 @@ Test the natsort command-line tool functions.
 
 import re
 import sys
-from typing import Any as Any_t, List, Union
+from typing import Any, List, Union
 
 import pytest
 from hypothesis import given
@@ -128,7 +128,7 @@ entries = [
     ],
 )
 def test_sort_and_print_entries(
-    options: List[Any_t], order: List[int], mocker: MockerFixture
+    options: List[Any], order: List[int], mocker: MockerFixture
 ) -> None:
     p = mocker.patch(mock_print)
     sort_and_print_entries(entries, TypedArgs(*options))

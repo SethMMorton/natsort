@@ -6,7 +6,7 @@ from typing import Optional, Tuple, Union
 import pytest
 from hypothesis import given
 from hypothesis.strategies import floats, integers
-from natsort.ns_enum import NS_t, ns
+from natsort.ns_enum import NSType, ns
 from natsort.utils import MaybeNumTransformer, parse_number_or_none_factory
 
 
@@ -22,7 +22,7 @@ from natsort.utils import MaybeNumTransformer, parse_number_or_none_factory
 )
 @given(x=floats(allow_nan=False) | integers())
 def test_parse_number_factory_makes_function_that_returns_tuple(
-    x: Union[float, int], alg: NS_t, example_func: MaybeNumTransformer
+    x: Union[float, int], alg: NSType, example_func: MaybeNumTransformer
 ) -> None:
     parse_number_func = parse_number_or_none_factory(alg, "", "xx")
     assert parse_number_func(x) == example_func(x)
@@ -39,7 +39,7 @@ def test_parse_number_factory_makes_function_that_returns_tuple(
     ],
 )
 def test_parse_number_factory_treats_nan_and_none_special(
-    alg: NS_t, x: Optional[Union[float, int]], result: Tuple[str, Union[float, int]]
+    alg: NSType, x: Optional[Union[float, int]], result: Tuple[str, Union[float, int]]
 ) -> None:
     parse_number_func = parse_number_or_none_factory(alg, "", "xx")
     assert parse_number_func(x) == result

@@ -12,7 +12,7 @@ import pytest
 from hypothesis import given
 from hypothesis.strategies import integers, lists, sampled_from, text
 from natsort import utils
-from natsort.ns_enum import NS_t, ns
+from natsort.ns_enum import NSType, ns
 
 
 def test_do_decoding_decodes_bytes_string_to_unicode() -> None:
@@ -35,7 +35,7 @@ def test_do_decoding_decodes_bytes_string_to_unicode() -> None:
     ],
 )
 def test_regex_chooser_returns_correct_regular_expression_object(
-    alg: NS_t, expected: Pattern[str]
+    alg: NSType, expected: Pattern[str]
 ) -> None:
     assert utils.regex_chooser(alg).pattern == expected.pattern
 
@@ -71,7 +71,7 @@ def test_regex_chooser_returns_correct_regular_expression_object(
         (ns.REAL, ns.FLOAT | ns.SIGNED),
     ],
 )
-def test_ns_enum_values_and_aliases(alg: NS_t, value_or_alias: NS_t) -> None:
+def test_ns_enum_values_and_aliases(alg: NSType, value_or_alias: NSType) -> None:
     assert alg == value_or_alias
 
 

@@ -2,13 +2,13 @@
 """These test the utils.py functions."""
 
 import unicodedata
-from typing import Any as Any_t, Callable, Iterable, List, Tuple, Union
+from typing import Any, Callable, Iterable, List, Tuple, Union
 
 import pytest
 from hypothesis import given
 from hypothesis.strategies import floats, integers, lists, text
 from natsort.compat.fastnumbers import fast_float
-from natsort.ns_enum import NS_DUMB, NS_t, ns
+from natsort.ns_enum import NS_DUMB, NSType, ns
 from natsort.utils import (
     FinalTransform,
     NumericalRegularExpressions as NumRegex,
@@ -17,13 +17,13 @@ from natsort.utils import (
 from natsort.utils import parse_string_factory
 
 
-class CustomTuple(Tuple[Any_t, ...]):
+class CustomTuple(Tuple[Any, ...]):
     """Used to ensure what is given during testing is what is returned."""
 
-    original: Any_t = None
+    original: Any = None
 
 
-def input_transform(x: Any_t) -> Any_t:
+def input_transform(x: Any) -> Any:
     """Make uppercase."""
     try:
         return x.upper()
@@ -31,14 +31,14 @@ def input_transform(x: Any_t) -> Any_t:
         return x
 
 
-def final_transform(x: Iterable[Any_t], original: str) -> FinalTransform:
+def final_transform(x: Iterable[Any], original: str) -> FinalTransform:
     """Make the input a CustomTuple."""
     t = CustomTuple(x)
     t.original = original
     return t
 
 
-def parse_string_func_factory(alg: NS_t) -> StrParser:
+def parse_string_func_factory(alg: NSType) -> StrParser:
     """A parse_string_factory result with sample arguments."""
     sep = ""
     return parse_string_factory(
@@ -76,7 +76,7 @@ def test_parse_string_factory_raises_type_error_if_given_number(
 )
 @pytest.mark.usefixtures("with_locale_en_us")
 def test_parse_string_factory_invariance(
-    x: List[Union[float, str, int]], alg: NS_t, orig_func: Callable[[str], str]
+    x: List[Union[float, str, int]], alg: NSType, orig_func: Callable[[str], str]
 ) -> None:
     parse_string_func = parse_string_func_factory(alg)
     # parse_string_factory is the high-level combination of several dedicated

@@ -6,7 +6,7 @@ See the README or the natsort homepage for more details.
 
 from operator import itemgetter
 from typing import List, Tuple, Union
-from natsort.ns_enum import NS_t
+from natsort.ns_enum import NSType
 
 import pytest
 from natsort import as_utf8, natsorted, ns
@@ -47,7 +47,7 @@ def test_natsorted_can_sort_as_signed_floats_with_exponents(
     [ns.NOEXP | ns.FLOAT | ns.UNSIGNED, ns.NOEXP | ns.FLOAT],
 )
 def test_natsorted_can_sort_as_unsigned_and_ignore_exponents(
-    float_list: List[str], alg: NS_t
+    float_list: List[str], alg: NSType
 ) -> None:
     expected = ["a5.034e1", "a50", "a50.300", "a50.31", "a50.4", "a51.", "a-50"]
     assert natsorted(float_list, alg=alg) == expected
@@ -56,7 +56,7 @@ def test_natsorted_can_sort_as_unsigned_and_ignore_exponents(
 # DEFAULT and INT are all equivalent.
 @pytest.mark.parametrize("alg", [ns.DEFAULT, ns.INT])
 def test_natsorted_can_sort_as_unsigned_ints_which_is_default(
-    float_list: List[str], alg: NS_t
+    float_list: List[str], alg: NSType
 ) -> None:
     expected = ["a5.034e1", "a50", "a50.4", "a50.31", "a50.300", "a51.", "a-50"]
     assert natsorted(float_list, alg=alg) == expected
@@ -72,7 +72,7 @@ def test_natsorted_can_sort_as_signed_ints(float_list: List[str]) -> None:
     [(ns.UNSIGNED, ["a7", "a+2", "a-5"]), (ns.SIGNED, ["a-5", "a+2", "a7"])],
 )
 def test_natsorted_can_sort_with_or_without_accounting_for_sign(
-    alg: NS_t, expected: List[str]
+    alg: NSType, expected: List[str]
 ) -> None:
     given = ["a-5", "a7", "a+2"]
     assert natsorted(given, alg=alg) == expected
@@ -93,7 +93,7 @@ def test_natsorted_can_sort_as_version_numbers() -> None:
 )
 def test_natsorted_handles_mixed_types(
     mixed_list: List[Union[str, int, float]],
-    alg: NS_t,
+    alg: NSType,
     expected: List[Union[str, int, float]],
 ) -> None:
     assert natsorted(mixed_list, alg=alg) == expected
@@ -107,7 +107,7 @@ def test_natsorted_handles_mixed_types(
     ],
 )
 def test_natsorted_handles_nan(
-    alg: NS_t, expected: List[Union[str, float, int]], slc: slice
+    alg: NSType, expected: List[Union[str, float, int]], slc: slice
 ) -> None:
     given: List[Union[str, float, int]] = ["25", 5, float("nan"), 1e40]
     # The slice is because NaN != NaN
@@ -193,7 +193,7 @@ def test_natsorted_handles_numbers_and_filesystem_paths_simultaneously() -> None
     ],
 )
 def test_natsorted_supports_case_handling(
-    alg: NS_t, expected: List[str], fruit_list: List[str]
+    alg: NSType, expected: List[str], fruit_list: List[str]
 ) -> None:
     assert natsorted(fruit_list, alg=alg) == expected
 
@@ -207,7 +207,7 @@ def test_natsorted_supports_case_handling(
     ],
 )
 def test_natsorted_supports_nested_case_handling(
-    alg: NS_t, expected: List[Tuple[str, str]]
+    alg: NSType, expected: List[Tuple[str, str]]
 ) -> None:
     given = [("A5", "a6"), ("a3", "a1")]
     assert natsorted(given, alg=alg) == expected
@@ -224,7 +224,7 @@ def test_natsorted_supports_nested_case_handling(
 )
 @pytest.mark.usefixtures("with_locale_en_us")
 def test_natsorted_can_sort_using_locale(
-    fruit_list: List[str], alg: NS_t, expected: List[str]
+    fruit_list: List[str], alg: NSType, expected: List[str]
 ) -> None:
     assert natsorted(fruit_list, alg=ns.LOCALE | alg) == expected
 
@@ -268,7 +268,7 @@ def test_natsorted_locale_bug_regression_test_109() -> None:
 @pytest.mark.usefixtures("with_locale_en_us")
 def test_natsorted_handles_mixed_types_with_locale(
     mixed_list: List[Union[str, int, float]],
-    alg: NS_t,
+    alg: NSType,
     expected: List[Union[str, int, float]],
 ) -> None:
     assert natsorted(mixed_list, alg=ns.LOCALE | alg) == expected
@@ -282,7 +282,7 @@ def test_natsorted_handles_mixed_types_with_locale(
     ],
 )
 def test_natsorted_sorts_an_odd_collection_of_strings(
-    alg: NS_t, expected: List[str]
+    alg: NSType, expected: List[str]
 ) -> None:
     given = ["apple", "Banana", "73", "5039", "corn", "~~~~~~"]
     assert natsorted(given, alg=alg) == expected

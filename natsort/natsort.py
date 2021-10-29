@@ -10,7 +10,7 @@ import platform
 from functools import partial
 from operator import itemgetter
 from typing import (
-    Any as Any_t,
+    Any,
     Callable,
     Iterable,
     Iterator,
@@ -26,19 +26,19 @@ from typing import (
 import natsort.compat.locale
 from natsort import utils
 from natsort.compat.locale import StrOrBytes
-from natsort.ns_enum import NS_DUMB, NS_t, ns
+from natsort.ns_enum import NS_DUMB, NSType, ns
 from natsort.utils import KeyType, MaybeKeyType, NatsortInType, NatsortOutType, PathArg
 
 # Keys that natsort accepts
-PathKeyType = Callable[[Any_t], PathArg]
+PathKeyType = Callable[[Any], PathArg]
 MaybePathKeyType = Optional[PathKeyType]
 
 # Common input and output types
 Iter_ns = Iterable[NatsortInType]
-Iter_any = Iterable[Any_t]
+Iter_any = Iterable[Any]
 Iter_path = Iterable[PathArg]
 List_ns = List[NatsortInType]
-List_any = List[Any_t]
+List_any = List[Any]
 List_path = List[PathArg]
 List_int = List[int]
 
@@ -137,7 +137,9 @@ def as_utf8(s: NatsortInType) -> NatsortInType:
     return utils.do_decoding(s, "utf-8")
 
 
-def natsort_keygen(key: MaybeKeyType = None, alg: NS_t = ns.DEFAULT) -> NatsortKeyType:
+def natsort_keygen(
+    key: MaybeKeyType = None, alg: NSType = ns.DEFAULT
+) -> NatsortKeyType:
     """
     Generate a key to sort strings and numbers naturally.
 
@@ -258,12 +260,12 @@ def natsorted(seq: Iter_ns, *, reverse: bool) -> List_ns:
 
 
 @overload
-def natsorted(seq: Iter_ns, *, alg: NS_t) -> List_ns:
+def natsorted(seq: Iter_ns, *, alg: NSType) -> List_ns:
     ...
 
 
 @overload
-def natsorted(seq: Iter_ns, *, reverse: bool, alg: NS_t) -> List_ns:
+def natsorted(seq: Iter_ns, *, reverse: bool, alg: NSType) -> List_ns:
     ...
 
 
@@ -278,12 +280,12 @@ def natsorted(seq: Iter_ns, key: None, reverse: bool) -> List_ns:
 
 
 @overload
-def natsorted(seq: Iter_ns, key: None, *, alg: NS_t) -> List_ns:
+def natsorted(seq: Iter_ns, key: None, *, alg: NSType) -> List_ns:
     ...
 
 
 @overload
-def natsorted(seq: Iter_ns, key: None, reverse: bool, alg: NS_t) -> List_ns:
+def natsorted(seq: Iter_ns, key: None, reverse: bool, alg: NSType) -> List_ns:
     ...
 
 
@@ -298,12 +300,12 @@ def natsorted(seq: Iter_any, key: KeyType, reverse: bool) -> List_any:
 
 
 @overload
-def natsorted(seq: Iter_any, key: KeyType, *, alg: NS_t) -> List_any:
+def natsorted(seq: Iter_any, key: KeyType, *, alg: NSType) -> List_any:
     ...
 
 
 @overload
-def natsorted(seq: Iter_any, key: KeyType, reverse: bool, alg: NS_t) -> List_any:
+def natsorted(seq: Iter_any, key: KeyType, reverse: bool, alg: NSType) -> List_any:
     ...
 
 
@@ -311,7 +313,7 @@ def natsorted(
     seq: Iter_any,
     key: MaybeKeyType = None,
     reverse: bool = False,
-    alg: NS_t = ns.DEFAULT,
+    alg: NSType = ns.DEFAULT,
 ) -> List_any:
     """
     Sorts an iterable naturally.
@@ -364,7 +366,7 @@ def humansorted(
     seq: Iter_any,
     key: MaybeKeyType = None,
     reverse: bool = False,
-    alg: NS_t = ns.DEFAULT,
+    alg: NSType = ns.DEFAULT,
 ) -> List_any:
     """
     Convenience function to properly sort non-numeric characters.
@@ -421,7 +423,7 @@ def realsorted(
     seq: Iter_any,
     key: MaybeKeyType = None,
     reverse: bool = False,
-    alg: NS_t = ns.DEFAULT,
+    alg: NSType = ns.DEFAULT,
 ) -> List_any:
     """
     Convenience function to properly sort signed floats.
@@ -486,12 +488,12 @@ def index_natsorted(seq: Iter_ns, *, reverse: bool) -> List_int:
 
 
 @overload
-def index_natsorted(seq: Iter_ns, *, alg: NS_t) -> List_int:
+def index_natsorted(seq: Iter_ns, *, alg: NSType) -> List_int:
     ...
 
 
 @overload
-def index_natsorted(seq: Iter_ns, *, reverse: bool, alg: NS_t) -> List_int:
+def index_natsorted(seq: Iter_ns, *, reverse: bool, alg: NSType) -> List_int:
     ...
 
 
@@ -506,12 +508,12 @@ def index_natsorted(seq: Iter_ns, key: None, reverse: bool) -> List_int:
 
 
 @overload
-def index_natsorted(seq: Iter_ns, key: None, *, alg: NS_t) -> List_int:
+def index_natsorted(seq: Iter_ns, key: None, *, alg: NSType) -> List_int:
     ...
 
 
 @overload
-def index_natsorted(seq: Iter_ns, key: None, reverse: bool, alg: NS_t) -> List_int:
+def index_natsorted(seq: Iter_ns, key: None, reverse: bool, alg: NSType) -> List_int:
     ...
 
 
@@ -526,12 +528,14 @@ def index_natsorted(seq: Iter_any, key: KeyType, reverse: bool) -> List_int:
 
 
 @overload
-def index_natsorted(seq: Iter_any, key: KeyType, *, alg: NS_t) -> List_int:
+def index_natsorted(seq: Iter_any, key: KeyType, *, alg: NSType) -> List_int:
     ...
 
 
 @overload
-def index_natsorted(seq: Iter_any, key: KeyType, reverse: bool, alg: NS_t) -> List_int:
+def index_natsorted(
+    seq: Iter_any, key: KeyType, reverse: bool, alg: NSType
+) -> List_int:
     ...
 
 
@@ -539,7 +543,7 @@ def index_natsorted(
     seq: Iter_any,
     key: MaybeKeyType = None,
     reverse: bool = False,
-    alg: NS_t = ns.DEFAULT,
+    alg: NSType = ns.DEFAULT,
 ) -> List_int:
     """
     Determine the list of the indexes used to sort the input sequence.
@@ -601,7 +605,7 @@ def index_natsorted(
         newkey = itemgetter(1)
     else:
 
-        def newkey(x: Any_t) -> NatsortInType:
+        def newkey(x: Any) -> NatsortInType:
             return cast(KeyType, key)(itemgetter(1)(x))
 
     # Pair the index and sequence together, then sort by element
@@ -614,7 +618,7 @@ def index_humansorted(
     seq: Iter_any,
     key: MaybeKeyType = None,
     reverse: bool = False,
-    alg: NS_t = ns.DEFAULT,
+    alg: NSType = ns.DEFAULT,
 ) -> List_int:
     """
     This is a wrapper around ``index_natsorted(seq, alg=ns.LOCALE)``.
@@ -668,7 +672,7 @@ def index_realsorted(
     seq: Iter_any,
     key: MaybeKeyType = None,
     reverse: bool = False,
-    alg: NS_t = ns.DEFAULT,
+    alg: NSType = ns.DEFAULT,
 ) -> List_int:
     """
     This is a wrapper around ``index_natsorted(seq, alg=ns.REAL)``.
@@ -716,7 +720,7 @@ def index_realsorted(
 
 # noinspection PyShadowingBuiltins,PyUnresolvedReferences
 def order_by_index(
-    seq: Sequence[Any_t], index: Iterable[int], iter: bool = False
+    seq: Sequence[Any], index: Iterable[int], iter: bool = False
 ) -> Iter_any:
     """
     Order a given sequence by an index sequence.
@@ -776,7 +780,7 @@ def order_by_index(
     return (seq[i] for i in index) if iter else [seq[i] for i in index]
 
 
-def numeric_regex_chooser(alg: NS_t) -> str:
+def numeric_regex_chooser(alg: NSType) -> str:
     """
     Select an appropriate regex for the type of number of interest.
 
@@ -795,7 +799,7 @@ def numeric_regex_chooser(alg: NS_t) -> str:
     return utils.regex_chooser(alg).pattern[1:-1]
 
 
-def _split_apply(v: Any_t, key: MaybePathKeyType = None) -> Iterator[str]:
+def _split_apply(v: Any, key: MaybePathKeyType = None) -> Iterator[str]:
     if key is not None:
         v = key(v)
     return utils.path_splitter(str(v))
