@@ -21,7 +21,7 @@ from natsort.natsort import (
     os_sorted,
     realsorted,
 )
-from natsort.ns_enum import ns
+from natsort.ns_enum import NSType, ns
 from natsort.utils import KeyType, NatsortInType, NatsortOutType, chain_functions
 
 __version__ = "7.1.1"
@@ -51,6 +51,7 @@ __all__ = [
     "KeyType",
     "NatsortInType",
     "NatsortOutType",
+    "NSType",
 ]
 
 # Add the ns keys to this namespace for convenience.
