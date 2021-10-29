@@ -171,8 +171,8 @@ def main(*arguments: str) -> None:
     args = parser.parse_args(arguments or None, namespace=TypedArgs())
 
     # Make sure the filter range is given properly. Does nothing if no filter
-    args.filter = check_filters(cast(NumPairIter, args.filter))
-    args.reverse_filter = check_filters(cast(NumPairIter, args.reverse_filter))
+    args.filter = check_filters(args.filter)
+    args.reverse_filter = check_filters(args.reverse_filter)
 
     # Remove trailing whitespace from all the entries
     entries = [e.strip() for e in args.entries]
@@ -206,7 +206,7 @@ def range_check(low: Num, high: Num) -> NumPair:
         return low, high
 
 
-def check_filters(filters: NumPairIter) -> Optional[List[NumPair]]:
+def check_filters(filters: Optional[NumPairIter]) -> Optional[List[NumPair]]:
     """
     Execute range_check for every element of an iterable.
 
