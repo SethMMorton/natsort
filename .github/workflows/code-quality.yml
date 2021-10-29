@@ -46,6 +46,24 @@ jobs:
       - name: Run Flake8
         run: flake8
 
+  type-checking:
+    name: Type Checking
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: '3.6'
+
+      - name: Install MyPy
+        run: pip install mypy hypothesis pytest pytest-mock
+
+      - name: Run MyPy
+        run: mypy --strict natsort tests
+
   package-validation:
     name: Package Validation
     runs-on: ubuntu-latest
