@@ -133,8 +133,6 @@ in your code, the following types have been exposed for your convenience.
 +--------------------------------+----------------------------------------------------------------------------------------+
 |:attr:`natsort.KeyType`         | Type of `key` argument to :func:`natsort.natsorted` and :func:`natsort.natsort_keygen` |
 +--------------------------------+----------------------------------------------------------------------------------------+
-|:attr:`natsort.PathKeyType`     | Type of `key` argument to :func:`natsort.os_sorted` and :func:`natsort.os_sort_keygen` |
-+--------------------------------+----------------------------------------------------------------------------------------+
 |:attr:`natsort.NatsortInType`   | The input type of :attr:`natsort.NatsortKeyType`                                       |
 +--------------------------------+----------------------------------------------------------------------------------------+
 |:attr:`natsort.NatsortOutType`  | The output type of :attr:`natsort.NatsortKeyType`                                      |

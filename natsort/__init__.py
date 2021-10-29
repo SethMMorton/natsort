@@ -3,7 +3,6 @@
 from natsort.natsort import (
     NatsortKeyType,
     OSSortKeyType,
-    PathKeyType,
     as_ascii,
     as_utf8,
     decoder,
@@ -47,7 +46,6 @@ __all__ = [
     "os_sorted",
     "NatsortKeyType",
     "OSSortKeyType",
-    "PathKeyType",
     "KeyType",
     "NatsortInType",
     "NatsortOutType",

@@ -67,7 +67,6 @@ from natsort.compat.locale import (
     get_strxfrm,
     get_thousands_sep,
 )
-from natsort.natsort import NatsortKeyType
 from natsort.ns_enum import NS_DUMB, NSType, ns
 from natsort.unicode_numbers import digits_no_decimals, numeric_no_decimals
 
@@ -86,7 +85,7 @@ BytesTransformer = Callable[[bytes], BytesTransform]
 # For the number transform factory
 NumType = Union[float, int]
 MaybeNumType = Optional[NumType]
-NumTuple = Tuple[StrOrBytes, MaybeNumType]
+NumTuple = Tuple[StrOrBytes, NumType]
 NestedNumTuple = Tuple[NumTuple]
 StrNumTuple = Tuple[Tuple[str], NumTuple]
 NestedStrNumTuple = Tuple[StrNumTuple]
@@ -116,17 +115,12 @@ MatchFn = Callable[[str], Optional[Match]]
 PathSplitter = Callable[[PathArg], Tuple[FinalTransform, ...]]
 
 # For the natsort key
-NatsortIterType = Iterable[Union[StrBytesNum, Iterable[Any]]]
-NatsortInType = Union[StrBytesNum, NatsortIterType]
-NatsortOutElement = Union[
-    FinalTransform,
-    Tuple[FinalTransform],
-    StrBytesNum,
-    MaybeNumTransform,
-    BytesTransform,
+StrBytesPathNum = Union[str, bytes, float, int, PurePath]
+NatsortInType = Union[
+    Optional[StrBytesPathNum], Iterable[Union[Optional[StrBytesPathNum], Iterable[Any]]]
 ]
-NatsortOutType = Union[
-    NatsortOutElement, Tuple[Union[NatsortOutElement, Tuple[Any]], ...]
+NatsortOutType = Tuple[
+    Union[StrBytesNum, Tuple[Union[StrBytesNum, Tuple[Any, ...]], ...]], ...
 ]
 KeyType = Callable[[Any], NatsortInType]
 MaybeKeyType = Optional[KeyType]
@@ -330,7 +324,7 @@ def natsort_key(
         try:
             return tuple(
                 natsort_key(x, None, string_func, bytes_func, num_func)
-                for x in cast(NatsortIterType, val)
+                for x in cast(Iterable[Any], val)
             )
 
         # If that failed, it must be a number.

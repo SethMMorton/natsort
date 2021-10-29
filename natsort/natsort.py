@@ -27,27 +27,32 @@ import natsort.compat.locale
 from natsort import utils
 from natsort.compat.locale import StrOrBytes
 from natsort.ns_enum import NS_DUMB, NSType, ns
-from natsort.utils import KeyType, MaybeKeyType, NatsortInType, NatsortOutType, PathArg
-
-# Keys that natsort accepts
-PathKeyType = Callable[[Any], PathArg]
-MaybePathKeyType = Optional[PathKeyType]
+from natsort.utils import (
+    KeyType,
+    MaybeKeyType,
+    NatsortInType,
+    NatsortOutType,
+    PathArg,
+    StrBytesNum,
+    StrBytesPathNum,
+)
 
 # Common input and output types
 Iter_ns = Iterable[NatsortInType]
 Iter_any = Iterable[Any]
-Iter_path = Iterable[PathArg]
 List_ns = List[NatsortInType]
 List_any = List[Any]
-List_path = List[PathArg]
 List_int = List[int]
 
 # The type that natsort_key returns
 NatsortKeyType = Callable[[NatsortInType], NatsortOutType]
 
-# The type that os_sort_key returns
-OSSortKeyType_ = Callable[[PathArg], Tuple[Tuple[StrOrBytes, ...], ...]]
-OSSortKeyType = Union[OSSortKeyType_, NatsortKeyType]
+# Types for os_sorted
+OSSortInType = Iterable[Optional[StrBytesPathNum]]
+OSSortOutType = Tuple[Union[StrBytesNum, Tuple[StrBytesNum, ...]], ...]
+OSSortKeyType = Callable[[Optional[StrBytesPathNum]], OSSortOutType]
+Iter_path = Iterable[Optional[StrBytesPathNum]]
+List_path = List[StrBytesPathNum]
 
 
 def decoder(encoding: str) -> Callable[[NatsortInType], NatsortInType]:
@@ -799,7 +804,7 @@ def numeric_regex_chooser(alg: NSType) -> str:
     return utils.regex_chooser(alg).pattern[1:-1]
 
 
-def _split_apply(v: Any, key: MaybePathKeyType = None) -> Iterator[str]:
+def _split_apply(v: Any, key: MaybeKeyType = None) -> Iterator[str]:
     if key is not None:
         v = key(v)
     return utils.path_splitter(str(v))
@@ -816,9 +821,9 @@ if platform.system() == "Windows":
     _windows_sort_cmp.restype = wintypes.INT
     _winsort_key = cmp_to_key(_windows_sort_cmp)
 
-    def os_sort_keygen(key: MaybePathKeyType = None) -> OSSortKeyType:
+    def os_sort_keygen(key: MaybeKeyType = None) -> OSSortKeyType:
         return cast(
-            OSSortKeyType_, lambda x: tuple(map(_winsort_key, _split_apply(x, key)))
+            OSSortKeyType, lambda x: tuple(map(_winsort_key, _split_apply(x, key)))
         )
 
 
@@ -838,14 +843,15 @@ else:
 
     except ImportError:
         # No ICU installed
-        def os_sort_keygen(key: MaybePathKeyType = None) -> OSSortKeyType:
-            return natsort_keygen(
-                key=cast(MaybeKeyType, key), alg=ns.LOCALE | ns.PATH | ns.IGNORECASE
+        def os_sort_keygen(key: MaybeKeyType = None) -> OSSortKeyType:
+            return cast(
+                OSSortKeyType,
+                natsort_keygen(key=key, alg=ns.LOCALE | ns.PATH | ns.IGNORECASE),
             )
 
     else:
         # ICU installed
-        def os_sort_keygen(key: MaybePathKeyType = None) -> OSSortKeyType:
+        def os_sort_keygen(key: MaybeKeyType = None) -> OSSortKeyType:
             loc = natsort.compat.locale.get_icu_locale()
             collator = icu.Collator.createInstance(loc)
             collator.setAttribute(
@@ -913,17 +919,17 @@ def os_sorted(seq: Iter_path, key: None, reverse: bool) -> List_path:
 
 
 @overload
-def os_sorted(seq: Iter_any, key: PathKeyType) -> List_any:
+def os_sorted(seq: Iter_any, key: KeyType) -> List_any:
     ...
 
 
 @overload
-def os_sorted(seq: Iter_any, key: PathKeyType, reverse: bool) -> List_any:
+def os_sorted(seq: Iter_any, key: KeyType, reverse: bool) -> List_any:
     ...
 
 
 def os_sorted(
-    seq: Iter_any, key: MaybePathKeyType = None, reverse: bool = False
+    seq: Iter_any, key: MaybeKeyType = None, reverse: bool = False
 ) -> List_any:
     """
     Sort elements in the same order as your operating system's file browser
