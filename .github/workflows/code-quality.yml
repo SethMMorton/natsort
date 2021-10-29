@@ -38,7 +38,7 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v2
         with:
-          python-version: '3.5'
+          python-version: '3.6'
 
       - name: Install Flake8
         run: pip install flake8 flake8-import-order flake8-bugbear pep8-naming
@@ -56,7 +56,7 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v2
         with:
-          python-version: '3.5'
+          python-version: '3.6'
 
       - name: Install Validators
         run: pip install twine check-manifest
