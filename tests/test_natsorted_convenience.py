@@ -38,7 +38,7 @@ def fruit_list() -> List[str]:
     return ["Apple", "corn", "Corn", "Banana", "apple", "banana"]
 
 
-def test_decoder_returns_function_that_can_decode_bytes_but_return_non_bytes_as_is() -> None:
+def test_decoder_returns_function_that_decodes_bytes_but_returns_other_as_is() -> None:
     func = decoder("latin1")
     str_obj = "bytes"
     int_obj = 14

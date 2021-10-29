@@ -94,13 +94,13 @@ def test_chain_functions_combines_functions_in_given_order() -> None:
 # and a test that uses the hypothesis module.
 
 
-def test_groupletters_returns_letters_with_lowercase_transform_of_letter_example() -> None:
+def test_groupletters_gives_letters_with_lowercase_letter_transform_example() -> None:
     assert utils.groupletters("HELLO") == "hHeElLlLoO"
     assert utils.groupletters("hello") == "hheelllloo"
 
 
 @given(text().filter(bool))
-def test_groupletters_returns_letters_with_lowercase_transform_of_letter(
+def test_groupletters_gives_letters_with_lowercase_letter_transform(
     x: str,
 ) -> None:
     assert utils.groupletters(x) == "".join(
@@ -134,7 +134,7 @@ def test_sep_inserter_inserts_separator_between_two_numbers(
             assert isinstance(result[i + 1], int)
 
 
-def test_path_splitter_splits_path_string_by_separator_example() -> None:
+def test_path_splitter_splits_path_string_by_sep_example() -> None:
     given = "/this/is/a/path"
     expected = (os.sep, "this", "is", "a", "path")
     assert tuple(utils.path_splitter(given)) == tuple(expected)
@@ -142,19 +142,19 @@ def test_path_splitter_splits_path_string_by_separator_example() -> None:
 
 
 @given(lists(sampled_from(string.ascii_letters), min_size=2).filter(all))
-def test_path_splitter_splits_path_string_by_separator(x: List[str]) -> None:
+def test_path_splitter_splits_path_string_by_sep(x: List[str]) -> None:
     z = str(pathlib.Path(*x))
     assert tuple(utils.path_splitter(z)) == tuple(pathlib.Path(z).parts)
 
 
-def test_path_splitter_splits_path_string_by_separator_and_removes_extension_example() -> None:
+def test_path_splitter_splits_path_string_by_sep_and_removes_extension_example() -> None:
     given = "/this/is/a/path/file.x1.10.tar.gz"
     expected = (os.sep, "this", "is", "a", "path", "file.x1.10", ".tar", ".gz")
     assert tuple(utils.path_splitter(given)) == tuple(expected)
 
 
 @given(lists(sampled_from(string.ascii_letters), min_size=3).filter(all))
-def test_path_splitter_splits_path_string_by_separator_and_removes_extension(
+def test_path_splitter_splits_path_string_by_sep_and_removes_extension(
     x: List[str],
 ) -> None:
     z = str(pathlib.Path(*x[:-2])) + "." + x[-1]

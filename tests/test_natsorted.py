@@ -6,10 +6,10 @@ See the README or the natsort homepage for more details.
 
 from operator import itemgetter
 from typing import List, Tuple, Union
-from natsort.ns_enum import NSType
 
 import pytest
 from natsort import as_utf8, natsorted, ns
+from natsort.ns_enum import NSType
 from pytest import raises
 
 

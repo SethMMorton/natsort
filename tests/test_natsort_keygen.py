@@ -109,7 +109,7 @@ def test_natsort_keygen_handles_bytes_input(
 
 
 @pytest.mark.parametrize(
-    "alg, expected_in, is_dumb",
+    "alg, expected, is_dumb",
     [
         (
             ns.LOCALE,

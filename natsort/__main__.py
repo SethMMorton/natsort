@@ -27,6 +27,25 @@ class TypedArgs(argparse.Namespace):
     locale: bool
     entries: List[str]
 
+    def __init__(
+        self,
+        filter: Optional[List[NumPair]] = None,
+        reverse_filter: Optional[List[NumPair]] = None,
+        exclude: Optional[List[Num]] = None,
+        paths: bool = False,
+        reverse: bool = False,
+    ) -> None:
+        """Used by testing only"""
+        self.filter = filter
+        self.reverse_filter = reverse_filter
+        self.exclude = [] if exclude is None else exclude
+        self.paths = paths
+        self.reverse = reverse
+        self.number_type = "int"
+        self.signed = False
+        self.exp = True
+        self.locale = False
+
 
 def main(*arguments: str) -> None:
     """

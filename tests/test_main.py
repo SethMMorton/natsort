@@ -31,7 +31,7 @@ def test_main_passes_default_arguments_with_no_command_line_options(
     assert not args.paths
     assert args.filter is None
     assert args.reverse_filter is None
-    assert args.exclude is None
+    assert args.exclude == []
     assert not args.reverse
     assert args.number_type == "int"
     assert not args.signed

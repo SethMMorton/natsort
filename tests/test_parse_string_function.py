@@ -8,7 +8,7 @@ import pytest
 from hypothesis import given
 from hypothesis.strategies import floats, integers, lists, text
 from natsort.compat.fastnumbers import fast_float
-from natsort.ns_enum import NS_DUMB, NSType, ns
+from natsort.ns_enum import NSType, NS_DUMB, ns
 from natsort.utils import (
     FinalTransform,
     NumericalRegularExpressions as NumRegex,

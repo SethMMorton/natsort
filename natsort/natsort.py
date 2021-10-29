@@ -25,14 +25,12 @@ from typing import (
 
 import natsort.compat.locale
 from natsort import utils
-from natsort.compat.locale import StrOrBytes
-from natsort.ns_enum import NS_DUMB, NSType, ns
+from natsort.ns_enum import NSType, NS_DUMB, ns
 from natsort.utils import (
     KeyType,
     MaybeKeyType,
     NatsortInType,
     NatsortOutType,
-    PathArg,
     StrBytesNum,
     StrBytesPathNum,
 )
@@ -606,7 +604,7 @@ def index_natsorted(
 
     """
     newkey: KeyType
-    if key is not None:
+    if key is None:
         newkey = itemgetter(1)
     else:
 

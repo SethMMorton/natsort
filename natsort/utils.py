@@ -67,7 +67,7 @@ from natsort.compat.locale import (
     get_strxfrm,
     get_thousands_sep,
 )
-from natsort.ns_enum import NS_DUMB, NSType, ns
+from natsort.ns_enum import NSType, NS_DUMB, ns
 from natsort.unicode_numbers import digits_no_decimals, numeric_no_decimals
 
 #
