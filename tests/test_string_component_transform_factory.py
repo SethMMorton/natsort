@@ -2,13 +2,14 @@
 """These test the utils.py functions."""
 
 from functools import partial
+from typing import Any as Any_t, Callable, FrozenSet, Union
 
 import pytest
 from hypothesis import example, given
 from hypothesis.strategies import floats, integers, text
 from natsort.compat.fastnumbers import fast_float, fast_int
 from natsort.compat.locale import get_strxfrm
-from natsort.ns_enum import NS_DUMB, ns
+from natsort.ns_enum import NS_DUMB, NS_t, ns
 from natsort.utils import groupletters, string_component_transform_factory
 
 # There are some unicode values that are known failures with the builtin locale
@@ -21,12 +22,12 @@ except ValueError:
     bad_uni_chars = frozenset()
 
 
-def no_bad_uni_chars(x, _bad_chars=bad_uni_chars):
+def no_bad_uni_chars(x: str, _bad_chars: FrozenSet[str] = bad_uni_chars) -> bool:
     """Ensure text does not contain bad unicode characters"""
     return not any(y in _bad_chars for y in x)
 
 
-def no_null(x):
+def no_null(x: str) -> bool:
     """Ensure text does not contain a null character."""
     return "\0" not in x
 
@@ -65,7 +66,9 @@ def no_null(x):
     | text().filter(bool).filter(no_bad_uni_chars).filter(no_null)
 )
 @pytest.mark.usefixtures("with_locale_en_us")
-def test_string_component_transform_factory(x, alg, example_func):
+def test_string_component_transform_factory(
+    x: Union[str, float, int], alg: NS_t, example_func: Callable[[str], Any_t]
+) -> None:
     string_component_transform_func = string_component_transform_factory(alg)
     try:
         assert string_component_transform_func(str(x)) == example_func(str(x))

@@ -3,6 +3,7 @@
 Testing for the OS sorting
 """
 import platform
+from typing import cast
 
 import natsort
 import pytest
@@ -15,7 +16,7 @@ else:
     has_icu = True
 
 
-def test_os_sorted_compound():
+def test_os_sorted_compound() -> None:
     given = [
         "/p/Folder (10)/file.tar.gz",
         "/p/Folder (1)/file (1).tar.gz",
@@ -36,14 +37,14 @@ def test_os_sorted_compound():
     assert result == expected
 
 
-def test_os_sorted_misc_no_fail():
+def test_os_sorted_misc_no_fail() -> None:
     natsort.os_sorted([9, 4.3, None, float("nan")])
 
 
-def test_os_sorted_key():
+def test_os_sorted_key() -> None:
     given = ["foo0", "foo2", "goo1"]
     expected = ["foo0", "goo1", "foo2"]
-    result = natsort.os_sorted(given, key=lambda x: x.replace("g", "f"))
+    result = natsort.os_sorted(given, key=lambda x: cast(str, x).replace("g", "f"))
     assert result == expected
 
 
@@ -199,7 +200,7 @@ else:
 
 
 @pytest.mark.usefixtures("with_locale_en_us")
-def test_os_sorted_corpus():
+def test_os_sorted_corpus() -> None:
     result = natsort.os_sorted(given)
     print(result)
     assert result == expected

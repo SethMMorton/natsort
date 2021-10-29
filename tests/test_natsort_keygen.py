@@ -5,23 +5,27 @@ See the README or the natsort homepage for more details.
 """
 
 import os
+from typing import List, Tuple, Union
 
 import pytest
 from natsort import natsort_key, natsort_keygen, natsorted, ns
 from natsort.compat.locale import get_strxfrm, null_string_locale
+from natsort.ns_enum import NS_t
+from natsort.utils import BytesTransform, FinalTransform
+from pytest_mock import MockerFixture
 
 
 @pytest.fixture
-def arbitrary_input():
+def arbitrary_input() -> List[Union[str, float]]:
     return ["6A-5.034e+1", "/Folder (1)/Foo", 56.7]
 
 
 @pytest.fixture
-def bytes_input():
+def bytes_input() -> bytes:
     return b"6A-5.034e+1"
 
 
-def test_natsort_keygen_demonstration():
+def test_natsort_keygen_demonstration() -> None:
     original_list = ["a50", "a51.", "a50.31", "a50.4", "a5.034e1", "a50.300"]
     copy_of_list = original_list[:]
     original_list.sort(key=natsort_keygen(alg=ns.F))
@@ -29,21 +33,23 @@ def test_natsort_keygen_demonstration():
     assert original_list == natsorted(copy_of_list, alg=ns.F)
 
 
-def test_natsort_key_public():
+def test_natsort_key_public() -> None:
     assert natsort_key("a-5.034e2") == ("a-", 5, ".", 34, "e", 2)
 
 
-def test_natsort_keygen_with_invalid_alg_input_raises_value_error():
+def test_natsort_keygen_with_invalid_alg_input_raises_value_error() -> None:
     # Invalid arguments give the correct response
     with pytest.raises(ValueError, match="'alg' argument"):
-        natsort_keygen(None, "1")
+        natsort_keygen(None, "1")  # type: ignore
 
 
 @pytest.mark.parametrize(
     "alg, expected",
     [(ns.DEFAULT, ("a-", 5, ".", 34, "e", 1)), (ns.FLOAT | ns.SIGNED, ("a", -50.34))],
 )
-def test_natsort_keygen_returns_natsort_key_that_parses_input(alg, expected):
+def test_natsort_keygen_returns_natsort_key_that_parses_input(
+    alg: NS_t, expected: Tuple[Union[str, int, float], ...]
+) -> None:
     ns_key = natsort_keygen(alg=alg)
     assert ns_key("a-5.034e1") == expected
 
@@ -78,7 +84,9 @@ def test_natsort_keygen_returns_natsort_key_that_parses_input(alg, expected):
         ),
     ],
 )
-def test_natsort_keygen_handles_arbitrary_input(arbitrary_input, alg, expected):
+def test_natsort_keygen_handles_arbitrary_input(
+    arbitrary_input: List[Union[str, float]], alg: NS_t, expected: FinalTransform
+) -> None:
     ns_key = natsort_keygen(alg=alg)
     assert ns_key(arbitrary_input) == expected
 
@@ -93,13 +101,15 @@ def test_natsort_keygen_handles_arbitrary_input(arbitrary_input, alg, expected):
         (ns.PATH | ns.GROUPLETTERS, ((b"6A-5.034e+1",),)),
     ],
 )
-def test_natsort_keygen_handles_bytes_input(bytes_input, alg, expected):
+def test_natsort_keygen_handles_bytes_input(
+    bytes_input: bytes, alg: NS_t, expected: BytesTransform
+) -> None:
     ns_key = natsort_keygen(alg=alg)
     assert ns_key(bytes_input) == expected
 
 
 @pytest.mark.parametrize(
-    "alg, expected, is_dumb",
+    "alg, expected_in, is_dumb",
     [
         (
             ns.LOCALE,
@@ -131,23 +141,29 @@ def test_natsort_keygen_handles_bytes_input(bytes_input, alg, expected):
     ],
 )
 @pytest.mark.usefixtures("with_locale_en_us")
-def test_natsort_keygen_with_locale(mocker, arbitrary_input, alg, expected, is_dumb):
+def test_natsort_keygen_with_locale(
+    mocker: MockerFixture,
+    arbitrary_input: List[Union[str, float]],
+    alg: NS_t,
+    expected: FinalTransform,
+    is_dumb: bool,
+) -> None:
     # First, apply the correct strxfrm function to the string values.
     strxfrm = get_strxfrm()
-    expected = [list(sub) for sub in expected]
+    expected_tmp = [list(sub) for sub in expected]
     try:
         for i in (2, 4, 6):
-            expected[0][i] = strxfrm(expected[0][i])
+            expected_tmp[0][i] = strxfrm(expected_tmp[0][i])
         for i in (0, 2):
-            expected[1][i] = strxfrm(expected[1][i])
-        expected = tuple(tuple(sub) for sub in expected)
+            expected_tmp[1][i] = strxfrm(expected_tmp[1][i])
+        expected = tuple(tuple(sub) for sub in expected_tmp)
     except IndexError:  # ns.LOCALE | ns.CAPITALFIRST
-        expected = [[list(subsub) for subsub in sub] for sub in expected]
+        expected_tmp = [[list(subsub) for subsub in sub] for sub in expected_tmp]
         for i in (2, 4, 6):
-            expected[0][1][i] = strxfrm(expected[0][1][i])
+            expected_tmp[0][1][i] = strxfrm(expected_tmp[0][1][i])
         for i in (0, 2):
-            expected[1][1][i] = strxfrm(expected[1][1][i])
-        expected = tuple(tuple(tuple(subsub) for subsub in sub) for sub in expected)
+            expected_tmp[1][1][i] = strxfrm(expected_tmp[1][1][i])
+        expected = tuple(tuple(tuple(subsub) for subsub in sub) for sub in expected_tmp)
 
     mocker.patch("natsort.compat.locale.dumb_sort", return_value=is_dumb)
     ns_key = natsort_keygen(alg=alg)
@@ -159,7 +175,9 @@ def test_natsort_keygen_with_locale(mocker, arbitrary_input, alg, expected, is_d
     [(ns.LOCALE, False), (ns.LOCALE, True), (ns.LOCALE | ns.CAPITALFIRST, False)],
 )
 @pytest.mark.usefixtures("with_locale_en_us")
-def test_natsort_keygen_with_locale_bytes(mocker, bytes_input, alg, is_dumb):
+def test_natsort_keygen_with_locale_bytes(
+    mocker: MockerFixture, bytes_input: bytes, alg: NS_t, is_dumb: bool
+) -> None:
     expected = (b"6A-5.034e+1",)
     mocker.patch("natsort.compat.locale.dumb_sort", return_value=is_dumb)
     ns_key = natsort_keygen(alg=alg)

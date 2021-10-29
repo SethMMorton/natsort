@@ -42,7 +42,7 @@ from natsort import ns
         ("NL", 0x0400),
         ("CN", 0x0800),
         ("NA", 0x1000),
-    ]
+    ],
 )
-def test_ns_enum(given, expected):
+def test_ns_enum(given: str, expected: int) -> None:
     assert ns[given] == expected
