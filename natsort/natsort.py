@@ -253,62 +253,16 @@ natsort_keygen
 
 
 @overload
-def natsorted(seq: Iter_ns) -> List_ns:
+def natsorted(
+    seq: Iter_ns, key: None = None, reverse: bool = False, alg: NSType = ns.DEFAULT
+) -> List_ns:
     ...
 
 
 @overload
-def natsorted(seq: Iter_ns, *, reverse: bool) -> List_ns:
-    ...
-
-
-@overload
-def natsorted(seq: Iter_ns, *, alg: NSType) -> List_ns:
-    ...
-
-
-@overload
-def natsorted(seq: Iter_ns, *, reverse: bool, alg: NSType) -> List_ns:
-    ...
-
-
-@overload
-def natsorted(seq: Iter_ns, key: None) -> List_ns:
-    ...
-
-
-@overload
-def natsorted(seq: Iter_ns, key: None, reverse: bool) -> List_ns:
-    ...
-
-
-@overload
-def natsorted(seq: Iter_ns, key: None, *, alg: NSType) -> List_ns:
-    ...
-
-
-@overload
-def natsorted(seq: Iter_ns, key: None, reverse: bool, alg: NSType) -> List_ns:
-    ...
-
-
-@overload
-def natsorted(seq: Iter_any, key: KeyType) -> List_any:
-    ...
-
-
-@overload
-def natsorted(seq: Iter_any, key: KeyType, reverse: bool) -> List_any:
-    ...
-
-
-@overload
-def natsorted(seq: Iter_any, key: KeyType, *, alg: NSType) -> List_any:
-    ...
-
-
-@overload
-def natsorted(seq: Iter_any, key: KeyType, reverse: bool, alg: NSType) -> List_any:
+def natsorted(
+    seq: Iter_any, key: KeyType, reverse: bool = False, alg: NSType = ns.DEFAULT
+) -> List_any:
     ...
 
 
@@ -363,6 +317,20 @@ def natsorted(
 
     """
     return sorted(seq, reverse=reverse, key=natsort_keygen(key, alg))
+
+
+@overload
+def humansorted(
+    seq: Iter_ns, key: None = None, reverse: bool = False, alg: NSType = ns.DEFAULT
+) -> List_ns:
+    ...
+
+
+@overload
+def humansorted(
+    seq: Iter_any, key: KeyType, reverse: bool = False, alg: NSType = ns.DEFAULT
+) -> List_any:
+    ...
 
 
 def humansorted(
@@ -420,6 +388,20 @@ def humansorted(
 
     """
     return natsorted(seq, key, reverse, alg | ns.LOCALE)
+
+
+@overload
+def realsorted(
+    seq: Iter_ns, key: None = None, reverse: bool = False, alg: NSType = ns.DEFAULT
+) -> List_ns:
+    ...
+
+
+@overload
+def realsorted(
+    seq: Iter_any, key: KeyType, reverse: bool = False, alg: NSType = ns.DEFAULT
+) -> List_any:
+    ...
 
 
 def realsorted(
@@ -481,63 +463,15 @@ def realsorted(
 
 
 @overload
-def index_natsorted(seq: Iter_ns) -> List_int:
-    ...
-
-
-@overload
-def index_natsorted(seq: Iter_ns, *, reverse: bool) -> List_int:
-    ...
-
-
-@overload
-def index_natsorted(seq: Iter_ns, *, alg: NSType) -> List_int:
-    ...
-
-
-@overload
-def index_natsorted(seq: Iter_ns, *, reverse: bool, alg: NSType) -> List_int:
-    ...
-
-
-@overload
-def index_natsorted(seq: Iter_ns, key: None) -> List_int:
-    ...
-
-
-@overload
-def index_natsorted(seq: Iter_ns, key: None, reverse: bool) -> List_int:
-    ...
-
-
-@overload
-def index_natsorted(seq: Iter_ns, key: None, *, alg: NSType) -> List_int:
-    ...
-
-
-@overload
-def index_natsorted(seq: Iter_ns, key: None, reverse: bool, alg: NSType) -> List_int:
-    ...
-
-
-@overload
-def index_natsorted(seq: Iter_any, key: KeyType) -> List_int:
-    ...
-
-
-@overload
-def index_natsorted(seq: Iter_any, key: KeyType, reverse: bool) -> List_int:
-    ...
-
-
-@overload
-def index_natsorted(seq: Iter_any, key: KeyType, *, alg: NSType) -> List_int:
+def index_natsorted(
+    seq: Iter_ns, key: None = None, reverse: bool = False, alg: NSType = ns.DEFAULT
+) -> List_int:
     ...
 
 
 @overload
 def index_natsorted(
-    seq: Iter_any, key: KeyType, reverse: bool, alg: NSType
+    seq: Iter_any, key: KeyType, reverse: bool = False, alg: NSType = ns.DEFAULT
 ) -> List_int:
     ...
 
@@ -617,6 +551,20 @@ def index_natsorted(
     return [x for x, _ in index_seq_pair]
 
 
+@overload
+def index_humansorted(
+    seq: Iter_ns, key: None = None, reverse: bool = False, alg: NSType = ns.DEFAULT
+) -> List_int:
+    ...
+
+
+@overload
+def index_humansorted(
+    seq: Iter_any, key: KeyType, reverse: bool = False, alg: NSType = ns.DEFAULT
+) -> List_int:
+    ...
+
+
 def index_humansorted(
     seq: Iter_any,
     key: MaybeKeyType = None,
@@ -669,6 +617,20 @@ def index_humansorted(
 
     """
     return index_natsorted(seq, key, reverse, alg | ns.LOCALE)
+
+
+@overload
+def index_realsorted(
+    seq: Iter_ns, key: None = None, reverse: bool = False, alg: NSType = ns.DEFAULT
+) -> List_int:
+    ...
+
+
+@overload
+def index_realsorted(
+    seq: Iter_any, key: KeyType, reverse: bool = False, alg: NSType = ns.DEFAULT
+) -> List_int:
+    ...
 
 
 def index_realsorted(
@@ -897,32 +859,12 @@ os_sort_keygen
 
 
 @overload
-def os_sorted(seq: Iter_path) -> List_path:
+def os_sorted(seq: Iter_path, key: None = None, reverse: bool = False) -> List_path:
     ...
 
 
 @overload
-def os_sorted(seq: Iter_path, *, reverse: bool) -> List_path:
-    ...
-
-
-@overload
-def os_sorted(seq: Iter_path, key: None) -> List_path:
-    ...
-
-
-@overload
-def os_sorted(seq: Iter_path, key: None, reverse: bool) -> List_path:
-    ...
-
-
-@overload
-def os_sorted(seq: Iter_any, key: KeyType) -> List_any:
-    ...
-
-
-@overload
-def os_sorted(seq: Iter_any, key: KeyType, reverse: bool) -> List_any:
+def os_sorted(seq: Iter_any, key: KeyType, reverse: bool = False) -> List_any:
     ...
 
 
