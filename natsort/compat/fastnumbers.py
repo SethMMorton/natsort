@@ -35,4 +35,4 @@ try:
     if not is_supported_fastnumbers(fn_ver):
         raise ImportError  # pragma: no cover
 except ImportError:
-    from natsort.compat.fake_fastnumbers import fast_float, fast_int  # noqa: F401
+    from natsort.compat.fake_fastnumbers import fast_float, fast_int  # type: ignore

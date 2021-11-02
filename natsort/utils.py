@@ -669,9 +669,9 @@ def string_component_transform_factory(alg: NSType) -> StrTransformer:
     if alg & ns.FLOAT:
         # noinspection PyTypeChecker
         kwargs["nan"] = nan_val
-        return partial(fast_float, **kwargs)
+        return cast(Callable[[str], StrOrBytes], partial(fast_float, **kwargs))
     else:
-        return partial(fast_int, **kwargs)
+        return cast(Callable[[str], StrOrBytes], partial(fast_int, **kwargs))
 
 
 def final_data_transform_factory(
