@@ -3,6 +3,7 @@ Fixtures for pytest.
 """
 
 import locale
+from typing import Iterator
 
 import hypothesis
 import pytest
@@ -16,7 +17,7 @@ hypothesis.settings.register_profile(
 )
 
 
-def load_locale(x):
+def load_locale(x: str) -> None:
     """Convenience to load a locale, trying ISO8859-1 first."""
     try:
         locale.setlocale(locale.LC_ALL, str("{}.ISO8859-1".format(x)))
@@ -25,15 +26,16 @@ def load_locale(x):
 
 
 @pytest.fixture()
-def with_locale_en_us():
+def with_locale_en_us() -> Iterator[None]:
     """Convenience to load the en_US locale - reset when complete."""
     orig = locale.getlocale()
-    yield load_locale("en_US")
+    load_locale("en_US")
+    yield
     locale.setlocale(locale.LC_ALL, orig)
 
 
 @pytest.fixture()
-def with_locale_de_de():
+def with_locale_de_de() -> Iterator[None]:
     """
     Convenience to load the de_DE locale - reset when complete - skip if missing.
     """

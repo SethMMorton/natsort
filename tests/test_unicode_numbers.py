@@ -14,27 +14,27 @@ from natsort.unicode_numbers import (
     digits_no_decimals,
     numeric,
     numeric_chars,
-    numeric_hex,
     numeric_no_decimals,
 )
+from natsort.unicode_numeric_hex import numeric_hex
 
 
-def test_numeric_chars_contains_only_valid_unicode_numeric_characters():
+def test_numeric_chars_contains_only_valid_unicode_numeric_characters() -> None:
     for a in numeric_chars:
         assert unicodedata.numeric(a, None) is not None
 
 
-def test_digit_chars_contains_only_valid_unicode_digit_characters():
+def test_digit_chars_contains_only_valid_unicode_digit_characters() -> None:
     for a in digit_chars:
         assert unicodedata.digit(a, None) is not None
 
 
-def test_decimal_chars_contains_only_valid_unicode_decimal_characters():
+def test_decimal_chars_contains_only_valid_unicode_decimal_characters() -> None:
     for a in decimal_chars:
         assert unicodedata.decimal(a, None) is not None
 
 
-def test_numeric_chars_contains_all_valid_unicode_numeric_and_digit_characters():
+def test_numeric_chars_contains_all_valid_unicode_numeric_and_digit_characters() -> None:
     set_numeric_chars = set(numeric_chars)
     set_digit_chars = set(digit_chars)
     set_decimal_chars = set(decimal_chars)
@@ -46,7 +46,7 @@ def test_numeric_chars_contains_all_valid_unicode_numeric_and_digit_characters()
     assert set_numeric_chars.issuperset(numeric_no_decimals)
 
 
-def test_missing_unicode_number_in_collection():
+def test_missing_unicode_number_in_collection() -> None:
     ok = True
     set_numeric_hex = set(numeric_hex)
     for i in range(0x110000):
@@ -71,7 +71,7 @@ repository (https://github.com/SethMMorton/natsort) with the resulting change.
         )
 
 
-def test_combined_string_contains_all_characters_in_list():
+def test_combined_string_contains_all_characters_in_list() -> None:
     assert numeric == "".join(numeric_chars)
     assert digits == "".join(digit_chars)
     assert decimals == "".join(decimal_chars)

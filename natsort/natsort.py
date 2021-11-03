@@ -9,13 +9,51 @@ The majority of the "work" is defined in utils.py.
 import platform
 from functools import partial
 from operator import itemgetter
+from typing import (
+    Any,
+    Callable,
+    Iterable,
+    Iterator,
+    List,
+    Optional,
+    Sequence,
+    Tuple,
+    Union,
+    cast,
+    overload,
+)
 
 import natsort.compat.locale
 from natsort import utils
-from natsort.ns_enum import NS_DUMB, ns
+from natsort.ns_enum import NSType, NS_DUMB, ns
+from natsort.utils import (
+    KeyType,
+    MaybeKeyType,
+    NatsortInType,
+    NatsortOutType,
+    StrBytesNum,
+    StrBytesPathNum,
+)
+
+# Common input and output types
+Iter_ns = Iterable[NatsortInType]
+Iter_any = Iterable[Any]
+List_ns = List[NatsortInType]
+List_any = List[Any]
+List_int = List[int]
+
+# The type that natsort_key returns
+NatsortKeyType = Callable[[NatsortInType], NatsortOutType]
+
+# Types for os_sorted
+OSSortInType = Iterable[Optional[StrBytesPathNum]]
+OSSortOutType = Tuple[Union[StrBytesNum, Tuple[StrBytesNum, ...]], ...]
+OSSortKeyType = Callable[[Optional[StrBytesPathNum]], OSSortOutType]
+Iter_path = Iterable[Optional[StrBytesPathNum]]
+List_path = List[StrBytesPathNum]
 
 
-def decoder(encoding):
+def decoder(encoding: str) -> Callable[[NatsortInType], NatsortInType]:
     """
     Return a function that can be used to decode bytes to unicode.
 
@@ -56,7 +94,7 @@ def decoder(encoding):
     return partial(utils.do_decoding, encoding=encoding)
 
 
-def as_ascii(s):
+def as_ascii(s: NatsortInType) -> NatsortInType:
     """
     Function to decode an input with the ASCII codec, or return as-is.
 
@@ -79,7 +117,7 @@ def as_ascii(s):
     return utils.do_decoding(s, "ascii")
 
 
-def as_utf8(s):
+def as_utf8(s: NatsortInType) -> NatsortInType:
     """
     Function to decode an input with the UTF-8 codec, or return as-is.
 
@@ -102,7 +140,9 @@ def as_utf8(s):
     return utils.do_decoding(s, "utf-8")
 
 
-def natsort_keygen(key=None, alg=ns.DEFAULT):
+def natsort_keygen(
+    key: MaybeKeyType = None, alg: NSType = ns.DEFAULT
+) -> NatsortKeyType:
     """
     Generate a key to sort strings and numbers naturally.
 
@@ -212,7 +252,26 @@ natsort_keygen
 """
 
 
-def natsorted(seq, key=None, reverse=False, alg=ns.DEFAULT):
+@overload
+def natsorted(
+    seq: Iter_ns, key: None = None, reverse: bool = False, alg: NSType = ns.DEFAULT
+) -> List_ns:
+    ...
+
+
+@overload
+def natsorted(
+    seq: Iter_any, key: KeyType, reverse: bool = False, alg: NSType = ns.DEFAULT
+) -> List_any:
+    ...
+
+
+def natsorted(
+    seq: Iter_any,
+    key: MaybeKeyType = None,
+    reverse: bool = False,
+    alg: NSType = ns.DEFAULT,
+) -> List_any:
     """
     Sorts an iterable naturally.
 
@@ -257,11 +316,29 @@ def natsorted(seq, key=None, reverse=False, alg=ns.DEFAULT):
         ['num2', 'num3', 'num5']
 
     """
-    key = natsort_keygen(key, alg)
-    return sorted(seq, reverse=reverse, key=key)
+    return sorted(seq, reverse=reverse, key=natsort_keygen(key, alg))
 
 
-def humansorted(seq, key=None, reverse=False, alg=ns.DEFAULT):
+@overload
+def humansorted(
+    seq: Iter_ns, key: None = None, reverse: bool = False, alg: NSType = ns.DEFAULT
+) -> List_ns:
+    ...
+
+
+@overload
+def humansorted(
+    seq: Iter_any, key: KeyType, reverse: bool = False, alg: NSType = ns.DEFAULT
+) -> List_any:
+    ...
+
+
+def humansorted(
+    seq: Iter_any,
+    key: MaybeKeyType = None,
+    reverse: bool = False,
+    alg: NSType = ns.DEFAULT,
+) -> List_any:
     """
     Convenience function to properly sort non-numeric characters.
 
@@ -313,7 +390,26 @@ def humansorted(seq, key=None, reverse=False, alg=ns.DEFAULT):
     return natsorted(seq, key, reverse, alg | ns.LOCALE)
 
 
-def realsorted(seq, key=None, reverse=False, alg=ns.DEFAULT):
+@overload
+def realsorted(
+    seq: Iter_ns, key: None = None, reverse: bool = False, alg: NSType = ns.DEFAULT
+) -> List_ns:
+    ...
+
+
+@overload
+def realsorted(
+    seq: Iter_any, key: KeyType, reverse: bool = False, alg: NSType = ns.DEFAULT
+) -> List_any:
+    ...
+
+
+def realsorted(
+    seq: Iter_any,
+    key: MaybeKeyType = None,
+    reverse: bool = False,
+    alg: NSType = ns.DEFAULT,
+) -> List_any:
     """
     Convenience function to properly sort signed floats.
 
@@ -366,7 +462,26 @@ def realsorted(seq, key=None, reverse=False, alg=ns.DEFAULT):
     return natsorted(seq, key, reverse, alg | ns.REAL)
 
 
-def index_natsorted(seq, key=None, reverse=False, alg=ns.DEFAULT):
+@overload
+def index_natsorted(
+    seq: Iter_ns, key: None = None, reverse: bool = False, alg: NSType = ns.DEFAULT
+) -> List_int:
+    ...
+
+
+@overload
+def index_natsorted(
+    seq: Iter_any, key: KeyType, reverse: bool = False, alg: NSType = ns.DEFAULT
+) -> List_int:
+    ...
+
+
+def index_natsorted(
+    seq: Iter_any,
+    key: MaybeKeyType = None,
+    reverse: bool = False,
+    alg: NSType = ns.DEFAULT,
+) -> List_int:
     """
     Determine the list of the indexes used to sort the input sequence.
 
@@ -422,12 +537,13 @@ def index_natsorted(seq, key=None, reverse=False, alg=ns.DEFAULT):
         ['baz', 'foo', 'bar']
 
     """
+    newkey: KeyType
     if key is None:
         newkey = itemgetter(1)
     else:
 
-        def newkey(x):
-            return key(itemgetter(1)(x))
+        def newkey(x: Any) -> NatsortInType:
+            return cast(KeyType, key)(itemgetter(1)(x))
 
     # Pair the index and sequence together, then sort by element
     index_seq_pair = [(x, y) for x, y in enumerate(seq)]
@@ -435,7 +551,26 @@ def index_natsorted(seq, key=None, reverse=False, alg=ns.DEFAULT):
     return [x for x, _ in index_seq_pair]
 
 
-def index_humansorted(seq, key=None, reverse=False, alg=ns.DEFAULT):
+@overload
+def index_humansorted(
+    seq: Iter_ns, key: None = None, reverse: bool = False, alg: NSType = ns.DEFAULT
+) -> List_int:
+    ...
+
+
+@overload
+def index_humansorted(
+    seq: Iter_any, key: KeyType, reverse: bool = False, alg: NSType = ns.DEFAULT
+) -> List_int:
+    ...
+
+
+def index_humansorted(
+    seq: Iter_any,
+    key: MaybeKeyType = None,
+    reverse: bool = False,
+    alg: NSType = ns.DEFAULT,
+) -> List_int:
     """
     This is a wrapper around ``index_natsorted(seq, alg=ns.LOCALE)``.
 
@@ -484,7 +619,26 @@ def index_humansorted(seq, key=None, reverse=False, alg=ns.DEFAULT):
     return index_natsorted(seq, key, reverse, alg | ns.LOCALE)
 
 
-def index_realsorted(seq, key=None, reverse=False, alg=ns.DEFAULT):
+@overload
+def index_realsorted(
+    seq: Iter_ns, key: None = None, reverse: bool = False, alg: NSType = ns.DEFAULT
+) -> List_int:
+    ...
+
+
+@overload
+def index_realsorted(
+    seq: Iter_any, key: KeyType, reverse: bool = False, alg: NSType = ns.DEFAULT
+) -> List_int:
+    ...
+
+
+def index_realsorted(
+    seq: Iter_any,
+    key: MaybeKeyType = None,
+    reverse: bool = False,
+    alg: NSType = ns.DEFAULT,
+) -> List_int:
     """
     This is a wrapper around ``index_natsorted(seq, alg=ns.REAL)``.
 
@@ -530,7 +684,9 @@ def index_realsorted(seq, key=None, reverse=False, alg=ns.DEFAULT):
 
 
 # noinspection PyShadowingBuiltins,PyUnresolvedReferences
-def order_by_index(seq, index, iter=False):
+def order_by_index(
+    seq: Sequence[Any], index: Iterable[int], iter: bool = False
+) -> Iter_any:
     """
     Order a given sequence by an index sequence.
 
@@ -589,7 +745,7 @@ def order_by_index(seq, index, iter=False):
     return (seq[i] for i in index) if iter else [seq[i] for i in index]
 
 
-def numeric_regex_chooser(alg):
+def numeric_regex_chooser(alg: NSType) -> str:
     """
     Select an appropriate regex for the type of number of interest.
 
@@ -608,7 +764,7 @@ def numeric_regex_chooser(alg):
     return utils.regex_chooser(alg).pattern[1:-1]
 
 
-def _split_apply(v, key=None):
+def _split_apply(v: Any, key: MaybeKeyType = None) -> Iterator[str]:
     if key is not None:
         v = key(v)
     return utils.path_splitter(str(v))
@@ -617,7 +773,7 @@ def _split_apply(v, key=None):
 # Choose the implementation based on the host OS
 if platform.system() == "Windows":
 
-    from ctypes import wintypes, windll
+    from ctypes import wintypes, windll  # type: ignore
     from functools import cmp_to_key
 
     _windows_sort_cmp = windll.Shlwapi.StrCmpLogicalW
@@ -625,8 +781,10 @@ if platform.system() == "Windows":
     _windows_sort_cmp.restype = wintypes.INT
     _winsort_key = cmp_to_key(_windows_sort_cmp)
 
-    def os_sort_keygen(key=None):
-        return lambda x: tuple(map(_winsort_key, _split_apply(x, key)))
+    def os_sort_keygen(key: MaybeKeyType = None) -> OSSortKeyType:
+        return cast(
+            OSSortKeyType, lambda x: tuple(map(_winsort_key, _split_apply(x, key)))
+        )
 
 
 else:
@@ -645,12 +803,15 @@ else:
 
     except ImportError:
         # No ICU installed
-        def os_sort_keygen(key=None):
-            return natsort_keygen(key=key, alg=ns.LOCALE | ns.PATH | ns.IGNORECASE)
+        def os_sort_keygen(key: MaybeKeyType = None) -> OSSortKeyType:
+            return cast(
+                OSSortKeyType,
+                natsort_keygen(key=key, alg=ns.LOCALE | ns.PATH | ns.IGNORECASE),
+            )
 
     else:
         # ICU installed
-        def os_sort_keygen(key=None):
+        def os_sort_keygen(key: MaybeKeyType = None) -> OSSortKeyType:
             loc = natsort.compat.locale.get_icu_locale()
             collator = icu.Collator.createInstance(loc)
             collator.setAttribute(
@@ -697,7 +858,19 @@ os_sort_keygen
 """
 
 
-def os_sorted(seq, key=None, reverse=False):
+@overload
+def os_sorted(seq: Iter_path, key: None = None, reverse: bool = False) -> List_path:
+    ...
+
+
+@overload
+def os_sorted(seq: Iter_any, key: KeyType, reverse: bool = False) -> List_any:
+    ...
+
+
+def os_sorted(
+    seq: Iter_any, key: MaybeKeyType = None, reverse: bool = False
+) -> List_any:
     """
     Sort elements in the same order as your operating system's file browser
 

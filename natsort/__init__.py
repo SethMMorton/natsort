@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
 
 from natsort.natsort import (
+    NatsortKeyType,
+    OSSortKeyType,
     as_ascii,
     as_utf8,
     decoder,
@@ -11,7 +13,6 @@ from natsort.natsort import (
     natsort_key,
     natsort_keygen,
     natsorted,
-    ns,
     numeric_regex_chooser,
     order_by_index,
     os_sort_key,
@@ -19,7 +20,8 @@ from natsort.natsort import (
     os_sorted,
     realsorted,
 )
-from natsort.utils import chain_functions
+from natsort.ns_enum import NSType, ns
+from natsort.utils import KeyType, NatsortInType, NatsortOutType, chain_functions
 
 __version__ = "7.1.1"
 
@@ -42,7 +44,13 @@ __all__ = [
     "os_sort_key",
     "os_sort_keygen",
     "os_sorted",
+    "NatsortKeyType",
+    "OSSortKeyType",
+    "KeyType",
+    "NatsortInType",
+    "NatsortOutType",
+    "NSType",
 ]
 
 # Add the ns keys to this namespace for convenience.
-globals().update(ns._asdict())
+globals().update({name: value for name, value in ns.__members__.items()})

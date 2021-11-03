@@ -4,73 +4,15 @@ This module defines the "ns" enum for natsort is used to determine
 what algorithm natsort uses.
 """
 
-import collections
-
-# The below are the base ns options. The values will be stored as powers
-# of two so bitmasks can be used to extract the user's requested options.
-enum_options = [
-    "FLOAT",
-    "SIGNED",
-    "NOEXP",
-    "PATH",
-    "LOCALEALPHA",
-    "LOCALENUM",
-    "IGNORECASE",
-    "LOWERCASEFIRST",
-    "GROUPLETTERS",
-    "UNGROUPLETTERS",
-    "NANLAST",
-    "COMPATIBILITYNORMALIZE",
-    "NUMAFTER",
-]
-
-# Following were previously options but are now defaults.
-enum_do_nothing = ["DEFAULT", "INT", "UNSIGNED"]
-
-# The following are bitwise-OR combinations of other fields.
-enum_combos = [("REAL", ("FLOAT", "SIGNED")), ("LOCALE", ("LOCALEALPHA", "LOCALENUM"))]
-
-# The following are aliases for other fields.
-enum_aliases = [
-    ("I", "INT"),
-    ("U", "UNSIGNED"),
-    ("F", "FLOAT"),
-    ("S", "SIGNED"),
-    ("R", "REAL"),
-    ("N", "NOEXP"),
-    ("P", "PATH"),
-    ("LA", "LOCALEALPHA"),
-    ("LN", "LOCALENUM"),
-    ("L", "LOCALE"),
-    ("IC", "IGNORECASE"),
-    ("LF", "LOWERCASEFIRST"),
-    ("G", "GROUPLETTERS"),
-    ("UG", "UNGROUPLETTERS"),
-    ("C", "UNGROUPLETTERS"),
-    ("CAPITALFIRST", "UNGROUPLETTERS"),
-    ("NL", "NANLAST"),
-    ("CN", "COMPATIBILITYNORMALIZE"),
-    ("NA", "NUMAFTER"),
-]
-
-# Construct the list of bitwise distinct enums with their fields.
-enum_fields = collections.OrderedDict(
-    (name, 1 << i) for i, name in enumerate(enum_options)
-)
-enum_fields.update((name, 0) for name in enum_do_nothing)
-
-for name, combo in enum_combos:
-    combined_value = enum_fields[combo[0]]
-    for combo_name in combo[1:]:
-        combined_value |= enum_fields[combo_name]
-    enum_fields[name] = combined_value
-
-enum_fields.update((alias, enum_fields[name]) for alias, name in enum_aliases)
+import enum
+import itertools
+import typing
 
 
-# Subclass the namedtuple to improve the docstring.
-# noinspection PyUnresolvedReferences
-class _NSEnum(collections.namedtuple("_NSEnum", enum_fields.keys())):
+_counter = itertools.count(0)
+
+
+class ns(enum.IntEnum):  # noqa: N801
     """
     Enum to control the `natsort` algorithm.
 
@@ -186,10 +128,35 @@ class _NSEnum(collections.namedtuple("_NSEnum", enum_fields.keys())):
 
     """
 
+    # The below are the base ns options. The values will be stored as powers
+    # of two so bitmasks can be used to extract the user's requested options.
+    FLOAT = F = 1 << next(_counter)
+    SIGNED = S = 1 << next(_counter)
+    NOEXP = N = 1 << next(_counter)
+    PATH = P = 1 << next(_counter)
+    LOCALEALPHA = LA = 1 << next(_counter)
+    LOCALENUM = LN = 1 << next(_counter)
+    IGNORECASE = IC = 1 << next(_counter)
+    LOWERCASEFIRST = LF = 1 << next(_counter)
+    GROUPLETTERS = G = 1 << next(_counter)
+    UNGROUPLETTERS = CAPITALFIRST = C = UG = 1 << next(_counter)
+    NANLAST = NL = 1 << next(_counter)
+    COMPATIBILITYNORMALIZE = CN = 1 << next(_counter)
+    NUMAFTER = NA = 1 << next(_counter)
 
-# Here is where the instance of the ns enum that will be exported is created.
-# It is a poor-man's singleton.
-ns = _NSEnum(*enum_fields.values())
+    # Following were previously options but are now defaults.
+    DEFAULT = 0
+    INT = I = 0  # noqa: E741
+    UNSIGNED = U = 0
+
+    # The following are bitwise-OR combinations of other fields.
+    REAL = R = FLOAT | SIGNED
+    LOCALE = L = LOCALEALPHA | LOCALENUM
+
 
 # The below is private for internal use only.
 NS_DUMB = 1 << 31
+
+# An integer can be used in place of the ns enum so make the
+# type to use for this enum a union of it and an inteter.
+NSType = typing.Union[ns, int]

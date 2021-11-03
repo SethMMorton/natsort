@@ -117,3 +117,25 @@ Given your chosen algorithm (selected using the :class:`~natsort.ns` enum),
 the corresponding regular expression to locate numbers will be returned.
 
 .. autofunction:: numeric_regex_chooser
+
+Help With Type Hinting
+++++++++++++++++++++++
+
+If you need to explictly specify the types that natsort accepts or returns
+in your code, the following types have been exposed for your convenience.
+
++--------------------------------+----------------------------------------------------------------------------------------+
+| Type                           | Purpose                                                                                |
++================================+========================================================================================+
+|:attr:`natsort.NatsortKeyType`  | Returned by :func:`natsort.natsort_keygen`, and type of :attr:`natsort.natsort_key`    |
++--------------------------------+----------------------------------------------------------------------------------------+
+|:attr:`natsort.OSSortKeyType`   | Returned by :func:`natsort.os_sort_keygen`, and type of :attr:`natsort.os_sort_key`    |
++--------------------------------+----------------------------------------------------------------------------------------+
+|:attr:`natsort.KeyType`         | Type of `key` argument to :func:`natsort.natsorted` and :func:`natsort.natsort_keygen` |
++--------------------------------+----------------------------------------------------------------------------------------+
+|:attr:`natsort.NatsortInType`   | The input type of :attr:`natsort.NatsortKeyType`                                       |
++--------------------------------+----------------------------------------------------------------------------------------+
+|:attr:`natsort.NatsortOutType`  | The output type of :attr:`natsort.NatsortKeyType`                                      |
++--------------------------------+----------------------------------------------------------------------------------------+
+|:attr:`natsort.NSType`          | The type of the :class:`ns` enum                                                       |
++--------------------------------+----------------------------------------------------------------------------------------+

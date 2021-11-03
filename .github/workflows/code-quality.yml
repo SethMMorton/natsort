@@ -38,13 +38,31 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v2
         with:
-          python-version: '3.5'
+          python-version: '3.6'
 
       - name: Install Flake8
         run: pip install flake8 flake8-import-order flake8-bugbear pep8-naming
 
       - name: Run Flake8
         run: flake8
+
+  type-checking:
+    name: Type Checking
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: '3.6'
+
+      - name: Install MyPy
+        run: pip install mypy hypothesis pytest pytest-mock fastnumbers
+
+      - name: Run MyPy
+        run: mypy --strict natsort tests
 
   package-validation:
     name: Package Validation
@@ -56,7 +74,7 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v2
         with:
-          python-version: '3.5'
+          python-version: '3.6'
 
       - name: Install Validators
         run: pip install twine check-manifest

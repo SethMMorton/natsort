@@ -7,12 +7,15 @@ inputs and different settings.
 import cProfile
 import locale
 import sys
+from typing import List, Union
 
 try:
     from natsort import ns, natsort_keygen
 except ImportError:
     sys.path.insert(0, ".")
     from natsort import ns, natsort_keygen
+
+from natsort.natsort import NatsortKeyType
 
 locale.setlocale(locale.LC_ALL, "en_US.UTF-8")
 
@@ -32,7 +35,7 @@ path_key = natsort_keygen(alg=ns.PATH)
 locale_key = natsort_keygen(alg=ns.LOCALE)
 
 
-def prof_time_to_generate():
+def prof_time_to_generate() -> None:
     print("*** Generate Plain Key ***")
     for _ in range(100000):
         natsort_keygen()
@@ -41,7 +44,9 @@ def prof_time_to_generate():
 cProfile.run("prof_time_to_generate()", sort="time")
 
 
-def prof_parsing(a, msg, key=basic_key):
+def prof_parsing(
+    a: Union[str, int, bytes, List[str]], msg: str, key: NatsortKeyType = basic_key
+) -> None:
     print(msg)
     for _ in range(100000):
         key(a)

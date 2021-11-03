@@ -2,23 +2,28 @@
 """These test the utils.py functions."""
 
 import unicodedata
+from typing import Any, Callable, Iterable, List, Tuple, Union
 
 import pytest
 from hypothesis import given
 from hypothesis.strategies import floats, integers, lists, text
 from natsort.compat.fastnumbers import fast_float
-from natsort.ns_enum import NS_DUMB, ns
-from natsort.utils import NumericalRegularExpressions as NumRegex
+from natsort.ns_enum import NSType, NS_DUMB, ns
+from natsort.utils import (
+    FinalTransform,
+    NumericalRegularExpressions as NumRegex,
+    StrParser,
+)
 from natsort.utils import parse_string_factory
 
 
-class CustomTuple(tuple):
+class CustomTuple(Tuple[Any, ...]):
     """Used to ensure what is given during testing is what is returned."""
 
-    original = None
+    original: Any = None
 
 
-def input_transform(x):
+def input_transform(x: Any) -> Any:
     """Make uppercase."""
     try:
         return x.upper()
@@ -26,14 +31,14 @@ def input_transform(x):
         return x
 
 
-def final_transform(x, original):
+def final_transform(x: Iterable[Any], original: str) -> FinalTransform:
     """Make the input a CustomTuple."""
     t = CustomTuple(x)
     t.original = original
     return t
 
 
-def parse_string_func_factory(alg):
+def parse_string_func_factory(alg: NSType) -> StrParser:
     """A parse_string_factory result with sample arguments."""
     sep = ""
     return parse_string_factory(
@@ -47,10 +52,12 @@ def parse_string_func_factory(alg):
 
 
 @given(x=floats() | integers())
-def test_parse_string_factory_raises_type_error_if_given_number(x):
+def test_parse_string_factory_raises_type_error_if_given_number(
+    x: Union[int, float]
+) -> None:
     parse_string_func = parse_string_func_factory(ns.DEFAULT)
     with pytest.raises(TypeError):
-        assert parse_string_func(x)
+        assert parse_string_func(x)  # type: ignore
 
 
 # noinspection PyCallingNonCallable
@@ -68,7 +75,9 @@ def test_parse_string_factory_raises_type_error_if_given_number(x):
     )
 )
 @pytest.mark.usefixtures("with_locale_en_us")
-def test_parse_string_factory_invariance(x, alg, orig_func):
+def test_parse_string_factory_invariance(
+    x: List[Union[float, str, int]], alg: NSType, orig_func: Callable[[str], str]
+) -> None:
     parse_string_func = parse_string_func_factory(alg)
     # parse_string_factory is the high-level combination of several dedicated
     # functions involved in splitting and manipulating a string. The details of

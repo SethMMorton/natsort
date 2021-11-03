@@ -1,8 +1,10 @@
+import pytest
 from natsort import ns
 
 
-def test_ns_enum():
-    enum_name_values = [
+@pytest.mark.parametrize(
+    "given, expected",
+    [
         ("FLOAT", 0x0001),
         ("SIGNED", 0x0002),
         ("NOEXP", 0x0004),
@@ -40,5 +42,7 @@ def test_ns_enum():
         ("NL", 0x0400),
         ("CN", 0x0800),
         ("NA", 0x1000),
-    ]
-    assert list(ns._asdict().items()) == enum_name_values
+    ],
+)
+def test_ns_enum(given: str, expected: int) -> None:
+    assert ns[given] == expected
