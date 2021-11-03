@@ -1,6 +1,9 @@
 Unreleased
 ---
 
+[7.2.0] - 2021-11-02
+---
+
 ### Added
 - Type hints (contributions from [@thethiny](https://github.com/thethiny) and
   [@domdfcoding](https://github.com/domdfcoding), issues #132, #135, and #138)
@@ -568,6 +571,7 @@ a pipeline by which to filter
  - Sorting algorithm to support floats (including exponentials) and basic version number support
 
 <!---Comparison links-->
+[7.2.0]: https://github.com/SethMMorton/natsort/compare/7.1.1...7.2.0
 [7.1.1]: https://github.com/SethMMorton/natsort/compare/7.1.0...7.1.1
 [7.1.0]: https://github.com/SethMMorton/natsort/compare/7.0.1...7.1.0
 [7.0.1]: https://github.com/SethMMorton/natsort/compare/7.0.0...7.0.1

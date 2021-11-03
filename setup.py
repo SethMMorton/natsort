@@ -4,7 +4,7 @@ from setuptools import find_packages, setup
 
 setup(
     name="natsort",
-    version="7.1.1",
+    version="7.2.0",
     packages=find_packages(),
     entry_points={"console_scripts": ["natsort = natsort.__main__:main"]},
     python_requires=">=3.6",
