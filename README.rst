@@ -452,7 +452,7 @@ Deprecation Schedule
 Dropped Python 3.4 and Python 3.5 Support
 +++++++++++++++++++++++++++++++++++++++++
 
-``natsort`` version 7.2.0 dropped support for Python < 3.6.
+``natsort`` version 8.0.0 dropped support for Python < 3.6.
 
 Dropped Python 2.7 Support
 ++++++++++++++++++++++++++

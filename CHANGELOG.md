@@ -1,7 +1,10 @@
 Unreleased
 ---
 
-[7.2.0] - 2021-11-02
+- Re-release 7.2.0 as 8.0.0 because introduction of type hints can break CI
+  builds (issue #139)
+
+[7.2.0] - 2021-11-02 (Yanked)
 ---
 
 ### Added
