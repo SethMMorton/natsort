@@ -434,18 +434,6 @@ python version with the ``-e`` flag, e.g. ``tox -e py36``. Static analysis
 is done with ``tox -e flake8``. You can see all available testing environments
 with ``tox --listenvs``.
 
-If you do not wish to use ``tox``, you can install the testing dependencies with the
-``dev/requirements.txt`` file and then run the tests manually using
-`pytest <https://docs.pytest.org/en/latest/>`_.
-
-.. code-block:: console
-
-    $ pip install -r dev/requirements.txt
-    $ python -m pytest
-
-Note that above I invoked ``python -m pytest`` instead of just ``pytest`` - this is because
-`the former puts the CWD on sys.path <https://docs.pytest.org/en/latest/usage.html#calling-pytest-through-python-m-pytest>`_.
-
 How to Build Documentation
 --------------------------
 
@@ -456,13 +444,7 @@ use ``tox``:
 
     $ tox -e docs
 
-This will place the documentation in ``build/sphinx/html``.  If you do not
-which to use ``tox``, you can do the following:
-
-.. code-block:: console
-
-    $ pip install sphinx sphinx_rtd_theme
-    $ python setup.py build_sphinx
+This will place the documentation in ``build/sphinx/html``.
 
 Deprecation Schedule
 --------------------
