@@ -4,6 +4,7 @@ Unreleased
 ### Added
 - Type hints (contributions from [@thethiny](https://github.com/thethiny) and
   [@domdfcoding](https://github.com/domdfcoding), issues #132, #135, and #138)
+- Explicit testing for Python 3.10
 
 ### Removed
  - Support for Python 3.4 and Python 3.5
