@@ -1,6 +1,9 @@
 Unreleased
 ---
 
+[8.0.0] - 2021-11-03
+---
+
 - Re-release 7.2.0 as 8.0.0 because introduction of type hints can break CI
   builds (issue #139)
 
@@ -574,6 +577,7 @@ a pipeline by which to filter
  - Sorting algorithm to support floats (including exponentials) and basic version number support
 
 <!---Comparison links-->
+[8.0.0]: https://github.com/SethMMorton/natsort/compare/7.2.0...8.0.0
 [7.2.0]: https://github.com/SethMMorton/natsort/compare/7.1.1...7.2.0
 [7.1.1]: https://github.com/SethMMorton/natsort/compare/7.1.0...7.1.1
 [7.1.0]: https://github.com/SethMMorton/natsort/compare/7.0.1...7.1.0
