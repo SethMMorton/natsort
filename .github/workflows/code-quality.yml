@@ -59,7 +59,7 @@ jobs:
           python-version: '3.6'
 
       - name: Install MyPy
-        run: pip install mypy hypothesis pytest pytest-mock
+        run: pip install mypy hypothesis pytest pytest-mock fastnumbers
 
       - name: Run MyPy
         run: mypy --strict natsort tests
