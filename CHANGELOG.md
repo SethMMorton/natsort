@@ -1,13 +1,11 @@
 Unreleased
 ---
 
-### Changed
-
- - The `ns` enum is now implemented as an `enum.IntEnum` instead of a
-   `collections.namedtuple`
+### Added
+- Type hints (contributions from [@thethiny](https://github.com/thethiny) and
+  [@domdfcoding](https://github.com/domdfcoding), issues #132, #135, and #138)
 
 ### Removed
-
  - Support for Python 3.4 and Python 3.5
 
 [7.1.1] - 2021-01-24
