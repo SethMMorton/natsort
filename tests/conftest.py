@@ -48,3 +48,19 @@ def with_locale_de_de() -> Iterator[None]:
         yield
     finally:
         locale.setlocale(locale.LC_ALL, orig)
+
+
+@pytest.fixture()
+def with_locale_cs_cz() -> Iterator[None]:
+    """
+    Convenience to load the cs_CZ locale - reset when complete - skip if missing.
+    """
+    orig = locale.getlocale()
+    try:
+        load_locale("cs_CZ")
+    except locale.Error:
+        pytest.skip("requires cs_CZ locale to be installed")
+    else:
+        yield
+    finally:
+        locale.setlocale(locale.LC_ALL, orig)

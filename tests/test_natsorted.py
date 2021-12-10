@@ -251,6 +251,14 @@ def test_natsorted_locale_bug_regression_test_109() -> None:
     assert natsorted(given, alg=ns.LOCALE) == expected
 
 
+@pytest.mark.usefixtures("with_locale_cs_cz")
+def test_natsorted_locale_bug_regression_test_140() -> None:
+    # https://github.com/SethMMorton/natsort/issues/140
+    given = ["Aš", "Cheb", "Česko", "Cibulov", "Znojmo", "Žilina"]
+    expected = ["Aš", "Cibulov", "Česko", "Cheb", "Znojmo", "Žilina"]
+    assert natsorted(given, alg=ns.LOCALE) == expected
+
+
 @pytest.mark.parametrize(
     "alg, expected",
     [
