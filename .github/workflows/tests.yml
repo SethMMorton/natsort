@@ -36,7 +36,7 @@ jobs:
         if: matrix.os == 'ubuntu-latest'
         run: |
           sudo apt-get update
-          sudo apt-get install language-pack-de language-pack-en
+          sudo apt-get install language-pack-de language-pack-en language-pack-cs
 
       - name: Install ICU
         if: matrix.extras
