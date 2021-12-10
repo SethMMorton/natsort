@@ -1,6 +1,11 @@
 Unreleased
 ---
 
+### Fixed
+
+- Compose unicode characters when using locale to ensure sorting is correct
+  across all locales.
+
 [8.0.0] - 2021-11-03
 ---
 
