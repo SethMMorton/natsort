@@ -786,7 +786,6 @@ if platform.system() == "Windows":
             OSSortKeyType, lambda x: tuple(map(_winsort_key, _split_apply(x, key)))
         )
 
-
 else:
 
     # For UNIX-based platforms, ICU performs MUCH better than locale
