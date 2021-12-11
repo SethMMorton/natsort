@@ -235,6 +235,25 @@ def _normalize_input_factory(alg: NSType) -> StrToStr:
     return partial(normalize, normalization_form)
 
 
+def _compose_input_factory(alg: NSType) -> StrToStr:
+    """
+    Create a function that will compose unicode input data.
+
+    Parameters
+    ----------
+    alg : ns enum
+        Used to indicate how to compose unicode.
+
+    Returns
+    -------
+    func : callable
+        A function that accepts string (unicode) input and returns the
+        the input normalized with the desired composition scheme.
+    """
+    normalization_form = "NFKC" if alg & ns.COMPATIBILITYNORMALIZE else "NFC"
+    return partial(normalize, normalization_form)
+
+
 @overload
 def natsort_key(
     val: NatsortInType,
@@ -472,6 +491,7 @@ def parse_string_factory(
     orig_after_xfrm = not (alg & NS_DUMB and alg & ns.LOCALEALPHA)
     original_func = input_transform if orig_after_xfrm else _no_op
     normalize_input = _normalize_input_factory(alg)
+    compose_input = _compose_input_factory(alg) if alg & ns.LOCALEALPHA else _no_op
 
     def func(x: str) -> FinalTransform:
         # Apply string input transformation function and return to x.
@@ -479,11 +499,12 @@ def parse_string_factory(
         # to also be the transformation function.
         a = normalize_input(x)
         b, original = input_transform(a), original_func(a)
-        c = splitter(b)  # Split string into components.
-        d = filter(None, c)  # Remove empty strings.
-        e = map(component_transform, d)  # Apply transform on components.
-        f = sep_inserter(e, sep)  # Insert '' between numbers.
-        return final_transform(f, original)  # Apply the final transform.
+        c = compose_input(b)  # Decompose unicode if using LOCALE
+        d = splitter(c)  # Split string into components.
+        e = filter(None, d)  # Remove empty strings.
+        f = map(component_transform, e)  # Apply transform on components.
+        g = sep_inserter(f, sep)  # Insert '' between numbers.
+        return final_transform(g, original)  # Apply the final transform.
 
     return func
 

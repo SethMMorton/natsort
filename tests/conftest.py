@@ -7,6 +7,7 @@ from typing import Iterator
 
 import hypothesis
 import pytest
+from natsort.compat.locale import dumb_sort
 
 
 # This disables the "too slow" hypothesis heath check globally.
@@ -44,6 +45,24 @@ def with_locale_de_de() -> Iterator[None]:
         load_locale("de_DE")
     except locale.Error:
         pytest.skip("requires de_DE locale to be installed")
+    else:
+        yield
+    finally:
+        locale.setlocale(locale.LC_ALL, orig)
+
+
+@pytest.fixture()
+def with_locale_cs_cz() -> Iterator[None]:
+    """
+    Convenience to load the cs_CZ locale - reset when complete - skip if missing.
+    """
+    orig = locale.getlocale()
+    try:
+        load_locale("cs_CZ")
+        if dumb_sort():
+            pytest.skip("requires a functioning locale library to run")
+    except locale.Error:
+        pytest.skip("requires cs_CZ locale to be installed")
     else:
         yield
     finally:
