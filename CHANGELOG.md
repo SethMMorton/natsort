@@ -1,6 +1,9 @@
 Unreleased
 ---
 
+[8.0.1] - 2021-12-10
+---
+
 ### Fixed
 
 - Compose unicode characters when using locale to ensure sorting is correct
@@ -582,6 +585,7 @@ a pipeline by which to filter
  - Sorting algorithm to support floats (including exponentials) and basic version number support
 
 <!---Comparison links-->
+[8.0.1]: https://github.com/SethMMorton/natsort/compare/8.0.0...8.0.1
 [8.0.0]: https://github.com/SethMMorton/natsort/compare/7.2.0...8.0.0
 [7.2.0]: https://github.com/SethMMorton/natsort/compare/7.1.1...7.2.0
 [7.1.1]: https://github.com/SethMMorton/natsort/compare/7.1.0...7.1.1
