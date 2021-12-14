@@ -141,6 +141,14 @@ def test_path_splitter_splits_path_string_by_sep_example() -> None:
     assert tuple(utils.path_splitter(pathlib.Path(given))) == tuple(expected)
 
 
+@pytest.mark.parametrize("given", [".", "./", "./././", ".\\"])
+def test_path_splitter_handles_dot_properly(given: str) -> None:
+    # https://github.com/SethMMorton/natsort/issues/142
+    expected = (os.path.normpath(given),)
+    assert tuple(utils.path_splitter(given)) == expected
+    assert tuple(utils.path_splitter(pathlib.Path(given))) == expected
+
+
 @given(lists(sampled_from(string.ascii_letters), min_size=2).filter(all))
 def test_path_splitter_splits_path_string_by_sep(x: List[str]) -> None:
     z = str(pathlib.Path(*x))

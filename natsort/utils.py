@@ -887,7 +887,11 @@ def path_splitter(
         s = PurePath(s)
 
     # Split the path into parts.
-    *path_parts, base = s.parts
+    try:
+        *path_parts, base = s.parts
+    except ValueError:
+        path_parts = []
+        base = str(s)
 
     # Now, split off the file extensions until we reach a decimal number at
     # the beginning of the suffix or there are no more extensions.
