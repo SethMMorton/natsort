@@ -1,6 +1,9 @@
 Unreleased
 ---
 
+### Fixed
+- Bug where sorting paths fail if one of the paths is '.'.
+
 [8.0.1] - 2021-12-10
 ---
 
