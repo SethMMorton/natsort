@@ -23,7 +23,7 @@ from natsort.natsort import (
 from natsort.ns_enum import NSType, ns
 from natsort.utils import KeyType, NatsortInType, NatsortOutType, chain_functions
 
-__version__ = "8.0.1"
+__version__ = "8.0.2"
 
 __all__ = [
     "natsort_key",

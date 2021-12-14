@@ -1,6 +1,9 @@
 Unreleased
 ---
 
+[8.0.2] - 2021-12-14
+---
+
 ### Fixed
 - Bug where sorting paths fail if one of the paths is '.'.
 
@@ -587,6 +590,7 @@ a pipeline by which to filter
  - Sorting algorithm to support floats (including exponentials) and basic version number support
 
 <!---Comparison links-->
+[8.0.2]: https://github.com/SethMMorton/natsort/compare/8.0.1...8.0.2
 [8.0.1]: https://github.com/SethMMorton/natsort/compare/8.0.0...8.0.1
 [8.0.0]: https://github.com/SethMMorton/natsort/compare/7.2.0...8.0.0
 [7.2.0]: https://github.com/SethMMorton/natsort/compare/7.1.1...7.2.0
