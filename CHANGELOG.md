@@ -5,7 +5,6 @@ Unreleased
 ---
 
 ### Fixed
-
 - Compose unicode characters when using locale to ensure sorting is correct
   across all locales.
 
