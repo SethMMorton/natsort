@@ -24,7 +24,7 @@ for a in numeric_hex:
 # The digit characters are a subset of the numerals.
 digit_chars = [a for a in numeric_chars if unicodedata.digit(a, None) is not None]
 
-# The decimal characters are a subset of the numberals
+# The decimal characters are a subset of the numerals
 # (probably of the digits, but let's be safe).
 decimal_chars = [a for a in numeric_chars if unicodedata.decimal(a, None) is not None]
 
