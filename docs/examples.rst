@@ -158,7 +158,7 @@ you can easily do this with the ``ns.IGNORECASE`` option:
     >>> natsorted(a, alg=ns.IGNORECASE)
     ['Apple', 'apple', 'Banana', 'banana', 'corn', 'Corn']
 
-Note thats since Python's sorting is stable, the order of equivalent
+Note that's since Python's sorting is stable, the order of equivalent
 elements after lowering the case is the same order they appear in the
 original list.
 

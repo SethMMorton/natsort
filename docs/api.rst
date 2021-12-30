@@ -121,7 +121,7 @@ the corresponding regular expression to locate numbers will be returned.
 Help With Type Hinting
 ++++++++++++++++++++++
 
-If you need to explictly specify the types that natsort accepts or returns
+If you need to explicitly specify the types that natsort accepts or returns
 in your code, the following types have been exposed for your convenience.
 
 +--------------------------------+----------------------------------------------------------------------------------------+

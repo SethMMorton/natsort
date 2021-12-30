@@ -876,7 +876,7 @@ def os_sorted(
     .. warning::
 
         The resulting function will generate results that will be
-        differnt depending on your platform. This is intentional.
+        different depending on your platform. This is intentional.
 
     On Windows, this will sort with the same order as Windows Explorer.
 
@@ -892,7 +892,7 @@ def os_sorted(
       special characters this will give correct results, but once
       special characters are added you should lower your expectations.
 
-    It is *strongly* reccommended to have :mod:`pyicu` installed on
+    It is *strongly* recommended to have :mod:`pyicu` installed on
     MacOS/Linux if you want correct sort results.
 
     It does *not* take into account if a path is a directory or a file
