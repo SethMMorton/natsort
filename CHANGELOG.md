@@ -52,7 +52,7 @@ Unreleased
 
 ### Changed
  - MacOS unit tests run on native Python
- - Treate `None` like `NaN` internally to avoid `TypeError` (issue #117)
+ - Treat `None` like `NaN` internally to avoid `TypeError` (issue #117)
  - No longer fail tests every time a new Python version is released (issue #122)
 
 ### Fixed
@@ -76,7 +76,7 @@ Unreleased
  - Release checklist in `RELEASING.md` ([@hugovk](https://github.com/hugovk), issue #106)
 
 ### Changed
- - Updated auxillary shell scripts to be written in python, and added
+ - Updated auxiliary shell scripts to be written in python, and added
    ability to call these from `tox`
  - Improved Travis-CI experience
  - Update testing dependency versions
@@ -281,7 +281,7 @@ Unreleased
    because the new factory function paradigm eliminates most `if` branches
    during execution). For the most cases, the code is 30-40% faster than version 4.0.4.
    If using `ns.LOCALE` or `humansorted`, the code is 1100% faster than version 4.0.4
- - Improved clarity of documentaion with regards to locale-aware sorting
+ - Improved clarity of documentation with regards to locale-aware sorting
 
 ### Deprecated
  - `ns.TYPESAFE` option as it is now always on (due to a new
@@ -427,7 +427,7 @@ Unreleased
  - `reverse` option to `natsorted` & co. to make it's API more
    similar to the builtin 'sorted'
  - More unit tests
- - Auxillary test code that helps in profiling and stress-testing
+ - Auxiliary test code that helps in profiling and stress-testing
  - Support for coveralls.io
 
 ### Changed
@@ -574,7 +574,7 @@ a pipeline by which to filter
 ---
 
 ### Added
- - Tests into the natsort.py file iteself
+ - Tests into the natsort.py file itself
 
 ### Changed
  - Reorganized directory structure

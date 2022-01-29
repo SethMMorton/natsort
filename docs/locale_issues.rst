@@ -23,7 +23,7 @@ Regenerate Key With :func:`~natsort.natsort_keygen` After Changing Locale
 
 When :func:`~natsort.natsort_keygen` is called it returns a key function that
 hard-codes the provided settings. This means that the key returned when
-``ns.LOCALE`` is used contains the settings specifed by the locale
+``ns.LOCALE`` is used contains the settings specified by the locale
 *loaded at the time the key is generated*. If you change the locale,
 you should regenerate the key to account for the new locale.
 
