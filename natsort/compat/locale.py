@@ -54,6 +54,7 @@ try:  # noqa: C901
         sep = icu.DecimalFormatSymbols.kDecimalSeparatorSymbol
         return cast(str, icu.DecimalFormatSymbols(get_icu_locale()).getSymbol(sep))
 
+
 except ImportError:
     import locale
     from locale import strxfrm
