@@ -6,7 +6,7 @@ import pathlib
 import string
 from itertools import chain
 from operator import neg as op_neg
-from typing import List, Pattern, Union
+from typing import List, Pattern, Tuple, Union
 
 import pytest
 from hypothesis import given
@@ -155,9 +155,26 @@ def test_path_splitter_splits_path_string_by_sep(x: List[str]) -> None:
     assert tuple(utils.path_splitter(z)) == tuple(pathlib.Path(z).parts)
 
 
-def test_path_splitter_splits_path_string_by_sep_and_removes_extension_example() -> None:
-    given = "/this/is/a/path/file.x1.10.tar.gz"
-    expected = (os.sep, "this", "is", "a", "path", "file.x1.10", ".tar", ".gz")
+@pytest.mark.parametrize(
+    "given, expected",
+    [
+        (
+            "/this/is/a/path/file.x1.10.tar.gz",
+            (os.sep, "this", "is", "a", "path", "file.x1.10", ".tar", ".gz"),
+        ),
+        (
+            "/this/is/a/path/file.x1.10.tar",
+            (os.sep, "this", "is", "a", "path", "file.x1.10", ".tar"),
+        ),
+        (
+            "/this/is/a/path/file.x1.threethousand.tar",
+            (os.sep, "this", "is", "a", "path", "file.x1.threethousand", ".tar"),
+        ),
+    ],
+)
+def test_path_splitter_splits_path_string_by_sep_and_removes_extension_example(
+    given: str, expected: Tuple[str, ...]
+) -> None:
     assert tuple(utils.path_splitter(given)) == tuple(expected)
 
 

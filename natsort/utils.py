@@ -893,16 +893,21 @@ def path_splitter(
         path_parts = []
         base = str(s)
 
-    # Now, split off the file extensions until we reach a decimal number at
-    # the beginning of the suffix or there are no more extensions.
-    suffixes = PurePath(base).suffixes
-    try:
-        digit_index = next(i for i, x in enumerate(reversed(suffixes)) if _d_match(x))
-    except StopIteration:
-        pass
-    else:
-        digit_index = len(suffixes) - digit_index
-        suffixes = suffixes[digit_index:]
+    # Now, split off the file extensions until
+    #  - we reach a decimal number at the beginning of the suffix
+    #  - more than two suffixes have been seen
+    #  - a suffix is more than five characters (including leading ".")
+    #  - there are no more extensions
+    suffixes = []
+    for i, suffix in enumerate(reversed(PurePath(base).suffixes)):
+        if _d_match(suffix) or i > 1 or len(suffix) > 5:
+            break
+        suffixes.append(suffix)
+    suffixes.reverse()
 
+    # Remove the suffixes from the base component
     base = base.replace("".join(suffixes), "")
-    return filter(None, ichain(path_parts, [base], suffixes))
+    base_component = [base] if base else []
+
+    # Join all path comonents in an iterator
+    return filter(None, ichain(path_parts, base_component, suffixes))

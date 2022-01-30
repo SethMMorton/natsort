@@ -182,6 +182,21 @@ def test_natsorted_handles_numbers_and_filesystem_paths_simultaneously() -> None
     assert natsorted(given, alg=ns.PATH) == expected
 
 
+def test_natsorted_path_extensions_heuristic() -> None:
+    # https://github.com/SethMMorton/natsort/issues/145
+    given = [
+        "Try.Me.Bug - 09 - One.Two.Three.[text].mkv",
+        "Try.Me.Bug - 07 - One.Two.5.[text].mkv",
+        "Try.Me.Bug - 08 - One.Two.Three[text].mkv",
+    ]
+    expected = [
+        "Try.Me.Bug - 07 - One.Two.5.[text].mkv",
+        "Try.Me.Bug - 08 - One.Two.Three[text].mkv",
+        "Try.Me.Bug - 09 - One.Two.Three.[text].mkv",
+    ]
+    assert natsorted(given, alg=ns.PATH) == expected
+
+
 @pytest.mark.parametrize(
     "alg, expected",
     [
