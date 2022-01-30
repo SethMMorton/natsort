@@ -1,18 +1,22 @@
 Unreleased
 ---
 
+### Changed
+- When using `ns.PATH`, only split off a maximum of two suffixes from
+  a file name (issues #145, #146).
+
 [8.0.2] - 2021-12-14
 ---
 
 ### Fixed
-- Bug where sorting paths fail if one of the paths is '.'.
+- Bug where sorting paths fail if one of the paths is '.' (issues #142, #143)
 
 [8.0.1] - 2021-12-10
 ---
 
 ### Fixed
 - Compose unicode characters when using locale to ensure sorting is correct
-  across all locales.
+  across all locales (issues #140, #141)
 
 [8.0.0] - 2021-11-03
 ---
