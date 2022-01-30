@@ -413,6 +413,13 @@ is done, we can see how comparisons can be done in the expected manner.
     >>> a > b
     True
 
+.. note::
+
+    The actual :meth:`decompose_path_into_components`-equivalent function in
+    :mod:`natsort` actually has a few more heuristics than shown here so that
+    it is not over-zealous in what it defines as a path suffix, but this has
+    been omitted in this how-to for clarity.
+
 Comparing Different Types
 +++++++++++++++++++++++++
 
