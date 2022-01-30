@@ -901,6 +901,70 @@ characters; otherwise, numbers won't be parsed properly. Therefore, it must
 be applied as part of the :func:`coerce_to_int`/:func:`coerce_to_float`
 functions in a manner similar to :func:`groupletters`.
 
+Unicode Support With Local
+++++++++++++++++++++++++++
+
+Remember how in the `Basic Unicode Support`_ section I mentioned that we
+use the "decompressed" Unicode normalization form (e.g. NFD) on all inputs
+to ensure the order is as expected?
+
+If you have been following along so far, you probably expect that it is not
+that easy. You would be correct.
+
+It turns out that some locales (but not all) expect the input to be in
+"compressed form" (e.g. NFC) or the ordering is not as you might expect.
+`Check out this issue for a real-world example`_. Here's a relevant
+snippet of code
+
+.. code-block:: pycon
+
+    In [1]: import locale, unicodedata
+
+    In [2]: a = ['Aš', 'Cheb', 'Česko', 'Cibulov', 'Znojmo', 'Žilina']
+
+    In [3]: locale.setlocale(locale.LC_ALL, 'en_US.UTF-8')
+    Out[3]: 'en_US.UTF-8'
+
+    In [4]: sorted(a, key=locale.strxfrm)
+    Out[4]: ['Aš', 'Česko', 'Cheb', 'Cibulov', 'Žilina', 'Znojmo']
+
+    In [5]: sorted(a, key=lambda x: locale.strxfrm(unicodedata.normalize("NFD", x)))
+    Out[5]: ['Aš', 'Česko', 'Cheb', 'Cibulov', 'Žilina', 'Znojmo']
+
+    In [6]: sorted(a, key=lambda x: locale.strxfrm(unicodedata.normalize("NFC", x)))
+    Out[6]: ['Aš', 'Česko', 'Cheb', 'Cibulov', 'Žilina', 'Znojmo']
+
+    In [7]: locale.setlocale(locale.LC_ALL, 'de_DE.UTF-8')
+    Out[7]: 'de_DE.UTF-8'
+
+    In [8]: sorted(a, key=locale.strxfrm)
+    Out[8]: ['Aš', 'Česko', 'Cheb', 'Cibulov', 'Žilina', 'Znojmo']
+
+    In [9]: sorted(a, key=lambda x: locale.strxfrm(unicodedata.normalize("NFD", x)))
+    Out[9]: ['Aš', 'Česko', 'Cheb', 'Cibulov', 'Žilina', 'Znojmo']
+
+    In [10]: sorted(a, key=lambda x: locale.strxfrm(unicodedata.normalize("NFC", x)))
+    Out[10]: ['Aš', 'Česko', 'Cheb', 'Cibulov', 'Žilina', 'Znojmo']
+
+    In [11]: locale.setlocale(locale.LC_ALL, 'cs_CZ.UTF-8')
+    Out[11]: 'cs_CZ.UTF-8'
+
+    In [12]: sorted(a, key=locale.strxfrm)
+    Out[12]: ['Aš', 'Cibulov', 'Česko', 'Cheb', 'Znojmo', 'Žilina']
+
+    In [13]: sorted(a, key=lambda x: locale.strxfrm(unicodedata.normalize("NFD", x)))
+    Out[13]: ['Aš', 'Česko', 'Cibulov', 'Cheb', 'Žilina', 'Znojmo']
+
+    In [14]: sorted(a, key=lambda x: locale.strxfrm(unicodedata.normalize("NFC", x)))
+    Out[14]: ['Aš', 'Cibulov', 'Česko', 'Cheb', 'Znojmo', 'Žilina']
+
+Two out of three locales sort the same data in the same order no matter how the unicode
+input was normalized, but Czech seems to care how the input is formatted!
+
+So, everthing mentioned in `Basic Unicode Support`_ is conditional on whether
+or not the user wants to use the :mod:`locale` library or not. If not, then
+"NFD" normalization is used. If they do, "NFC" normalization is used.
+
 Handling Broken Locale On OSX
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -1110,3 +1174,4 @@ what the rest of the world assumes.
 .. _really good: https://hypothesis.readthedocs.io/en/latest/
 .. _testing strategy: https://docs.pytest.org/en/latest/
 .. _check out some official Unicode documentation: https://unicode.org/reports/tr15/
+.. _Check out this issue for a real-world example: https://github.com/SethMMorton/natsort/issues/140
