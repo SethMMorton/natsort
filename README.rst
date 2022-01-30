@@ -34,11 +34,10 @@ Simple yet flexible natural sorting in Python.
     - `Installation`_
     - `How to Run Tests`_
     - `How to Build Documentation`_
-    - `Deprecation Schedule`_
+    - `Dropped Deprecated APIs`_
     - `History`_
 
-**NOTE**: Please see the `Deprecation Schedule`_ section for changes in
-``natsort`` version 7.0.0.
+**NOTE**: Please see the `Dropped Deprecated APIs`_ section for changes.
 
 Quick Description
 -----------------
@@ -103,7 +102,7 @@ Quick Examples
 - `Locale-Aware Sorting (or "Human Sorting")`_
 - `Further Customizing Natsort`_
 - `Sorting Mixed Types`_
-- `Handling Bytes on Python 3`_
+- `Handling Bytes`_
 - `Generating a Reusable Sorting Key and Sorting In-Place`_
 - `Other Useful Things`_
 
@@ -241,26 +240,23 @@ when you sort:
     >>> a = ['4.5', 6, 2.0, '5', 'a']
     >>> natsorted(a)
     [2.0, '4.5', '5', 6, 'a']
-    >>> # On Python 2, sorted(a) would return [2.0, 6, '4.5', '5', 'a']
-    >>> # On Python 3, sorted(a) would raise an "unorderable types" TypeError
+    >>> # sorted(a) would raise an "unorderable types" TypeError
 
-Handling Bytes on Python 3
-++++++++++++++++++++++++++
+Handling Bytes
+++++++++++++++
 
-``natsort`` does not officially support the `bytes` type on Python 3, but
+``natsort`` does not officially support the `bytes` type, but
 convenience functions are provided that help you decode to `str` first:
 
 .. code-block:: pycon
 
     >>> from natsort import as_utf8
     >>> a = [b'a', 14.0, 'b']
-    >>> # On Python 2, natsorted(a) would would work as expected.
-    >>> # On Python 3, natsorted(a) would raise a TypeError (bytes() < str())
+    >>> # natsorted(a) would raise a TypeError (bytes() < str())
     >>> natsorted(a, key=as_utf8) == [14.0, b'a', 'b']
     True
     >>> a = [b'a56', b'a5', b'a6', b'a40']
-    >>> # On Python 2, natsorted(a) would would work as expected.
-    >>> # On Python 3, natsorted(a) would return the same results as sorted(a)
+    >>> # natsorted(a) would return the same results as sorted(a)
     >>> natsorted(a, key=as_utf8) == [b'a5', b'a6', b'a40', b'a56']
     True
 
@@ -446,27 +442,8 @@ use ``tox``:
 
 This will place the documentation in ``build/sphinx/html``.
 
-Deprecation Schedule
---------------------
-
-Dropped Python 3.4 and Python 3.5 Support
-+++++++++++++++++++++++++++++++++++++++++
-
-``natsort`` version 8.0.0 dropped support for Python < 3.6.
-
-Dropped Python 2.7 Support
-++++++++++++++++++++++++++
-
-``natsort`` version 7.0.0 dropped support for Python 2.7.
-
-The version 6.X branch will remain as a "long term support" branch where bug
-fixes are applied so that users who cannot update from Python 2.7 will not be
-forced to use a buggy ``natsort`` version (bug fixes will need to be requested;
-by default only the 7.X branch will be updated).
-New features would not be added to version 6.X, only bug fixes.
-
 Dropped Deprecated APIs
-+++++++++++++++++++++++
+-----------------------
 
 In ``natsort`` version 6.0.0, the following APIs and functions were removed
 

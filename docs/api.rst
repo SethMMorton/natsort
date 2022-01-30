@@ -83,8 +83,8 @@ Convenience Functions
 
 .. _bytes_help:
 
-Help With Bytes On Python 3
-+++++++++++++++++++++++++++
+Help With Bytes
++++++++++++++++
 
 The official stance of :mod:`natsort` is to not support `bytes` for
 sorting; there is just too much that can go wrong when trying to automate

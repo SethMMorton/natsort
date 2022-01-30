@@ -413,11 +413,11 @@ is done, we can see how comparisons can be done in the expected manner.
     >>> a > b
     True
 
-Comparing Different Types on Python 3
-+++++++++++++++++++++++++++++++++++++
+Comparing Different Types
++++++++++++++++++++++++++
 
 `The second major special case I encountered was sorting of different types`_.
-If you are on Python 2 (i.e. legacy Python), this mostly doesn't matter *too*
+On Python 2 (i.e. legacy Python), this mostly didnt't matter *too*
 much since it uses an arbitrary heuristic to allow traditionally un-comparable
 types to be compared (such as comparing ``'a'`` to ``1``). However, on Python 3
 (i.e. Python) it simply won't let you perform such nonsense, raising a
@@ -662,9 +662,9 @@ These can be summed up as follows:
 #. :mod:`locale` is a thin wrapper over your operating system's *locale*
    library, so if *that* is broken (like it is on BSD and OSX) then
    :mod:`locale` is broken in Python.
-#. Because of a bug in legacy Python (i.e. Python 2), there is no uniform
+#. Because of a bug in legacy Python (i.e. Python 2), there was no uniform
    way to use the :mod:`locale` sorting functionality between legacy Python
-   and Python 3.
+   and Python (luckily this is no longer an issue now that Python 2 is EOL).
 #. People have differing opinions of how capitalization should affect word
    order.
 #. There is no built-in way to handle locale-dependent thousands separators
@@ -715,23 +715,13 @@ easy... just call the :meth:`str.swapcase` method on the input.
     >>> sorted(a, key=lambda x: x.swapcase())
     ['apple', 'banana', 'corn', 'Apple', 'Banana', 'Corn']
 
-The last (i call it *IGNORECASE*) should be super easy, right?
-Simply call :meth:`str.lowercase` on the input. This will work but may
-not always give the correct answer on non-latin character sets. It's
-a good thing that in Python 3.3
-:meth:`str.casefold` was introduced, which does a better job of removing
-all case information from unicode characters in
-non-latin alphabets.
+The last (i call it *IGNORECASE*) is pretty easy.
+Simply call :meth:`str.casefold` on the input (it's like :meth:`std.lowercase`
+but does a better job on non-latin character sets).
 
 .. code-block:: pycon
 
-    >>> def remove_case(x):
-    ...     try:
-    ...         return x.casefold()
-    ...     except AttributeError:  # Legacy Python backwards compatibility
-    ...         return x.lowercase()
-    ...
-    >>> sorted(a, key=remove_case)
+    >>> sorted(a, key=lambda x: x.casefold())
     ['Apple', 'apple', 'Banana', 'banana', 'corn', 'Corn']
 
 The middle case (I call it *GROUPLETTERS*) is less straightforward.
@@ -742,7 +732,7 @@ with its lowercase version and then the original character.
 
     >>> import itertools
     >>> def groupletters(x):
-    ...     return ''.join(itertools.chain.from_iterable((remove_case(y), y) for y in x))
+    ...     return ''.join(itertools.chain.from_iterable((y.casefold(), y) for y in x))
     ...
     >>> groupletters('Apple')
     'aAppppllee'
@@ -903,14 +893,6 @@ The trick is that you have to apply :func:`locale.strxfrm` only to non-numeric
 characters; otherwise, numbers won't be parsed properly. Therefore, it must
 be applied as part of the :func:`coerce_to_int`/:func:`coerce_to_float`
 functions in a manner similar to :func:`groupletters`.
-
-As you might have guessed, there is a small problem.
-It turns out the there is a bug in the legacy Python implementation of
-:func:`locale.strxfrm` that causes it to outright fail for :func:`unicode`
-input (https://bugs.python.org/issue2481). :func:`locale.strcoll` works,
-but is intended for use with ``cmp``, which does not exist in current Python
-implementations. Luckily, the :func:`functools.cmp_to_key` function
-makes :func:`locale.strcoll` behave like :func:`locale.strxfrm`.
 
 Handling Broken Locale On OSX
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
