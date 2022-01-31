@@ -349,10 +349,10 @@ Just like the :func:`sorted` built-in function, you can supply the
     >>> natsorted(a, reverse=True)
     ['a10', 'a9', 'a4', 'a2', 'a1']
 
-Sorting Bytes on Python 3
--------------------------
+Sorting Bytes
+-------------
 
-Python 3 is rather strict about comparing strings and bytes, and this
+Python is rather strict about comparing strings and bytes, and this
 can make it difficult to deal with collections of both. Because of the
 challenge of guessing which encoding should be used to decode a bytes
 array to a string, :mod:`natsort` does *not* try to guess and automatically
@@ -368,8 +368,7 @@ array, so you can use the key on any arbitrary collection of data.
 
     >>> from natsort import as_ascii
     >>> a = [b'a', 14.0, 'b']
-    >>> # On Python 2, natsorted(a) would would work as expected.
-    >>> # On Python 3, natsorted(a) would raise a TypeError (bytes() < str())
+    >>> # natsorted(a) would raise a TypeError (bytes() < str())
     >>> natsorted(a, key=as_ascii) == [14.0, b'a', 'b']
     True
 
