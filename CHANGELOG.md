@@ -1,6 +1,9 @@
 Unreleased
 ---
 
+[8.1.0] - 2022-01-30
+---
+
 ### Changed
 - When using `ns.PATH`, only split off a maximum of two suffixes from
   a file name (issues #145, #146).
@@ -594,6 +597,7 @@ a pipeline by which to filter
  - Sorting algorithm to support floats (including exponentials) and basic version number support
 
 <!---Comparison links-->
+[8.1.0]: https://github.com/SethMMorton/natsort/compare/8.0.2...8.1.0
 [8.0.2]: https://github.com/SethMMorton/natsort/compare/8.0.1...8.0.2
 [8.0.1]: https://github.com/SethMMorton/natsort/compare/8.0.0...8.0.1
 [8.0.0]: https://github.com/SethMMorton/natsort/compare/7.2.0...8.0.0
