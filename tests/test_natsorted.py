@@ -5,6 +5,7 @@ See the README or the natsort homepage for more details.
 """
 
 from operator import itemgetter
+from pathlib import PurePosixPath
 from typing import List, Tuple, Union
 
 import pytest
@@ -82,6 +83,11 @@ def test_natsorted_can_sort_as_version_numbers() -> None:
     given = ["1.9.9a", "1.11", "1.9.9b", "1.11.4", "1.10.1"]
     expected = ["1.9.9a", "1.9.9b", "1.10.1", "1.11", "1.11.4"]
     assert natsorted(given) == expected
+
+
+def test_natsorted_can_sorts_paths_same_as_strings() -> None:
+    paths = [PurePosixPath('a/1/something'), PurePosixPath('a/2/something'), PurePosixPath('a/10/something')]
+    assert [str(p) for p in natsorted(paths)] == natsorted([str(p) for p in paths])
 
 
 @pytest.mark.parametrize(

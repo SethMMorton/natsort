@@ -103,13 +103,13 @@ TupleOfStrAnyPair = Tuple[Tuple[str], TupleOfAny]
 FinalTransform = Union[TwoBlankTuple, TupleOfAny, TupleOfStrAnyPair]
 FinalTransformer = Callable[[Iterable[Any], str], FinalTransform]
 
-# For the string parsing factory
-StrSplitter = Callable[[str], Iterable[str]]
-StrParser = Callable[[str], FinalTransform]
-
 # For the path splitter
 PathArg = Union[str, PurePath]
 MatchFn = Callable[[str], Optional[Match]]
+
+# For the string parsing factory
+StrSplitter = Callable[[str], Iterable[str]]
+StrParser = Callable[[PathArg], FinalTransform]
 
 # For the path parsing factory
 PathSplitter = Callable[[PathArg], Tuple[FinalTransform, ...]]
@@ -493,7 +493,11 @@ def parse_string_factory(
     normalize_input = _normalize_input_factory(alg)
     compose_input = _compose_input_factory(alg) if alg & ns.LOCALEALPHA else _no_op
 
-    def func(x: str) -> FinalTransform:
+    def func(x: PathArg) -> FinalTransform:
+        if isinstance(x, PurePath):
+            # While paths are technically not strings, it is natural for them
+            # to be treated the same.
+            x = str(x)
         # Apply string input transformation function and return to x.
         # Original function is usually a no-op, but some algorithms require it
         # to also be the transformation function.
