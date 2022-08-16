@@ -86,7 +86,11 @@ def test_natsorted_can_sort_as_version_numbers() -> None:
 
 
 def test_natsorted_can_sorts_paths_same_as_strings() -> None:
-    paths = [PurePosixPath('a/1/something'), PurePosixPath('a/2/something'), PurePosixPath('a/10/something')]
+    paths = [
+        PurePosixPath("a/1/something"),
+        PurePosixPath("a/2/something"),
+        PurePosixPath("a/10/something"),
+    ]
     assert [str(p) for p in natsorted(paths)] == natsorted([str(p) for p in paths])
 
 
