@@ -41,7 +41,7 @@ try:  # noqa: C901
         language_code, encoding = getlocale()
         if language_code is None or encoding is None:  # pragma: no cover
             return cast(str, icu.Locale())
-        return icu.Locale(f"{language_code}.{encoding}")
+        return cast(str, icu.Locale(f"{language_code}.{encoding}"))
 
     def get_strxfrm() -> TrxfmFunc:
         return cast(TrxfmFunc, icu.Collator.createInstance(get_icu_locale()).getSortKey)
