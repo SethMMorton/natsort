@@ -38,10 +38,10 @@ try:  # noqa: C901
 
     # If using icu, get the locale from the current global locale,
     def get_icu_locale() -> str:
-        try:
-            return cast(str, icu.Locale(".".join(getlocale())))
-        except TypeError:  # pragma: no cover
+        language_code, encoding = getlocale()
+        if language_code is None or encoding is None:  # pragma: no cover
             return cast(str, icu.Locale())
+        return cast(str, icu.Locale(f"{language_code}.{encoding}"))
 
     def get_strxfrm() -> TrxfmFunc:
         return cast(TrxfmFunc, icu.Collator.createInstance(get_icu_locale()).getSortKey)
@@ -75,10 +75,11 @@ except ImportError:
         # characters are incorrectly blank. Here is a lookup table of the
         # corrections I am aware of.
         if dumb_sort():
-            try:
-                loc = ".".join(locale.getlocale())
-            except TypeError:  # No locale loaded, default to ','
+            language_code, encoding = locale.getlocale()
+            if language_code is None or encoding is None:
+                # No locale loaded, default to ','
                 return ","
+            loc = f"{language_code}.{encoding}"
             return {
                 "de_DE.ISO8859-15": ".",
                 "es_ES.ISO8859-1": ".",
