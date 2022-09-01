@@ -3,7 +3,6 @@
 Testing for the OS sorting
 """
 import platform
-from typing import cast
 
 import natsort
 import pytest
@@ -44,7 +43,7 @@ def test_os_sorted_misc_no_fail() -> None:
 def test_os_sorted_key() -> None:
     given = ["foo0", "foo2", "goo1"]
     expected = ["foo0", "goo1", "foo2"]
-    result = natsort.os_sorted(given, key=lambda x: cast(str, x).replace("g", "f"))
+    result = natsort.os_sorted(given, key=lambda x: x.replace("g", "f"))
     assert result == expected
 
 

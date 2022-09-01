@@ -7,7 +7,7 @@ import pytest
 from hypothesis import given
 from hypothesis.strategies import floats, integers
 from natsort.ns_enum import NSType, ns
-from natsort.utils import MaybeNumTransformer, parse_number_or_none_factory
+from natsort.utils import NumTransformer, parse_number_or_none_factory
 
 
 @pytest.mark.usefixtures("with_locale_en_us")
@@ -22,7 +22,7 @@ from natsort.utils import MaybeNumTransformer, parse_number_or_none_factory
 )
 @given(x=floats(allow_nan=False) | integers())
 def test_parse_number_factory_makes_function_that_returns_tuple(
-    x: Union[float, int], alg: NSType, example_func: MaybeNumTransformer
+    x: Union[float, int], alg: NSType, example_func: NumTransformer
 ) -> None:
     parse_number_func = parse_number_or_none_factory(alg, "", "xx")
     assert parse_number_func(x) == example_func(x)

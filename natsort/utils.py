@@ -53,6 +53,7 @@ from typing import (
     Match,
     Optional,
     Pattern,
+    TYPE_CHECKING,
     Tuple,
     Union,
     cast,
@@ -70,9 +71,28 @@ from natsort.compat.locale import (
 from natsort.ns_enum import NSType, NS_DUMB, ns
 from natsort.unicode_numbers import digits_no_decimals, numeric_no_decimals
 
+if TYPE_CHECKING:
+    from typing_extensions import Protocol
+else:
+    Protocol = object
+
 #
 # Pre-define a slew of aggregate types which makes the type hinting below easier
 #
+
+
+class SupportsDunderLT(Protocol):
+    def __lt__(self, __other: Any) -> bool:
+        ...
+
+
+class SupportsDunderGT(Protocol):
+    def __gt__(self, __other: Any) -> bool:
+        ...
+
+
+Sortable = Union[SupportsDunderLT, SupportsDunderGT]
+
 StrToStr = Callable[[str], str]
 AnyCall = Callable[[Any], Any]
 
@@ -83,27 +103,20 @@ BytesTransform = Union[BytesTuple, NestedBytesTuple]
 BytesTransformer = Callable[[bytes], BytesTransform]
 
 # For the number transform factory
-NumType = Union[float, int]
-MaybeNumType = Optional[NumType]
-NumTuple = Tuple[StrOrBytes, NumType]
-NestedNumTuple = Tuple[NumTuple]
-StrNumTuple = Tuple[Tuple[str], NumTuple]
-NestedStrNumTuple = Tuple[StrNumTuple]
-MaybeNumTransform = Union[NumTuple, NestedNumTuple, StrNumTuple, NestedStrNumTuple]
-MaybeNumTransformer = Callable[[MaybeNumType], MaybeNumTransform]
+BasicTuple = Tuple[Any, ...]
+NestedAnyTuple = Tuple[BasicTuple, ...]
+AnyTuple = Union[BasicTuple, NestedAnyTuple]
+NumTransform = AnyTuple
+NumTransformer = Callable[[Any], NumTransform]
 
 # For the string component transform factory
 StrBytesNum = Union[str, bytes, float, int]
 StrTransformer = Callable[[str], StrBytesNum]
 
 # For the final data transform factory
-TwoBlankTuple = Tuple[Tuple[()], Tuple[()]]
-TupleOfAny = Tuple[Any, ...]
-TupleOfStrAnyPair = Tuple[Tuple[str], TupleOfAny]
-FinalTransform = Union[TwoBlankTuple, TupleOfAny, TupleOfStrAnyPair]
+FinalTransform = AnyTuple
 FinalTransformer = Callable[[Iterable[Any], str], FinalTransform]
 
-# For the path splitter
 PathArg = Union[str, PurePath]
 MatchFn = Callable[[str], Optional[Match]]
 
@@ -115,13 +128,8 @@ StrParser = Callable[[PathArg], FinalTransform]
 PathSplitter = Callable[[PathArg], Tuple[FinalTransform, ...]]
 
 # For the natsort key
-StrBytesPathNum = Union[str, bytes, float, int, PurePath]
-NatsortInType = Union[
-    Optional[StrBytesPathNum], Iterable[Union[Optional[StrBytesPathNum], Iterable[Any]]]
-]
-NatsortOutType = Tuple[
-    Union[StrBytesNum, Tuple[Union[StrBytesNum, Tuple[Any, ...]], ...]], ...
-]
+NatsortInType = Optional[Sortable]
+NatsortOutType = Tuple[Sortable, ...]
 KeyType = Callable[[Any], NatsortInType]
 MaybeKeyType = Optional[KeyType]
 
@@ -260,7 +268,7 @@ def natsort_key(
     key: None,
     string_func: Union[StrParser, PathSplitter],
     bytes_func: BytesTransformer,
-    num_func: MaybeNumTransformer,
+    num_func: NumTransformer,
 ) -> NatsortOutType:
     ...
 
@@ -271,7 +279,7 @@ def natsort_key(
     key: KeyType,
     string_func: Union[StrParser, PathSplitter],
     bytes_func: BytesTransformer,
-    num_func: MaybeNumTransformer,
+    num_func: NumTransformer,
 ) -> NatsortOutType:
     ...
 
@@ -281,7 +289,7 @@ def natsort_key(
     key: MaybeKeyType,
     string_func: Union[StrParser, PathSplitter],
     bytes_func: BytesTransformer,
-    num_func: MaybeNumTransformer,
+    num_func: NumTransformer,
 ) -> NatsortOutType:
     """
     Key to sort strings and numbers naturally.
@@ -348,7 +356,7 @@ def natsort_key(
 
         # If that failed, it must be a number.
         except TypeError:
-            return num_func(cast(NumType, val))
+            return num_func(val)
 
 
 def parse_bytes_factory(alg: NSType) -> BytesTransformer:
@@ -386,7 +394,7 @@ def parse_bytes_factory(alg: NSType) -> BytesTransformer:
 
 def parse_number_or_none_factory(
     alg: NSType, sep: StrOrBytes, pre_sep: str
-) -> MaybeNumTransformer:
+) -> NumTransformer:
     """
     Create a function that will format a number (or None) into a tuple.
 
@@ -418,8 +426,8 @@ def parse_number_or_none_factory(
     nan_replace = float("+inf") if alg & ns.NANLAST else float("-inf")
 
     def func(
-        val: MaybeNumType, _nan_replace: float = nan_replace, _sep: StrOrBytes = sep
-    ) -> NumTuple:
+        val: Any, _nan_replace: float = nan_replace, _sep: StrOrBytes = sep
+    ) -> BasicTuple:
         """Given a number, place it in a tuple with a leading null string."""
         return _sep, (_nan_replace if val != val or val is None else val)
 
@@ -729,7 +737,7 @@ def final_data_transform_factory(
     """
     if alg & ns.UNGROUPLETTERS and alg & ns.LOCALEALPHA:
         swap = alg & NS_DUMB and alg & ns.LOWERCASEFIRST
-        transform = cast(StrToStr, methodcaller("swapcase")) if swap else _no_op
+        transform = cast(StrToStr, methodcaller("swapcase") if swap else _no_op)
 
         def func(
             split_val: Iterable[NatsortInType],
@@ -835,11 +843,11 @@ def do_decoding(s: bytes, encoding: str) -> str:
 
 
 @overload
-def do_decoding(s: NatsortInType, encoding: str) -> NatsortInType:
+def do_decoding(s: Any, encoding: str) -> Any:
     ...
 
 
-def do_decoding(s: NatsortInType, encoding: str) -> NatsortInType:
+def do_decoding(s: Any, encoding: str) -> Any:
     """
     Helper to decode a *bytes* object, or return the object as-is.
 
