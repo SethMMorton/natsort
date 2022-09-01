@@ -1,6 +1,5 @@
-from __future__ import annotations
-
 from typing import overload
+
 @overload
 def Locale() -> str: ...
 @overload
