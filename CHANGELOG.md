@@ -1,6 +1,12 @@
 Unreleased
 ---
 
+### Changed
+- Auto-coerce `pathlib.Path` objects to `str` since it is the least astonishing
+  behavior ([@Gilthans](https://github.com/Gilthans), issues #152, #153)
+- Reduce strictness of type hints to avoid over-constraining client code
+  (issues #154, #155)
+
 [8.1.0] - 2022-01-30
 ---
 
