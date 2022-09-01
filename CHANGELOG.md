@@ -1,6 +1,9 @@
 Unreleased
 ---
 
+[8.2.0] - 2022-09-01
+---
+
 ### Changed
 - Auto-coerce `pathlib.Path` objects to `str` since it is the least astonishing
   behavior ([@Gilthans](https://github.com/Gilthans), issues #152, #153)
@@ -603,6 +606,7 @@ a pipeline by which to filter
  - Sorting algorithm to support floats (including exponentials) and basic version number support
 
 <!---Comparison links-->
+[8.2.0]: https://github.com/SethMMorton/natsort/compare/8.1.0...8.2.0
 [8.1.0]: https://github.com/SethMMorton/natsort/compare/8.0.2...8.1.0
 [8.0.2]: https://github.com/SethMMorton/natsort/compare/8.0.1...8.0.2
 [8.0.1]: https://github.com/SethMMorton/natsort/compare/8.0.0...8.0.1
