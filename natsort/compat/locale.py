@@ -40,19 +40,20 @@ try:  # noqa: C901
     def get_icu_locale() -> str:
         language_code, encoding = getlocale()
         if language_code is None or encoding is None:  # pragma: no cover
-            return cast(str, icu.Locale())
-        return cast(str, icu.Locale(f"{language_code}.{encoding}"))
+            return icu.Locale()
+        return icu.Locale(f"{language_code}.{encoding}")
 
     def get_strxfrm() -> TrxfmFunc:
-        return cast(TrxfmFunc, icu.Collator.createInstance(get_icu_locale()).getSortKey)
+        return icu.Collator.createInstance(get_icu_locale()).getSortKey
 
     def get_thousands_sep() -> str:
         sep = icu.DecimalFormatSymbols.kGroupingSeparatorSymbol
-        return cast(str, icu.DecimalFormatSymbols(get_icu_locale()).getSymbol(sep))
+        return icu.DecimalFormatSymbols(get_icu_locale()).getSymbol(sep)
 
     def get_decimal_point() -> str:
         sep = icu.DecimalFormatSymbols.kDecimalSeparatorSymbol
-        return cast(str, icu.DecimalFormatSymbols(get_icu_locale()).getSymbol(sep))
+        return icu.DecimalFormatSymbols(get_icu_locale()).getSymbol(sep)
+
 
 except ImportError:
     import locale
