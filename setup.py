@@ -7,7 +7,7 @@ setup(
     version="8.2.0",
     packages=find_packages(),
     entry_points={"console_scripts": ["natsort = natsort.__main__:main"]},
-    python_requires=">=3.6",
+    python_requires=">=3.7",
     extras_require={"fast": ["fastnumbers >= 2.0.0"], "icu": ["PyICU >= 1.0.0"]},
     package_data={"": ["py.typed"]},
     zip_safe=False,
