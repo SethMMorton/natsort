@@ -1,6 +1,10 @@
 Unreleased
 ---
 
+### Removed
+
+- Support for EOL Python 3.6
+
 [8.2.0] - 2022-09-01
 ---
 
