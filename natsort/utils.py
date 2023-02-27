@@ -417,18 +417,21 @@ def parse_number_or_none_factory(
     nan_replace = float("+inf") if alg & ns.NANLAST else float("-inf")
 
     def func(
-        val: Any, _nan_replace: float = nan_replace, _sep: StrOrBytes = sep
+        val: Any,
+        _nan_replace: float = nan_replace,
+        _sep: StrOrBytes = sep,
+        reverse: bool = nan_replace == float("+inf"),
     ) -> BasicTuple:
         """Given a number, place it in a tuple with a leading null string."""
         # Add a trailing string numbers equaling _nan_replace. This will make
         # the ordering between None NaN, and the NaN replacement value...
         # None comes first, then NaN, then the replacement value.
-        if val is None:
-            return _sep, _nan_replace, "1"
-        elif val != val:
+        if val != val:
+            return _sep, _nan_replace, "3" if reverse else "1"
+        elif val is None:
             return _sep, _nan_replace, "2"
         elif val == _nan_replace:
-            return _sep, _nan_replace, "3"
+            return _sep, _nan_replace, "1" if reverse else "3"
         else:
             return _sep, val
 

@@ -113,8 +113,8 @@ def test_natsorted_handles_mixed_types(
 @pytest.mark.parametrize(
     "alg, expected",
     [
-        (ns.DEFAULT, [None, float("nan"), float("-inf"), 5, "25", 1e40, float("inf")]),
-        (ns.NANLAST, [float("-inf"), 5, "25", 1e40, None, float("nan"), float("inf")]),
+        (ns.DEFAULT, [float("nan"), None, float("-inf"), 5, "25", 1e40, float("inf")]),
+        (ns.NANLAST, [float("-inf"), 5, "25", 1e40, float("inf"), None, float("nan")]),
     ],
 )
 def test_natsorted_consistent_ordering_with_nan_and_friends(

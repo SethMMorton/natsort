@@ -35,17 +35,17 @@ def test_parse_number_factory_makes_function_that_returns_tuple(
         (
             ns.DEFAULT,
             float("nan"),
-            ("", float("-inf"), "2"),
+            ("", float("-inf"), "1"),
         ),  # NaN transformed to -infinity
         (
             ns.NANLAST,
             float("nan"),
-            ("", float("+inf"), "2"),
+            ("", float("+inf"), "3"),
         ),  # NANLAST makes it +infinity
-        (ns.DEFAULT, None, ("", float("-inf"), "1")),  # None transformed to -infinity
-        (ns.NANLAST, None, ("", float("+inf"), "1")),  # NANLAST makes it +infinity
+        (ns.DEFAULT, None, ("", float("-inf"), "2")),  # None transformed to -infinity
+        (ns.NANLAST, None, ("", float("+inf"), "2")),  # NANLAST makes it +infinity
         (ns.DEFAULT, float("-inf"), ("", float("-inf"), "3")),
-        (ns.NANLAST, float("+inf"), ("", float("+inf"), "3")),
+        (ns.NANLAST, float("+inf"), ("", float("+inf"), "1")),
     ],
 )
 def test_parse_number_factory_treats_nan_and_none_special(
