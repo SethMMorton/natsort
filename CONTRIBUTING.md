@@ -7,11 +7,16 @@ robust algorithm. Contributions that change the public API of
 less usable after the contribution and is backwards-compatible (unless there is
 a good reason not to be).
 
+Located in the `dev/` folder is development collateral such as formatting and
+patching scripts. The only development collateral not in the `dev/`
+folder are those files that are expected to exist in the the top-level directory
+(such as `setup.py`, `tox.ini`, and CI configuration). All of these scripts
+can either be run with the python stdandard library, or have hooks in `tox`.
+
 I do not have strong opinions on how one should contribute, so
 I have copy/pasted some text verbatim from the
 [Contributor's Guide](http://docs.python-requests.org/en/latest/dev/contributing/) section of
-[Kenneth Reitz's](http://docs.python-requests.org/en/latest/dev/contributing/)
-excellent [requests](https://github.com/kennethreitz/requests) library in
+the [requests](https://github.com/kennethreitz/requests) library in
 lieu of coming up with my own.
 
 > ### Steps for Submitting Code
@@ -27,7 +32,7 @@ lieu of coming up with my own.
 > - Make your change.
 > - Run the entire test suite again, confirming that all tests pass including the
     ones you just added.
-> - Send a GitHub Pull Request to the main repository's master branch.
+> - Send a GitHub Pull Request to the main repository's main branch.
     GitHub Pull Requests are the expected method of code collaboration on this project.
 
 > ### Documentation Contributions
@@ -40,5 +45,3 @@ lieu of coming up with my own.
 > When contributing documentation, please do your best to follow the style of the
   documentation files. This means a soft-limit of 79 characters wide in your text
   files and a semi-formal, yet friendly and approachable, prose style.
-
-> When presenting Python code, use single-quoted strings ('hello' instead of "hello").
