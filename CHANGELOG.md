@@ -1,6 +1,14 @@
 Unreleased
 ---
 
+### Changed
+- Only convert to `str` if necessary in `os_sorted`
+  ([@Dobatymo](https://github.com/Dobatymo), issues
+  [#157](https://github.com/SethMMorton/natsort/issues/157) and
+  [#158](https://github.com/SethMMorton/natsort/issues/158))
+- Attempt to use new `fastnumbers` functionality if available
+- Move non-API documentation to the GitHub wiki
+
 ### Removed
 
 - Support for EOL Python 3.6
