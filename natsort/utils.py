@@ -329,7 +329,7 @@ def natsort_key(
     --------
     parse_string_factory
     parse_bytes_factory
-    parse_number_factory
+    parse_number_or_none_factory
 
     """
 
@@ -337,25 +337,18 @@ def natsort_key(
     if key is not None:
         val = key(val)
 
-    # Assume the input are strings, which is the most common case
-    try:
-        return string_func(cast(str, val))
-    except (TypeError, AttributeError):
-        # If bytes type, use the bytes_func
-        if type(val) in (bytes,):
-            return bytes_func(cast(bytes, val))
-
-        # Otherwise, assume it is an iterable that must be parsed recursively.
-        # Do not apply the key recursively.
-        try:
-            return tuple(
-                natsort_key(x, None, string_func, bytes_func, num_func)
-                for x in cast(Iterable[Any], val)
-            )
-
-        # If that failed, it must be a number.
-        except TypeError:
-            return num_func(val)
+    if isinstance(val, (str, PurePath)):
+        return string_func(val)
+    elif isinstance(val, bytes):
+        return bytes_func(val)
+    elif isinstance(val, Iterable):
+        # Must be parsed recursively, but do not apply the key recursively.
+        return tuple(
+            natsort_key(x, None, string_func, bytes_func, num_func)
+            for x in val
+        )
+    else:  # Anything else goes here
+        return num_func(val)
 
 
 def parse_bytes_factory(alg: NSType) -> BytesTransformer:
@@ -863,9 +856,9 @@ def do_decoding(s: Any, encoding: str) -> Any:
         *s* if *s* was not *bytes*.
 
     """
-    try:
-        return cast(bytes, s).decode(encoding)
-    except (AttributeError, TypeError):
+    if isinstance(s, bytes):
+        return s.decode(encoding)
+    else:
         return s
 
 
