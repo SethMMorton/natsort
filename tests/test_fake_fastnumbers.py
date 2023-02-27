@@ -4,7 +4,7 @@ Test the fake fastnumbers module.
 """
 
 import unicodedata
-from math import isnan
+from math import isinf
 from typing import Union, cast
 
 from hypothesis import given
@@ -62,10 +62,10 @@ def test_fast_float_returns_nan_alternate_if_nan_option_is_given() -> None:
 def test_fast_float_converts_float_string_to_float_example() -> None:
     assert fast_float("45.8") == 45.8
     assert fast_float("-45") == -45.0
-    assert fast_float("45.8e-2", key=len) == 45.8e-2
-    assert isnan(cast(float, fast_float("nan")))
-    assert isnan(cast(float, fast_float("+nan")))
-    assert isnan(cast(float, fast_float("-NaN")))
+    assert fast_float("45.8e-2", key=lambda x: x.upper()) == 45.8e-2
+    assert isinf(cast(float, fast_float("nan")))
+    assert isinf(cast(float, fast_float("+nan")))
+    assert isinf(cast(float, fast_float("-NaN")))
     assert fast_float("۱۲.۱۲") == 12.12
     assert fast_float("-۱۲.۱۲") == -12.12
 
@@ -85,12 +85,12 @@ def test_fast_float_leaves_string_as_is(x: str) -> None:
 
 
 def test_fast_float_with_key_applies_to_string_example() -> None:
-    assert fast_float("invalid", key=len) == len("invalid")
+    assert fast_float("invalid", key=lambda x: x.upper()) == "INVALID"
 
 
 @given(text().filter(not_a_float).filter(bool))
 def test_fast_float_with_key_applies_to_string(x: str) -> None:
-    assert fast_float(x, key=len) == len(x)
+    assert fast_float(x, key=lambda x: x.upper()) == x.upper()
 
 
 def test_fast_int_leaves_float_string_as_is_example() -> None:
@@ -126,9 +126,9 @@ def test_fast_int_leaves_string_as_is(x: str) -> None:
 
 
 def test_fast_int_with_key_applies_to_string_example() -> None:
-    assert fast_int("invalid", key=len) == len("invalid")
+    assert fast_int("invalid", key=lambda x: x.upper()) == "INVALID"
 
 
 @given(text().filter(not_an_int).filter(bool))
 def test_fast_int_with_key_applies_to_string(x: str) -> None:
-    assert fast_int(x, key=len) == len(x)
+    assert fast_int(x, key=lambda x: x.upper()) == x.upper()

@@ -7,7 +7,7 @@ from typing import Any, Callable, Iterable, List, Tuple, Union
 import pytest
 from hypothesis import given
 from hypothesis.strategies import floats, integers, lists, text
-from natsort.compat.fastnumbers import fast_float
+from natsort.compat.fastnumbers import try_float
 from natsort.ns_enum import NSType, NS_DUMB, ns
 from natsort.utils import (
     FinalTransform,
@@ -46,7 +46,7 @@ def parse_string_func_factory(alg: NSType) -> StrParser:
         sep,
         NumRegex.int_nosign().split,
         input_transform,
-        fast_float,
+        lambda x: try_float(x, map=True),
         final_transform,
     )
 

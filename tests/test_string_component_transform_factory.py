@@ -7,7 +7,7 @@ from typing import Any, Callable, FrozenSet, Union
 import pytest
 from hypothesis import example, given
 from hypothesis.strategies import floats, integers, text
-from natsort.compat.fastnumbers import fast_float, fast_int
+from natsort.compat.fastnumbers import try_float, try_int
 from natsort.compat.locale import get_strxfrm
 from natsort.ns_enum import NSType, NS_DUMB, ns
 from natsort.utils import groupletters, string_component_transform_factory
@@ -35,25 +35,25 @@ def no_null(x: str) -> bool:
 @pytest.mark.parametrize(
     "alg, example_func",
     [
-        (ns.INT, fast_int),
-        (ns.DEFAULT, fast_int),
-        (ns.FLOAT, partial(fast_float, nan=float("-inf"))),
-        (ns.FLOAT | ns.NANLAST, partial(fast_float, nan=float("+inf"))),
-        (ns.GROUPLETTERS, partial(fast_int, key=groupletters)),
-        (ns.LOCALE, partial(fast_int, key=lambda x: get_strxfrm()(x))),
+        (ns.INT, partial(try_int, map=True)),
+        (ns.DEFAULT, partial(try_int, map=True)),
+        (ns.FLOAT, partial(try_float, map=True, nan=float("-inf"))),
+        (ns.FLOAT | ns.NANLAST, partial(try_float, map=True, nan=float("+inf"))),
+        (ns.GROUPLETTERS, partial(try_int, map=True, on_fail=groupletters)),
+        (ns.LOCALE, partial(try_int, map=True, on_fail=lambda x: get_strxfrm()(x))),
         (
             ns.GROUPLETTERS | ns.LOCALE,
-            partial(fast_int, key=lambda x: get_strxfrm()(groupletters(x))),
+            partial(try_int, map=True, on_fail=lambda x: get_strxfrm()(groupletters(x))),
         ),
         (
             NS_DUMB | ns.LOCALE,
-            partial(fast_int, key=lambda x: get_strxfrm()(groupletters(x))),
+            partial(try_int, map=True, on_fail=lambda x: get_strxfrm()(groupletters(x))),
         ),
         (
             ns.GROUPLETTERS | ns.LOCALE | ns.FLOAT | ns.NANLAST,
             partial(
-                fast_float,
-                key=lambda x: get_strxfrm()(groupletters(x)),
+                try_float, map=True,
+                on_fail=lambda x: get_strxfrm()(groupletters(x)),
                 nan=float("+inf"),
             ),
         ),
@@ -70,8 +70,9 @@ def test_string_component_transform_factory(
     x: Union[str, float, int], alg: NSType, example_func: Callable[[str], Any]
 ) -> None:
     string_component_transform_func = string_component_transform_factory(alg)
+    x = str(x)
     try:
-        assert string_component_transform_func(str(x)) == example_func(str(x))
+        assert list(string_component_transform_func(x)) == list(example_func(x))
     except ValueError as e:  # handle broken locale lib on BSD.
         if "is not in range" not in str(e):
             raise

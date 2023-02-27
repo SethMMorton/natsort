@@ -4,7 +4,7 @@ This module is intended to replicate some of the functionality
 from the fastnumbers module in the event that module is not installed.
 """
 import unicodedata
-from typing import Callable, FrozenSet, Optional, Union
+from typing import Callable, FrozenSet, Union
 
 from natsort.unicode_numbers import decimal_chars
 
@@ -35,11 +35,10 @@ StrOrFloat = Union[str, float]
 StrOrInt = Union[str, int]
 
 
-# noinspection PyIncorrectDocstring
 def fast_float(
     x: str,
-    key: Callable[[str], StrOrFloat] = lambda x: x,
-    nan: Optional[StrOrFloat] = None,
+    key: Callable[[str], str] = lambda x: x,
+    nan: float = float("inf"),
     _uni: Callable[[str, StrOrFloat], StrOrFloat] = unicodedata.numeric,
     _nan_inf: FrozenSet[str] = NAN_INF,
     _first_char: FrozenSet[str] = POTENTIAL_FIRST_CHAR,
@@ -67,7 +66,7 @@ def fast_float(
     if x[0] in _first_char or x.lstrip()[:3] in _nan_inf:
         try:
             ret = float(x)
-            return nan if nan is not None and ret != ret else ret
+            return nan if ret != ret else ret
         except ValueError:
             try:
                 return _uni(x, key(x)) if len(x) == 1 else key(x)
@@ -80,10 +79,9 @@ def fast_float(
             return key(x)
 
 
-# noinspection PyIncorrectDocstring
 def fast_int(
     x: str,
-    key: Callable[[str], StrOrInt] = lambda x: x,
+    key: Callable[[str], str] = lambda x: x,
     _uni: Callable[[str, StrOrInt], StrOrInt] = unicodedata.digit,
     _first_char: FrozenSet[str] = POTENTIAL_FIRST_CHAR,
 ) -> StrOrInt:

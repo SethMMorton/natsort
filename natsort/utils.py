@@ -61,7 +61,7 @@ from typing import (
 )
 from unicodedata import normalize
 
-from natsort.compat.fastnumbers import fast_float, fast_int
+from natsort.compat.fastnumbers import try_float, try_int
 from natsort.compat.locale import (
     StrOrBytes,
     get_decimal_point,
@@ -111,7 +111,7 @@ NumTransformer = Callable[[Any], NumTransform]
 
 # For the string component transform factory
 StrBytesNum = Union[str, bytes, float, int]
-StrTransformer = Callable[[str], StrBytesNum]
+StrTransformer = Callable[[Iterable[str]], Iterator[StrBytesNum]]
 
 # For the final data transform factory
 FinalTransform = AnyTuple
@@ -505,7 +505,7 @@ def parse_string_factory(
         c = compose_input(b)  # Decompose unicode if using LOCALE
         d = splitter(c)  # Split string into components.
         e = filter(None, d)  # Remove empty strings.
-        f = map(component_transform, e)  # Apply transform on components.
+        f = component_transform(e)  # Apply transform on components.
         g = sep_inserter(f, sep)  # Insert '' between numbers.
         return final_transform(g, original)  # Apply the final transform.
 
@@ -688,14 +688,14 @@ def string_component_transform_factory(alg: NSType) -> StrTransformer:
         func_chain.append(get_strxfrm())
 
     # Return the correct chained functions.
-    kwargs: Dict[str, Union[float, Callable[[str], StrOrBytes]]]
-    kwargs = {"key": chain_functions(func_chain)} if func_chain else {}
+    kwargs: Dict[str, Union[float, Callable[[str], StrOrBytes], bool]]
+    kwargs = {"on_fail": chain_functions(func_chain)} if func_chain else {}
+    kwargs["map"] = True
     if alg & ns.FLOAT:
-        # noinspection PyTypeChecker
         kwargs["nan"] = nan_val
-        return cast(Callable[[str], StrOrBytes], partial(fast_float, **kwargs))
+        return cast(StrTransformer, partial(try_float, **kwargs))
     else:
-        return cast(Callable[[str], StrOrBytes], partial(fast_int, **kwargs))
+        return cast(StrTransformer, partial(try_int, **kwargs))
 
 
 def final_data_transform_factory(
