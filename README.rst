@@ -368,12 +368,12 @@ fastnumbers
 +++++++++++
 
 The most efficient sorting can occur if you install the
-`fastnumbers>`_ package
+`fastnumbers`_ package
 (version >=2.0.0); it helps with the string to number conversions.
 `natsort`_ will still run (efficiently) without the package, but if you need
 to squeeze out that extra juice it is recommended you include this as a
 dependency. `natsort`_ will not require (or check) that
-`fastnumbers>`_ is installed at installation.
+`fastnumbers`_ is installed at installation.
 
 PyICU
 +++++
@@ -392,7 +392,7 @@ Use ``pip``!
 
 If you want to install the `Optional Dependencies`_, you can use the
 `"extras" notation`_ at installation time to install those dependencies as
-well - use ``fast`` for `fastnumbers>`_ and ``icu`` for `PyICU`_.
+well - use ``fast`` for `fastnumbers`_ and ``icu`` for `PyICU`_.
 
 .. code-block:: console
 
