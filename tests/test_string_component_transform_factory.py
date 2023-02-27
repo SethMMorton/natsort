@@ -43,16 +43,21 @@ def no_null(x: str) -> bool:
         (ns.LOCALE, partial(try_int, map=True, on_fail=lambda x: get_strxfrm()(x))),
         (
             ns.GROUPLETTERS | ns.LOCALE,
-            partial(try_int, map=True, on_fail=lambda x: get_strxfrm()(groupletters(x))),
+            partial(
+                try_int, map=True, on_fail=lambda x: get_strxfrm()(groupletters(x))
+            ),
         ),
         (
             NS_DUMB | ns.LOCALE,
-            partial(try_int, map=True, on_fail=lambda x: get_strxfrm()(groupletters(x))),
+            partial(
+                try_int, map=True, on_fail=lambda x: get_strxfrm()(groupletters(x))
+            ),
         ),
         (
             ns.GROUPLETTERS | ns.LOCALE | ns.FLOAT | ns.NANLAST,
             partial(
-                try_float, map=True,
+                try_float,
+                map=True,
                 on_fail=lambda x: get_strxfrm()(groupletters(x)),
                 nan=float("+inf"),
             ),

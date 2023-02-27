@@ -4,7 +4,7 @@ Interface for natsort to access fastnumbers functions without
 having to worry if it is actually installed.
 """
 import re
-from typing import Callable, Iterable, Iterator, Literal, Tuple, Union
+from typing import Callable, Iterable, Iterator, Tuple, Union
 
 StrOrFloat = Union[str, float]
 StrOrInt = Union[str, int]
@@ -53,9 +53,9 @@ except ImportError:
 # then there is nothing to do.
 if "try_float" not in globals():
 
-    def try_float(  # noqa: F811, type: ignore[no-redef]
+    def try_float(  # type: ignore[no-redef]  # noqa: F811
         x: Iterable[str],
-        map: Literal[True],
+        map: bool,
         nan: float = float("inf"),
         on_fail: Callable[[str], str] = lambda x: x,
     ) -> Iterator[StrOrFloat]:
@@ -65,9 +65,9 @@ if "try_float" not in globals():
 
 if "try_int" not in globals():
 
-    def try_int(  # noqa: F811, type: ignore[no-redef]
+    def try_int(  # type: ignore[no-redef]  # noqa: F811
         x: Iterable[str],
-        map: Literal[True],
+        map: bool,
         on_fail: Callable[[str], str] = lambda x: x,
     ) -> Iterator[StrOrInt]:
         assert map is True
