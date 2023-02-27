@@ -47,6 +47,13 @@ def test_os_sorted_key() -> None:
     assert result == expected
 
 
+def test_os_sorted_can_presort() -> None:
+    given = ["a1", "a01"]
+    expected = ["a01", "a1"]
+    result = natsort.os_sorted(given, presort=True)
+    assert result == expected
+
+
 # The following is a master list of things that might give trouble
 # when sorting like the file explorer.
 given_characters = [

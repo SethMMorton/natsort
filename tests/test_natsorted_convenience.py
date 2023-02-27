@@ -88,6 +88,13 @@ def test_index_natsorted_applies_key_function_before_sorting() -> None:
     assert index_natsorted(given, key=itemgetter(1)) == expected
 
 
+def test_index_natsorted_can_presort() -> None:
+    expected = [2, 0, 3, 1]
+    given = ["a1", "a1.4500", "a01", "a1.45"]
+    result = index_natsorted(given, alg=ns.FLOAT | ns.PRESORT)
+    assert result == expected
+
+
 def test_index_realsorted_is_identical_to_index_natsorted_with_real_alg(
     float_list: List[str],
 ) -> None:
