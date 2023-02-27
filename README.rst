@@ -394,7 +394,7 @@ Use ``pip``!
     $ pip install natsort
 
 If you want to install the `Optional Dependencies`_, you can use the
-`"extras" notation`_ at installation time to install those dependencies as
+`extras notation`_ at installation time to install those dependencies as
 well - use ``fast`` for `fastnumbers`_ and ``icu`` for `PyICU`_.
 
 .. code-block:: console
@@ -493,7 +493,7 @@ Please visit the changelog `on GitHub`_ or `in the documentation`_.
 .. _tuple: https://docs.python.org/3/library/stdtypes.html#tuple
 .. _TypeError: https://docs.python.org/3/library/exceptions.html#TypeError
 .. _DeprecationWarnings: https://docs.python.org/3/library/exceptions.html#DeprecationWarning
-.. _"extras" notation": https://packaging.python.org/tutorials/installing-packages/#installing-setuptools-extras
+.. _extras notation": https://packaging.python.org/tutorials/installing-packages/#installing-setuptools-extras
 .. _PyICU: https://pypi.org/project/PyICU
 .. _tox: https://tox.readthedocs.io/en/latest/
 .. _Examples and Recipes: https://github.com/SethMMorton/natsort/wiki/Examples-and-Recipes
