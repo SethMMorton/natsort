@@ -323,7 +323,7 @@ How *does* `natsort`_ work?
 
     `natsort`_ provides a `key function`_ that can be passed to `list.sort()`_
     or `sorted()`_ in order to modify the default sorting behavior. This key
-    is generated on-demand with the key generator `natsort.natsort_keygen()`_.
+    is generated on-demand with the key generator `natsort_keygen()`_.
     `natsorted()_` is essentially a wrapper for the following code:
 
     .. code-block:: pycon
