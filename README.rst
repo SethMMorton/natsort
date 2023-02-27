@@ -492,16 +492,16 @@ Please visit the changelog `on GitHub`_ or `in the documentation`_.
 .. _"extras" notation" https://packaging.python.org/tutorials/installing-packages/#installing-setuptools-extras
 .. _PyICU: https://pypi.org/project/PyICU
 .. _tox: https://tox.readthedocs.io/en/latest/
-.. _Examples and Recipes: https://natsort.readthedocs.io/en/stable/examples.html
-.. _How Does Natsort Work?: https://natsort.readthedocs.io/en/stable/howitworks.html
+.. _Examples and Recipes: https://github.com/SethMMorton/natsort/wiki/Examples-and-Recipes
+.. _How Does Natsort Work?: https://github.com/SethMMorton/natsort/wiki/How-Does-Natsort-Work%3F
 .. _API: https://natsort.readthedocs.io/en/stable/api.html
 .. _on GitHub: https://github.com/SethMMorton/natsort/blob/master/CHANGELOG.md
 .. _in the documentation: https://natsort.readthedocs.io/en/stable/changelog.html
 .. _file an issue: https://github.com/SethMMorton/natsort/issues/new
 .. _look at this issue describing how to debug: https://github.com/SethMMorton/natsort/issues/13#issuecomment-50422375
-.. _controlling the case-sensitivity: https://natsort.readthedocs.io/en/stable/examples.html#case-sort
-.. _sorting file paths correctly: https://natsort.readthedocs.io/en/stable/examples.html#path-sort
-.. _allow custom sorting keys: https://natsort.readthedocs.io/en/stable/examples.html#custom-sort
-.. _accounting for units: https://natsort.readthedocs.io/en/stable/examples.html#accounting-for-units-when-sorting
-.. _these version sorting examples: https://natsort.readthedocs.io/en/stable/examples.html#rc-sorting
-.. _locale issues: https://natsort.readthedocs.io/en/stable/locale_issues.html
+.. _controlling the case-sensitivity: https://github.com/SethMMorton/natsort/wiki/Examples-and-Recipes#controlling-case-when-sorting
+.. _sorting file paths correctly: https://github.com/SethMMorton/natsort/wiki/Examples-and-Recipes#sort-os-generated-paths
+.. _allow custom sorting keys: https://github.com/SethMMorton/natsort/wiki/Examples-and-Recipes#using-a-custom-sorting-key
+.. _accounting for units: https://github.com/SethMMorton/natsort/wiki/Examples-and-Recipes#accounting-for-units-when-sorting
+.. _these version sorting examples: https://github.com/SethMMorton/natsort/wiki/Examples-and-Recipes#sorting-more-expressive-versioning-schemes
+.. _locale issues: https://github.com/SethMMorton/natsort/wiki/Possible-Issues-with-natsort.humansorted-or-ns.LOCALE
