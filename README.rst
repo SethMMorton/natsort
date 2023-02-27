@@ -8,12 +8,12 @@ natsort
     :target: https://pypi.org/project/natsort/
 
 .. image:: https://img.shields.io/pypi/l/natsort.svg
-    :target: https://github.com/SethMMorton/natsort/blob/master/LICENSE
+    :target: https://github.com/SethMMorton/natsort/blob/main/LICENSE
 
 .. image:: https://github.com/SethMMorton/natsort/workflows/Tests/badge.svg
     :target: https://github.com/SethMMorton/natsort/actions
 
-.. image:: https://codecov.io/gh/SethMMorton/natsort/branch/master/graph/badge.svg
+.. image:: https://codecov.io/gh/SethMMorton/natsort/branch/main/graph/badge.svg
     :target: https://codecov.io/gh/SethMMorton/natsort
 
 Simple yet flexible natural sorting in Python.
@@ -496,7 +496,7 @@ Please visit the changelog `on GitHub`_ or `in the documentation`_.
 .. _Examples and Recipes: https://github.com/SethMMorton/natsort/wiki/Examples-and-Recipes
 .. _How Does Natsort Work?: https://github.com/SethMMorton/natsort/wiki/How-Does-Natsort-Work%3F
 .. _API: https://natsort.readthedocs.io/en/stable/api.html
-.. _on GitHub: https://github.com/SethMMorton/natsort/blob/master/CHANGELOG.md
+.. _on GitHub: https://github.com/SethMMorton/natsort/blob/main/CHANGELOG.md
 .. _in the documentation: https://natsort.readthedocs.io/en/stable/changelog.html
 .. _file an issue: https://github.com/SethMMorton/natsort/issues/new
 .. _look at this issue describing how to debug: https://github.com/SethMMorton/natsort/issues/13#issuecomment-50422375
