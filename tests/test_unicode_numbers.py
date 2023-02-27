@@ -34,7 +34,9 @@ def test_decimal_chars_contains_only_valid_unicode_decimal_characters() -> None:
         assert unicodedata.decimal(a, None) is not None
 
 
-def test_numeric_chars_contains_all_valid_unicode_numeric_and_digit_characters() -> None:
+def test_numeric_chars_contains_all_valid_unicode_numeric_and_digit_characters() -> (
+    None
+):
     set_numeric_chars = set(numeric_chars)
     set_digit_chars = set(digit_chars)
     set_decimal_chars = set(decimal_chars)

@@ -677,7 +677,6 @@ def _split_apply(
 
 # Choose the implementation based on the host OS
 if platform.system() == "Windows":
-
     from ctypes import wintypes, windll  # type: ignore
     from functools import cmp_to_key
 
@@ -695,7 +694,6 @@ if platform.system() == "Windows":
         )
 
 else:
-
     # For UNIX-based platforms, ICU performs MUCH better than locale
     # at replicating the file explorer's sort order. We will use
     # ICU's ability to do basic natural sorting as it also better

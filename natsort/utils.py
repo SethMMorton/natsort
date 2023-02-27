@@ -341,7 +341,6 @@ def natsort_key(
     try:
         return string_func(cast(str, val))
     except (TypeError, AttributeError):
-
         # If bytes type, use the bytes_func
         if type(val) in (bytes,):
             return bytes_func(cast(bytes, val))
