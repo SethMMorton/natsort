@@ -1,6 +1,9 @@
 Unreleased
 ---
 
+[8.3.0] - 2023-02-27
+---
+
 ### Added
 - The `PRESORT` option to the `ns` enum to attain consistent
   sort order in certain corner cases (Issue
@@ -626,6 +629,7 @@ a pipeline by which to filter
  - Sorting algorithm to support floats (including exponentials) and basic version number support
 
 <!---Comparison links-->
+[8.3.0]: https://github.com/SethMMorton/natsort/compare/8.2.0...8.3.0
 [8.2.0]: https://github.com/SethMMorton/natsort/compare/8.1.0...8.2.0
 [8.1.0]: https://github.com/SethMMorton/natsort/compare/8.0.2...8.1.0
 [8.0.2]: https://github.com/SethMMorton/natsort/compare/8.0.1...8.0.2
