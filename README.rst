@@ -73,8 +73,8 @@ Using `natsorted()`_ is simple:
 
 `natsorted()`_ identifies numbers anywhere in a string and sorts them
 naturally. Below are some other things you can do with `natsort`_
-(also see the `Examples and Recipes`_for a quick start guide, or the
-` API`_ for complete details).
+(also see the `Examples and Recipes`_ for a quick start guide, or the
+`API`_ for complete details).
 
 **Note**: `natsorted()`_ is designed to be a drop-in replacement for the
 built-in `sorted()`_ function. Like `sorted()`_, `natsorted()`_
@@ -324,7 +324,7 @@ How *does* `natsort`_ work?
     `natsort`_ provides a `key function`_ that can be passed to `list.sort()`_
     or `sorted()`_ in order to modify the default sorting behavior. This key
     is generated on-demand with the key generator `natsort_keygen()`_.
-    `natsorted()_` is essentially a wrapper for the following code:
+    `natsorted()`_ is essentially a wrapper for the following code:
 
     .. code-block:: pycon
 
@@ -493,7 +493,7 @@ Please visit the changelog `on GitHub`_ or `in the documentation`_.
 .. _tuple: https://docs.python.org/3/library/stdtypes.html#tuple
 .. _TypeError: https://docs.python.org/3/library/exceptions.html#TypeError
 .. _DeprecationWarnings: https://docs.python.org/3/library/exceptions.html#DeprecationWarning
-.. _"extras" notation" https://packaging.python.org/tutorials/installing-packages/#installing-setuptools-extras
+.. _"extras" notation": https://packaging.python.org/tutorials/installing-packages/#installing-setuptools-extras
 .. _PyICU: https://pypi.org/project/PyICU
 .. _tox: https://tox.readthedocs.io/en/latest/
 .. _Examples and Recipes: https://github.com/SethMMorton/natsort/wiki/Examples-and-Recipes
