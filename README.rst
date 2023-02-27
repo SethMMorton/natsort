@@ -353,7 +353,8 @@ Shell script
 ------------
 
 `natsort`_ comes with a shell script called `natsort`_, or can also be called
-from the command line with ``python -m natsort``.
+from the command line with ``python -m natsort``.  Check out the
+`shell script wiki documentation`_ for more details.
 
 Requirements
 ------------
@@ -505,3 +506,4 @@ Please visit the changelog `on GitHub`_ or `in the documentation`_.
 .. _accounting for units: https://github.com/SethMMorton/natsort/wiki/Examples-and-Recipes#accounting-for-units-when-sorting
 .. _these version sorting examples: https://github.com/SethMMorton/natsort/wiki/Examples-and-Recipes#sorting-more-expressive-versioning-schemes
 .. _locale issues: https://github.com/SethMMorton/natsort/wiki/Possible-Issues-with-natsort.humansorted-or-ns.LOCALE
+.. _shell script wiki documentation: https://github.com/SethMMorton/natsort/wiki/Shell-Script
