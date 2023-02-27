@@ -9,6 +9,7 @@ The majority of the "work" is defined in utils.py.
 import platform
 from functools import partial
 from operator import itemgetter
+from pathlib import PurePath
 from typing import (
     Any,
     Callable,
@@ -669,7 +670,9 @@ def _split_apply(
 ) -> Iterator[str]:
     if key is not None:
         v = key(v)
-    return utils.path_splitter(str(v))
+    if not isinstance(v, (str, PurePath)):
+        v = str(v)
+    return utils.path_splitter(v)
 
 
 # Choose the implementation based on the host OS
