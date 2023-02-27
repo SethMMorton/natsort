@@ -20,7 +20,7 @@ from natsort.utils import NumTransformer, parse_number_or_none_factory
         (ns.PATH | ns.UNGROUPLETTERS | ns.LOCALE, lambda x: ((("xx",), ("", x)),)),
     ],
 )
-@given(x=floats(allow_nan=False) | integers())
+@given(x=floats(allow_nan=False, allow_infinity=False) | integers())
 def test_parse_number_factory_makes_function_that_returns_tuple(
     x: Union[float, int], alg: NSType, example_func: NumTransformer
 ) -> None:
@@ -32,10 +32,20 @@ def test_parse_number_factory_makes_function_that_returns_tuple(
     "alg, x, result",
     [
         (ns.DEFAULT, 57, ("", 57)),
-        (ns.DEFAULT, float("nan"), ("", float("-inf"))),  # NaN transformed to -infinity
-        (ns.NANLAST, float("nan"), ("", float("+inf"))),  # NANLAST makes it +infinity
-        (ns.DEFAULT, None, ("", float("-inf"))),  # None transformed to -infinity
-        (ns.NANLAST, None, ("", float("+inf"))),  # NANLAST makes it +infinity
+        (
+            ns.DEFAULT,
+            float("nan"),
+            ("", float("-inf"), "2"),
+        ),  # NaN transformed to -infinity
+        (
+            ns.NANLAST,
+            float("nan"),
+            ("", float("+inf"), "2"),
+        ),  # NANLAST makes it +infinity
+        (ns.DEFAULT, None, ("", float("-inf"), "1")),  # None transformed to -infinity
+        (ns.NANLAST, None, ("", float("+inf"), "1")),  # NANLAST makes it +infinity
+        (ns.DEFAULT, float("-inf"), ("", float("-inf"), "3")),
+        (ns.NANLAST, float("+inf"), ("", float("+inf"), "3")),
     ],
 )
 def test_parse_number_factory_treats_nan_and_none_special(

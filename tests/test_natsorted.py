@@ -4,6 +4,7 @@ Here are a collection of examples of how this module can be used.
 See the README or the natsort homepage for more details.
 """
 
+import math
 from operator import itemgetter
 from pathlib import PurePosixPath
 from typing import List, Tuple, Union
@@ -110,19 +111,29 @@ def test_natsorted_handles_mixed_types(
 
 
 @pytest.mark.parametrize(
-    "alg, expected, slc",
+    "alg, expected",
     [
-        (ns.DEFAULT, [float("nan"), 5, "25", 1e40], slice(1, None)),
-        (ns.NANLAST, [5, "25", 1e40, float("nan")], slice(None, 3)),
+        (ns.DEFAULT, [None, float("nan"), float("-inf"), 5, "25", 1e40, float("inf")]),
+        (ns.NANLAST, [float("-inf"), 5, "25", 1e40, None, float("nan"), float("inf")]),
     ],
 )
-def test_natsorted_handles_nan(
-    alg: NSType, expected: List[Union[str, float, int]], slc: slice
+def test_natsorted_consistent_ordering_with_nan_and_friends(
+    alg: NSType, expected: List[Union[str, float, None, int]]
 ) -> None:
-    given: List[Union[str, float, int]] = ["25", 5, float("nan"), 1e40]
-    # The slice is because NaN != NaN
-    # noinspection PyUnresolvedReferences
-    assert natsorted(given, alg=alg)[slc] == expected[slc]
+    sentinel = math.pi
+    expected = [sentinel if x != x else x for x in expected]
+    given: List[Union[str, float, None, int]] = [
+        float("inf"),
+        float("-inf"),
+        "25",
+        5,
+        float("nan"),
+        1e40,
+        None,
+    ]
+    result = natsorted(given, alg=alg)
+    result = [sentinel if x != x else x for x in result]
+    assert result == expected
 
 
 def test_natsorted_with_mixed_bytes_and_str_input_raises_type_error() -> None:
