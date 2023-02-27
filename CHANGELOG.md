@@ -2,11 +2,12 @@ Unreleased
 ---
 
 ### Added
-- The `presort` option to `natsorted` and friends to attain consistent
+- The `PRESORT` option to the `ns` enum to attain consistent
   sort order in certain corner cases (Issue
   [#149](https://github.com/SethMMorton/natsort/issues/149))
 - Logic to ensure `None` and NaN are sorted in a consistent order
   (Issue [#149](https://github.com/SethMMorton/natsort/issues/149))
+- Explict Python 3.11 support
 
 ### Changed
 - Only convert to `str` if necessary in `os_sorted`
