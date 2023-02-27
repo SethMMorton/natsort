@@ -288,6 +288,8 @@ def natsorted(
         ['num2', 'num3', 'num5']
 
     """
+    if alg & ns.PRESORT:
+        seq = sorted(seq, reverse=reverse, key=str)
     return sorted(seq, reverse=reverse, key=natsort_keygen(key, alg))
 
 
@@ -477,6 +479,8 @@ def index_natsorted(
 
     # Pair the index and sequence together, then sort by element
     index_seq_pair = [(x, y) for x, y in enumerate(seq)]
+    if alg & ns.PRESORT:
+        index_seq_pair.sort(reverse=reverse, key=lambda x: str(itemgetter(1)(x)))
     index_seq_pair.sort(reverse=reverse, key=natsort_keygen(newkey, alg))
     return [x for x, _ in index_seq_pair]
 
@@ -768,6 +772,7 @@ def os_sorted(
     seq: Iterable[T],
     key: Optional[Callable[[T], NatsortInType]] = None,
     reverse: bool = False,
+    presort: bool = False,
 ) -> List[T]:
     """
     Sort elements in the same order as your operating system's file browser
@@ -810,6 +815,10 @@ def os_sorted(
         Return the list in reversed sorted order. The default is
         `False`.
 
+    presort : {{True, False}}, optional
+        Equivalent to adding ``ns.PRESORT``, see :class:`ns` for
+        documentation. The default is `False`.
+
     Returns
     -------
     out : list
@@ -825,4 +834,6 @@ def os_sorted(
     This will implicitly coerce all inputs to str before collating.
 
     """
-    return sorted(seq, key=os_sort_keygen(key), reverse=reverse)
+    if presort:
+        seq = sorted(seq, reverse=reverse, key=str)
+    return sorted(seq, reverse=reverse, key=os_sort_keygen(key))

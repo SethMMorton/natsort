@@ -18,6 +18,7 @@ from natsort import ns
         ("NANLAST", 0x0400),
         ("COMPATIBILITYNORMALIZE", 0x0800),
         ("NUMAFTER", 0x1000),
+        ("PRESORT", 0x2000),
         ("DEFAULT", 0x0000),
         ("INT", 0x0000),
         ("UNSIGNED", 0x0000),
@@ -42,6 +43,7 @@ from natsort import ns
         ("NL", 0x0400),
         ("CN", 0x0800),
         ("NA", 0x1000),
+        ("PS", 0x2000),
     ],
 )
 def test_ns_enum(given: str, expected: int) -> None:

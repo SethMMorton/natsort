@@ -114,6 +114,14 @@ class ns(enum.IntEnum):  # noqa: N801
         treat these as +Infinity and place them after all the other numbers.
         By default, an NaN be treated as -Infinity and be placed first.
         Note that this ``None`` is treated like NaN internally.
+    PRESORT, PS
+        Sort the input as strings before sorting with the `nasort`
+        algorithm. This can help eliminate inconsistent sorting in cases
+        where two different strings represent the same number. For example,
+        "a1" and "a01" both are internally represented as ("a", "1), so
+        without `PRESORT` the order of these two values would depend on
+        the order they appeared in the input (because Python's `sorted`
+        is a stable sorting algorithm).
 
     Notes
     -----
@@ -143,6 +151,7 @@ class ns(enum.IntEnum):  # noqa: N801
     NANLAST = NL = 1 << next(_counter)
     COMPATIBILITYNORMALIZE = CN = 1 << next(_counter)
     NUMAFTER = NA = 1 << next(_counter)
+    PRESORT = PS = 1 << next(_counter)
 
     # Following were previously options but are now defaults.
     DEFAULT = 0

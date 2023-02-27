@@ -378,3 +378,32 @@ def test_natsorted_sorts_mixed_ascii_and_non_ascii_numbers() -> None:
         "street ۱۲",
     ]
     assert natsorted(given, alg=ns.IGNORECASE) == expected
+
+
+def test_natsort_sorts_consistently_with_presort() -> None:
+    # Demonstrate the problem:
+    # Sorting is order-dependent for values that have different
+    # string representations are equiavlent numerically.
+    given = ["a01", "a1.4500", "a1", "a1.45"]
+    expected = ["a01", "a1", "a1.4500", "a1.45"]
+    result = natsorted(given, alg=ns.FLOAT)
+    assert result == expected
+
+    given = ["a1", "a1.45", "a01", "a1.4500"]
+    expected = ["a1", "a01", "a1.45", "a1.4500"]
+    result = natsorted(given, alg=ns.FLOAT)
+    assert result == expected
+
+    # The solution - use "presort" which will sort the
+    # input by its string representation before sorting
+    # with natsorted, which gives consitent results even
+    # if the numeric representation is identical
+    expected = ["a01", "a1", "a1.45", "a1.4500"]
+
+    given = ["a01", "a1.4500", "a1", "a1.45"]
+    result = natsorted(given, alg=ns.FLOAT | ns.PRESORT)
+    assert result == expected
+
+    given = ["a1", "a1.45", "a01", "a1.4500"]
+    result = natsorted(given, alg=ns.FLOAT | ns.PRESORT)
+    assert result == expected
