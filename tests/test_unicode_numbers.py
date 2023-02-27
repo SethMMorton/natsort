@@ -69,7 +69,8 @@ This can be addressed by running dev/generate_new_unicode_numbers.py with the cu
 version of Python.
 It would be much appreciated if you would submit a Pull Request to the natsort
 repository (https://github.com/SethMMorton/natsort) with the resulting change.
-"""
+""",
+            stacklevel=2,
         )
 
 
