@@ -344,8 +344,7 @@ def natsort_key(
     elif isinstance(val, Iterable):
         # Must be parsed recursively, but do not apply the key recursively.
         return tuple(
-            natsort_key(x, None, string_func, bytes_func, num_func)
-            for x in val
+            natsort_key(x, None, string_func, bytes_func, num_func) for x in val
         )
     else:  # Anything else goes here
         return num_func(val)
