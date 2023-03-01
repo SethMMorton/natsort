@@ -65,6 +65,7 @@ def no_null(x: str) -> bool:
     ],
 )
 @example(x=float("nan"))
+@example(x="Å")
 @given(
     x=integers()
     | floats()
