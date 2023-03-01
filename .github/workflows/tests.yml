@@ -59,3 +59,24 @@ jobs:
 
       - name: Upload to CodeCov
         uses: codecov/codecov-action@v3
+
+  test-bsd:
+    name: Test on FreeBSD
+    runs-on: macos-12
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Install and Run Tests
+        uses: vmactions/freebsd-vm@v0
+        with:
+          prepare: |
+            pkg install -y python3
+
+          run: |
+            python3 -m venv .venv
+            source .venv/bin/activate.csh
+            pip install --upgrade pip
+            pip install pytest pytest-mock hypothesis
+            python -m pytest --hypothesis-profile=slow-tests
