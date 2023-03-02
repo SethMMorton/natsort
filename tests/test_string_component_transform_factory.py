@@ -5,7 +5,7 @@ from functools import partial
 from typing import Any, Callable, FrozenSet, Union
 
 import pytest
-from hypothesis import example, given
+from hypothesis import assume, example, given
 from hypothesis.strategies import floats, integers, text
 from natsort.compat.fastnumbers import try_float, try_int
 from natsort.compat.locale import get_strxfrm
@@ -30,6 +30,20 @@ def no_bad_uni_chars(x: str, _bad_chars: FrozenSet[str] = bad_uni_chars) -> bool
 def no_null(x: str) -> bool:
     """Ensure text does not contain a null character."""
     return "\0" not in x
+
+
+def input_is_ok_with_locale(x: str) -> bool:
+    """Ensure this input won't cause locale.strxfrm to barf"""
+    # On FreeBSD, locale.strxfrm raises an OSError on input like 'Å'.
+    # You read that right - an *OSError* for invalid input.
+    # We cannot really fix that, so we just filter out any value
+    # that could cause locale.strxfrm to barf with this function.
+    try:
+        get_strxfrm()(x)
+    except OSError:
+        return False
+    else:
+        return True
 
 
 @pytest.mark.parametrize(
@@ -77,6 +91,7 @@ def test_string_component_transform_factory(
 ) -> None:
     string_component_transform_func = string_component_transform_factory(alg)
     x = str(x)
+    assume(input_is_ok_with_locale(x))  # handle broken locale lib on BSD.
     try:
         assert list(string_component_transform_func(x)) == list(example_func(x))
     except ValueError as e:  # handle broken locale lib on BSD.
