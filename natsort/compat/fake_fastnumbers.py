@@ -55,7 +55,7 @@ def fast_float(
         String to attempt to convert to a float.
     key : callable
         Single-argument function to apply to *x* if conversion fails.
-    nan : object
+    nan : float
         Value to return instead of NaN if NaN would be returned.
 
     Returns

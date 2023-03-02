@@ -1,6 +1,11 @@
 Unreleased
 ---
 
+### Fixed
+- Broken test on FreeBSD due to a broken `locale.strxfrm`.
+  **This change has no effect outside fixing tests**
+  (Issue [#161](https://github.com/SethMMorton/natsort/issues/161))
+
 [8.3.0] - 2023-02-27
 ---
 
