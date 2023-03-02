@@ -7,17 +7,17 @@ Unreleased
 ### Fixed
 - Broken test on FreeBSD due to a broken `locale.strxfrm`.
   **This change has no effect outside fixing tests**
-  (Issue [#161](https://github.com/SethMMorton/natsort/issues/161))
+  (issue [#161](https://github.com/SethMMorton/natsort/issues/161))
 
 [8.3.0] - 2023-02-27
 ---
 
 ### Added
 - The `PRESORT` option to the `ns` enum to attain consistent
-  sort order in certain corner cases (Issue
+  sort order in certain corner cases (issue
   [#149](https://github.com/SethMMorton/natsort/issues/149))
 - Logic to ensure `None` and NaN are sorted in a consistent order
-  (Issue [#149](https://github.com/SethMMorton/natsort/issues/149))
+  (issue [#149](https://github.com/SethMMorton/natsort/issues/149))
 - Explict Python 3.11 support
 
 ### Changed
@@ -37,42 +37,52 @@ Unreleased
 
 ### Changed
 - Auto-coerce `pathlib.Path` objects to `str` since it is the least astonishing
-  behavior ([@Gilthans](https://github.com/Gilthans), issues #152, #153)
+  behavior ([@Gilthans](https://github.com/Gilthans), issues
+  [#152](https://github.com/SethMMorton/natsort/issues/152) and
+  [#153](https://github.com/SethMMorton/natsort/issues/153))
 - Reduce strictness of type hints to avoid over-constraining client code
-  (issues #154, #155)
+  (issues [#154](https://github.com/SethMMorton/natsort/issues/154) and
+  [#155](https://github.com/SethMMorton/natsort/issues/155))
 
 [8.1.0] - 2022-01-30
 ---
 
 ### Changed
 - When using `ns.PATH`, only split off a maximum of two suffixes from
-  a file name (issues #145, #146).
+  a file name (issues [#145](https://github.com/SethMMorton/natsort/issues/145)
+  and [#146](https://github.com/SethMMorton/natsort/issues/146)).
 
 [8.0.2] - 2021-12-14
 ---
 
 ### Fixed
-- Bug where sorting paths fail if one of the paths is '.' (issues #142, #143)
+- Bug where sorting paths fail if one of the paths is '.' (issues
+  [#142](https://github.com/SethMMorton/natsort/issues/142) and
+  [#143](https://github.com/SethMMorton/natsort/issues/143))
 
 [8.0.1] - 2021-12-10
 ---
 
 ### Fixed
 - Compose unicode characters when using locale to ensure sorting is correct
-  across all locales (issues #140, #141)
+  across all locales (issues [#140](https://github.com/SethMMorton/natsort/issues/140)
+  and [#141](https://github.com/SethMMorton/natsort/issues/141))
 
 [8.0.0] - 2021-11-03
 ---
 
 - Re-release 7.2.0 as 8.0.0 because introduction of type hints can break CI
-  builds (issue #139)
+  builds (issue [#139](https://github.com/SethMMorton/natsort/issues/139))
 
 [7.2.0] - 2021-11-02 (Yanked)
 ---
 
 ### Added
 - Type hints (contributions from [@thethiny](https://github.com/thethiny) and
-  [@domdfcoding](https://github.com/domdfcoding), issues #132, #135, and #138)
+  [@domdfcoding](https://github.com/domdfcoding), issues
+  [#132](https://github.com/SethMMorton/natsort/issues/132),
+  [#135](https://github.com/SethMMorton/natsort/issues/135), and
+  [#138](https://github.com/SethMMorton/natsort/issues/138))
 - Explicit testing for Python 3.10
 
 ### Removed
@@ -82,11 +92,14 @@ Unreleased
 ---
 
 ### Changed
- - Use GitHub Actions instead of Travis-CI (issue #125)
- - No longer pin testing dependencies (issue #126)
+ - Use GitHub Actions instead of Travis-CI (issue
+   [#125](https://github.com/SethMMorton/natsort/issues/125))
+ - No longer pin testing dependencies (issue
+   [#126](https://github.com/SethMMorton/natsort/issues/126))
 
 ### Fixed
- - Correct a minor typo ([@madphysicist](https://github.com/madphysicist), issue #127)
+ - Correct a minor typo ([@madphysicist](https://github.com/madphysicist),
+   issue [#127](https://github.com/SethMMorton/natsort/issues/127))
 
 [7.1.0] - 2020-11-19
 ---
@@ -94,19 +107,24 @@ Unreleased
 ### Added
  - ``os_sorted``, ``os_sort_keygen``, and ``os_sort_key`` to better support
    sorting like the file browser on the current operating system - this
-   closes the long-standing issue #41
- - Support for Python 3.9 ([@swt2c](https://github.com/swt2c), issue #119)
+   closes the long-standing issue [#41](https://github.com/SethMMorton/natsort/issues/41)
+ - Support for Python 3.9 ([@swt2c](https://github.com/swt2c),
+   issue [#119](https://github.com/SethMMorton/natsort/issues/119))
 
 ### Changed
  - MacOS unit tests run on native Python
- - Treat `None` like `NaN` internally to avoid `TypeError` (issue #117)
- - No longer fail tests every time a new Python version is released (issue #122)
+ - Treat `None` like `NaN` internally to avoid `TypeError`
+   (issue [#117](https://github.com/SethMMorton/natsort/issues/117))
+ - No longer fail tests every time a new Python version is released
+   (issue [#122](https://github.com/SethMMorton/natsort/issues/122))
 
 ### Fixed
  - Various typos, missing figures, and out-of-date information in the "How it works"
- - Fix typo in CHANGELOG ([@graingert](https://github.com/graingert), issue #113)
+ - Fix typo in CHANGELOG ([@graingert](https://github.com/graingert),
+   issue [#113](https://github.com/SethMMorton/natsort/issues/113))
  - Updated "How it works" to account for Pandas updates
-   ([@kuraga](https://github.com/kuraga), issue #116)
+   ([@kuraga](https://github.com/kuraga),
+   issue [#116](https://github.com/SethMMorton/natsort/issues/116))
 
 [7.0.1] - 2020-01-27
 ---
@@ -119,8 +137,10 @@ Unreleased
 ---
 
 ### Added
- - Ability to deploy directly from TravisCI ([@hugovk](https://github.com/hugovk), issue #106)
- - Release checklist in `RELEASING.md` ([@hugovk](https://github.com/hugovk), issue #106)
+ - Ability to deploy directly from TravisCI ([@hugovk](https://github.com/hugovk),
+   issue [#106](https://github.com/SethMMorton/natsort/issues/106))
+ - Release checklist in `RELEASING.md` ([@hugovk](https://github.com/hugovk),
+   issue [#106](https://github.com/SethMMorton/natsort/issues/106))
 
 ### Changed
  - Updated auxiliary shell scripts to be written in python, and added
@@ -135,7 +155,8 @@ Unreleased
 ---
 
 ### Added
- - Support for Python 3.8 ([@hugovk](https://github.com/hugovk), issue #104)
+ - Support for Python 3.8 ([@hugovk](https://github.com/hugovk),
+   issue [#104](https://github.com/SethMMorton/natsort/issues/104))
 
 ### Changed
  - `index_natsorted` internally now uses tuples for index-element pairs
@@ -157,56 +178,74 @@ Unreleased
  - Expose `numeric_regex_chooser` as a public function for ease in making
    key functions
  - Example in the documentation on how to sort numbers with units
- - Automated testing support for macos and Windows (issue #91)
+ - Automated testing support for macos and Windows (issue
+   [#91](https://github.com/SethMMorton/natsort/issues/91))
 
 ### Changed
- - Update CHANGELOG format to style from https://keepachangelog.com/ (issue #92)
+ - Update CHANGELOG format to style from https://keepachangelog.com/
+   (issue [#92](https://github.com/SethMMorton/natsort/issues/92))
 
 ### Fixed
- - Removed dependency on `sudo` in TravisCI configuration ([@hugovk](https://github.com/hugovk), issue #99)
- - Documentation typos ([@jdufresne](https://github.com/jdufresne), issue #94) ([@cpburnz](https://github.com/cpburnz), issue #95)
+ - Removed dependency on `sudo` in TravisCI configuration
+  ([@hugovk](https://github.com/hugovk), issue
+  [#99](https://github.com/SethMMorton/natsort/issues/99))
+ - Documentation typos ([@jdufresne](https://github.com/jdufresne),
+   issue [#94](https://github.com/SethMMorton/natsort/issues/94))
+   ([@cpburnz](https://github.com/cpburnz), issue
+   [#95](https://github.com/SethMMorton/natsort/issues/95))
 
 [6.0.0] - 2019-02-04
 ---
 
 ### Changed
- - Simply Travis-CI configuration ([@jdufresne](https://github.com/jdufresne), issue #88)
+ - Simply Travis-CI configuration ([@jdufresne](https://github.com/jdufresne),
+   issue [#88](https://github.com/SethMMorton/natsort/issues/88))
 
 ### Fixed
- - Fix README rendering in PyPI ([@altendky](https://github.com/altendky), issue #89)
+ - Fix README rendering in PyPI ([@altendky](https://github.com/altendky),
+   issue [#89](https://github.com/SethMMorton/natsort/issues/89))
 
 ### Removed
- - Drop support for Python 2.6 and 3.3 ([@jdufresne](https://github.com/jdufresne), issue #70)
+ - Drop support for Python 2.6 and 3.3 ([@jdufresne](https://github.com/jdufresne),
+   issue [#70](https://github.com/SethMMorton/natsort/issues/70))
  - Remove deprecated APIs (kwargs `number_type`, `signed`, `exp`, `as_path`,
    `py3_safe`; enums `ns.TYPESAFE`, `ns.DIGIT`, `ns.VERSION`; functions `versorted`,
-   `index_versorted`) (issue #81)
- - Remove `pipenv` as a dependency for building (issue #86)
+   `index_versorted`) (issue [#81](https://github.com/SethMMorton/natsort/issues/81))
+ - Remove `pipenv` as a dependency for building (issue
+   [#86](https://github.com/SethMMorton/natsort/issues/86))
 
 [5.5.0] - 2018-11-18
 ---
 
 ### Added
- - `CHANGELOG.rst` to the top-level of the repository (issue #85)
+ - `CHANGELOG.rst` to the top-level of the repository (issue
+   [#85](https://github.com/SethMMorton/natsort/issues/85))
 
 ### Changed
  - Documentation, packaging, and CI cleanup
-   ([@jdufresne](https://github.com/jdufresne), issues #69, #71-#80)
- - Consolidate API documentation into a single page (issue #82)
+   ([@jdufresne](https://github.com/jdufresne), issues
+   [#69](https://github.com/SethMMorton/natsort/issues/69),
+   [#71](https://github.com/SethMMorton/natsort/issues/71)-[#80](https://github.com/SethMMorton/natsort/issues/80))
+ - Consolidate API documentation into a single page (issue [#82](https://github.com/SethMMorton/natsort/issues/82))
 
 ### Deprecated
- - Formally deprecated old or misleading APIs (issue #83)
+ - Formally deprecated old or misleading APIs (issue
+   [#83](https://github.com/SethMMorton/natsort/issues/83))
 
 ### Fixed
- - Add back support for very old versions of setuptools (issue #84)
+ - Add back support for very old versions of setuptools (issue
+   [#84](https://github.com/SethMMorton/natsort/issues/84))
 
 [5.4.1] - 2018-09-09
 ---
 
 ### Changed
- - Code format and quality checking infrastructure (issue #68)
+ - Code format and quality checking infrastructure (issue
+   [#68](https://github.com/SethMMorton/natsort/issues/68))
 
 ### Fixed
- - Error in a newly added test (issues #65, #67)
+ - Error in a newly added test (issues [#65](https://github.com/SethMMorton/natsort/issues/65)
+   and [#67](https://github.com/SethMMorton/natsort/issues/67))
 
 [5.4.0] - 2018-09-06
 ---
@@ -214,17 +253,17 @@ Unreleased
 ### Changed
  - Re-expose `natsort_key` as "public" and remove the associated `DeprecationWarning`
  - Better developer documentation
- - Refactor tests (issue #66)
+ - Refactor tests (issue [#66](https://github.com/SethMMorton/natsort/issues/66))
  - Bump allowed [`fastnumbers`](https://github.com/SethMMorton/fastnumbers) version
 
 [5.3.3] - 2018-07-07
 ---
 
 ### Added
- - Enable Python 3.7 support in Travis-CI (issue #61)
+ - Enable Python 3.7 support in Travis-CI (issue [#61](https://github.com/SethMMorton/natsort/issues/61))
 
 ### Changed
- - Update docs with a FAQ and quick how-it-works (issue #60)
+ - Update docs with a FAQ and quick how-it-works (issue [#60](https://github.com/SethMMorton/natsort/issues/60))
 
 ### Fixed
  - `StopIteration` error in the testing code
@@ -234,9 +273,12 @@ Unreleased
 ---
 
 ### Fixed
- - Bug that prevented install on old versions of `setuptools` (issues #55, #56)
+ - Bug that prevented install on old versions of `setuptools` (issues
+   [#55](https://github.com/SethMMorton/natsort/issues/55) and
+   [#56](https://github.com/SethMMorton/natsort/issues/56))
  - Revert layout from `src/natsort/` back to `natsort/` to make user
-   testing simpler (issues #57, #58)
+   testing simpler (issues [#57](https://github.com/SethMMorton/natsort/issues/57)
+   and [#58](https://github.com/SethMMorton/natsort/issues/58))
 
 [5.3.1] - 2018-05-14
 ---
@@ -254,35 +296,45 @@ Unreleased
 ---
 
 ### Added
- - Ability to consider unicode-decimal numbers as numbers (issues #52, #54)
+ - Ability to consider unicode-decimal numbers as numbers (issues
+   [#52](https://github.com/SethMMorton/natsort/issues/52) and
+   [#54](https://github.com/SethMMorton/natsort/issues/54))
 
 ### Fixed
  - Bug in assessing [`fastnumbers`](https://github.com/SethMMorton/fastnumbers)
-   version at import-time ([@hholzgra](https://github.com/hholzgra), issues #51, #53)
+   version at import-time ([@hholzgra](https://github.com/hholzgra), issues
+   [#51](https://github.com/SethMMorton/natsort/issues/51) and
+   [#53](https://github.com/SethMMorton/natsort/issues/53))
 
 [5.2.0] - 2018-02-14
 ---
 
 ### Added
- - `ns.NUMAFTER` to cause numbers to be placed after non-numbers (issues #48, #49)
- - `natcmp` function (Python 2 only) ([@rinslow](https://github.com/rinslow), issue #47)
+ - `ns.NUMAFTER` to cause numbers to be placed after non-numbers
+   (issues [#48](https://github.com/SethMMorton/natsort/issues/48) and
+   [#49](https://github.com/SethMMorton/natsort/issues/49))
+ - `natcmp` function (Python 2 only) ([@rinslow](https://github.com/rinslow),
+   issue [#47](https://github.com/SethMMorton/natsort/issues/47))
 
 [5.1.1] - 2017-11-11
 ---
 
 ### Added
  - Additional unicode number support for Python 3.7
- - Information on how to install and test (issue #46)
+ - Information on how to install and test (issue [#46](https://github.com/SethMMorton/natsort/issues/46))
 
 [5.1.0] - 2017-08-19
 ---
 
 ### Changed
- - All Unicode input is now normalized (issue #44, #45)
+ - All Unicode input is now normalized
+   (issue [#44](https://github.com/SethMMorton/natsort/issues/44) and
+   #45](https://github.com/SethMMorton/natsort/issues/45))
 
 ### Fixed
  - `StopIteration` warning on Python 3.6+
-   ([@lykinsbd](https://github.com/lykinsbd), issues #42, #43)
+   ([@lykinsbd](https://github.com/lykinsbd), issues [#42](https://github.com/SethMMorton/natsort/issues/42)
+   and [#43](https://github.com/SethMMorton/natsort/issues/43))
 
 [5.0.3] - 2017-04-30
 ---
@@ -309,7 +361,9 @@ Unreleased
 
 ### Fixed
  - Bug with the `from natsort import *` mechanism
- - Bug with using `natsort` with `python -OO` (issues #38, #39)
+ - Bug with using `natsort` with `python -OO` (issues
+   [#38](https://github.com/SethMMorton/natsort/issues/38) and
+   [#39](https://github.com/SethMMorton/natsort/issues/39))
 
 [5.0.0] - 2016-05-08
 ---
@@ -319,11 +373,12 @@ Unreleased
    a complex user-given `key` from several existing functions
 
 ### Changed
- - `ns.LOCALE`/`humansorted` now accounts for thousands separators (issue #36)
+ - `ns.LOCALE`/`humansorted` now accounts for thousands separators (issue
+   [#36](https://github.com/SethMMorton/natsort/issues/36))
  - Refactored entire codebase to be more functional (as in use functions as
    units). Previously, the code was rather monolithic and difficult to follow. The
    goal is that with the code existing in smaller units, contributing will
-   be easier (issue #37)
+   be easier (issue [#37](https://github.com/SethMMorton/natsort/issues/37))
  - Increased speed of execution (came for free with the new functional approach
    because the new factory function paradigm eliminates most `if` branches
    during execution). For the most cases, the code is 30-40% faster than version 4.0.4.
@@ -348,7 +403,7 @@ Unreleased
 ---
 
 ### Fixed
- - Bad install on last release (sorry guys!) (issue #30)
+ - Bad install on last release (sorry guys!) (issue [#30](https://github.com/SethMMorton/natsort/issues/30))
 
 [4.0.2] - 2015-06-24
 ---
@@ -358,13 +413,15 @@ Unreleased
 
 ### Fixed
  - Python 2.6 and Python 3.2 compatibility. Unit testing is now
-   performed for these versions ([@dpetzold](https://github.com/dpetzold), issue #29)
+   performed for these versions ([@dpetzold](https://github.com/dpetzold),
+   issue [#29](https://github.com/SethMMorton/natsort/issues/29))
 
 [4.0.1] - 2015-06-04
 ---
 
 ### Added
- - Support for sorting NaN by internally converting to -Infinity or +Infinity (issue #27)
+ - Support for sorting NaN by internally converting to -Infinity or +Infinity
+   (issue [#27](https://github.com/SethMMorton/natsort/issues/27))
 
 [4.0.0] - 2015-05-17
 ---
@@ -373,9 +430,10 @@ Unreleased
  - Made default behavior of `natsort` search for unsigned ints,
    rather than signed floats. This is a backwards-incompatible
    change but in 99% of use cases it should not require any
-   end-user changes (issue #20)
+   end-user changes (issue [#20](https://github.com/SethMMorton/natsort/issues/20))
  - Improved handling of locale-aware sorting on systems where the
-   underlying locale library is broken (issue #34))
+   underlying locale library is broken (issue
+   [#34](https://github.com/SethMMorton/natsort/issues/34)))
  - Greatly improved all unit tests by adding the `hypothesis` library
 
 [3.5.6] - 2015-04-06
@@ -383,7 +441,8 @@ Unreleased
 
 ### Added
  - `UNGROUPLETTERS` algorithm to get the case-grouping behavior of
-   an ordinal sort when using `LOCALE` (issue #23)
+   an ordinal sort when using `LOCALE` (issue
+   [#23](https://github.com/SethMMorton/natsort/issues/23))
  - Convenience functions `decoder`, `as_ascii`, and `as_utf8` for
    dealing with bytes types
 
@@ -401,7 +460,8 @@ Unreleased
 
 ### Fixed
  - Bug where a `TypeError` was raised if a string containing a leading
-   number was sorted with alpha-only strings when `LOCALE` is used (issue #22)
+   number was sorted with alpha-only strings when `LOCALE` is used (issue
+   [#22](https://github.com/SethMMorton/natsort/issues/22))
 
 [3.5.3] - 2015-03-26
 ---
@@ -419,7 +479,8 @@ Unreleased
 ---
 
 ### Added
- - A `pathlib.Path` object is converted to a `str` if `ns.PATH` is enabled (issue #16)
+ - A `pathlib.Path` object is converted to a `str` if `ns.PATH` is enabled (issue
+   [#16](https://github.com/SethMMorton/natsort/issues/16))
 
 [3.5.1] - 2014-09-25
 ---
@@ -430,7 +491,7 @@ Unreleased
 
 ### Fixed
  - Bug that caused list/tuples to fail when using `ns.LOWECASEFIRST`
-   or `ns.IGNORECASE` (issue #15)
+   or `ns.IGNORECASE` (issue [#15](https://github.com/SethMMorton/natsort/issues/15))
 
 [3.5.0] - 2014-09-02
 ---
@@ -443,9 +504,10 @@ Unreleased
    keyword-only options in `natsort` version 4.0.0
  - The `humansorted` convenience function as a convenience to locale-aware sorting
  - The user can now modify how `natsort` handles the case of non-numeric
-   characters (issue #14)
+   characters (issue [#14](https://github.com/SethMMorton/natsort/issues/14))
  - The user can now instruct `natsort` to use locale-aware sorting, which
-   allows `natsort` to perform true "human sorting" (issue #14)
+   allows `natsort` to perform true "human sorting" (issue
+   [#14](https://github.com/SethMMorton/natsort/issues/14))
  - Locale functionality to the shell script
 
 [3.4.1] - 2014-08-12
@@ -468,7 +530,8 @@ Unreleased
  - `as_path` option to `natsorted` & co. that will try to treat
    input strings as filepaths. This will help yield correct results for
    OS-generated inputs like
-   `['/p/q/o.x', '/p/q (1)/o.x', '/p/q (10)/o.x', '/p/q/o (1).x']` (issue #3)
+   `['/p/q/o.x', '/p/q (1)/o.x', '/p/q (10)/o.x', '/p/q/o (1).x']` (issue
+   [#3](https://github.com/SethMMorton/natsort/issues/3))
  - `order_by_index` function to help in using the output of
    `index_natsorted` and `index_versorted`
  - `reverse` option to `natsorted` & co. to make it's API more
@@ -486,20 +549,22 @@ Unreleased
 
 ### Fixed
  - Bug that caused user's options to the `natsort_key` to not be
-   passed on to recursive calls of `natsort_key` (issue #12)
+   passed on to recursive calls of `natsort_key` (issue
+   [#12](https://github.com/SethMMorton/natsort/issues/12))
 
 [3.3.0] - 2014-06-28
 ---
 
 ### Added
- - `versorted` method for more convenient sorting of versions (issue #11)
+ - `versorted` method for more convenient sorting of versions (issue
+   [#11](https://github.com/SethMMorton/natsort/issues/11))
  - Unit test coverage (99%)
 
 ### Changed
  - Updated command-line tool `--number_type` option with 'version' and 'ver'
    to make it more clear how to sort version numbers
  - Moved unit-testing mechanism from being docstring-based to actual unit tests
-   in actual functions (issue #10)
+   in actual functions (issue [#10](https://github.com/SethMMorton/natsort/issues/10))
  - Made docstrings for public functions mirror the README API
  - Connected `natsort` development to Travis-CI to help ensure quality releases
 
@@ -508,7 +573,8 @@ Unreleased
 
 ### Fixed
  - Re-"Fixed" unorderable types issue on Python 3.x - this workaround
-   is for when the problem occurs in the middle of the string (issue #7 again)
+   is for when the problem occurs in the middle of the string (issue
+   [#7](https://github.com/SethMMorton/natsort/issues/7) again)
 
 [3.2.0] - 2014-05-07
 ---
@@ -516,7 +582,8 @@ Unreleased
 ### Fixed
  - "Fixed" unorderable types issue on Python 3.x with a workaround that
    attempts to replicate the Python 2.x behavior by putting all the numbers
-   (or strings that begin with numbers) first (issue #7)
+   (or strings that begin with numbers) first (issue
+   [#7](https://github.com/SethMMorton/natsort/issues/7))
 
 ### Removed
  - Now explicitly excluding `__pycache__` from releases by adding a prune statement
@@ -526,14 +593,15 @@ Unreleased
 ---
 
 ### Added
- - `setup.cfg` to support universal wheels (issue #6)
+ - `setup.cfg` to support universal wheels (issue
+   [#6](https://github.com/SethMMorton/natsort/issues/6))
  - Python 3.0 and Python 3.1 as requiring the argparse module
 
 [3.1.1] - 2014-03-01
 ---
 
 ### Added
- - Ability to sort lists of lists (issue #5)
+ - Ability to sort lists of lists (issue [#5](https://github.com/SethMMorton/natsort/issues/5))
 
 ### Changed
  - Cleaned up import statements
@@ -574,7 +642,7 @@ a pipeline by which to filter
 ---
 
 ### Added
- - Support for unicode strings (issue #2)
+ - Support for unicode strings (issue [#2](https://github.com/SethMMorton/natsort/issues/2))
 
 ### Fixed
  - Empty string removal function
@@ -597,7 +665,7 @@ a pipeline by which to filter
 
 ### Added
  - `key` attribute to `natsorted` and `index_natsorted` so that it mimics the functionality
-   of the built-in `sorted` (issue #1)
+   of the built-in `sorted` (issue [#1](https://github.com/SethMMorton/natsort/issues/1))
  - Tests to reflect the new functionality, as well as tests demonstrating how to get similar
    functionality using `natsort_key`
 
