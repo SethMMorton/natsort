@@ -1,6 +1,9 @@
 Unreleased
 ---
 
+[8.3.1] - 2023-03-01
+---
+
 ### Fixed
 - Broken test on FreeBSD due to a broken `locale.strxfrm`.
   **This change has no effect outside fixing tests**
@@ -634,6 +637,7 @@ a pipeline by which to filter
  - Sorting algorithm to support floats (including exponentials) and basic version number support
 
 <!---Comparison links-->
+[8.3.1]: https://github.com/SethMMorton/natsort/compare/8.3.0...8.3.1
 [8.3.0]: https://github.com/SethMMorton/natsort/compare/8.2.0...8.3.0
 [8.2.0]: https://github.com/SethMMorton/natsort/compare/8.1.0...8.2.0
 [8.1.0]: https://github.com/SethMMorton/natsort/compare/8.0.2...8.1.0
