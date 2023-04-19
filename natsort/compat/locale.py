@@ -20,8 +20,8 @@ null_string_max = chr(sys.maxunicode) * 20
 null_string_locale: StrOrBytes
 null_string_locale_max: StrOrBytes
 
-# strxfrm can be buggy (especially on BSD-based systems),
-# so prefer icu if available.
+# strxfrm can be buggy (especially on OSX and *possibly* some other
+# BSD-based systems), so prefer icu if available.
 try:  # noqa: C901
     import icu
     from locale import getlocale

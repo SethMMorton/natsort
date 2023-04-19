@@ -10,7 +10,7 @@ Unreleased
 ---
 
 ### Fixed
-- Broken test on FreeBSD due to a broken `locale.strxfrm`.
+- Broken test found on FreeBSD.
   **This change has no effect outside fixing tests**
   (issue [#161](https://github.com/SethMMorton/natsort/issues/161))
 

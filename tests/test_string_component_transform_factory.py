@@ -13,8 +13,8 @@ from natsort.ns_enum import NSType, NS_DUMB, ns
 from natsort.utils import groupletters, string_component_transform_factory
 
 # There are some unicode values that are known failures with the builtin locale
-# library on BSD systems that has nothing to do with natsort (a ValueError is
-# raised by strxfrm). Let's filter them out.
+# library on OSX and some other BSD-based systems that has nothing to do with
+# natsort (a ValueError is raised by strxfrm). Let's filter them out.
 try:
     bad_uni_chars = frozenset(chr(x) for x in range(0x10FEFD, 0x10FFFF + 1))
 except ValueError:
@@ -34,10 +34,7 @@ def no_null(x: str) -> bool:
 
 def input_is_ok_with_locale(x: str) -> bool:
     """Ensure this input won't cause locale.strxfrm to barf"""
-    # On FreeBSD, locale.strxfrm raises an OSError on input like 'Å'.
-    # You read that right - an *OSError* for invalid input.
-    # We cannot really fix that, so we just filter out any value
-    # that could cause locale.strxfrm to barf with this function.
+    # Bad input can cause an OSError if the OS doesn't support the value
     try:
         get_strxfrm()(x)
     except OSError:
@@ -91,9 +88,9 @@ def test_string_component_transform_factory(
 ) -> None:
     string_component_transform_func = string_component_transform_factory(alg)
     x = str(x)
-    assume(input_is_ok_with_locale(x))  # handle broken locale lib on BSD.
+    assume(input_is_ok_with_locale(x))
     try:
         assert list(string_component_transform_func(x)) == list(example_func(x))
-    except ValueError as e:  # handle broken locale lib on BSD.
+    except ValueError as e:  # handle broken locale lib on OSX.
         if "is not in range" not in str(e):
             raise
