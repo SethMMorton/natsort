@@ -471,7 +471,7 @@ Seth M. Morton
 History
 -------
 
-Please visit the changelog `on GitHub`_ or `in the documentation`_.
+Please visit the changelog `on GitHub`_.
 
 .. _natsort: https://natsort.readthedocs.io/en/stable/index.html
 .. _natsorted(): https://natsort.readthedocs.io/en/stable/api.html#natsort.natsorted
@@ -500,7 +500,6 @@ Please visit the changelog `on GitHub`_ or `in the documentation`_.
 .. _How Does Natsort Work?: https://github.com/SethMMorton/natsort/wiki/How-Does-Natsort-Work%3F
 .. _API: https://natsort.readthedocs.io/en/stable/api.html
 .. _on GitHub: https://github.com/SethMMorton/natsort/blob/main/CHANGELOG.md
-.. _in the documentation: https://natsort.readthedocs.io/en/stable/changelog.html
 .. _file an issue: https://github.com/SethMMorton/natsort/issues/new
 .. _look at this issue describing how to debug: https://github.com/SethMMorton/natsort/issues/13#issuecomment-50422375
 .. _controlling the case-sensitivity: https://github.com/SethMMorton/natsort/wiki/Examples-and-Recipes#controlling-case-when-sorting

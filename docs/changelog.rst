@@ -3,4 +3,4 @@
 Changelog
 =========
 
-.. mdinclude:: ../CHANGELOG.md
+Please visit https://github.com/SethMMorton/natsort/blob/main/CHANGELOG.md.

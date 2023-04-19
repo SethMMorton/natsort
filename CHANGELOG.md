@@ -1,6 +1,11 @@
 Unreleased
 ---
 
+### Changed
+
+- The changelog now only explictly exists in the repository
+  (issue [#162](https://github.com/SethMMorton/natsort/issues/162))
+
 [8.3.1] - 2023-03-01
 ---
 
