@@ -24,14 +24,24 @@ def test_os_sorted_compound() -> None:
         "/p/Folder (1)/file.tar.gz",
         "/p/Folder/file.x1.10.tar.gz",
     ]
-    expected = [
-        "/p/Folder/file.x1.9.tar.gz",
-        "/p/Folder/file.x1.10.tar.gz",
-        "/p/Folder (1)/file.tar.gz",
-        "/p/Folder (1)/file (1).tar.gz",
-        "/p/Folder (2)/file.tar.gz",
-        "/p/Folder (10)/file.tar.gz",
-    ]
+    if platform.system() == "Windows":
+        expected = [
+            "/p/Folder/file.x1.9.tar.gz",
+            "/p/Folder/file.x1.10.tar.gz",
+            "/p/Folder (1)/file (1).tar.gz",
+            "/p/Folder (1)/file.tar.gz",
+            "/p/Folder (2)/file.tar.gz",
+            "/p/Folder (10)/file.tar.gz",
+        ]
+    else:
+        expected = [
+            "/p/Folder/file.x1.9.tar.gz",
+            "/p/Folder/file.x1.10.tar.gz",
+            "/p/Folder (1)/file.tar.gz",
+            "/p/Folder (1)/file (1).tar.gz",
+            "/p/Folder (2)/file.tar.gz",
+            "/p/Folder (10)/file.tar.gz",
+        ]
     result = natsort.os_sorted(given)
     assert result == expected
 

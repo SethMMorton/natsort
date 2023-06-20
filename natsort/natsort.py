@@ -670,13 +670,13 @@ def numeric_regex_chooser(alg: NSType) -> str:
 
 
 def _split_apply(
-    v: Any, key: Optional[Callable[[T], NatsortInType]] = None
+    v: Any, key: Optional[Callable[[T], NatsortInType]] = None, treat_base: bool = True
 ) -> Iterator[str]:
     if key is not None:
         v = key(v)
     if not isinstance(v, (str, PurePath)):
         v = str(v)
-    return utils.path_splitter(v)
+    return utils.path_splitter(v, treat_base=treat_base)
 
 
 # Choose the implementation based on the host OS
@@ -694,7 +694,7 @@ if platform.system() == "Windows":
     ) -> Callable[[Any], NatsortOutType]:
         return cast(
             Callable[[Any], NatsortOutType],
-            lambda x: tuple(map(_winsort_key, _split_apply(x, key))),
+            lambda x: tuple(map(_winsort_key, _split_apply(x, key, treat_base=False))),
         )
 
 else:

@@ -876,7 +876,7 @@ def do_decoding(s: Any, encoding: str) -> Any:
 
 # noinspection PyIncorrectDocstring
 def path_splitter(
-    s: PathArg, _d_match: MatchFn = re.compile(r"\.\d").match
+    s: PathArg, treat_base: bool = True, _d_match: MatchFn = re.compile(r"\.\d").match
 ) -> Iterator[str]:
     """
     Split a string into its path components.
@@ -886,6 +886,10 @@ def path_splitter(
     Parameters
     ----------
     s : str | pathlib.Path
+    treat_base: bool, optional
+        If True, treat the base of component of the file path as
+        special and split off extensions. If False, do not do this.
+        The default is True.
 
     Returns
     -------
@@ -909,17 +913,18 @@ def path_splitter(
         path_parts = []
         base = str(s)
 
-    # Now, split off the file extensions until
-    #  - we reach a decimal number at the beginning of the suffix
-    #  - more than two suffixes have been seen
-    #  - a suffix is more than five characters (including leading ".")
-    #  - there are no more extensions
     suffixes = []
-    for i, suffix in enumerate(reversed(PurePath(base).suffixes)):
-        if _d_match(suffix) or i > 1 or len(suffix) > 5:
-            break
-        suffixes.append(suffix)
-    suffixes.reverse()
+    if treat_base:
+        # Now, split off the file extensions until
+        #  - we reach a decimal number at the beginning of the suffix
+        #  - more than two suffixes have been seen
+        #  - a suffix is more than five characters (including leading ".")
+        #  - there are no more extensions
+        for i, suffix in enumerate(reversed(PurePath(base).suffixes)):
+            if _d_match(suffix) or i > 1 or len(suffix) > 5:
+                break
+            suffixes.append(suffix)
+        suffixes.reverse()
 
     # Remove the suffixes from the base component
     base = base.replace("".join(suffixes), "")
