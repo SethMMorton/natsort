@@ -1,6 +1,9 @@
 Unreleased
 ---
 
+[8.4.0] - 2023-06-19
+---
+
 ### Changed
 
 - The changelog now only explictly exists in the repository
@@ -717,6 +720,7 @@ a pipeline by which to filter
  - Sorting algorithm to support floats (including exponentials) and basic version number support
 
 <!---Comparison links-->
+[8.4.0]: https://github.com/SethMMorton/natsort/compare/8.3.1...8.4.0
 [8.3.1]: https://github.com/SethMMorton/natsort/compare/8.3.0...8.3.1
 [8.3.0]: https://github.com/SethMMorton/natsort/compare/8.2.0...8.3.0
 [8.2.0]: https://github.com/SethMMorton/natsort/compare/8.1.0...8.2.0
