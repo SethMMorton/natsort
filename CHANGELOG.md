@@ -6,6 +6,13 @@ Unreleased
 - The changelog now only explictly exists in the repository
   (issue [#162](https://github.com/SethMMorton/natsort/issues/162))
 
+### Fixed
+
+- Inputs with spaces near adjascent to the extension are now sorted
+  correctly for `os_sorted` on Windows (issues
+  [#165](https://github.com/SethMMorton/natsort/issues/165) and
+  [#166](https://github.com/SethMMorton/natsort/pull/166))
+
 [8.3.1] - 2023-03-01
 ---
 
