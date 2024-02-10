@@ -82,13 +82,11 @@ else:
 
 
 class SupportsDunderLT(Protocol):
-    def __lt__(self, __other: Any) -> bool:
-        ...
+    def __lt__(self, __other: Any) -> bool: ...
 
 
 class SupportsDunderGT(Protocol):
-    def __gt__(self, __other: Any) -> bool:
-        ...
+    def __gt__(self, __other: Any) -> bool: ...
 
 
 Sortable = Union[SupportsDunderLT, SupportsDunderGT]
@@ -118,7 +116,7 @@ FinalTransform = AnyTuple
 FinalTransformer = Callable[[Iterable[Any], str], FinalTransform]
 
 PathArg = Union[str, PurePath]
-MatchFn = Callable[[str], Optional[Match]]
+MatchFn = Callable[[str], Optional[Match[str]]]
 
 # For the string parsing factory
 StrSplitter = Callable[[str], Iterable[str]]
@@ -269,8 +267,7 @@ def natsort_key(
     string_func: Union[StrParser, PathSplitter],
     bytes_func: BytesTransformer,
     num_func: NumTransformer,
-) -> NatsortOutType:
-    ...
+) -> NatsortOutType: ...
 
 
 @overload
@@ -280,8 +277,7 @@ def natsort_key(
     string_func: Union[StrParser, PathSplitter],
     bytes_func: BytesTransformer,
     num_func: NumTransformer,
-) -> NatsortOutType:
-    ...
+) -> NatsortOutType: ...
 
 
 def natsort_key(
@@ -842,13 +838,11 @@ def chain_functions(functions: Iterable[AnyCall]) -> AnyCall:
 
 
 @overload
-def do_decoding(s: bytes, encoding: str) -> str:
-    ...
+def do_decoding(s: bytes, encoding: str) -> str: ...
 
 
 @overload
-def do_decoding(s: Any, encoding: str) -> Any:
-    ...
+def do_decoding(s: Any, encoding: str) -> Any: ...
 
 
 def do_decoding(s: Any, encoding: str) -> Any:

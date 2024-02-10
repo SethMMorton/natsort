@@ -475,7 +475,7 @@ def index_natsorted(
     else:
 
         def newkey(x: Tuple[int, T]) -> NatsortInType:
-            return cast(Callable[[T], NatsortInType], key)(itemgetter(1)(x))
+            return key(itemgetter(1)(x))
 
     # Pair the index and sequence together, then sort by element
     index_seq_pair = [(x, y) for x, y in enumerate(seq)]
