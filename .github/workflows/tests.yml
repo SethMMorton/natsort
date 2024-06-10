@@ -62,14 +62,14 @@ jobs:
 
   test-bsd:
     name: Test on FreeBSD
-    runs-on: macos-12
+    runs-on: ubuntu-latest
 
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
 
       - name: Install and Run Tests
-        uses: vmactions/freebsd-vm@v0
+        uses: vmactions/freebsd-vm@v1
         with:
           prepare: |
             pkg install -y python3
