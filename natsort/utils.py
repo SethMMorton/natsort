@@ -237,8 +237,10 @@ def _normalize_input_factory(alg: NSType) -> StrToStr:
         the input normalized with the desired normalization scheme.
 
     """
-    normalization_form = "NFKD" if alg & ns.COMPATIBILITYNORMALIZE else "NFD"
-    return partial(normalize, normalization_form)
+    if alg & ns.COMPATIBILITYNORMALIZE:
+        return partial(normalize, "NFKD")
+    else:
+        return partial(normalize, "NFD")
 
 
 def _compose_input_factory(alg: NSType) -> StrToStr:
@@ -256,8 +258,10 @@ def _compose_input_factory(alg: NSType) -> StrToStr:
         A function that accepts string (unicode) input and returns the
         the input normalized with the desired composition scheme.
     """
-    normalization_form = "NFKC" if alg & ns.COMPATIBILITYNORMALIZE else "NFC"
-    return partial(normalize, normalization_form)
+    if alg & ns.COMPATIBILITYNORMALIZE:
+        return partial(normalize, "NFKC")
+    else:
+        return partial(normalize, "NFC")
 
 
 @overload

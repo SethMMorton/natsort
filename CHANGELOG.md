@@ -1,6 +1,10 @@
 Unreleased
 ---
 
+### Fixed
+
+- Eliminated mypy failure related to string literals
+
 [8.4.0] - 2023-06-19
 ---
 
