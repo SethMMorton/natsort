@@ -1,0 +1,52 @@
+[build-system]
+requires = ["setuptools>=64", "setuptools-scm>=8.0"]
+
+[project]
+name="natsort"
+authors = [
+    {name = "Seth M. Morton", email = "drtuba78@gmail.com"},
+]
+version="8.4.0"
+requires-python = ">=3.7"
+description = "Simple yet flexible natural sorting in Python."
+readme = "README.rst"
+license = {text = "MIT"}
+keywords = ["sort", "sorting", "natural sort", "natsort"]
+classifiers = [
+	"Development Status :: 5 - Production/Stable",
+	"Intended Audience :: Developers",
+	"Intended Audience :: Science/Research",
+	"Intended Audience :: System Administrators",
+	"Intended Audience :: Information Technology",
+	"Intended Audience :: Financial and Insurance Industry",
+	"Operating System :: OS Independent",
+	"License :: OSI Approved :: MIT License",
+	"Natural Language :: English",
+	"Programming Language :: Python",
+	"Programming Language :: Python :: 3",
+	"Programming Language :: Python :: 3.7",
+	"Programming Language :: Python :: 3.8",
+	"Programming Language :: Python :: 3.9",
+	"Programming Language :: Python :: 3.10",
+	"Programming Language :: Python :: 3.11",
+	"Programming Language :: Python :: 3.12",
+	"Topic :: Scientific/Engineering :: Information Analysis",
+	"Topic :: Utilities",
+	"Topic :: Text Processing",
+]
+
+[project.optional-dependencies]
+fast = ["fastnumbers >= 2.0.0"]
+icu = ["PyICU >= 1.0.0"]
+
+[project.urls]
+Homepage = "https://github.com/SethMMorton/natsort"
+Documentation = "https://natsort.readthedocs.io/"
+Issues = "https://github.com/SethMMorton/natsort/issues"
+Changelog = "https://github.com/SethMMorton/natsort/blob/main/CHANGELOG.md"
+
+[project.scripts]
+natsort = "natsort.__main__:main"
+
+[tool.setuptools.packages]
+find = {namespaces = false}
