@@ -3,6 +3,7 @@
 Interface for natsort to access locale functionality without
 having to worry about if it is using PyICU or the built-in locale.
 """
+
 import sys
 from typing import Callable, Union, cast
 

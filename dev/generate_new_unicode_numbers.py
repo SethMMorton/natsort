@@ -3,6 +3,7 @@
 """
 Generate the numeric hex list of unicode numerals
 """
+
 import os
 import os.path
 import sys

@@ -690,7 +690,7 @@ if platform.system() == "Windows":
     _winsort_key = cmp_to_key(_windows_sort_cmp)
 
     def os_sort_keygen(
-        key: Optional[Callable[[Any], NatsortInType]] = None
+        key: Optional[Callable[[Any], NatsortInType]] = None,
     ) -> Callable[[Any], NatsortOutType]:
         return cast(
             Callable[[Any], NatsortOutType],
@@ -713,14 +713,14 @@ else:
     except ImportError:
         # No ICU installed
         def os_sort_keygen(
-            key: Optional[Callable[[Any], NatsortInType]] = None
+            key: Optional[Callable[[Any], NatsortInType]] = None,
         ) -> Callable[[Any], NatsortOutType]:
             return natsort_keygen(key=key, alg=ns.LOCALE | ns.PATH | ns.IGNORECASE)
 
     else:
         # ICU installed
         def os_sort_keygen(
-            key: Optional[Callable[[Any], NatsortInType]] = None
+            key: Optional[Callable[[Any], NatsortInType]] = None,
         ) -> Callable[[Any], NatsortOutType]:
             loc = natsort.compat.locale.get_icu_locale()
             collator = icu.Collator.createInstance(loc)

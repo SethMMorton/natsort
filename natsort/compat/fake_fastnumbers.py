@@ -3,6 +3,7 @@
 This module is intended to replicate some of the functionality
 from the fastnumbers module in the event that module is not installed.
 """
+
 import unicodedata
 from typing import Callable, FrozenSet, Union
 

@@ -53,7 +53,7 @@ def parse_string_func_factory(alg: NSType) -> StrParser:
 
 @given(x=floats() | integers())
 def test_parse_string_factory_raises_type_error_if_given_number(
-    x: Union[int, float]
+    x: Union[int, float],
 ) -> None:
     parse_string_func = parse_string_func_factory(ns.DEFAULT)
     with pytest.raises(TypeError):

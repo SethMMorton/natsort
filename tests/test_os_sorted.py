@@ -2,6 +2,7 @@
 """
 Testing for the OS sorting
 """
+
 import platform
 
 import natsort

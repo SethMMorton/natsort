@@ -123,7 +123,7 @@ def test_sep_inserter_inserts_separator_string_between_two_numbers_example() -> 
 
 @given(lists(elements=text().filter(bool) | integers(), min_size=3))
 def test_sep_inserter_inserts_separator_between_two_numbers(
-    x: List[Union[str, int]]
+    x: List[Union[str, int]],
 ) -> None:
     # Rather than just replicating the results in a different algorithm,
     # validate that the "shape" of the output is as expected.

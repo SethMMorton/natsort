@@ -38,6 +38,7 @@ that ensures "val" is a local variable instead of global variable
 and thus has a slightly improved performance at runtime.
 
 """
+
 import re
 from functools import partial, reduce
 from itertools import chain as ichain

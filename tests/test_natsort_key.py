@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 """These test the utils.py functions."""
+
 from typing import Any, List, NoReturn, Tuple, Union, cast
 
 from hypothesis import given
