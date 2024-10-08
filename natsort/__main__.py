@@ -202,8 +202,7 @@ def range_check(low: Num, high: Num) -> NumPair:
     if low >= high:
         msg = "low >= high"
         raise ValueError(msg)
-    else:
-        return low, high
+    return low, high
 
 
 def check_filters(filters: Optional[NumPairIter]) -> Optional[List[NumPair]]:

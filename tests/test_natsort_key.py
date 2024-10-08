@@ -11,9 +11,8 @@ from natsort.utils import natsort_key
 def str_func(x: Any) -> Tuple[str]:
     if isinstance(x, str):
         return (x,)
-    else:
-        msg = "Not a str!"
-        raise TypeError(msg)
+    msg = "Not a str!"
+    raise TypeError(msg)
 
 
 def fail(_: Any) -> NoReturn:

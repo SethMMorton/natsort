@@ -84,6 +84,9 @@ select = [
 	"PIE",  # flake8-pie
 	"PYI",  # flake8-pyi
 	"PT",   # flake8-pytest-style
+	"Q",    # flake8-quotes
+	"RSE",  # flake8-raise
+	"RET",  # flake8-return
 ]
 ignore = [
 	"A002",   # arguments shadow builtins

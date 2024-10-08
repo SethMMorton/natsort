@@ -116,8 +116,7 @@ except ImportError:
                 "fr_FR.UTF-8": "\xa0",
                 "fr_CA.ISO8859-15": "\xa0",
             }.get(loc, sep)
-        else:
-            return sep
+        return sep
 
     def get_decimal_point() -> str:
         return cast(str, locale.localeconv()["decimal_point"])

@@ -36,8 +36,7 @@ def bumpversion(severity, *args, catch=False):
             return subprocess.run(
                 cmd, check=True, capture_output=True, text=True,
             ).stdout
-        else:
-            subprocess.run(cmd, check=True, text=True)
+        subprocess.run(cmd, check=True, text=True)
     except subprocess.CalledProcessError as e:
         print("Call to bump2version failed!", file=sys.stderr)
         print("STDOUT:", e.stdout, file=sys.stderr)

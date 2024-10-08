@@ -240,8 +240,7 @@ def _normalize_input_factory(alg: NSType) -> StrToStr:
     """
     if alg & ns.COMPATIBILITYNORMALIZE:
         return partial(normalize, "NFKD")
-    else:
-        return partial(normalize, "NFD")
+    return partial(normalize, "NFD")
 
 
 def _compose_input_factory(alg: NSType) -> StrToStr:
@@ -261,8 +260,7 @@ def _compose_input_factory(alg: NSType) -> StrToStr:
     """
     if alg & ns.COMPATIBILITYNORMALIZE:
         return partial(normalize, "NFKC")
-    else:
-        return partial(normalize, "NFC")
+    return partial(normalize, "NFC")
 
 
 @overload
@@ -340,15 +338,15 @@ def natsort_key(
 
     if isinstance(val, (str, PurePath)):
         return string_func(val)
-    elif isinstance(val, bytes):
+    if isinstance(val, bytes):
         return bytes_func(val)
-    elif isinstance(val, Iterable):
+    if isinstance(val, Iterable):
         # Must be parsed recursively, but do not apply the key recursively.
         return tuple(
             natsort_key(x, None, string_func, bytes_func, num_func) for x in val
         )
-    else:  # Anything else goes here
-        return num_func(val)
+    # Anything else goes here
+    return num_func(val)
 
 
 def parse_bytes_factory(alg: NSType) -> BytesTransformer:
@@ -376,12 +374,11 @@ def parse_bytes_factory(alg: NSType) -> BytesTransformer:
     # bytes cannot be compared to strings.
     if alg & ns.PATH and alg & ns.IGNORECASE:
         return lambda x: ((x.lower(),),)
-    elif alg & ns.PATH:
+    if alg & ns.PATH:
         return lambda x: ((x,),)
-    elif alg & ns.IGNORECASE:
+    if alg & ns.IGNORECASE:
         return lambda x: (x.lower(),)
-    else:
-        return lambda x: (x,)
+    return lambda x: (x,)
 
 
 def parse_number_or_none_factory(
@@ -429,22 +426,20 @@ def parse_number_or_none_factory(
         # None comes first, then NaN, then the replacement value.
         if val != val:
             return _sep, _nan_replace, "3" if reverse else "1"
-        elif val is None:
+        if val is None:
             return _sep, _nan_replace, "2"
-        elif val == _nan_replace:
+        if val == _nan_replace:
             return _sep, _nan_replace, "1" if reverse else "3"
-        else:
-            return _sep, val
+        return _sep, val
 
     # Return the function, possibly wrapping in tuple if PATH is selected.
     if alg & ns.PATH and alg & ns.UNGROUPLETTERS and alg & ns.LOCALEALPHA:
         return lambda x: (((pre_sep,), func(x)),)
-    elif alg & ns.UNGROUPLETTERS and alg & ns.LOCALEALPHA:
+    if alg & ns.UNGROUPLETTERS and alg & ns.LOCALEALPHA:
         return lambda x: ((pre_sep,), func(x))
-    elif alg & ns.PATH:
+    if alg & ns.PATH:
         return lambda x: (func(x),)
-    else:
-        return func
+    return func
 
 
 def parse_string_factory(
@@ -708,8 +703,7 @@ def string_component_transform_factory(alg: NSType) -> StrTransformer:
     if alg & ns.FLOAT:
         kwargs["nan"] = nan_val
         return cast(StrTransformer, partial(try_float, **kwargs))
-    else:
-        return cast(StrTransformer, partial(try_int, **kwargs))
+    return cast(StrTransformer, partial(try_int, **kwargs))
 
 
 def final_data_transform_factory(
@@ -760,10 +754,9 @@ def final_data_transform_factory(
             split_val = tuple(split_val)
             if not split_val:
                 return (), ()
-            elif split_val[0] == _sep:
+            if split_val[0] == _sep:
                 return (_pre_sep,), split_val
-            else:
-                return (_transform(val[0]),), split_val
+            return (_transform(val[0]),), split_val
 
     else:
 
@@ -835,11 +828,10 @@ def chain_functions(functions: Iterable[AnyCall]) -> AnyCall:
     functions = list(functions)
     if not functions:
         return _no_op
-    elif len(functions) == 1:
+    if len(functions) == 1:
         return functions[0]
-    else:
-        # See https://stackoverflow.com/a/39123400/1399279
-        return partial(reduce, lambda res, f: f(res), functions)
+    # See https://stackoverflow.com/a/39123400/1399279
+    return partial(reduce, lambda res, f: f(res), functions)
 
 
 @overload
@@ -869,8 +861,7 @@ def do_decoding(s: Any, encoding: str) -> Any:
     """
     if isinstance(s, bytes):
         return s.decode(encoding)
-    else:
-        return s
+    return s
 
 
 # noinspection PyIncorrectDocstring
