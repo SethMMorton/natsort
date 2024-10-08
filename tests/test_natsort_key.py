@@ -12,11 +12,13 @@ def str_func(x: Any) -> Tuple[str]:
     if isinstance(x, str):
         return (x,)
     else:
-        raise TypeError("Not a str!")
+        msg = "Not a str!"
+        raise TypeError(msg)
 
 
 def fail(_: Any) -> NoReturn:
-    raise AssertionError("This should never be reached!")
+    msg = "This should never be reached!"
+    raise AssertionError(msg)
 
 
 @given(floats(allow_nan=False) | integers())

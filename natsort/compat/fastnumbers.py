@@ -22,9 +22,8 @@ def is_supported_fastnumbers(
     )
 
     if not match:
-        raise ValueError(
-            f"Invalid fastnumbers version number '{fastnumbers_version}'",
-        )
+        msg = f"Invalid fastnumbers version number '{fastnumbers_version}'"
+        raise ValueError(msg)
 
     (major, minor, patch) = match.group(1, 2, 4)
 

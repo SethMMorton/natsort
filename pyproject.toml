@@ -77,6 +77,7 @@ select = [
 	"A",    # flake8-builtins
 	"COM",  # flake8-commas
 	"C4",   # flake8-comprehensions
+	"EM",   # flake8-errmsg
 ]
 ignore = [
 	"A002",  # arguments shadow builtins

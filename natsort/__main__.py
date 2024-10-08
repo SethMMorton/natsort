@@ -200,7 +200,8 @@ def range_check(low: Num, high: Num) -> NumPair:
 
     """
     if low >= high:
-        raise ValueError("low >= high")
+        msg = "low >= high"
+        raise ValueError(msg)
     else:
         return low, high
 
