@@ -187,7 +187,7 @@ def test_check_filters_returns_input_as_is_if_filter_is_valid(
 ) -> None:
     # ensure y is element-wise greater than x
     y = [d.draw(integers(min_value=val + 1)) for val in x]
-    assert check_filters(list(zip(x, y))) == [(i, j) for i, j in zip(x, y)]
+    assert check_filters(list(zip(x, y))) == list(zip(x, y))
 
 
 def test_check_filters_raises_value_error_if_filter_is_invalid_example() -> None:

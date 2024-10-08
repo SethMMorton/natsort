@@ -76,6 +76,7 @@ select = [
 	"BLE",  # flake8-blind-except
 	"A",    # flake8-builtins
 	"COM",  # flake8-commas
+	"C4",   # flake8-comprehensions
 ]
 ignore = [
 	"A002",  # arguments shadow builtins

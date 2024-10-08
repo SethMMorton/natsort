@@ -52,4 +52,4 @@ __all__ = [
 ]
 
 # Add the ns keys to this namespace for convenience.
-globals().update({name: value for name, value in ns.__members__.items()})
+globals().update(dict(ns.__members__.items()))
