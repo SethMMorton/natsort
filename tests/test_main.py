@@ -64,7 +64,7 @@ def test_main_passes_arguments_with_all_command_line_options(
     assert args.locale
 
 
-mock_print = "__builtin__.print" if sys.version[0] == "2" else "builtins.print"
+mock_print = "__builtin__.print" if sys.version_info[0] == 2 else "builtins.print"
 
 entries = [
     "tmp/a57/path2",

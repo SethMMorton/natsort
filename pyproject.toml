@@ -72,6 +72,7 @@ select = [
 	"N",    # pep8-naming
 	"I",    # isort
 	"UP",   # pyupgrade
+	"YTT",  # flake8-2020
 ]
 # doctests = true  # enable when/if available
 
