@@ -11,6 +11,7 @@ from typing import List, Pattern, Tuple, Union
 import pytest
 from hypothesis import given
 from hypothesis.strategies import integers, lists, sampled_from, text
+
 from natsort import utils
 from natsort.ns_enum import NSType, ns
 

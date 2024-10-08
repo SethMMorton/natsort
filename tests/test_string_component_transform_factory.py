@@ -7,9 +7,10 @@ from typing import Any, Callable, FrozenSet, Union
 import pytest
 from hypothesis import assume, example, given
 from hypothesis.strategies import floats, integers, text
+
 from natsort.compat.fastnumbers import try_float, try_int
 from natsort.compat.locale import get_strxfrm
-from natsort.ns_enum import NSType, NS_DUMB, ns
+from natsort.ns_enum import NS_DUMB, NSType, ns
 from natsort.utils import groupletters, string_component_transform_factory
 
 # There are some unicode values that are known failures with the builtin locale

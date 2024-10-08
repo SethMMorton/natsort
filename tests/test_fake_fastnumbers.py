@@ -9,6 +9,7 @@ from typing import Union, cast
 
 from hypothesis import given
 from hypothesis.strategies import floats, integers, text
+
 from natsort.compat.fake_fastnumbers import fast_float, fast_int
 
 

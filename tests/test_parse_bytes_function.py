@@ -4,6 +4,7 @@
 import pytest
 from hypothesis import given
 from hypothesis.strategies import binary
+
 from natsort.ns_enum import NSType, ns
 from natsort.utils import BytesTransformer, parse_bytes_factory
 

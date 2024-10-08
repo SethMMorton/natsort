@@ -5,6 +5,7 @@ from typing import Any, List, NoReturn, Tuple, Union, cast
 
 from hypothesis import given
 from hypothesis.strategies import binary, floats, integers, lists, text
+
 from natsort.utils import natsort_key
 
 

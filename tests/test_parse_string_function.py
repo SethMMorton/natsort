@@ -7,14 +7,17 @@ from typing import Any, Callable, Iterable, List, Tuple, Union
 import pytest
 from hypothesis import given
 from hypothesis.strategies import floats, integers, lists, text
+
 from natsort.compat.fastnumbers import try_float
-from natsort.ns_enum import NSType, NS_DUMB, ns
+from natsort.ns_enum import NS_DUMB, NSType, ns
 from natsort.utils import (
     FinalTransform,
-    NumericalRegularExpressions as NumRegex,
     StrParser,
+    parse_string_factory,
 )
-from natsort.utils import parse_string_factory
+from natsort.utils import (
+    NumericalRegularExpressions as NumRegex,
+)
 
 
 class CustomTuple(Tuple[Any, ...]):

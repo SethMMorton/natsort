@@ -10,10 +10,10 @@ import sys
 from typing import List, Union
 
 try:
-    from natsort import ns, natsort_keygen
+    from natsort import natsort_keygen, ns
 except ImportError:
     sys.path.insert(0, ".")
-    from natsort import ns, natsort_keygen
+    from natsort import natsort_keygen, ns
 
 from natsort.natsort import NatsortKeyType
 

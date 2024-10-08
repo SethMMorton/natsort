@@ -8,7 +8,6 @@ import enum
 import itertools
 import typing
 
-
 _counter = itertools.count(0)
 
 

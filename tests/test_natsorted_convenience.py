@@ -8,6 +8,7 @@ from operator import itemgetter
 from typing import List
 
 import pytest
+
 from natsort import (
     as_ascii,
     as_utf8,

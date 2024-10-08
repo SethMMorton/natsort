@@ -25,7 +25,7 @@ from typing import (
 
 import natsort.compat.locale
 from natsort import utils
-from natsort.ns_enum import NSType, NS_DUMB, ns
+from natsort.ns_enum import NS_DUMB, NSType, ns
 from natsort.utils import NatsortInType, NatsortOutType
 
 # Common input and output types
@@ -178,7 +178,7 @@ def natsort_keygen(
         ns.DEFAULT | alg
     except TypeError:
         msg = "natsort_keygen: 'alg' argument must be from the enum 'ns'"
-        raise ValueError(msg + ", got {}".format(str(alg)))
+        raise ValueError(msg + ", got {}".format(str(alg))) from None
 
     # Add the NS_DUMB option if the locale library is broken.
     if alg & ns.LOCALEALPHA and natsort.compat.locale.dumb_sort():
@@ -681,7 +681,7 @@ def _split_apply(
 
 # Choose the implementation based on the host OS
 if platform.system() == "Windows":
-    from ctypes import wintypes, windll  # type: ignore
+    from ctypes import windll, wintypes  # type: ignore
     from functools import cmp_to_key
 
     _windows_sort_cmp = windll.Shlwapi.StrCmpLogicalW

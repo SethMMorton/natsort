@@ -36,7 +36,8 @@ def is_supported_fastnumbers(
 # benefits. If not, we use the simulated functions that come with natsort.
 try:
     # noinspection PyPackageRequirements
-    from fastnumbers import fast_float, fast_int, __version__ as fn_ver
+    from fastnumbers import __version__ as fn_ver
+    from fastnumbers import fast_float, fast_int
 
     # Require >= version 2.0.0.
     if not is_supported_fastnumbers(fn_ver):

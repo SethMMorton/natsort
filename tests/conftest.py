@@ -7,8 +7,8 @@ from typing import Iterator
 
 import hypothesis
 import pytest
-from natsort.compat.locale import dumb_sort
 
+from natsort.compat.locale import dumb_sort
 
 # This disables the "too slow" hypothesis heath check globally.
 # For some reason it thinks that the text/binary generation is too

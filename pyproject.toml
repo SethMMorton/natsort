@@ -54,26 +54,25 @@ find = {namespaces = false}
 [tool.mypy]
 mypy_path = "mypy_stubs"
 
-[tool.flake8]
-max-line-length = 89
-import-order-style = "pycharm"
-doctests = true
-max-complexity = 10
-exclude = [
-	"natsort.egg-info",
-	".tox",
-	".cache",
-	".git",
-	"__pycache__",
-	"build",
-	"dist",
-	"docs",
-	".venv",
-]
-
 [tool.ruff]
 target-version = "py38"
-extend-exclude = ["build", "dist", "docs"]
+extend-exclude = ["build", "dist", "docs", "mypy_stubs"]
 
 [tool.ruff.format]
 docstring-code-format = true
+
+[tool.ruff.lint]
+fixable = ["ALL"]
+select = [
+	"F",
+	"E",
+	"W",
+	"C90",
+	"B",  # flake8-bugbear
+	"N",  # pep8-naming
+	"I",  # isort
+]
+# doctests = true  # enable when/if available
+
+[tool.ruff.lint.mccabe]
+max-complexity = 10

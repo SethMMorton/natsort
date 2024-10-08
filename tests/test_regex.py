@@ -4,10 +4,10 @@
 from typing import List, Pattern
 
 import pytest
+
 from natsort import ns, numeric_regex_chooser
 from natsort.ns_enum import NSType
 from natsort.utils import NumericalRegularExpressions as NumRegex
-
 
 regex_names = {
     NumRegex.int_nosign(): "int_nosign",

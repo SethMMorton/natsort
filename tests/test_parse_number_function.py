@@ -6,6 +6,7 @@ from typing import Optional, Tuple, Union
 import pytest
 from hypothesis import given
 from hypothesis.strategies import floats, integers
+
 from natsort.ns_enum import NSType, ns
 from natsort.utils import NumTransformer, parse_number_or_none_factory
 

@@ -8,11 +8,12 @@ import os
 from typing import List, Tuple, Union
 
 import pytest
+from pytest_mock import MockerFixture
+
 from natsort import natsort_key, natsort_keygen, natsorted, ns
 from natsort.compat.locale import get_strxfrm, null_string_locale
 from natsort.ns_enum import NSType
 from natsort.utils import BytesTransform, FinalTransform
-from pytest_mock import MockerFixture
 
 
 @pytest.fixture

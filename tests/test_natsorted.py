@@ -10,9 +10,10 @@ from pathlib import PurePosixPath
 from typing import List, Tuple, Union
 
 import pytest
+from pytest import raises
+
 from natsort import as_utf8, natsorted, ns
 from natsort.ns_enum import NSType
-from pytest import raises
 
 
 @pytest.fixture

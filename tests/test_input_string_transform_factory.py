@@ -6,7 +6,8 @@ from typing import Callable
 import pytest
 from hypothesis import example, given
 from hypothesis.strategies import integers, text
-from natsort.ns_enum import NSType, NS_DUMB, ns
+
+from natsort.ns_enum import NS_DUMB, NSType, ns
 from natsort.utils import input_string_transform_factory
 
 

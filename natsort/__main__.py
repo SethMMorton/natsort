@@ -231,7 +231,7 @@ def check_filters(filters: Optional[NumPairIter]) -> Optional[List[NumPair]]:
     try:
         return [range_check(f[0], f[1]) for f in filters]
     except ValueError as err:
-        raise ValueError("Error in --filter: " + str(err))
+        raise ValueError("Error in --filter: " + str(err)) from None
 
 
 def keep_entry_range(

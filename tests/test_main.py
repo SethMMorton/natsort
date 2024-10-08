@@ -10,6 +10,8 @@ from typing import Any, List, Union
 import pytest
 from hypothesis import given
 from hypothesis.strategies import DataObject, data, floats, integers, lists
+from pytest_mock import MockerFixture
+
 from natsort.__main__ import (
     TypedArgs,
     check_filters,
@@ -19,7 +21,6 @@ from natsort.__main__ import (
     range_check,
     sort_and_print_entries,
 )
-from pytest_mock import MockerFixture
 
 
 def test_main_passes_default_arguments_with_no_command_line_options(
