@@ -53,3 +53,20 @@ find = {namespaces = false}
 
 [tool.mypy]
 mypy_path = "mypy_stubs"
+
+[tool.flake8]
+max-line-length = 89
+import-order-style = "pycharm"
+doctests = true
+max-complexity = 10
+exclude = [
+	"natsort.egg-info",
+	".tox",
+	".cache",
+	".git",
+	"__pycache__",
+	"build",
+	"dist",
+	"docs",
+	".venv",
+]
