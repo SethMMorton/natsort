@@ -92,6 +92,7 @@ select = [
 	"TID",  # flake8-tidy-imports
 	"TCH",  # flake8-type-checking
 	"ARG",  # flake8-unused-arguments
+	"ERA",  # eradicate
 ]
 ignore = [
 	"A002",   # arguments shadow builtins

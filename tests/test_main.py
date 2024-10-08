@@ -81,7 +81,7 @@ entries = [
     ("options", "order"),
     [
         # Defaults, all options false
-        # tmp/a1 (1)/path1
+        # tmp/a1 (1)/path1  # noqa: ERA001
         # tmp/a1/path1
         # tmp/a23/path1
         # tmp/a57/path2
@@ -91,7 +91,7 @@ entries = [
         ([None, None, False, False, False], [3, 2, 1, 0, 5, 6, 4]),
         # Path option True
         # tmp/a1/path1
-        # tmp/a1 (1)/path1
+        # tmp/a1 (1)/path1  # noqa: ERA001
         # tmp/a23/path1
         # tmp/a57/path2
         # tmp/a64/path1
@@ -106,12 +106,12 @@ entries = [
         ([[(20, 100)], None, False, False, False], [1, 0, 5, 6]),
         # Reverse filter, exclude in range
         # tmp/a1/path1
-        # tmp/a1 (1)/path1
+        # tmp/a1 (1)/path1  # noqa: ERA001
         # tmp/a130/path1
         ([None, [(20, 100)], False, True, False], [2, 3, 4]),
         # Exclude given values with exclude list
         # tmp/a1/path1
-        # tmp/a1 (1)/path1
+        # tmp/a1 (1)/path1  # noqa: ERA001
         # tmp/a57/path2
         # tmp/a64/path1
         # tmp/a64/path2
@@ -122,7 +122,7 @@ entries = [
         # tmp/a64/path1
         # tmp/a57/path2
         # tmp/a23/path1
-        # tmp/a1 (1)/path1
+        # tmp/a1 (1)/path1  # noqa: ERA001
         # tmp/a1/path1
         ([None, None, False, True, True], reversed([2, 3, 1, 0, 5, 6, 4])),
     ],
