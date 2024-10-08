@@ -177,7 +177,7 @@ def natsort_keygen(
         ns.DEFAULT | alg
     except TypeError:
         msg = "natsort_keygen: 'alg' argument must be from the enum 'ns'"
-        raise ValueError(msg + f", got {str(alg)}") from None
+        raise ValueError(msg + f", got {alg!s}") from None
 
     # Add the NS_DUMB option if the locale library is broken.
     if alg & ns.LOCALEALPHA and natsort.compat.locale.dumb_sort():

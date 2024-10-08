@@ -22,7 +22,7 @@ null_string_locale_max: StrOrBytes
 
 # strxfrm can be buggy (especially on OSX and *possibly* some other
 # BSD-based systems), so prefer icu if available.
-try:  # noqa: C901
+try:
     from locale import getlocale
 
     import icu

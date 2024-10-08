@@ -53,7 +53,7 @@ except ImportError:
 # then there is nothing to do.
 if "try_float" not in globals():
 
-    def try_float(  # type: ignore[no-redef]  # noqa: F811
+    def try_float(  # type: ignore[no-redef]
         x: Iterable[str],
         map: bool,
         nan: float = float("inf"),
@@ -65,7 +65,7 @@ if "try_float" not in globals():
 
 if "try_int" not in globals():
 
-    def try_int(  # type: ignore[no-redef]  # noqa: F811
+    def try_int(  # type: ignore[no-redef]
         x: Iterable[str],
         map: bool,
         on_fail: Callable[[str], str] = lambda x: x,

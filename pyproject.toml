@@ -93,10 +93,12 @@ select = [
 	"TCH",  # flake8-type-checking
 	"ARG",  # flake8-unused-arguments
 	"ERA",  # eradicate
+	"RUF",  # ruff-specific-rules
 ]
 ignore = [
-	"A002",   # arguments shadow builtins
-	"PT004",  # leading underscore in fixtures that return nothing
+	"A002",    # arguments shadow builtins
+	"PT004",   # leading underscore in fixtures that return nothing
+	"RUF001",  # ambiguous-unicode-character-string
 ]
 # doctests = true  # enable when/if available
 
