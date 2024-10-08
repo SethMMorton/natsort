@@ -50,3 +50,6 @@ natsort = "natsort.__main__:main"
 
 [tool.setuptools.packages]
 find = {namespaces = false}
+
+[tool.mypy]
+mypy_path = "mypy_stubs"
