@@ -44,7 +44,9 @@ cProfile.run("prof_time_to_generate()", sort="time")
 
 
 def prof_parsing(
-    a: Union[str, int, bytes, List[str]], msg: str, key: NatsortKeyType = basic_key,
+    a: Union[str, int, bytes, List[str]],
+    msg: str,
+    key: NatsortKeyType = basic_key,
 ) -> None:
     print(msg)
     for _ in range(100000):
@@ -52,15 +54,18 @@ def prof_parsing(
 
 
 cProfile.run(
-    'prof_parsing(int_string, "*** Basic Call, Int as String ***")', sort="time",
+    'prof_parsing(int_string, "*** Basic Call, Int as String ***")',
+    sort="time",
 )
 cProfile.run(
-    'prof_parsing(float_string, "*** Basic Call, Float as String ***")', sort="time",
+    'prof_parsing(float_string, "*** Basic Call, Float as String ***")',
+    sort="time",
 )
 cProfile.run('prof_parsing(float_string, "*** Real Call ***", real_key)', sort="time")
 cProfile.run('prof_parsing(number, "*** Basic Call, Number ***")', sort="time")
 cProfile.run(
-    'prof_parsing(fancy_string, "*** Basic Call, Mixed String ***")', sort="time",
+    'prof_parsing(fancy_string, "*** Basic Call, Mixed String ***")',
+    sort="time",
 )
 cProfile.run('prof_parsing(some_bytes, "*** Basic Call, Byte String ***")', sort="time")
 cProfile.run('prof_parsing(a_path, "*** Path Call ***", path_key)', sort="time")

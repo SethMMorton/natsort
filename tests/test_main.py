@@ -128,7 +128,9 @@ entries = [
     ],
 )
 def test_sort_and_print_entries(
-    options: List[Any], order: List[int], mocker: MockerFixture,
+    options: List[Any],
+    order: List[int],
+    mocker: MockerFixture,
 ) -> None:
     p = mocker.patch(mock_print)
     sort_and_print_entries(entries, TypedArgs(*options))
@@ -147,7 +149,8 @@ def test_range_check_returns_range_as_is_but_with_floats_example() -> None:
 
 @given(x=floats(allow_nan=False, min_value=-1e8, max_value=1e8) | integers(), d=data())
 def test_range_check_returns_range_as_is_if_first_is_less_than_second(
-    x: float, d: DataObject,
+    x: float,
+    d: DataObject,
 ) -> None:
     # Pull data such that the first is less than the second.
     if isinstance(x, float):
@@ -164,7 +167,8 @@ def test_range_check_raises_value_error_if_second_is_less_than_first_example() -
 
 @given(x=floats(allow_nan=False), d=data())
 def test_range_check_raises_value_error_if_second_is_less_than_first(
-    x: float, d: DataObject,
+    x: float,
+    d: DataObject,
 ) -> None:
     # Pull data such that the first is greater than or equal to the second.
     y = d.draw(floats(max_value=x, allow_nan=False))
@@ -183,7 +187,8 @@ def test_check_filters_returns_input_as_is_if_filter_is_valid_example() -> None:
 
 @given(x=lists(integers(), min_size=1), d=data())
 def test_check_filters_returns_input_as_is_if_filter_is_valid(
-    x: List[int], d: DataObject,
+    x: List[int],
+    d: DataObject,
 ) -> None:
     # ensure y is element-wise greater than x
     y = [d.draw(integers(min_value=val + 1)) for val in x]
@@ -197,7 +202,8 @@ def test_check_filters_raises_value_error_if_filter_is_invalid_example() -> None
 
 @given(x=lists(integers(), min_size=1), d=data())
 def test_check_filters_raises_value_error_if_filter_is_invalid(
-    x: List[int], d: DataObject,
+    x: List[int],
+    d: DataObject,
 ) -> None:
     # ensure y is element-wise less than or equal to x
     y = [d.draw(integers(max_value=val)) for val in x]

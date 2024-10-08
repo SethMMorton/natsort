@@ -98,7 +98,9 @@ labels = [f"{given}-{regex_names[regex]}" for given, _, regex in regex_params]
 
 @pytest.mark.parametrize(("x", "expected", "regex"), regex_params, ids=labels)
 def test_regex_splits_correctly(
-    x: str, expected: List[str], regex: Pattern[str],
+    x: str,
+    expected: List[str],
+    regex: Pattern[str],
 ) -> None:
     # noinspection PyUnresolvedReferences
     assert regex.split(x) == expected

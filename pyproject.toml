@@ -6,7 +6,7 @@ name="natsort"
 authors = [
     {name = "Seth M. Morton", email = "drtuba78@gmail.com"},
 ]
-version="8.4.0"
+dynamic = ["version"]
 requires-python = ">=3.7"
 description = "Simple yet flexible natural sorting in Python."
 readme = "README.rst"
@@ -99,6 +99,8 @@ ignore = [
 	"A002",    # arguments shadow builtins
 	"PT004",   # leading underscore in fixtures that return nothing
 	"RUF001",  # ambiguous-unicode-character-string
+	"COM812",  # missing trailing comma
+	"ISC001",  # single line implicit string concatenation
 ]
 # doctests = true  # enable when/if available
 

@@ -382,7 +382,9 @@ def parse_bytes_factory(alg: NSType) -> BytesTransformer:
 
 
 def parse_number_or_none_factory(
-    alg: NSType, sep: StrOrBytes, pre_sep: str,
+    alg: NSType,
+    sep: StrOrBytes,
+    pre_sep: str,
 ) -> NumTransformer:
     """
     Create a function that will format a number (or None) into a tuple.
@@ -645,7 +647,8 @@ def input_string_transform_factory(alg: NSType) -> StrToStr:
             nodecimal += r"(?<!" + d + r"[0-9]{2})"
             nodecimal += r"(?<!" + d + r"[0-9]{3})"
         strip_thousands = strip_thousands.format(
-            thou=re.escape(get_thousands_sep()), nodecimal=nodecimal,
+            thou=re.escape(get_thousands_sep()),
+            nodecimal=nodecimal,
         )
         strip_thousands_re = re.compile(strip_thousands, flags=re.VERBOSE)
         function_chain.append(partial(strip_thousands_re.sub, ""))
@@ -707,7 +710,9 @@ def string_component_transform_factory(alg: NSType) -> StrTransformer:
 
 
 def final_data_transform_factory(
-    alg: NSType, sep: StrOrBytes, pre_sep: str,
+    alg: NSType,
+    sep: StrOrBytes,
+    pre_sep: str,
 ) -> FinalTransformer:
     """
     Create a function to transform a tuple.
@@ -866,7 +871,9 @@ def do_decoding(s: Any, encoding: str) -> Any:
 
 # noinspection PyIncorrectDocstring
 def path_splitter(
-    s: PathArg, treat_base: bool = True, _d_match: MatchFn = re.compile(r"\.\d").match,
+    s: PathArg,
+    treat_base: bool = True,
+    _d_match: MatchFn = re.compile(r"\.\d").match,
 ) -> Iterator[str]:
     """
     Split a string into its path components.

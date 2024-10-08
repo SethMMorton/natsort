@@ -13,7 +13,8 @@ __all__ = ["try_float", "try_int"]
 
 
 def is_supported_fastnumbers(
-    fastnumbers_version: str, minimum: Tuple[int, int, int] = (2, 0, 0),
+    fastnumbers_version: str,
+    minimum: Tuple[int, int, int] = (2, 0, 0),
 ) -> bool:
     match = re.match(
         r"^(\d+)\.(\d+)(\.(\d+))?([ab](\d+))?$",

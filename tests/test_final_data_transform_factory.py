@@ -14,7 +14,9 @@ from natsort.utils import final_data_transform_factory
 @given(x=text(), y=floats(allow_nan=False, allow_infinity=False) | integers())
 @pytest.mark.usefixtures("with_locale_en_us")
 def test_final_data_transform_factory_default(
-    x: str, y: float, alg: NSType,
+    x: str,
+    y: float,
+    alg: NSType,
 ) -> None:
     final_data_transform_func = final_data_transform_factory(alg, "", "::")
     value = (x, y)
@@ -39,7 +41,10 @@ def test_final_data_transform_factory_default(
 @example(x="İ", y=0)
 @pytest.mark.usefixtures("with_locale_en_us")
 def test_final_data_transform_factory_ungroup_and_locale(
-    x: str, y: float, alg: NSType, func: Callable[[str], str],
+    x: str,
+    y: float,
+    alg: NSType,
+    func: Callable[[str], str],
 ) -> None:
     final_data_transform_func = final_data_transform_factory(alg, "", "::")
     value = (x, y)

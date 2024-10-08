@@ -1,4 +1,3 @@
-
 import argparse
 import sys
 from typing import Callable, Iterable, List, Optional, Pattern, Tuple, Union, cast
@@ -272,7 +271,10 @@ def keep_entry_range(
 
 
 def keep_entry_value(
-    entry: str, values: NumIter, converter: NumConverter, regex: Pattern[str],
+    entry: str,
+    values: NumIter,
+    converter: NumConverter,
+    regex: Pattern[str],
 ) -> bool:
     """
     Check if an entry does not match a given value.

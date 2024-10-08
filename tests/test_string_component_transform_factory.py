@@ -55,13 +55,17 @@ def input_is_ok_with_locale(x: str) -> bool:
         (
             ns.GROUPLETTERS | ns.LOCALE,
             partial(
-                try_int, map=True, on_fail=lambda x: get_strxfrm()(groupletters(x)),
+                try_int,
+                map=True,
+                on_fail=lambda x: get_strxfrm()(groupletters(x)),
             ),
         ),
         (
             NS_DUMB | ns.LOCALE,
             partial(
-                try_int, map=True, on_fail=lambda x: get_strxfrm()(groupletters(x)),
+                try_int,
+                map=True,
+                on_fail=lambda x: get_strxfrm()(groupletters(x)),
             ),
         ),
         (
@@ -84,7 +88,9 @@ def input_is_ok_with_locale(x: str) -> bool:
 )
 @pytest.mark.usefixtures("with_locale_en_us")
 def test_string_component_transform_factory(
-    x: Union[str, float], alg: NSType, example_func: Callable[[str], Any],
+    x: Union[str, float],
+    alg: NSType,
+    example_func: Callable[[str], Any],
 ) -> None:
     string_component_transform_func = string_component_transform_factory(alg)
     x = str(x)

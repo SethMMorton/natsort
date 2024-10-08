@@ -126,7 +126,8 @@ def as_utf8(s: Any) -> Any:
 
 
 def natsort_keygen(
-    key: Optional[Callable[[Any], NatsortInType]] = None, alg: NSType = ns.DEFAULT,
+    key: Optional[Callable[[Any], NatsortInType]] = None,
+    alg: NSType = ns.DEFAULT,
 ) -> Callable[[Any], NatsortOutType]:
     """
     Generate a key to sort strings and numbers naturally.
@@ -205,7 +206,12 @@ def natsort_keygen(
 
     # Create the high-level parsing functions for strings, bytes, and numbers.
     string_func = utils.parse_string_factory(
-        alg, sep, regex.split, input_transform, component_transform, final_transform,
+        alg,
+        sep,
+        regex.split,
+        input_transform,
+        component_transform,
+        final_transform,
     )
     if alg & ns.PATH:
         string_func = utils.parse_path_factory(string_func)
@@ -589,7 +595,9 @@ def index_realsorted(
 
 
 def order_by_index(
-    seq: Sequence[Any], index: Iterable[int], iter: bool = False,
+    seq: Sequence[Any],
+    index: Iterable[int],
+    iter: bool = False,
 ) -> Iterable[Any]:
     """
     Order a given sequence by an index sequence.
@@ -669,7 +677,9 @@ def numeric_regex_chooser(alg: NSType) -> str:
 
 
 def _split_apply(
-    v: Any, key: Optional[Callable[[T], NatsortInType]] = None, treat_base: bool = True,
+    v: Any,
+    key: Optional[Callable[[T], NatsortInType]] = None,
+    treat_base: bool = True,
 ) -> Iterator[str]:
     if key is not None:
         v = key(v)
@@ -724,7 +734,8 @@ else:
             loc = natsort.compat.locale.get_icu_locale()
             collator = icu.Collator.createInstance(loc)
             collator.setAttribute(
-                icu.UCollAttribute.NUMERIC_COLLATION, icu.UCollAttributeValue.ON,
+                icu.UCollAttribute.NUMERIC_COLLATION,
+                icu.UCollAttributeValue.ON,
             )
             return lambda x: tuple(map(collator.getSortKey, _split_apply(x, key)))
 

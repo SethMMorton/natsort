@@ -22,7 +22,9 @@ from natsort.utils import NumTransformer, parse_number_or_none_factory
 )
 @given(x=floats(allow_nan=False, allow_infinity=False) | integers())
 def test_parse_number_factory_makes_function_that_returns_tuple(
-    x: float, alg: NSType, example_func: NumTransformer,
+    x: float,
+    alg: NSType,
+    example_func: NumTransformer,
 ) -> None:
     parse_number_func = parse_number_or_none_factory(alg, "", "xx")
     assert parse_number_func(x) == example_func(x)
@@ -49,7 +51,9 @@ def test_parse_number_factory_makes_function_that_returns_tuple(
     ],
 )
 def test_parse_number_factory_treats_nan_and_none_special(
-    alg: NSType, x: Optional[float], result: Tuple[str, float],
+    alg: NSType,
+    x: Optional[float],
+    result: Tuple[str, float],
 ) -> None:
     parse_number_func = parse_number_or_none_factory(alg, "", "xx")
     assert parse_number_func(x) == result

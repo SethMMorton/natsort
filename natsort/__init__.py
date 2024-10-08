@@ -1,4 +1,3 @@
-
 from natsort.natsort import (
     NatsortKeyType,
     OSSortKeyType,
