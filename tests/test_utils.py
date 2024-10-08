@@ -35,7 +35,7 @@ def test_do_decoding_decodes_bytes_string_to_unicode() -> None:
     ],
 )
 def test_regex_chooser_returns_correct_regular_expression_object(
-    alg: NSType, expected: Pattern[str]
+    alg: NSType, expected: Pattern[str],
 ) -> None:
     assert utils.regex_chooser(alg).pattern == expected.pattern
 
@@ -104,7 +104,7 @@ def test_groupletters_gives_letters_with_lowercase_letter_transform(
     x: str,
 ) -> None:
     assert utils.groupletters(x) == "".join(
-        chain.from_iterable([y.casefold(), y] for y in x)
+        chain.from_iterable([y.casefold(), y] for y in x),
     )
 
 
@@ -173,7 +173,7 @@ def test_path_splitter_splits_path_string_by_sep(x: List[str]) -> None:
     ],
 )
 def test_path_splitter_splits_path_string_by_sep_and_removes_extension_example(
-    given: str, expected: Tuple[str, ...]
+    given: str, expected: Tuple[str, ...],
 ) -> None:
     assert tuple(utils.path_splitter(given)) == tuple(expected)
 

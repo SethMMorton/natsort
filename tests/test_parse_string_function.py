@@ -73,12 +73,12 @@ def test_parse_string_factory_raises_type_error_if_given_number(
 )
 @given(
     x=lists(
-        elements=floats(allow_nan=False) | text() | integers(), min_size=1, max_size=10
-    )
+        elements=floats(allow_nan=False) | text() | integers(), min_size=1, max_size=10,
+    ),
 )
 @pytest.mark.usefixtures("with_locale_en_us")
 def test_parse_string_factory_invariance(
-    x: List[Union[float, str, int]], alg: NSType, orig_func: Callable[[str], str]
+    x: List[Union[float, str, int]], alg: NSType, orig_func: Callable[[str], str],
 ) -> None:
     parse_string_func = parse_string_func_factory(alg)
     # parse_string_factory is the high-level combination of several dedicated

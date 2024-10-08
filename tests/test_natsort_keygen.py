@@ -48,7 +48,7 @@ def test_natsort_keygen_with_invalid_alg_input_raises_value_error() -> None:
     [(ns.DEFAULT, ("a-", 5, ".", 34, "e", 1)), (ns.FLOAT | ns.SIGNED, ("a", -50.34))],
 )
 def test_natsort_keygen_returns_natsort_key_that_parses_input(
-    alg: NSType, expected: Tuple[Union[str, int, float], ...]
+    alg: NSType, expected: Tuple[Union[str, int, float], ...],
 ) -> None:
     ns_key = natsort_keygen(alg=alg)
     assert ns_key("a-5.034e1") == expected
@@ -85,7 +85,7 @@ def test_natsort_keygen_returns_natsort_key_that_parses_input(
     ],
 )
 def test_natsort_keygen_handles_arbitrary_input(
-    arbitrary_input: List[Union[str, float]], alg: NSType, expected: FinalTransform
+    arbitrary_input: List[Union[str, float]], alg: NSType, expected: FinalTransform,
 ) -> None:
     ns_key = natsort_keygen(alg=alg)
     assert ns_key(arbitrary_input) == expected
@@ -102,7 +102,7 @@ def test_natsort_keygen_handles_arbitrary_input(
     ],
 )
 def test_natsort_keygen_handles_bytes_input(
-    bytes_input: bytes, alg: NSType, expected: BytesTransform
+    bytes_input: bytes, alg: NSType, expected: BytesTransform,
 ) -> None:
     ns_key = natsort_keygen(alg=alg)
     assert ns_key(bytes_input) == expected
@@ -176,7 +176,7 @@ def test_natsort_keygen_with_locale(
 )
 @pytest.mark.usefixtures("with_locale_en_us")
 def test_natsort_keygen_with_locale_bytes(
-    mocker: MockerFixture, bytes_input: bytes, alg: NSType, is_dumb: bool
+    mocker: MockerFixture, bytes_input: bytes, alg: NSType, is_dumb: bool,
 ) -> None:
     expected = (b"6A-5.034e+1",)
     mocker.patch("natsort.compat.locale.dumb_sort", return_value=is_dumb)

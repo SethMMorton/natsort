@@ -20,7 +20,7 @@ from natsort.utils import BytesTransformer, parse_bytes_factory
 )
 @given(x=binary())
 def test_parse_bytest_factory_makes_function_that_returns_tuple(
-    x: bytes, alg: NSType, example_func: BytesTransformer
+    x: bytes, alg: NSType, example_func: BytesTransformer,
 ) -> None:
     parse_bytes_func = parse_bytes_factory(alg)
     assert parse_bytes_func(x) == example_func(x)

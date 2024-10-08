@@ -49,7 +49,7 @@ def test_natsorted_can_sort_as_signed_floats_with_exponents(
     [ns.NOEXP | ns.FLOAT | ns.UNSIGNED, ns.NOEXP | ns.FLOAT],
 )
 def test_natsorted_can_sort_as_unsigned_and_ignore_exponents(
-    float_list: List[str], alg: NSType
+    float_list: List[str], alg: NSType,
 ) -> None:
     expected = ["a5.034e1", "a50", "a50.300", "a50.31", "a50.4", "a51.", "a-50"]
     assert natsorted(float_list, alg=alg) == expected
@@ -58,7 +58,7 @@ def test_natsorted_can_sort_as_unsigned_and_ignore_exponents(
 # DEFAULT and INT are all equivalent.
 @pytest.mark.parametrize("alg", [ns.DEFAULT, ns.INT])
 def test_natsorted_can_sort_as_unsigned_ints_which_is_default(
-    float_list: List[str], alg: NSType
+    float_list: List[str], alg: NSType,
 ) -> None:
     expected = ["a5.034e1", "a50", "a50.4", "a50.31", "a50.300", "a51.", "a-50"]
     assert natsorted(float_list, alg=alg) == expected
@@ -74,7 +74,7 @@ def test_natsorted_can_sort_as_signed_ints(float_list: List[str]) -> None:
     [(ns.UNSIGNED, ["a7", "a+2", "a-5"]), (ns.SIGNED, ["a-5", "a+2", "a7"])],
 )
 def test_natsorted_can_sort_with_or_without_accounting_for_sign(
-    alg: NSType, expected: List[str]
+    alg: NSType, expected: List[str],
 ) -> None:
     given = ["a-5", "a7", "a+2"]
     assert natsorted(given, alg=alg) == expected
@@ -118,7 +118,7 @@ def test_natsorted_handles_mixed_types(
     ],
 )
 def test_natsorted_consistent_ordering_with_nan_and_friends(
-    alg: NSType, expected: List[Union[str, float, None, int]]
+    alg: NSType, expected: List[Union[str, float, None, int]],
 ) -> None:
     sentinel = math.pi
     expected = [sentinel if x != x else x for x in expected]
@@ -229,7 +229,7 @@ def test_natsorted_path_extensions_heuristic() -> None:
     ],
 )
 def test_natsorted_supports_case_handling(
-    alg: NSType, expected: List[str], fruit_list: List[str]
+    alg: NSType, expected: List[str], fruit_list: List[str],
 ) -> None:
     assert natsorted(fruit_list, alg=alg) == expected
 
@@ -243,7 +243,7 @@ def test_natsorted_supports_case_handling(
     ],
 )
 def test_natsorted_supports_nested_case_handling(
-    alg: NSType, expected: List[Tuple[str, str]]
+    alg: NSType, expected: List[Tuple[str, str]],
 ) -> None:
     given = [("A5", "a6"), ("a3", "a1")]
     assert natsorted(given, alg=alg) == expected
@@ -260,7 +260,7 @@ def test_natsorted_supports_nested_case_handling(
 )
 @pytest.mark.usefixtures("with_locale_en_us")
 def test_natsorted_can_sort_using_locale(
-    fruit_list: List[str], alg: NSType, expected: List[str]
+    fruit_list: List[str], alg: NSType, expected: List[str],
 ) -> None:
     assert natsorted(fruit_list, alg=ns.LOCALE | alg) == expected
 
@@ -326,7 +326,7 @@ def test_natsorted_handles_mixed_types_with_locale(
     ],
 )
 def test_natsorted_sorts_an_odd_collection_of_strings(
-    alg: NSType, expected: List[str]
+    alg: NSType, expected: List[str],
 ) -> None:
     given = ["apple", "Banana", "73", "5039", "corn", "~~~~~~"]
     assert natsorted(given, alg=alg) == expected

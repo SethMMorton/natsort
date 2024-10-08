@@ -39,7 +39,7 @@ def test_input_string_transform_factory_is_no_op_for_no_alg_options(x: str) -> N
 )
 @given(x=text())
 def test_input_string_transform_factory(
-    x: str, alg: NSType, example_func: Callable[[str], str]
+    x: str, alg: NSType, example_func: Callable[[str], str],
 ) -> None:
     input_string_transform_func = input_string_transform_factory(alg)
     assert input_string_transform_func(x) == example_func(x)
@@ -74,7 +74,7 @@ def test_input_string_transform_factory_cleans_thousands(x: int) -> None:
 )
 @pytest.mark.usefixtures("with_locale_en_us")
 def test_input_string_transform_factory_handles_us_locale(
-    x: str, expected: str
+    x: str, expected: str,
 ) -> None:
     input_string_transform_func = input_string_transform_factory(ns.LOCALE)
     assert input_string_transform_func(x) == expected
@@ -90,7 +90,7 @@ def test_input_string_transform_factory_handles_us_locale(
 )
 @pytest.mark.usefixtures("with_locale_de_de")
 def test_input_string_transform_factory_handles_de_locale(
-    x: str, expected: str
+    x: str, expected: str,
 ) -> None:
     input_string_transform_func = input_string_transform_factory(ns.LOCALE)
     assert input_string_transform_func(x) == expected
@@ -106,7 +106,7 @@ def test_input_string_transform_factory_handles_de_locale(
 )
 @pytest.mark.usefixtures("with_locale_de_de")
 def test_input_string_transform_factory_handles_german_locale(
-    alg: NSType, expected: str
+    alg: NSType, expected: str,
 ) -> None:
     input_string_transform_func = input_string_transform_factory(alg)
     assert input_string_transform_func("1543,753") == expected

@@ -34,7 +34,7 @@ def bumpversion(severity, *args, catch=False):
     try:
         if catch:
             return subprocess.run(
-                cmd, check=True, capture_output=True, text=True
+                cmd, check=True, capture_output=True, text=True,
             ).stdout
         else:
             subprocess.run(cmd, check=True, text=True)
