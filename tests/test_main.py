@@ -4,7 +4,7 @@ Test the natsort command-line tool functions.
 
 import re
 import sys
-from typing import Any, List, Union
+from typing import Any, List
 
 import pytest
 from hypothesis import given
@@ -147,7 +147,7 @@ def test_range_check_returns_range_as_is_but_with_floats_example() -> None:
 
 @given(x=floats(allow_nan=False, min_value=-1e8, max_value=1e8) | integers(), d=data())
 def test_range_check_returns_range_as_is_if_first_is_less_than_second(
-    x: Union[int, float], d: DataObject,
+    x: float, d: DataObject,
 ) -> None:
     # Pull data such that the first is less than the second.
     if isinstance(x, float):

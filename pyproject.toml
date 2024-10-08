@@ -78,6 +78,11 @@ select = [
 	"COM",  # flake8-commas
 	"C4",   # flake8-comprehensions
 	"EM",   # flake8-errmsg
+	"EXE",  # flake8-executable
+	"ISC",  # flake8-implicit-str-concat
+	"ICN",  # flake8-import-conventions
+	"PIE",  # flake8-pie
+	"PYI",  # flake8-pyi
 ]
 ignore = [
 	"A002",  # arguments shadow builtins

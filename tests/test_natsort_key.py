@@ -1,6 +1,6 @@
 """These test the utils.py functions."""
 
-from typing import Any, List, NoReturn, Tuple, Union, cast
+from typing import Any, List, NoReturn, Tuple, cast
 
 from hypothesis import given
 from hypothesis.strategies import binary, floats, integers, lists, text
@@ -22,7 +22,7 @@ def fail(_: Any) -> NoReturn:
 
 
 @given(floats(allow_nan=False) | integers())
-def test_natsort_key_with_numeric_input_takes_number_path(x: Union[float, int]) -> None:
+def test_natsort_key_with_numeric_input_takes_number_path(x: float) -> None:
     assert natsort_key(x, None, str_func, fail, lambda y: ("", y))[1] is x
 
 
