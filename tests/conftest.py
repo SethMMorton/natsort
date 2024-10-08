@@ -20,7 +20,7 @@ hypothesis.settings.register_profile(
 
 def load_locale(x: str) -> None:
     """Convenience to load a locale."""
-    locale.setlocale(locale.LC_ALL, str("{}.UTF-8".format(x)))
+    locale.setlocale(locale.LC_ALL, str(f"{x}.UTF-8"))
 
 
 @pytest.fixture()

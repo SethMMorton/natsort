@@ -1,5 +1,4 @@
 #! /usr/bin/env python
-# -*- coding: utf-8 -*-
 """
 Generate the numeric hex list of unicode numerals
 """
@@ -41,6 +40,6 @@ numeric_hex = (''',
         if a in "0123456789":
             continue
         if unicodedata.numeric(a, None) is not None:
-            print("    0x{:X},".format(i), file=fl)
+            print(f"    0x{i:X},", file=fl)
 
     print(")", file=fl)

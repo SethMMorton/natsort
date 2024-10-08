@@ -55,7 +55,7 @@ find = {namespaces = false}
 mypy_path = "mypy_stubs"
 
 [tool.ruff]
-target-version = "py38"
+target-version = "py37"
 extend-exclude = ["build", "dist", "docs", "mypy_stubs"]
 
 [tool.ruff.format]
@@ -67,10 +67,11 @@ select = [
 	"F",
 	"E",
 	"W",
-	"C90",
-	"B",  # flake8-bugbear
-	"N",  # pep8-naming
-	"I",  # isort
+	"C90",  # mccabe
+	"B",    # flake8-bugbear
+	"N",    # pep8-naming
+	"I",    # isort
+	"UP",   # pyupgrade
 ]
 # doctests = true  # enable when/if available
 

@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """
 Interface for natsort to access fastnumbers functions without
 having to worry if it is actually installed.
@@ -24,7 +23,7 @@ def is_supported_fastnumbers(
 
     if not match:
         raise ValueError(
-            "Invalid fastnumbers version number '{}'".format(fastnumbers_version)
+            f"Invalid fastnumbers version number '{fastnumbers_version}'"
         )
 
     (major, minor, patch) = match.group(1, 2, 4)

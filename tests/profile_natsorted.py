@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """\
 This file contains functions to profile natsorted with different
 inputs and different settings.

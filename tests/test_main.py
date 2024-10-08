@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """\
 Test the natsort command-line tool functions.
 """

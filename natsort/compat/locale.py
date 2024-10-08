@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """
 Interface for natsort to access locale functionality without
 having to worry about if it is using PyICU or the built-in locale.

@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """
 This module is intended to replicate some of the functionality
 from the fastnumbers module in the event that module is not installed.

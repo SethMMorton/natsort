@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """
 This module defines the "ns" enum for natsort is used to determine
 what algorithm natsort uses.

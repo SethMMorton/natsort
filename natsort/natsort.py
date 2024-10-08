@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """
 Along with ns_enum.py, this module contains all of the
 natsort public API.
@@ -178,7 +177,7 @@ def natsort_keygen(
         ns.DEFAULT | alg
     except TypeError:
         msg = "natsort_keygen: 'alg' argument must be from the enum 'ns'"
-        raise ValueError(msg + ", got {}".format(str(alg))) from None
+        raise ValueError(msg + f", got {str(alg)}") from None
 
     # Add the NS_DUMB option if the locale library is broken.
     if alg & ns.LOCALEALPHA and natsort.compat.locale.dumb_sort():

@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """\
 Here are a collection of examples of how this module can be used.
 See the README or the natsort homepage for more details.

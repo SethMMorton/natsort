@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 
 import argparse
 import sys
@@ -64,7 +63,7 @@ def main(*arguments: str) -> None:
     parser.add_argument(
         "--version",
         action="version",
-        version="%(prog)s {}".format(natsort.__version__),
+        version=f"%(prog)s {natsort.__version__}",
     )
     parser.add_argument(
         "-p",

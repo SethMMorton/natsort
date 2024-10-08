@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """
 Utilities and definitions for natsort, mostly all used to define
 the natsort_key function.

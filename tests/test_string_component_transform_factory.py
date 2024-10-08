@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """These test the utils.py functions."""
 
 from functools import partial

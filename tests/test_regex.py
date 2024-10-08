@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """These test the splitting regular expressions."""
 
 from typing import List, Pattern
@@ -94,7 +93,7 @@ regex_params = [
     for given, values in regex_tests.items()
     for regex, expected in values.items()
 ]
-labels = ["{}-{}".format(given, regex_names[regex]) for given, _, regex in regex_params]
+labels = [f"{given}-{regex_names[regex]}" for given, _, regex in regex_params]
 
 
 @pytest.mark.parametrize("x, expected, regex", regex_params, ids=labels)
