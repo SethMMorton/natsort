@@ -64,16 +64,16 @@ def decoder(encoding: str) -> Callable[[Any], Any]:
     Examples
     --------
 
-        >>> f = decoder('utf8')
-        >>> f(b'bytes') == 'bytes'
+        >>> f = decoder("utf8")
+        >>> f(b"bytes") == "bytes"
         True
         >>> f(12345) == 12345
         True
         >>> # On Python 3, without decoder this would return [b'a10', b'a2']
-        >>> natsorted([b'a10', b'a2'], key=decoder('utf8')) == [b'a2', b'a10']
+        >>> natsorted([b"a10", b"a2"], key=decoder("utf8")) == [b"a2", b"a10"]
         True
         >>> # On Python 3, without decoder this would raise a TypeError.
-        >>> natsorted([b'a10', 'a2'], key=decoder('utf8')) == ['a2', b'a10']
+        >>> natsorted([b"a10", "a2"], key=decoder("utf8")) == ["a2", b"a10"]
         True
 
     """

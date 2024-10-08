@@ -70,3 +70,10 @@ exclude = [
 	"docs",
 	".venv",
 ]
+
+[tool.ruff]
+target-version = "py38"
+extend-exclude = ["build", "dist", "docs"]
+
+[tool.ruff.format]
+docstring-code-format = true

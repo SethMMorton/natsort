@@ -130,7 +130,7 @@ class ns(enum.IntEnum):  # noqa: N801
     available as top-level imports.
 
         >>> import natsort as ns
-        >>> a = ['num5.10', 'num-3', 'num5.3', 'num2']
+        >>> a = ["num5.10", "num-3", "num5.3", "num2"]
         >>> ns.natsorted(a, alg=ns.REAL) == ns.natsorted(a, alg=ns.ns.REAL)
         True
 

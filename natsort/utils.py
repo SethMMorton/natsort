@@ -26,11 +26,12 @@ Many of the closures that are created by the factory functions
 have signatures similar to the following
 
     >>> def factory(parameter):
-    ...     val = 'yes' if parameter else 'no'
-    ...     def closure(x, _val=val):
-    ...          return '{} {}'.format(_val, x)
-    ...     return closure
+    ...     val = "yes" if parameter else "no"
     ...
+    ...     def closure(x, _val=val):
+    ...         return "{} {}".format(_val, x)
+    ...
+    ...     return closure
 
 The variable value is passed as the default to a keyword argument.
 This is a micro-optimization
@@ -828,7 +829,7 @@ def chain_functions(functions: Iterable[AnyCall]) -> AnyCall:
 
         >>> funcs = [lambda x: x * 4, len, lambda x: x + 5]
         >>> func = chain_functions(funcs)
-        >>> func('hey')
+        >>> func("hey")
         17
 
     """
