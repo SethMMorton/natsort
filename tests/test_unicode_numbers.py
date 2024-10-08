@@ -57,7 +57,7 @@ def test_missing_unicode_number_in_collection() -> None:
             break
         if a in "0123456789":
             continue
-        if unicodedata.numeric(a, None) is not None:
+        if unicodedata.numeric(a, None) is not None:  # noqa: SIM102
             if i not in set_numeric_hex:
                 ok = False
     if not ok:

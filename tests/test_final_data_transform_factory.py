@@ -45,7 +45,7 @@ def test_final_data_transform_factory_ungroup_and_locale(
     value = (x, y)
     original_value = "".join(map(str, value))
     result = final_data_transform_func(value, original_value)
-    if x:
+    if x:  # noqa: SIM108
         expected = ((func(original_value[:1]),), value)
     else:
         expected = (("::",), value)

@@ -762,7 +762,7 @@ def final_data_transform_factory(
 
         def func(
             split_val: Iterable[NatsortInType],
-            val: str,
+            val: str,  # noqa: ARG001
             _transform: StrToStr = _no_op,
             _sep: StrOrBytes = sep,
             _pre_sep: str = pre_sep,
