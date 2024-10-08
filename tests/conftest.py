@@ -23,7 +23,7 @@ def load_locale(x: str) -> None:
     locale.setlocale(locale.LC_ALL, str(f"{x}.UTF-8"))
 
 
-@pytest.fixture()
+@pytest.fixture
 def with_locale_en_us() -> Iterator[None]:
     """Convenience to load the en_US locale - reset when complete."""
     orig = locale.getlocale()
@@ -32,7 +32,7 @@ def with_locale_en_us() -> Iterator[None]:
     locale.setlocale(locale.LC_ALL, orig)
 
 
-@pytest.fixture()
+@pytest.fixture
 def with_locale_de_de() -> Iterator[None]:
     """
     Convenience to load the de_DE locale - reset when complete - skip if missing.
@@ -48,7 +48,7 @@ def with_locale_de_de() -> Iterator[None]:
         locale.setlocale(locale.LC_ALL, orig)
 
 
-@pytest.fixture()
+@pytest.fixture
 def with_locale_cs_cz() -> Iterator[None]:
     """
     Convenience to load the cs_CZ locale - reset when complete - skip if missing.

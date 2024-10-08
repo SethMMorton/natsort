@@ -12,7 +12,7 @@ from natsort.utils import NumTransformer, parse_number_or_none_factory
 
 @pytest.mark.usefixtures("with_locale_en_us")
 @pytest.mark.parametrize(
-    "alg, example_func",
+    ("alg", "example_func"),
     [
         (ns.DEFAULT, lambda x: ("", x)),
         (ns.PATH, lambda x: (("", x),)),
@@ -29,7 +29,7 @@ def test_parse_number_factory_makes_function_that_returns_tuple(
 
 
 @pytest.mark.parametrize(
-    "alg, x, result",
+    ("alg", "x", "result"),
     [
         (ns.DEFAULT, 57, ("", 57)),
         (

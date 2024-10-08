@@ -9,7 +9,7 @@ from natsort.utils import BytesTransformer, parse_bytes_factory
 
 
 @pytest.mark.parametrize(
-    "alg, example_func",
+    ("alg", "example_func"),
     [
         (ns.DEFAULT, lambda x: (x,)),
         (ns.IGNORECASE, lambda x: (x.lower(),)),

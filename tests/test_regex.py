@@ -96,7 +96,7 @@ regex_params = [
 labels = [f"{given}-{regex_names[regex]}" for given, _, regex in regex_params]
 
 
-@pytest.mark.parametrize("x, expected, regex", regex_params, ids=labels)
+@pytest.mark.parametrize(("x", "expected", "regex"), regex_params, ids=labels)
 def test_regex_splits_correctly(
     x: str, expected: List[str], regex: Pattern[str],
 ) -> None:
@@ -105,7 +105,7 @@ def test_regex_splits_correctly(
 
 
 @pytest.mark.parametrize(
-    "given, expected",
+    ("given", "expected"),
     [
         (ns.INT, NumRegex.int_nosign()),
         (ns.INT | ns.UNSIGNED, NumRegex.int_nosign()),

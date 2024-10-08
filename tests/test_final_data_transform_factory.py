@@ -24,7 +24,7 @@ def test_final_data_transform_factory_default(
 
 
 @pytest.mark.parametrize(
-    "alg, func",
+    ("alg", "func"),
     [
         (ns.UNGROUPLETTERS | ns.LOCALE, lambda x: x),
         (ns.LOCALE | ns.UNGROUPLETTERS | NS_DUMB, lambda x: x),

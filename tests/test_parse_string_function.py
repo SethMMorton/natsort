@@ -64,7 +64,7 @@ def test_parse_string_factory_raises_type_error_if_given_number(
 
 # noinspection PyCallingNonCallable
 @pytest.mark.parametrize(
-    "alg, orig_func",
+    ("alg", "orig_func"),
     [
         (ns.DEFAULT, lambda x: x.upper()),
         (ns.LOCALE, lambda x: x.upper()),

@@ -44,7 +44,7 @@ def input_is_ok_with_locale(x: str) -> bool:
 
 
 @pytest.mark.parametrize(
-    "alg, example_func",
+    ("alg", "example_func"),
     [
         (ns.INT, partial(try_int, map=True)),
         (ns.DEFAULT, partial(try_int, map=True)),

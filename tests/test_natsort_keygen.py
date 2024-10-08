@@ -44,7 +44,7 @@ def test_natsort_keygen_with_invalid_alg_input_raises_value_error() -> None:
 
 
 @pytest.mark.parametrize(
-    "alg, expected",
+    ("alg", "expected"),
     [(ns.DEFAULT, ("a-", 5, ".", 34, "e", 1)), (ns.FLOAT | ns.SIGNED, ("a", -50.34))],
 )
 def test_natsort_keygen_returns_natsort_key_that_parses_input(
@@ -55,7 +55,7 @@ def test_natsort_keygen_returns_natsort_key_that_parses_input(
 
 
 @pytest.mark.parametrize(
-    "alg, expected",
+    ("alg", "expected"),
     [
         (
             ns.DEFAULT,
@@ -92,7 +92,7 @@ def test_natsort_keygen_handles_arbitrary_input(
 
 
 @pytest.mark.parametrize(
-    "alg, expected",
+    ("alg", "expected"),
     [
         (ns.DEFAULT, (b"6A-5.034e+1",)),
         (ns.IGNORECASE, (b"6a-5.034e+1",)),
@@ -109,7 +109,7 @@ def test_natsort_keygen_handles_bytes_input(
 
 
 @pytest.mark.parametrize(
-    "alg, expected, is_dumb",
+    ("alg", "expected", "is_dumb"),
     [
         (
             ns.LOCALE,
@@ -171,7 +171,7 @@ def test_natsort_keygen_with_locale(
 
 
 @pytest.mark.parametrize(
-    "alg, is_dumb",
+    ("alg", "is_dumb"),
     [(ns.LOCALE, False), (ns.LOCALE, True), (ns.LOCALE | ns.CAPITALFIRST, False)],
 )
 @pytest.mark.usefixtures("with_locale_en_us")

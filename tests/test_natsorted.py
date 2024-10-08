@@ -9,7 +9,6 @@ from pathlib import PurePosixPath
 from typing import List, Tuple, Union
 
 import pytest
-from pytest import raises
 
 from natsort import as_utf8, natsorted, ns
 from natsort.ns_enum import NSType
@@ -70,7 +69,7 @@ def test_natsorted_can_sort_as_signed_ints(float_list: List[str]) -> None:
 
 
 @pytest.mark.parametrize(
-    "alg, expected",
+    ("alg", "expected"),
     [(ns.UNSIGNED, ["a7", "a+2", "a-5"]), (ns.SIGNED, ["a-5", "a+2", "a7"])],
 )
 def test_natsorted_can_sort_with_or_without_accounting_for_sign(
@@ -96,7 +95,7 @@ def test_natsorted_can_sorts_paths_same_as_strings() -> None:
 
 
 @pytest.mark.parametrize(
-    "alg, expected",
+    ("alg", "expected"),
     [
         (ns.DEFAULT, ["0", 1.5, "2", 3, "Ä", "Z", "ä", "b"]),
         (ns.NUMAFTER, ["Ä", "Z", "ä", "b", "0", 1.5, "2", 3]),
@@ -111,7 +110,7 @@ def test_natsorted_handles_mixed_types(
 
 
 @pytest.mark.parametrize(
-    "alg, expected",
+    ("alg", "expected"),
     [
         (ns.DEFAULT, [float("nan"), None, float("-inf"), 5, "25", 1e40, float("inf")]),
         (ns.NANLAST, [float("-inf"), 5, "25", 1e40, float("inf"), None, float("nan")]),
@@ -137,7 +136,7 @@ def test_natsorted_consistent_ordering_with_nan_and_friends(
 
 
 def test_natsorted_with_mixed_bytes_and_str_input_raises_type_error() -> None:
-    with raises(TypeError, match="bytes"):
+    with pytest.raises(TypeError, match="bytes"):
         natsorted(["ä", b"b"])
 
     # ...unless you use as_utf (or some other decoder).
@@ -145,7 +144,7 @@ def test_natsorted_with_mixed_bytes_and_str_input_raises_type_error() -> None:
 
 
 def test_natsorted_raises_type_error_for_non_iterable_input() -> None:
-    with raises(TypeError, match="'int' object is not iterable"):
+    with pytest.raises(TypeError, match="'int' object is not iterable"):
         natsorted(100)  # type: ignore
 
 
@@ -219,7 +218,7 @@ def test_natsorted_path_extensions_heuristic() -> None:
 
 
 @pytest.mark.parametrize(
-    "alg, expected",
+    ("alg", "expected"),
     [
         (ns.DEFAULT, ["Apple", "Banana", "Corn", "apple", "banana", "corn"]),
         (ns.IGNORECASE, ["Apple", "apple", "Banana", "banana", "corn", "Corn"]),
@@ -235,7 +234,7 @@ def test_natsorted_supports_case_handling(
 
 
 @pytest.mark.parametrize(
-    "alg, expected",
+    ("alg", "expected"),
     [
         (ns.DEFAULT, [("A5", "a6"), ("a3", "a1")]),
         (ns.LOWERCASEFIRST, [("a3", "a1"), ("A5", "a6")]),
@@ -250,7 +249,7 @@ def test_natsorted_supports_nested_case_handling(
 
 
 @pytest.mark.parametrize(
-    "alg, expected",
+    ("alg", "expected"),
     [
         (ns.DEFAULT, ["apple", "Apple", "banana", "Banana", "corn", "Corn"]),
         (ns.CAPITALFIRST, ["Apple", "Banana", "Corn", "apple", "banana", "corn"]),
@@ -296,7 +295,7 @@ def test_natsorted_locale_bug_regression_test_140() -> None:
 
 
 @pytest.mark.parametrize(
-    "alg, expected",
+    ("alg", "expected"),
     [
         (ns.DEFAULT, ["0", 1.5, "2", 3, "ä", "Ä", "b", "Z"]),
         (ns.NUMAFTER, ["ä", "Ä", "b", "Z", "0", 1.5, "2", 3]),
@@ -319,7 +318,7 @@ def test_natsorted_handles_mixed_types_with_locale(
 
 
 @pytest.mark.parametrize(
-    "alg, expected",
+    ("alg", "expected"),
     [
         (ns.DEFAULT, ["73", "5039", "Banana", "apple", "corn", "~~~~~~"]),
         (ns.NUMAFTER, ["Banana", "apple", "corn", "~~~~~~", "73", "5039"]),

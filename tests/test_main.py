@@ -78,7 +78,7 @@ entries = [
 
 
 @pytest.mark.parametrize(
-    "options, order",
+    ("options", "order"),
     [
         # Defaults, all options false
         # tmp/a1 (1)/path1
@@ -206,7 +206,7 @@ def test_check_filters_raises_value_error_if_filter_is_invalid(
 
 
 @pytest.mark.parametrize(
-    "lows, highs, truth",
+    ("lows", "highs", "truth"),
     # 1. Any portion is between the bounds => True.
     # 2. Any portion is between any bounds => True.
     # 3. No portion is between the bounds => False.
@@ -217,6 +217,6 @@ def test_keep_entry_range(lows: List[int], highs: List[int], truth: bool) -> Non
 
 
 # 1. Values not in entry => True. 2. Values in entry => False.
-@pytest.mark.parametrize("values, truth", [([100, 45], True), ([23], False)])
+@pytest.mark.parametrize(("values", "truth"), [([100, 45], True), ([23], False)])
 def test_keep_entry_value(values: List[int], truth: bool) -> None:
     assert keep_entry_value("a56b23c89", values, int, re.compile(r"\d+")) is truth
