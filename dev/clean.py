@@ -13,8 +13,12 @@ dirs = [
     pathlib.Path("build"),
     pathlib.Path("dist"),
     pathlib.Path(".pytest_cache"),
+    pathlib.Path(".ruff_cache"),
+    pathlib.Path(".mypy_cache"),
+    pathlib.Path(".pytest_cache"),
     pathlib.Path(".hypothesis"),
     pathlib.Path(".tox"),
+    pathlib.Path(".coverage"),
 ]
 dirs += pathlib.Path.cwd().glob("*.egg-info")
 for d in dirs:
