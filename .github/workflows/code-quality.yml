@@ -22,11 +22,10 @@ jobs:
         with:
           python-version: '3.8'
 
-      - name: Install ruff
-        uses: astral-sh/ruff-action@v1
-
       - name: Run ruff
-        run: ruff format --check
+        uses: astral-sh/ruff-action@v1
+        with:
+          args: 'format --check'
 
   static-analysis:
     name: Static Analysis
@@ -40,11 +39,8 @@ jobs:
         with:
           python-version: '3.8'
 
-      - name: Install ruff
-        uses: astral-sh/ruff-action@v1
-
       - name: Run ruff
-        run: ruff check
+        uses: astral-sh/ruff-action@v1
 
   type-checking:
     name: Type Checking
