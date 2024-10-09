@@ -1,5 +1,7 @@
 try:
-    from natsort._version import __version__, __version_tuple__
+    # The redundant "as" tells mypy to treat as explict import
+    from natsort._version import __version__ as __version__
+    from natsort._version import __version_tuple__ as __version_tuple__
 except ImportError:
     __version__ = "unknown version"
     __version_tuple__ = (0, 0, "unknown version")

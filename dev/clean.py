@@ -38,4 +38,4 @@ for f in pathlib.Path.cwd().rglob("*.pyc"):
 # Remove _version.py
 version = pathlib.Path("natsort/_version.py")
 if version.is_file():
-    f.unlink()
+    version.unlink()

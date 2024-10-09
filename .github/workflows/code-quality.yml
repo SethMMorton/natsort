@@ -55,7 +55,10 @@ jobs:
           python-version: '3.8'
 
       - name: Install MyPy
-        run: pip install mypy hypothesis pytest pytest-mock fastnumbers
+        run: pip install mypy hypothesis pytest pytest-mock fastnumbers setuptools_scm
+
+      - name: Create _version.py file
+        run: python -m setuptools_scm --force-write-version-files
 
       - name: Run MyPy
         run: mypy --strict natsort tests
