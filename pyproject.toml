@@ -1,5 +1,5 @@
 [build-system]
-requires = ["setuptools>=64", "setuptools-scm>=7.1"]
+requires = ["setuptools>=64", "setuptools-scm>=8.0"]
 build-backend = "setuptools.build_meta"
 
 [project]
@@ -8,7 +8,7 @@ authors = [
     {name = "Seth M. Morton", email = "drtuba78@gmail.com"},
 ]
 dynamic = ["version"]
-requires-python = ">=3.7"
+requires-python = ">=3.8"
 description = "Simple yet flexible natural sorting in Python."
 readme = "README.rst"
 license = {text = "MIT"}
@@ -59,7 +59,7 @@ find = {namespaces = false}
 mypy_path = "mypy_stubs"
 
 [tool.ruff]
-target-version = "py37"
+target-version = "py38"
 extend-exclude = ["build", "dist", "docs", "mypy_stubs", "_version.py"]
 
 [tool.ruff.format]
