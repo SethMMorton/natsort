@@ -5,9 +5,25 @@ Cross-platform bump of version with special CHANGELOG modification.
 INTENDED TO BE CALLED FROM PROJECT ROOT, NOT FROM dev/!
 """
 
+import datetime
 import subprocess
 import sys
 
+from setuptools_scm import get_version
+
+
+# Ensure a clean repo before moving on.
+ret = subprocess.run(
+    ["git", "status", "--porcelain", "--untracked-files=no"],
+    check=True,
+    capture_output=True,
+    text=True,
+)
+if ret.stdout:
+    sys.exit("Cannot bump unless the git repo has no changes.")
+
+
+# A valid bump must have been given.
 try:
     bump_type = sys.argv[1]
 except IndexError:
@@ -28,46 +44,47 @@ def git(cmd, *args):
         sys.exit(e.returncode)
 
 
-def bumpversion(severity, *args, catch=False):
-    """Wrapper for calling bumpversion"""
-    cmd = ["bump2version", *args, severity]
-    try:
-        if catch:
-            return subprocess.run(
-                cmd,
-                check=True,
-                capture_output=True,
-                text=True,
-            ).stdout
-        subprocess.run(cmd, check=True, text=True)
-    except subprocess.CalledProcessError as e:
-        print("Call to bump2version failed!", file=sys.stderr)
-        print("STDOUT:", e.stdout, file=sys.stderr)
-        print("STDERR:", e.stderr, file=sys.stderr)
-        sys.exit(e.returncode)
+# Use setuptools-scm to identify the current version
+current_version = get_version(
+    root="..",
+    relative_to=__file__,
+    local_scheme="no-local-version",
+    version_scheme="only-version",
+)
 
+# Increment the version according to the bump type
+version_components = list(map(int, current_version.split(".")))
+incr_index = {"major": 0, "minor": 1, "patch": 2}[bump_type]
+version_components[incr_index] += 1
+for i in range(incr_index + 1, 3):
+    version_components[i] = 0
+next_version = ".".join(map(str, version_components))
 
-# Do a dry run of the bump to find what the current version is and what it will become.
-data = bumpversion(bump_type, "--dry-run", "--list", catch=True)
-data = dict(x.split("=") for x in data.splitlines())
-
-# Execute the bumpversion.
-bumpversion(bump_type)
-
-# Post-process the changelog with things that bumpversion is not good at updating.
+# Update the changelog.
 with open("CHANGELOG.md") as fl:
-    changelog = fl.read().replace(
+    changelog = fl.read()
+
+    # Add a date to this entry.
+    changelog = changelog.replace(
+        "Unreleased",
+        "Unreleased\n---\n\n[{new}] - {now:%Y-%m-%d}".format(
+            new=next_version, now=datetime.datetime.now()
+        ),
+    )
+
+    # Add links to the entries.
+    changelog = changelog.replace(
         "<!---Comparison links-->",
         "<!---Comparison links-->\n[{new}]: {url}/{current}...{new}".format(
-            new=data["new_version"],
-            current=data["current_version"],
+            new=next_version,
+            current=current_version,
             url="https://github.com/SethMMorton/natsort/compare",
         ),
     )
 with open("CHANGELOG.md", "w") as fl:
     fl.write(changelog)
 
-# Finally, add the CHANGELOG.md changes to the previous commit.
+# Add the CHANGELOG.md changes and commit & tag.
 git("add", "CHANGELOG.md")
-git("commit", "--amend", "--no-edit")
-git("tag", "--force", data["new_version"], "HEAD")
+git("commit", "--message", f"Bump version: {current_version} → {next_version}")
+git("tag", next_version, "HEAD")

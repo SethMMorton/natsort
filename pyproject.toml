@@ -1,5 +1,6 @@
 [build-system]
 requires = ["setuptools>=64", "setuptools-scm>=8.0"]
+build-backend = "setuptools.build_meta"
 
 [project]
 name="natsort"
@@ -48,6 +49,9 @@ Changelog = "https://github.com/SethMMorton/natsort/blob/main/CHANGELOG.md"
 [project.scripts]
 natsort = "natsort.__main__:main"
 
+[tool.setuptools_scm]
+version_file = "natsort/_version.py"
+
 [tool.setuptools.packages]
 find = {namespaces = false}
 
@@ -56,7 +60,7 @@ mypy_path = "mypy_stubs"
 
 [tool.ruff]
 target-version = "py37"
-extend-exclude = ["build", "dist", "docs", "mypy_stubs"]
+extend-exclude = ["build", "dist", "docs", "mypy_stubs", "_version.py"]
 
 [tool.ruff.format]
 docstring-code-format = true

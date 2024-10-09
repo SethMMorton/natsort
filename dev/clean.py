@@ -34,3 +34,8 @@ for d in pathlib.Path.cwd().rglob("__pycache__"):
 # Shouldn't be any .pyc left, but just in case
 for f in pathlib.Path.cwd().rglob("*.pyc"):
     f.unlink()
+
+# Remove _version.py
+version = pathlib.Path("natsort/_version.py")
+if version.is_file():
+    f.unlink()
