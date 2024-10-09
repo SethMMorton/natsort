@@ -11,7 +11,6 @@ import sys
 
 from setuptools_scm import get_version
 
-
 # Ensure a clean repo before moving on.
 ret = subprocess.run(
     ["git", "status", "--porcelain", "--untracked-files=no"],
@@ -67,9 +66,7 @@ with open("CHANGELOG.md") as fl:
     # Add a date to this entry.
     changelog = changelog.replace(
         "Unreleased",
-        "Unreleased\n---\n\n[{new}] - {now:%Y-%m-%d}".format(
-            new=next_version, now=datetime.datetime.now()
-        ),
+        f"Unreleased\n---\n\n[{next_version}] - {datetime.datetime.now():%Y-%m-%d}",
     )
 
     # Add links to the entries.
