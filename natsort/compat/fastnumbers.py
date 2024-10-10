@@ -1,8 +1,8 @@
-# -*- coding: utf-8 -*-
 """
 Interface for natsort to access fastnumbers functions without
 having to worry if it is actually installed.
 """
+
 import re
 from typing import Callable, Iterable, Iterator, Tuple, Union
 
@@ -13,7 +13,8 @@ __all__ = ["try_float", "try_int"]
 
 
 def is_supported_fastnumbers(
-    fastnumbers_version: str, minimum: Tuple[int, int, int] = (2, 0, 0)
+    fastnumbers_version: str,
+    minimum: Tuple[int, int, int] = (2, 0, 0),
 ) -> bool:
     match = re.match(
         r"^(\d+)\.(\d+)(\.(\d+))?([ab](\d+))?$",
@@ -22,9 +23,8 @@ def is_supported_fastnumbers(
     )
 
     if not match:
-        raise ValueError(
-            "Invalid fastnumbers version number '{}'".format(fastnumbers_version)
-        )
+        msg = f"Invalid fastnumbers version number '{fastnumbers_version}'"
+        raise ValueError(msg)
 
     (major, minor, patch) = match.group(1, 2, 4)
 
@@ -35,7 +35,8 @@ def is_supported_fastnumbers(
 # benefits. If not, we use the simulated functions that come with natsort.
 try:
     # noinspection PyPackageRequirements
-    from fastnumbers import fast_float, fast_int, __version__ as fn_ver
+    from fastnumbers import __version__ as fn_ver
+    from fastnumbers import fast_float, fast_int
 
     # Require >= version 2.0.0.
     if not is_supported_fastnumbers(fn_ver):
@@ -53,7 +54,7 @@ except ImportError:
 # then there is nothing to do.
 if "try_float" not in globals():
 
-    def try_float(  # type: ignore[no-redef]  # noqa: F811
+    def try_float(  # type: ignore[no-redef]
         x: Iterable[str],
         map: bool,
         nan: float = float("inf"),
@@ -65,7 +66,7 @@ if "try_float" not in globals():
 
 if "try_int" not in globals():
 
-    def try_int(  # type: ignore[no-redef]  # noqa: F811
+    def try_int(  # type: ignore[no-redef]
         x: Iterable[str],
         map: bool,
         on_fail: Callable[[str], str] = lambda x: x,

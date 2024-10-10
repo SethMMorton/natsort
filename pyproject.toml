@@ -1,0 +1,112 @@
+[build-system]
+requires = ["setuptools>=64", "setuptools-scm>=8.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name="natsort"
+authors = [
+    {name = "Seth M. Morton", email = "drtuba78@gmail.com"},
+]
+dynamic = ["version"]
+requires-python = ">=3.8"
+description = "Simple yet flexible natural sorting in Python."
+readme = "README.rst"
+license = {text = "MIT"}
+keywords = ["sort", "sorting", "natural sort", "natsort"]
+classifiers = [
+	"Development Status :: 5 - Production/Stable",
+	"Intended Audience :: Developers",
+	"Intended Audience :: Science/Research",
+	"Intended Audience :: System Administrators",
+	"Intended Audience :: Information Technology",
+	"Intended Audience :: Financial and Insurance Industry",
+	"Operating System :: OS Independent",
+	"License :: OSI Approved :: MIT License",
+	"Natural Language :: English",
+	"Programming Language :: Python",
+	"Programming Language :: Python :: 3",
+	"Programming Language :: Python :: 3.7",
+	"Programming Language :: Python :: 3.8",
+	"Programming Language :: Python :: 3.9",
+	"Programming Language :: Python :: 3.10",
+	"Programming Language :: Python :: 3.11",
+	"Programming Language :: Python :: 3.12",
+	"Topic :: Scientific/Engineering :: Information Analysis",
+	"Topic :: Utilities",
+	"Topic :: Text Processing",
+]
+
+[project.optional-dependencies]
+fast = ["fastnumbers >= 2.0.0"]
+icu = ["PyICU >= 1.0.0"]
+
+[project.urls]
+Homepage = "https://github.com/SethMMorton/natsort"
+Documentation = "https://natsort.readthedocs.io/"
+Issues = "https://github.com/SethMMorton/natsort/issues"
+Changelog = "https://github.com/SethMMorton/natsort/blob/main/CHANGELOG.md"
+
+[project.scripts]
+natsort = "natsort.__main__:main"
+
+[tool.setuptools_scm]
+version_file = "natsort/_version.py"
+
+[tool.setuptools.packages]
+find = {namespaces = false}
+
+[tool.mypy]
+mypy_path = "mypy_stubs"
+
+[tool.ruff]
+target-version = "py38"
+extend-exclude = ["build", "dist", "docs", "mypy_stubs", "_version.py"]
+
+[tool.ruff.format]
+docstring-code-format = true
+
+[tool.ruff.lint]
+fixable = ["ALL"]
+select = [
+	"F",
+	"E",
+	"W",
+	"C90",  # mccabe
+	"B",    # flake8-bugbear
+	"N",    # pep8-naming
+	"I",    # isort
+	"UP",   # pyupgrade
+	"YTT",  # flake8-2020
+	"BLE",  # flake8-blind-except
+	"A",    # flake8-builtins
+	"COM",  # flake8-commas
+	"C4",   # flake8-comprehensions
+	"EM",   # flake8-errmsg
+	"EXE",  # flake8-executable
+	"ISC",  # flake8-implicit-str-concat
+	"ICN",  # flake8-import-conventions
+	"PIE",  # flake8-pie
+	"PYI",  # flake8-pyi
+	"PT",   # flake8-pytest-style
+	"Q",    # flake8-quotes
+	"RSE",  # flake8-raise
+	"RET",  # flake8-return
+	"SLF",  # flake8-self
+	"SIM",  # flake8-simplify
+	"TID",  # flake8-tidy-imports
+	"TCH",  # flake8-type-checking
+	"ARG",  # flake8-unused-arguments
+	"ERA",  # eradicate
+	"RUF",  # ruff-specific-rules
+]
+ignore = [
+	"A002",    # arguments shadow builtins
+	"PT004",   # leading underscore in fixtures that return nothing
+	"RUF001",  # ambiguous-unicode-character-string
+	"COM812",  # missing trailing comma
+	"ISC001",  # single line implicit string concatenation
+]
+# doctests = true  # enable when/if available
+
+[tool.ruff.lint.mccabe]
+max-complexity = 10

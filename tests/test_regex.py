@@ -1,13 +1,12 @@
-# -*- coding: utf-8 -*-
 """These test the splitting regular expressions."""
 
 from typing import List, Pattern
 
 import pytest
+
 from natsort import ns, numeric_regex_chooser
 from natsort.ns_enum import NSType
 from natsort.utils import NumericalRegularExpressions as NumRegex
-
 
 regex_names = {
     NumRegex.int_nosign(): "int_nosign",
@@ -94,19 +93,21 @@ regex_params = [
     for given, values in regex_tests.items()
     for regex, expected in values.items()
 ]
-labels = ["{}-{}".format(given, regex_names[regex]) for given, _, regex in regex_params]
+labels = [f"{given}-{regex_names[regex]}" for given, _, regex in regex_params]
 
 
-@pytest.mark.parametrize("x, expected, regex", regex_params, ids=labels)
+@pytest.mark.parametrize(("x", "expected", "regex"), regex_params, ids=labels)
 def test_regex_splits_correctly(
-    x: str, expected: List[str], regex: Pattern[str]
+    x: str,
+    expected: List[str],
+    regex: Pattern[str],
 ) -> None:
     # noinspection PyUnresolvedReferences
     assert regex.split(x) == expected
 
 
 @pytest.mark.parametrize(
-    "given, expected",
+    ("given", "expected"),
     [
         (ns.INT, NumRegex.int_nosign()),
         (ns.INT | ns.UNSIGNED, NumRegex.int_nosign()),

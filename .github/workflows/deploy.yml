@@ -21,9 +21,8 @@ jobs:
 
       - name: Build Source Distribution and Wheel
         run: |
-          pip install wheel
-          python setup.py sdist --format=gztar
-          pip wheel . -w dist
+          pip install build
+          python -m build
 
       - name: Publish to PyPI
         uses: pypa/gh-action-pypi-publish@release/v1

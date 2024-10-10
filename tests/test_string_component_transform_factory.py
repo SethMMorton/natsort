@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """These test the utils.py functions."""
 
 from functools import partial
@@ -7,9 +6,10 @@ from typing import Any, Callable, FrozenSet, Union
 import pytest
 from hypothesis import assume, example, given
 from hypothesis.strategies import floats, integers, text
+
 from natsort.compat.fastnumbers import try_float, try_int
 from natsort.compat.locale import get_strxfrm
-from natsort.ns_enum import NSType, NS_DUMB, ns
+from natsort.ns_enum import NS_DUMB, NSType, ns
 from natsort.utils import groupletters, string_component_transform_factory
 
 # There are some unicode values that are known failures with the builtin locale
@@ -44,7 +44,7 @@ def input_is_ok_with_locale(x: str) -> bool:
 
 
 @pytest.mark.parametrize(
-    "alg, example_func",
+    ("alg", "example_func"),
     [
         (ns.INT, partial(try_int, map=True)),
         (ns.DEFAULT, partial(try_int, map=True)),
@@ -55,13 +55,17 @@ def input_is_ok_with_locale(x: str) -> bool:
         (
             ns.GROUPLETTERS | ns.LOCALE,
             partial(
-                try_int, map=True, on_fail=lambda x: get_strxfrm()(groupletters(x))
+                try_int,
+                map=True,
+                on_fail=lambda x: get_strxfrm()(groupletters(x)),
             ),
         ),
         (
             NS_DUMB | ns.LOCALE,
             partial(
-                try_int, map=True, on_fail=lambda x: get_strxfrm()(groupletters(x))
+                try_int,
+                map=True,
+                on_fail=lambda x: get_strxfrm()(groupletters(x)),
             ),
         ),
         (
@@ -80,11 +84,13 @@ def input_is_ok_with_locale(x: str) -> bool:
 @given(
     x=integers()
     | floats()
-    | text().filter(bool).filter(no_bad_uni_chars).filter(no_null)
+    | text().filter(bool).filter(no_bad_uni_chars).filter(no_null),
 )
 @pytest.mark.usefixtures("with_locale_en_us")
 def test_string_component_transform_factory(
-    x: Union[str, float, int], alg: NSType, example_func: Callable[[str], Any]
+    x: Union[str, float],
+    alg: NSType,
+    example_func: Callable[[str], Any],
 ) -> None:
     string_component_transform_func = string_component_transform_factory(alg)
     x = str(x)

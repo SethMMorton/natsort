@@ -1,5 +1,10 @@
-# -*- coding: utf-8 -*-
-
+try:
+    # The redundant "as" tells mypy to treat as explict import
+    from natsort._version import __version__ as __version__
+    from natsort._version import __version_tuple__ as __version_tuple__
+except ImportError:
+    __version__ = "unknown version"
+    __version_tuple__ = (0, 0, "unknown version")
 from natsort.natsort import (
     NatsortKeyType,
     OSSortKeyType,
@@ -22,8 +27,6 @@ from natsort.natsort import (
 )
 from natsort.ns_enum import NSType, ns
 from natsort.utils import KeyType, NatsortInType, NatsortOutType, chain_functions
-
-__version__ = "8.4.0"
 
 __all__ = [
     "natsort_key",
@@ -53,4 +56,4 @@ __all__ = [
 ]
 
 # Add the ns keys to this namespace for convenience.
-globals().update({name: value for name, value in ns.__members__.items()})
+globals().update(dict(ns.__members__.items()))

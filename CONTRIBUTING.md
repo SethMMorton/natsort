@@ -10,7 +10,7 @@ a good reason not to be).
 Located in the `dev/` folder is development collateral such as formatting and
 patching scripts. The only development collateral not in the `dev/`
 folder are those files that are expected to exist in the the top-level directory
-(such as `setup.py`, `tox.ini`, and CI configuration). All of these scripts
+(such as `pyproject.toml`, `tox.ini`, and CI configuration). All of these scripts
 can either be run with the python stdandard library, or have hooks in `tox`.
 
 I do not have strong opinions on how one should contribute, so

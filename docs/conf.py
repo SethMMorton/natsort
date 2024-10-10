@@ -14,6 +14,8 @@
 
 import os
 
+import natsort
+
 # If extensions (or modules to document with autodoc) are in another directory,
 # add these directories to sys.path here. If the directory is relative to the
 # documentation root, use os.path.abspath to make it absolute, like shown here.
@@ -58,7 +60,7 @@ copyright = "2014, Seth M. Morton"
 # built documents.
 #
 # The full version, including alpha/beta/rc tags.
-release = "8.4.0"
+release = natsort.__version__
 # The short X.Y version.
 version = ".".join(release.split(".")[0:2])
 

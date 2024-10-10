@@ -362,7 +362,7 @@ from the command line with ``python -m natsort``.  Check out the
 Requirements
 ------------
 
-`natsort`_ requires Python 3.7 or greater.
+`natsort`_ requires Python 3.8 or greater.
 
 Optional Dependencies
 ---------------------

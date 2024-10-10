@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """These test the utils.py functions."""
 
 import unicodedata
@@ -7,14 +6,17 @@ from typing import Any, Callable, Iterable, List, Tuple, Union
 import pytest
 from hypothesis import given
 from hypothesis.strategies import floats, integers, lists, text
+
 from natsort.compat.fastnumbers import try_float
-from natsort.ns_enum import NSType, NS_DUMB, ns
+from natsort.ns_enum import NS_DUMB, NSType, ns
 from natsort.utils import (
     FinalTransform,
-    NumericalRegularExpressions as NumRegex,
     StrParser,
+    parse_string_factory,
 )
-from natsort.utils import parse_string_factory
+from natsort.utils import (
+    NumericalRegularExpressions as NumRegex,
+)
 
 
 class CustomTuple(Tuple[Any, ...]):
@@ -53,7 +55,7 @@ def parse_string_func_factory(alg: NSType) -> StrParser:
 
 @given(x=floats() | integers())
 def test_parse_string_factory_raises_type_error_if_given_number(
-    x: Union[int, float]
+    x: float,
 ) -> None:
     parse_string_func = parse_string_func_factory(ns.DEFAULT)
     with pytest.raises(TypeError):
@@ -62,7 +64,7 @@ def test_parse_string_factory_raises_type_error_if_given_number(
 
 # noinspection PyCallingNonCallable
 @pytest.mark.parametrize(
-    "alg, orig_func",
+    ("alg", "orig_func"),
     [
         (ns.DEFAULT, lambda x: x.upper()),
         (ns.LOCALE, lambda x: x.upper()),
@@ -71,12 +73,16 @@ def test_parse_string_factory_raises_type_error_if_given_number(
 )
 @given(
     x=lists(
-        elements=floats(allow_nan=False) | text() | integers(), min_size=1, max_size=10
-    )
+        elements=floats(allow_nan=False) | text() | integers(),
+        min_size=1,
+        max_size=10,
+    ),
 )
 @pytest.mark.usefixtures("with_locale_en_us")
 def test_parse_string_factory_invariance(
-    x: List[Union[float, str, int]], alg: NSType, orig_func: Callable[[str], str]
+    x: List[Union[float, str, int]],
+    alg: NSType,
+    orig_func: Callable[[str], str],
 ) -> None:
     parse_string_func = parse_string_func_factory(alg)
     # parse_string_factory is the high-level combination of several dedicated

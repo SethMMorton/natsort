@@ -1,9 +1,10 @@
 import pytest
+
 from natsort import ns
 
 
 @pytest.mark.parametrize(
-    "given, expected",
+    ("given", "expected"),
     [
         ("FLOAT", 0x0001),
         ("SIGNED", 0x0002),

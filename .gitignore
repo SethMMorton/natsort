@@ -1,4 +1,5 @@
 *.py[co]
+_version.py
 
 # Packages
 *.egg

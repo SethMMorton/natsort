@@ -1,25 +1,27 @@
-# -*- coding: utf-8 -*-
 """These test the utils.py functions."""
-from typing import Any, List, NoReturn, Tuple, Union, cast
+
+from typing import Any, List, NoReturn, Tuple, cast
 
 from hypothesis import given
 from hypothesis.strategies import binary, floats, integers, lists, text
+
 from natsort.utils import natsort_key
 
 
 def str_func(x: Any) -> Tuple[str]:
     if isinstance(x, str):
         return (x,)
-    else:
-        raise TypeError("Not a str!")
+    msg = "Not a str!"
+    raise TypeError(msg)
 
 
 def fail(_: Any) -> NoReturn:
-    raise AssertionError("This should never be reached!")
+    msg = "This should never be reached!"
+    raise AssertionError(msg)
 
 
 @given(floats(allow_nan=False) | integers())
-def test_natsort_key_with_numeric_input_takes_number_path(x: Union[float, int]) -> None:
+def test_natsort_key_with_numeric_input_takes_number_path(x: float) -> None:
     assert natsort_key(x, None, str_func, fail, lambda y: ("", y))[1] is x
 
 
@@ -41,5 +43,5 @@ def test_natsort_key_with_nested_input_takes_nested_path(x: List[str]) -> None:
 @given(text())
 def test_natsort_key_with_key_argument_applies_key_before_processing(x: str) -> None:
     assert natsort_key(x, len, str_func, fail, lambda y: ("", cast(int, y)))[1] == len(
-        x
+        x,
     )
