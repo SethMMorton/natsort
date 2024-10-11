@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """These test the utils.py functions."""
 
 import os
@@ -11,6 +10,7 @@ from typing import List, Pattern, Tuple, Union
 import pytest
 from hypothesis import given
 from hypothesis.strategies import integers, lists, sampled_from, text
+
 from natsort import utils
 from natsort.ns_enum import NSType, ns
 
@@ -22,7 +22,7 @@ def test_do_decoding_decodes_bytes_string_to_unicode() -> None:
 
 
 @pytest.mark.parametrize(
-    "alg, expected",
+    ("alg", "expected"),
     [
         (ns.I, utils.NumericalRegularExpressions.int_nosign()),
         (ns.I | ns.N, utils.NumericalRegularExpressions.int_nosign()),
@@ -35,13 +35,14 @@ def test_do_decoding_decodes_bytes_string_to_unicode() -> None:
     ],
 )
 def test_regex_chooser_returns_correct_regular_expression_object(
-    alg: NSType, expected: Pattern[str]
+    alg: NSType,
+    expected: Pattern[str],
 ) -> None:
     assert utils.regex_chooser(alg).pattern == expected.pattern
 
 
 @pytest.mark.parametrize(
-    "alg, value_or_alias",
+    ("alg", "value_or_alias"),
     [
         # Defaults
         (ns.DEFAULT, 0),
@@ -104,7 +105,7 @@ def test_groupletters_gives_letters_with_lowercase_letter_transform(
     x: str,
 ) -> None:
     assert utils.groupletters(x) == "".join(
-        chain.from_iterable([y.casefold(), y] for y in x)
+        chain.from_iterable([y.casefold(), y] for y in x),
     )
 
 
@@ -123,7 +124,7 @@ def test_sep_inserter_inserts_separator_string_between_two_numbers_example() -> 
 
 @given(lists(elements=text().filter(bool) | integers(), min_size=3))
 def test_sep_inserter_inserts_separator_between_two_numbers(
-    x: List[Union[str, int]]
+    x: List[Union[str, int]],
 ) -> None:
     # Rather than just replicating the results in a different algorithm,
     # validate that the "shape" of the output is as expected.
@@ -156,7 +157,7 @@ def test_path_splitter_splits_path_string_by_sep(x: List[str]) -> None:
 
 
 @pytest.mark.parametrize(
-    "given, expected",
+    ("given", "expected"),
     [
         (
             "/this/is/a/path/file.x1.10.tar.gz",
@@ -173,7 +174,8 @@ def test_path_splitter_splits_path_string_by_sep(x: List[str]) -> None:
     ],
 )
 def test_path_splitter_splits_path_string_by_sep_and_removes_extension_example(
-    given: str, expected: Tuple[str, ...]
+    given: str,
+    expected: Tuple[str, ...],
 ) -> None:
     assert tuple(utils.path_splitter(given)) == tuple(expected)
 

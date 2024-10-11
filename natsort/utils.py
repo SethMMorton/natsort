@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """
 Utilities and definitions for natsort, mostly all used to define
 the natsort_key function.
@@ -26,11 +25,12 @@ Many of the closures that are created by the factory functions
 have signatures similar to the following
 
     >>> def factory(parameter):
-    ...     val = 'yes' if parameter else 'no'
-    ...     def closure(x, _val=val):
-    ...          return '{} {}'.format(_val, x)
-    ...     return closure
+    ...     val = "yes" if parameter else "no"
     ...
+    ...     def closure(x, _val=val):
+    ...         return "{} {}".format(_val, x)
+    ...
+    ...     return closure
 
 The variable value is passed as the default to a keyword argument.
 This is a micro-optimization
@@ -38,12 +38,14 @@ that ensures "val" is a local variable instead of global variable
 and thus has a slightly improved performance at runtime.
 
 """
+
 import re
 from functools import partial, reduce
 from itertools import chain as ichain
 from operator import methodcaller
 from pathlib import PurePath
 from typing import (
+    TYPE_CHECKING,
     Any,
     Callable,
     Dict,
@@ -53,7 +55,6 @@ from typing import (
     Match,
     Optional,
     Pattern,
-    TYPE_CHECKING,
     Tuple,
     Union,
     cast,
@@ -68,7 +69,7 @@ from natsort.compat.locale import (
     get_strxfrm,
     get_thousands_sep,
 )
-from natsort.ns_enum import NSType, NS_DUMB, ns
+from natsort.ns_enum import NS_DUMB, NSType, ns
 from natsort.unicode_numbers import digits_no_decimals, numeric_no_decimals
 
 if TYPE_CHECKING:
@@ -239,8 +240,7 @@ def _normalize_input_factory(alg: NSType) -> StrToStr:
     """
     if alg & ns.COMPATIBILITYNORMALIZE:
         return partial(normalize, "NFKD")
-    else:
-        return partial(normalize, "NFD")
+    return partial(normalize, "NFD")
 
 
 def _compose_input_factory(alg: NSType) -> StrToStr:
@@ -260,8 +260,7 @@ def _compose_input_factory(alg: NSType) -> StrToStr:
     """
     if alg & ns.COMPATIBILITYNORMALIZE:
         return partial(normalize, "NFKC")
-    else:
-        return partial(normalize, "NFC")
+    return partial(normalize, "NFC")
 
 
 @overload
@@ -339,15 +338,15 @@ def natsort_key(
 
     if isinstance(val, (str, PurePath)):
         return string_func(val)
-    elif isinstance(val, bytes):
+    if isinstance(val, bytes):
         return bytes_func(val)
-    elif isinstance(val, Iterable):
+    if isinstance(val, Iterable):
         # Must be parsed recursively, but do not apply the key recursively.
         return tuple(
             natsort_key(x, None, string_func, bytes_func, num_func) for x in val
         )
-    else:  # Anything else goes here
-        return num_func(val)
+    # Anything else goes here
+    return num_func(val)
 
 
 def parse_bytes_factory(alg: NSType) -> BytesTransformer:
@@ -375,16 +374,17 @@ def parse_bytes_factory(alg: NSType) -> BytesTransformer:
     # bytes cannot be compared to strings.
     if alg & ns.PATH and alg & ns.IGNORECASE:
         return lambda x: ((x.lower(),),)
-    elif alg & ns.PATH:
+    if alg & ns.PATH:
         return lambda x: ((x,),)
-    elif alg & ns.IGNORECASE:
+    if alg & ns.IGNORECASE:
         return lambda x: (x.lower(),)
-    else:
-        return lambda x: (x,)
+    return lambda x: (x,)
 
 
 def parse_number_or_none_factory(
-    alg: NSType, sep: StrOrBytes, pre_sep: str
+    alg: NSType,
+    sep: StrOrBytes,
+    pre_sep: str,
 ) -> NumTransformer:
     """
     Create a function that will format a number (or None) into a tuple.
@@ -428,22 +428,20 @@ def parse_number_or_none_factory(
         # None comes first, then NaN, then the replacement value.
         if val != val:
             return _sep, _nan_replace, "3" if reverse else "1"
-        elif val is None:
+        if val is None:
             return _sep, _nan_replace, "2"
-        elif val == _nan_replace:
+        if val == _nan_replace:
             return _sep, _nan_replace, "1" if reverse else "3"
-        else:
-            return _sep, val
+        return _sep, val
 
     # Return the function, possibly wrapping in tuple if PATH is selected.
     if alg & ns.PATH and alg & ns.UNGROUPLETTERS and alg & ns.LOCALEALPHA:
         return lambda x: (((pre_sep,), func(x)),)
-    elif alg & ns.UNGROUPLETTERS and alg & ns.LOCALEALPHA:
+    if alg & ns.UNGROUPLETTERS and alg & ns.LOCALEALPHA:
         return lambda x: ((pre_sep,), func(x))
-    elif alg & ns.PATH:
+    if alg & ns.PATH:
         return lambda x: (func(x),)
-    else:
-        return func
+    return func
 
 
 def parse_string_factory(
@@ -649,7 +647,8 @@ def input_string_transform_factory(alg: NSType) -> StrToStr:
             nodecimal += r"(?<!" + d + r"[0-9]{2})"
             nodecimal += r"(?<!" + d + r"[0-9]{3})"
         strip_thousands = strip_thousands.format(
-            thou=re.escape(get_thousands_sep()), nodecimal=nodecimal
+            thou=re.escape(get_thousands_sep()),
+            nodecimal=nodecimal,
         )
         strip_thousands_re = re.compile(strip_thousands, flags=re.VERBOSE)
         function_chain.append(partial(strip_thousands_re.sub, ""))
@@ -707,12 +706,13 @@ def string_component_transform_factory(alg: NSType) -> StrTransformer:
     if alg & ns.FLOAT:
         kwargs["nan"] = nan_val
         return cast(StrTransformer, partial(try_float, **kwargs))
-    else:
-        return cast(StrTransformer, partial(try_int, **kwargs))
+    return cast(StrTransformer, partial(try_int, **kwargs))
 
 
 def final_data_transform_factory(
-    alg: NSType, sep: StrOrBytes, pre_sep: str
+    alg: NSType,
+    sep: StrOrBytes,
+    pre_sep: str,
 ) -> FinalTransformer:
     """
     Create a function to transform a tuple.
@@ -759,16 +759,15 @@ def final_data_transform_factory(
             split_val = tuple(split_val)
             if not split_val:
                 return (), ()
-            elif split_val[0] == _sep:
+            if split_val[0] == _sep:
                 return (_pre_sep,), split_val
-            else:
-                return (_transform(val[0]),), split_val
+            return (_transform(val[0]),), split_val
 
     else:
 
         def func(
             split_val: Iterable[NatsortInType],
-            val: str,
+            val: str,  # noqa: ARG001
             _transform: StrToStr = _no_op,
             _sep: StrOrBytes = sep,
             _pre_sep: str = pre_sep,
@@ -827,18 +826,17 @@ def chain_functions(functions: Iterable[AnyCall]) -> AnyCall:
 
         >>> funcs = [lambda x: x * 4, len, lambda x: x + 5]
         >>> func = chain_functions(funcs)
-        >>> func('hey')
+        >>> func("hey")
         17
 
     """
     functions = list(functions)
     if not functions:
         return _no_op
-    elif len(functions) == 1:
+    if len(functions) == 1:
         return functions[0]
-    else:
-        # See https://stackoverflow.com/a/39123400/1399279
-        return partial(reduce, lambda res, f: f(res), functions)
+    # See https://stackoverflow.com/a/39123400/1399279
+    return partial(reduce, lambda res, f: f(res), functions)
 
 
 @overload
@@ -868,13 +866,14 @@ def do_decoding(s: Any, encoding: str) -> Any:
     """
     if isinstance(s, bytes):
         return s.decode(encoding)
-    else:
-        return s
+    return s
 
 
 # noinspection PyIncorrectDocstring
 def path_splitter(
-    s: PathArg, treat_base: bool = True, _d_match: MatchFn = re.compile(r"\.\d").match
+    s: PathArg,
+    treat_base: bool = True,
+    _d_match: MatchFn = re.compile(r"\.\d").match,
 ) -> Iterator[str]:
     """
     Split a string into its path components.

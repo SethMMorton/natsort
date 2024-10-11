@@ -1,8 +1,8 @@
-# -*- coding: utf-8 -*-
 """
 Interface for natsort to access locale functionality without
 having to worry about if it is using PyICU or the built-in locale.
 """
+
 import sys
 from typing import Callable, Union, cast
 
@@ -22,9 +22,10 @@ null_string_locale_max: StrOrBytes
 
 # strxfrm can be buggy (especially on OSX and *possibly* some other
 # BSD-based systems), so prefer icu if available.
-try:  # noqa: C901
-    import icu
+try:
     from locale import getlocale
+
+    import icu
 
     null_string_locale = b""
 
@@ -115,8 +116,7 @@ except ImportError:
                 "fr_FR.UTF-8": "\xa0",
                 "fr_CA.ISO8859-15": "\xa0",
             }.get(loc, sep)
-        else:
-            return sep
+        return sep
 
     def get_decimal_point() -> str:
         return cast(str, locale.localeconv()["decimal_point"])

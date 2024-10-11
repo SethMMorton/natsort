@@ -1,9 +1,22 @@
 Unreleased
 ---
 
+### Changed
+
+- Modernize development infrastructure
+  (PR [#162](https://github.com/SethMMorton/natsort/issues/177))
+  - Use `ruff` instead of `flake8` and `black`
+  - Move all config to `pyproject.toml`
+  - Use `setuptools-scm` to track `__version__`
+  - Remove `bumpversion` for creating new releases
+
 ### Fixed
 
 - Eliminated mypy failure related to string literals
+
+### Removed
+
+- Support for EOL Python 3.7
 
 [8.4.0] - 2023-06-19
 ---

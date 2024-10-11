@@ -1,15 +1,16 @@
-# -*- coding: utf-8 -*-
 """\
 Test the natsort command-line tool functions.
 """
 
 import re
 import sys
-from typing import Any, List, Union
+from typing import Any, List
 
 import pytest
 from hypothesis import given
 from hypothesis.strategies import DataObject, data, floats, integers, lists
+from pytest_mock import MockerFixture
+
 from natsort.__main__ import (
     TypedArgs,
     check_filters,
@@ -19,7 +20,6 @@ from natsort.__main__ import (
     range_check,
     sort_and_print_entries,
 )
-from pytest_mock import MockerFixture
 
 
 def test_main_passes_default_arguments_with_no_command_line_options(
@@ -64,7 +64,7 @@ def test_main_passes_arguments_with_all_command_line_options(
     assert args.locale
 
 
-mock_print = "__builtin__.print" if sys.version[0] == "2" else "builtins.print"
+mock_print = "__builtin__.print" if sys.version_info[0] == 2 else "builtins.print"
 
 entries = [
     "tmp/a57/path2",
@@ -78,10 +78,10 @@ entries = [
 
 
 @pytest.mark.parametrize(
-    "options, order",
+    ("options", "order"),
     [
         # Defaults, all options false
-        # tmp/a1 (1)/path1
+        # tmp/a1 (1)/path1  # noqa: ERA001
         # tmp/a1/path1
         # tmp/a23/path1
         # tmp/a57/path2
@@ -91,7 +91,7 @@ entries = [
         ([None, None, False, False, False], [3, 2, 1, 0, 5, 6, 4]),
         # Path option True
         # tmp/a1/path1
-        # tmp/a1 (1)/path1
+        # tmp/a1 (1)/path1  # noqa: ERA001
         # tmp/a23/path1
         # tmp/a57/path2
         # tmp/a64/path1
@@ -106,12 +106,12 @@ entries = [
         ([[(20, 100)], None, False, False, False], [1, 0, 5, 6]),
         # Reverse filter, exclude in range
         # tmp/a1/path1
-        # tmp/a1 (1)/path1
+        # tmp/a1 (1)/path1  # noqa: ERA001
         # tmp/a130/path1
         ([None, [(20, 100)], False, True, False], [2, 3, 4]),
         # Exclude given values with exclude list
         # tmp/a1/path1
-        # tmp/a1 (1)/path1
+        # tmp/a1 (1)/path1  # noqa: ERA001
         # tmp/a57/path2
         # tmp/a64/path1
         # tmp/a64/path2
@@ -122,13 +122,15 @@ entries = [
         # tmp/a64/path1
         # tmp/a57/path2
         # tmp/a23/path1
-        # tmp/a1 (1)/path1
+        # tmp/a1 (1)/path1  # noqa: ERA001
         # tmp/a1/path1
         ([None, None, False, True, True], reversed([2, 3, 1, 0, 5, 6, 4])),
     ],
 )
 def test_sort_and_print_entries(
-    options: List[Any], order: List[int], mocker: MockerFixture
+    options: List[Any],
+    order: List[int],
+    mocker: MockerFixture,
 ) -> None:
     p = mocker.patch(mock_print)
     sort_and_print_entries(entries, TypedArgs(*options))
@@ -147,7 +149,8 @@ def test_range_check_returns_range_as_is_but_with_floats_example() -> None:
 
 @given(x=floats(allow_nan=False, min_value=-1e8, max_value=1e8) | integers(), d=data())
 def test_range_check_returns_range_as_is_if_first_is_less_than_second(
-    x: Union[int, float], d: DataObject
+    x: float,
+    d: DataObject,
 ) -> None:
     # Pull data such that the first is less than the second.
     if isinstance(x, float):
@@ -164,7 +167,8 @@ def test_range_check_raises_value_error_if_second_is_less_than_first_example() -
 
 @given(x=floats(allow_nan=False), d=data())
 def test_range_check_raises_value_error_if_second_is_less_than_first(
-    x: float, d: DataObject
+    x: float,
+    d: DataObject,
 ) -> None:
     # Pull data such that the first is greater than or equal to the second.
     y = d.draw(floats(max_value=x, allow_nan=False))
@@ -183,11 +187,12 @@ def test_check_filters_returns_input_as_is_if_filter_is_valid_example() -> None:
 
 @given(x=lists(integers(), min_size=1), d=data())
 def test_check_filters_returns_input_as_is_if_filter_is_valid(
-    x: List[int], d: DataObject
+    x: List[int],
+    d: DataObject,
 ) -> None:
     # ensure y is element-wise greater than x
     y = [d.draw(integers(min_value=val + 1)) for val in x]
-    assert check_filters(list(zip(x, y))) == [(i, j) for i, j in zip(x, y)]
+    assert check_filters(list(zip(x, y))) == list(zip(x, y))
 
 
 def test_check_filters_raises_value_error_if_filter_is_invalid_example() -> None:
@@ -197,7 +202,8 @@ def test_check_filters_raises_value_error_if_filter_is_invalid_example() -> None
 
 @given(x=lists(integers(), min_size=1), d=data())
 def test_check_filters_raises_value_error_if_filter_is_invalid(
-    x: List[int], d: DataObject
+    x: List[int],
+    d: DataObject,
 ) -> None:
     # ensure y is element-wise less than or equal to x
     y = [d.draw(integers(max_value=val)) for val in x]
@@ -206,7 +212,7 @@ def test_check_filters_raises_value_error_if_filter_is_invalid(
 
 
 @pytest.mark.parametrize(
-    "lows, highs, truth",
+    ("lows", "highs", "truth"),
     # 1. Any portion is between the bounds => True.
     # 2. Any portion is between any bounds => True.
     # 3. No portion is between the bounds => False.
@@ -217,6 +223,6 @@ def test_keep_entry_range(lows: List[int], highs: List[int], truth: bool) -> Non
 
 
 # 1. Values not in entry => True. 2. Values in entry => False.
-@pytest.mark.parametrize("values, truth", [([100, 45], True), ([23], False)])
+@pytest.mark.parametrize(("values", "truth"), [([100, 45], True), ([23], False)])
 def test_keep_entry_value(values: List[int], truth: bool) -> None:
     assert keep_entry_value("a56b23c89", values, int, re.compile(r"\d+")) is truth

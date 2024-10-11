@@ -22,11 +22,10 @@ jobs:
         with:
           python-version: '3.8'
 
-      - name: Install black
-        run: pip install black
-
-      - name: Run black
-        run: black --quiet --check --diff .
+      - name: Run ruff
+        uses: astral-sh/ruff-action@v1
+        with:
+          args: 'format --check'
 
   static-analysis:
     name: Static Analysis
@@ -40,11 +39,8 @@ jobs:
         with:
           python-version: '3.8'
 
-      - name: Install Flake8
-        run: pip install flake8 flake8-import-order flake8-bugbear pep8-naming
-
-      - name: Run Flake8
-        run: flake8
+      - name: Run ruff
+        uses: astral-sh/ruff-action@v1
 
   type-checking:
     name: Type Checking
@@ -59,7 +55,10 @@ jobs:
           python-version: '3.8'
 
       - name: Install MyPy
-        run: pip install mypy hypothesis pytest pytest-mock fastnumbers
+        run: pip install mypy hypothesis pytest pytest-mock fastnumbers setuptools_scm
+
+      - name: Create _version.py file
+        run: python -m setuptools_scm --force-write-version-files
 
       - name: Run MyPy
         run: mypy --strict natsort tests
@@ -77,10 +76,9 @@ jobs:
           python-version: '3.8'
 
       - name: Install Validators
-        run: pip install twine check-manifest
+        run: pip install twine build
 
       - name: Run Validation
         run: |
-          check-manifest --ignore ".github*,*.md,.coveragerc"
-          python setup.py sdist
+          python -m build
           twine check dist/*

@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """
 Along with ns_enum.py, this module contains all of the
 natsort public API.
@@ -25,7 +24,7 @@ from typing import (
 
 import natsort.compat.locale
 from natsort import utils
-from natsort.ns_enum import NSType, NS_DUMB, ns
+from natsort.ns_enum import NS_DUMB, NSType, ns
 from natsort.utils import NatsortInType, NatsortOutType
 
 # Common input and output types
@@ -64,16 +63,16 @@ def decoder(encoding: str) -> Callable[[Any], Any]:
     Examples
     --------
 
-        >>> f = decoder('utf8')
-        >>> f(b'bytes') == 'bytes'
+        >>> f = decoder("utf8")
+        >>> f(b"bytes") == "bytes"
         True
         >>> f(12345) == 12345
         True
         >>> # On Python 3, without decoder this would return [b'a10', b'a2']
-        >>> natsorted([b'a10', b'a2'], key=decoder('utf8')) == [b'a2', b'a10']
+        >>> natsorted([b"a10", b"a2"], key=decoder("utf8")) == [b"a2", b"a10"]
         True
         >>> # On Python 3, without decoder this would raise a TypeError.
-        >>> natsorted([b'a10', 'a2'], key=decoder('utf8')) == ['a2', b'a10']
+        >>> natsorted([b"a10", "a2"], key=decoder("utf8")) == ["a2", b"a10"]
         True
 
     """
@@ -127,7 +126,8 @@ def as_utf8(s: Any) -> Any:
 
 
 def natsort_keygen(
-    key: Optional[Callable[[Any], NatsortInType]] = None, alg: NSType = ns.DEFAULT
+    key: Optional[Callable[[Any], NatsortInType]] = None,
+    alg: NSType = ns.DEFAULT,
 ) -> Callable[[Any], NatsortOutType]:
     """
     Generate a key to sort strings and numbers naturally.
@@ -178,7 +178,7 @@ def natsort_keygen(
         ns.DEFAULT | alg
     except TypeError:
         msg = "natsort_keygen: 'alg' argument must be from the enum 'ns'"
-        raise ValueError(msg + ", got {}".format(str(alg)))
+        raise ValueError(msg + f", got {alg!s}") from None
 
     # Add the NS_DUMB option if the locale library is broken.
     if alg & ns.LOCALEALPHA and natsort.compat.locale.dumb_sort():
@@ -206,7 +206,12 @@ def natsort_keygen(
 
     # Create the high-level parsing functions for strings, bytes, and numbers.
     string_func = utils.parse_string_factory(
-        alg, sep, regex.split, input_transform, component_transform, final_transform
+        alg,
+        sep,
+        regex.split,
+        input_transform,
+        component_transform,
+        final_transform,
     )
     if alg & ns.PATH:
         string_func = utils.parse_path_factory(string_func)
@@ -478,7 +483,7 @@ def index_natsorted(
             return key(itemgetter(1)(x))
 
     # Pair the index and sequence together, then sort by element
-    index_seq_pair = [(x, y) for x, y in enumerate(seq)]
+    index_seq_pair = list(enumerate(seq))
     if alg & ns.PRESORT:
         index_seq_pair.sort(reverse=reverse, key=lambda x: str(itemgetter(1)(x)))
     index_seq_pair.sort(reverse=reverse, key=natsort_keygen(newkey, alg))
@@ -590,7 +595,9 @@ def index_realsorted(
 
 
 def order_by_index(
-    seq: Sequence[Any], index: Iterable[int], iter: bool = False
+    seq: Sequence[Any],
+    index: Iterable[int],
+    iter: bool = False,
 ) -> Iterable[Any]:
     """
     Order a given sequence by an index sequence.
@@ -670,7 +677,9 @@ def numeric_regex_chooser(alg: NSType) -> str:
 
 
 def _split_apply(
-    v: Any, key: Optional[Callable[[T], NatsortInType]] = None, treat_base: bool = True
+    v: Any,
+    key: Optional[Callable[[T], NatsortInType]] = None,
+    treat_base: bool = True,
 ) -> Iterator[str]:
     if key is not None:
         v = key(v)
@@ -681,7 +690,7 @@ def _split_apply(
 
 # Choose the implementation based on the host OS
 if platform.system() == "Windows":
-    from ctypes import wintypes, windll  # type: ignore
+    from ctypes import windll, wintypes  # type: ignore
     from functools import cmp_to_key
 
     _windows_sort_cmp = windll.Shlwapi.StrCmpLogicalW
@@ -690,7 +699,7 @@ if platform.system() == "Windows":
     _winsort_key = cmp_to_key(_windows_sort_cmp)
 
     def os_sort_keygen(
-        key: Optional[Callable[[Any], NatsortInType]] = None
+        key: Optional[Callable[[Any], NatsortInType]] = None,
     ) -> Callable[[Any], NatsortOutType]:
         return cast(
             Callable[[Any], NatsortOutType],
@@ -713,19 +722,20 @@ else:
     except ImportError:
         # No ICU installed
         def os_sort_keygen(
-            key: Optional[Callable[[Any], NatsortInType]] = None
+            key: Optional[Callable[[Any], NatsortInType]] = None,
         ) -> Callable[[Any], NatsortOutType]:
             return natsort_keygen(key=key, alg=ns.LOCALE | ns.PATH | ns.IGNORECASE)
 
     else:
         # ICU installed
         def os_sort_keygen(
-            key: Optional[Callable[[Any], NatsortInType]] = None
+            key: Optional[Callable[[Any], NatsortInType]] = None,
         ) -> Callable[[Any], NatsortOutType]:
             loc = natsort.compat.locale.get_icu_locale()
             collator = icu.Collator.createInstance(loc)
             collator.setAttribute(
-                icu.UCollAttribute.NUMERIC_COLLATION, icu.UCollAttributeValue.ON
+                icu.UCollAttribute.NUMERIC_COLLATION,
+                icu.UCollAttributeValue.ON,
             )
             return lambda x: tuple(map(collator.getSortKey, _split_apply(x, key)))
 

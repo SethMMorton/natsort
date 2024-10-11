@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 import argparse
 import sys
 from typing import Callable, Iterable, List, Optional, Pattern, Tuple, Union, cast
@@ -64,7 +62,7 @@ def main(*arguments: str) -> None:
     parser.add_argument(
         "--version",
         action="version",
-        version="%(prog)s {}".format(natsort.__version__),
+        version=f"%(prog)s {natsort.__version__}",
     )
     parser.add_argument(
         "-p",
@@ -201,9 +199,9 @@ def range_check(low: Num, high: Num) -> NumPair:
 
     """
     if low >= high:
-        raise ValueError("low >= high")
-    else:
-        return low, high
+        msg = "low >= high"
+        raise ValueError(msg)
+    return low, high
 
 
 def check_filters(filters: Optional[NumPairIter]) -> Optional[List[NumPair]]:
@@ -231,7 +229,7 @@ def check_filters(filters: Optional[NumPairIter]) -> Optional[List[NumPair]]:
     try:
         return [range_check(f[0], f[1]) for f in filters]
     except ValueError as err:
-        raise ValueError("Error in --filter: " + str(err))
+        raise ValueError("Error in --filter: " + str(err)) from None
 
 
 def keep_entry_range(
@@ -273,7 +271,10 @@ def keep_entry_range(
 
 
 def keep_entry_value(
-    entry: str, values: NumIter, converter: NumConverter, regex: Pattern[str]
+    entry: str,
+    values: NumIter,
+    converter: NumConverter,
+    regex: Pattern[str],
 ) -> bool:
     """
     Check if an entry does not match a given value.

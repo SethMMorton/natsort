@@ -1,11 +1,12 @@
-# -*- coding: utf-8 -*-
 """These test the utils.py functions."""
+
 from typing import Callable
 
 import pytest
 from hypothesis import example, given
 from hypothesis.strategies import integers, text
-from natsort.ns_enum import NSType, NS_DUMB, ns
+
+from natsort.ns_enum import NS_DUMB, NSType, ns
 from natsort.utils import input_string_transform_factory
 
 
@@ -27,7 +28,7 @@ def test_input_string_transform_factory_is_no_op_for_no_alg_options(x: str) -> N
 
 
 @pytest.mark.parametrize(
-    "alg, example_func",
+    ("alg", "example_func"),
     [
         (ns.IGNORECASE, lambda x: x.casefold()),
         (NS_DUMB, lambda x: x.swapcase()),
@@ -38,7 +39,9 @@ def test_input_string_transform_factory_is_no_op_for_no_alg_options(x: str) -> N
 )
 @given(x=text())
 def test_input_string_transform_factory(
-    x: str, alg: NSType, example_func: Callable[[str], str]
+    x: str,
+    alg: NSType,
+    example_func: Callable[[str], str],
 ) -> None:
     input_string_transform_func = input_string_transform_factory(alg)
     assert input_string_transform_func(x) == example_func(x)
@@ -64,7 +67,7 @@ def test_input_string_transform_factory_cleans_thousands(x: int) -> None:
 
 
 @pytest.mark.parametrize(
-    "x, expected",
+    ("x", "expected"),
     [
         ("12,543,642642.5345,34980", "12543,642642.5345,34980"),
         ("12,59443,642,642.53,4534980", "12,59443,642642.53,4534980"),  # No change
@@ -73,14 +76,15 @@ def test_input_string_transform_factory_cleans_thousands(x: int) -> None:
 )
 @pytest.mark.usefixtures("with_locale_en_us")
 def test_input_string_transform_factory_handles_us_locale(
-    x: str, expected: str
+    x: str,
+    expected: str,
 ) -> None:
     input_string_transform_func = input_string_transform_factory(ns.LOCALE)
     assert input_string_transform_func(x) == expected
 
 
 @pytest.mark.parametrize(
-    "x, expected",
+    ("x", "expected"),
     [
         ("12.543.642642,5345.34980", "12543.642642,5345.34980"),
         ("12.59443.642.642,53.4534980", "12.59443.642642,53.4534980"),  # No change
@@ -89,14 +93,15 @@ def test_input_string_transform_factory_handles_us_locale(
 )
 @pytest.mark.usefixtures("with_locale_de_de")
 def test_input_string_transform_factory_handles_de_locale(
-    x: str, expected: str
+    x: str,
+    expected: str,
 ) -> None:
     input_string_transform_func = input_string_transform_factory(ns.LOCALE)
     assert input_string_transform_func(x) == expected
 
 
 @pytest.mark.parametrize(
-    "alg, expected",
+    ("alg", "expected"),
     [
         (ns.LOCALE, "1543,753"),  # Does nothing without FLOAT
         (ns.LOCALE | ns.FLOAT, "1543.753"),
@@ -105,7 +110,8 @@ def test_input_string_transform_factory_handles_de_locale(
 )
 @pytest.mark.usefixtures("with_locale_de_de")
 def test_input_string_transform_factory_handles_german_locale(
-    alg: NSType, expected: str
+    alg: NSType,
+    expected: str,
 ) -> None:
     input_string_transform_func = input_string_transform_factory(alg)
     assert input_string_transform_func("1543,753") == expected

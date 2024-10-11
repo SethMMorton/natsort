@@ -1,11 +1,12 @@
-# -*- coding: utf-8 -*-
 """
 Testing for the OS sorting
 """
+
 import platform
 
-import natsort
 import pytest
+
+import natsort
 
 try:
     import icu  # noqa: F401

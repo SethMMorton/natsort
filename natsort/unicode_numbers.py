@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """
 Pre-determine the collection of unicode decimals, digits, and numerals.
 """

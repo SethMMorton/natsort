@@ -1,11 +1,12 @@
-# -*- coding: utf-8 -*-
 """These test the utils.py functions."""
-from typing import Callable, Union
+
+from typing import Callable
 
 import pytest
 from hypothesis import example, given
 from hypothesis.strategies import floats, integers, text
-from natsort.ns_enum import NSType, NS_DUMB, ns
+
+from natsort.ns_enum import NS_DUMB, NSType, ns
 from natsort.utils import final_data_transform_factory
 
 
@@ -13,7 +14,9 @@ from natsort.utils import final_data_transform_factory
 @given(x=text(), y=floats(allow_nan=False, allow_infinity=False) | integers())
 @pytest.mark.usefixtures("with_locale_en_us")
 def test_final_data_transform_factory_default(
-    x: str, y: Union[int, float], alg: NSType
+    x: str,
+    y: float,
+    alg: NSType,
 ) -> None:
     final_data_transform_func = final_data_transform_factory(alg, "", "::")
     value = (x, y)
@@ -23,7 +26,7 @@ def test_final_data_transform_factory_default(
 
 
 @pytest.mark.parametrize(
-    "alg, func",
+    ("alg", "func"),
     [
         (ns.UNGROUPLETTERS | ns.LOCALE, lambda x: x),
         (ns.LOCALE | ns.UNGROUPLETTERS | NS_DUMB, lambda x: x),
@@ -38,13 +41,16 @@ def test_final_data_transform_factory_default(
 @example(x="İ", y=0)
 @pytest.mark.usefixtures("with_locale_en_us")
 def test_final_data_transform_factory_ungroup_and_locale(
-    x: str, y: Union[int, float], alg: NSType, func: Callable[[str], str]
+    x: str,
+    y: float,
+    alg: NSType,
+    func: Callable[[str], str],
 ) -> None:
     final_data_transform_func = final_data_transform_factory(alg, "", "::")
     value = (x, y)
     original_value = "".join(map(str, value))
     result = final_data_transform_func(value, original_value)
-    if x:
+    if x:  # noqa: SIM108
         expected = ((func(original_value[:1]),), value)
     else:
         expected = (("::",), value)
