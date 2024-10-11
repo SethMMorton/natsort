@@ -97,6 +97,6 @@ def test_string_component_transform_factory(
     assume(input_is_ok_with_locale(x))
     try:
         assert list(string_component_transform_func(x)) == list(example_func(x))
-    except ValueError as e:  # handle broken locale lib on OSX.
-        if "is not in range" not in str(e):
+    except (ValueError, OSError) as e:  # handle broken locale lib on OSX.
+        if all(x not in str(e) for x in ("is not in range", "Invalid argument")):
             raise
