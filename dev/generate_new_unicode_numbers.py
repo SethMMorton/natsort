@@ -1,24 +1,23 @@
 #! /usr/bin/env python
-"""
-Generate the numeric hex list of unicode numerals
-"""
+"""Generate the numeric hex list of unicode numerals."""
 
-import os
-import os.path
+from __future__ import annotations
+
+import pathlib
 import sys
 import unicodedata
 
 # This is intended to be called from project root. Enforce this.
-this_file = os.path.abspath(__file__)
-this_base = os.path.basename(this_file)
-cwd = os.path.abspath(os.getcwd())
-desired_this_file = os.path.join(cwd, "dev", this_base)
+this_file = pathlib.Path(__file__).absolute()
+this_base = this_file.name
+cwd = pathlib.Path.cwd().absolute()
+desired_this_file = cwd / "dev" / this_base
 if this_file != desired_this_file:
     sys.exit(this_base + " must be called from project root")
 
 # We will write the new numeric hex collection to a natsort package file.
-target = os.path.join(cwd, "natsort", "unicode_numeric_hex.py")
-with open(target, "w") as fl:
+target = cwd / "natsort" / "unicode_numeric_hex.py"
+with target.open("w") as fl:
     print(
         '''# -*- coding: utf-8 -*-
 """

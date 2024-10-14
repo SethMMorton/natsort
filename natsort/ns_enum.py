@@ -1,17 +1,16 @@
-"""
-This module defines the "ns" enum for natsort is used to determine
-what algorithm natsort uses.
-"""
+"""Define the "ns" enum for natsort is used to determine what algorithm natsort uses."""
+
+from __future__ import annotations
 
 import enum
 import itertools
-import typing
+from typing import Union
 
 _counter = itertools.count(0)
 
 
 class ns(enum.IntEnum):  # noqa: N801
-    """
+    r"""
     Enum to control the `natsort` algorithm.
 
     This class acts like an enum to control the `natsort` algorithm. The
@@ -166,4 +165,4 @@ NS_DUMB = 1 << 31
 
 # An integer can be used in place of the ns enum so make the
 # type to use for this enum a union of it and an inteter.
-NSType = typing.Union[ns, int]
+NSType = Union[ns, int]

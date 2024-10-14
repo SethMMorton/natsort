@@ -1,7 +1,9 @@
 """These test the utils.py functions."""
 
+from __future__ import annotations
+
 import unicodedata
-from typing import Any, Callable, Iterable, List, Tuple, Union
+from typing import Any, Callable, Iterable, Tuple
 
 import pytest
 from hypothesis import given
@@ -19,13 +21,13 @@ from natsort.utils import (
 )
 
 
-class CustomTuple(Tuple[Any, ...]):
+class CustomTuple(Tuple[Any, ...]):  # noqa: SLOT001
     """Used to ensure what is given during testing is what is returned."""
 
     original: Any = None
 
 
-def input_transform(x: Any) -> Any:
+def input_transform(x: Any) -> Any:  # noqa: ANN401
     """Make uppercase."""
     try:
         return x.upper()
@@ -59,7 +61,7 @@ def test_parse_string_factory_raises_type_error_if_given_number(
 ) -> None:
     parse_string_func = parse_string_func_factory(ns.DEFAULT)
     with pytest.raises(TypeError):
-        assert parse_string_func(x)  # type: ignore
+        assert parse_string_func(x)  # type: ignore[arg-type]
 
 
 # noinspection PyCallingNonCallable
@@ -80,7 +82,7 @@ def test_parse_string_factory_raises_type_error_if_given_number(
 )
 @pytest.mark.usefixtures("with_locale_en_us")
 def test_parse_string_factory_invariance(
-    x: List[Union[float, str, int]],
+    x: list[float | str | int],
     alg: NSType,
     orig_func: Callable[[str], str],
 ) -> None:

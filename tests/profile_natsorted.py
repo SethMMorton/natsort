@@ -3,10 +3,11 @@ This file contains functions to profile natsorted with different
 inputs and different settings.
 """
 
+from __future__ import annotations
+
 import cProfile
 import locale
 import sys
-from typing import List, Union
 
 try:
     from natsort import natsort_keygen, ns
@@ -14,7 +15,10 @@ except ImportError:
     sys.path.insert(0, ".")
     from natsort import natsort_keygen, ns
 
-from natsort.natsort import NatsortKeyType
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from natsort.natsort import NatsortKeyType
 
 locale.setlocale(locale.LC_ALL, "en_US.UTF-8")
 
@@ -35,7 +39,6 @@ locale_key = natsort_keygen(alg=ns.LOCALE)
 
 
 def prof_time_to_generate() -> None:
-    print("*** Generate Plain Key ***")
     for _ in range(100000):
         natsort_keygen()
 
@@ -44,11 +47,11 @@ cProfile.run("prof_time_to_generate()", sort="time")
 
 
 def prof_parsing(
-    a: Union[str, int, bytes, List[str]],
+    a: str | int | bytes | list[str],
     msg: str,
     key: NatsortKeyType = basic_key,
 ) -> None:
-    print(msg)
+    del msg
     for _ in range(100000):
         key(a)
 

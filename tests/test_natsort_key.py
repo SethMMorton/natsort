@@ -1,6 +1,8 @@
 """These test the utils.py functions."""
 
-from typing import Any, List, NoReturn, Tuple, cast
+from __future__ import annotations
+
+from typing import Any, NoReturn, cast
 
 from hypothesis import given
 from hypothesis.strategies import binary, floats, integers, lists, text
@@ -8,14 +10,14 @@ from hypothesis.strategies import binary, floats, integers, lists, text
 from natsort.utils import natsort_key
 
 
-def str_func(x: Any) -> Tuple[str]:
+def str_func(x: Any) -> tuple[str]:  # noqa: ANN401
     if isinstance(x, str):
         return (x,)
     msg = "Not a str!"
     raise TypeError(msg)
 
 
-def fail(_: Any) -> NoReturn:
+def fail(_: Any) -> NoReturn:  # noqa: ANN401
     msg = "This should never be reached!"
     raise AssertionError(msg)
 
@@ -36,7 +38,7 @@ def test_natsort_key_with_text_input_takes_string_path(x: str) -> None:
 
 
 @given(lists(elements=text(), min_size=1, max_size=10))
-def test_natsort_key_with_nested_input_takes_nested_path(x: List[str]) -> None:
+def test_natsort_key_with_nested_input_takes_nested_path(x: list[str]) -> None:
     assert natsort_key(x, None, str_func, fail, fail) == tuple((y,) for y in x)
 
 

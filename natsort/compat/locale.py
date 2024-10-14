@@ -1,7 +1,10 @@
 """
-Interface for natsort to access locale functionality without
-having to worry about if it is using PyICU or the built-in locale.
+Compatibility interface for locale fuctionality.
+
+Makes uniform API to either local or PyICU.
 """
+
+from __future__ import annotations
 
 import sys
 from typing import Callable, Union, cast
@@ -35,23 +38,28 @@ try:
     null_string_locale_max = b"x7f" * 50
 
     def dumb_sort() -> bool:
+        """Determine if the locale backend is not collating correctly."""
         return False
 
     # If using icu, get the locale from the current global locale,
     def get_icu_locale() -> str:
+        """Return the current locale as understood by ICU."""
         language_code, encoding = getlocale()
         if language_code is None or encoding is None:  # pragma: no cover
             return icu.Locale()
         return icu.Locale(f"{language_code}.{encoding}")
 
     def get_strxfrm() -> TrxfmFunc:
+        """Return a strxfrm function."""
         return icu.Collator.createInstance(get_icu_locale()).getSortKey
 
     def get_thousands_sep() -> str:
+        """Return the appropriate thousands seperator for this locale."""
         sep = icu.DecimalFormatSymbols.kGroupingSeparatorSymbol
         return icu.DecimalFormatSymbols(get_icu_locale()).getSymbol(sep)
 
     def get_decimal_point() -> str:
+        """Return the appropriate decimal point for this locale."""
         sep = icu.DecimalFormatSymbols.kDecimalSeparatorSymbol
         return icu.DecimalFormatSymbols(get_icu_locale()).getSymbol(sep)
 
@@ -65,12 +73,15 @@ except ImportError:
     # On some systems, locale is broken and does not sort in the expected
     # order. We will try to detect this and compensate.
     def dumb_sort() -> bool:
+        """Determine if the locale backend is not collating correctly."""
         return strxfrm("A") < strxfrm("a")
 
     def get_strxfrm() -> TrxfmFunc:
+        """Return a strxfrm function."""
         return strxfrm
 
     def get_thousands_sep() -> str:
+        """Return the appropriate thousands seperator for this locale."""
         sep = cast(str, locale.localeconv()["thousands_sep"])
         # If this locale library is broken, some of the thousands separator
         # characters are incorrectly blank. Here is a lookup table of the
@@ -119,4 +130,5 @@ except ImportError:
         return sep
 
     def get_decimal_point() -> str:
+        """Return the appropriate decimal point for this locale."""
         return cast(str, locale.localeconv()["decimal_point"])

@@ -2,6 +2,8 @@
 Test the Unicode numbers module.
 """
 
+from __future__ import annotations
+
 import unicodedata
 import warnings
 

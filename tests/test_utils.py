@@ -1,11 +1,13 @@
 """These test the utils.py functions."""
 
+from __future__ import annotations
+
 import os
 import pathlib
 import string
 from itertools import chain
 from operator import neg as op_neg
-from typing import List, Pattern, Tuple, Union
+from typing import Pattern
 
 import pytest
 from hypothesis import given
@@ -124,7 +126,7 @@ def test_sep_inserter_inserts_separator_string_between_two_numbers_example() -> 
 
 @given(lists(elements=text().filter(bool) | integers(), min_size=3))
 def test_sep_inserter_inserts_separator_between_two_numbers(
-    x: List[Union[str, int]],
+    x: list[str | int],
 ) -> None:
     # Rather than just replicating the results in a different algorithm,
     # validate that the "shape" of the output is as expected.
@@ -151,7 +153,7 @@ def test_path_splitter_handles_dot_properly(given: str) -> None:
 
 
 @given(lists(sampled_from(string.ascii_letters), min_size=2).filter(all))
-def test_path_splitter_splits_path_string_by_sep(x: List[str]) -> None:
+def test_path_splitter_splits_path_string_by_sep(x: list[str]) -> None:
     z = str(pathlib.Path(*x))
     assert tuple(utils.path_splitter(z)) == tuple(pathlib.Path(z).parts)
 
@@ -175,14 +177,14 @@ def test_path_splitter_splits_path_string_by_sep(x: List[str]) -> None:
 )
 def test_path_splitter_splits_path_string_by_sep_and_removes_extension_example(
     given: str,
-    expected: Tuple[str, ...],
+    expected: tuple[str, ...],
 ) -> None:
     assert tuple(utils.path_splitter(given)) == tuple(expected)
 
 
 @given(lists(sampled_from(string.ascii_letters), min_size=3).filter(all))
 def test_path_splitter_splits_path_string_by_sep_and_removes_extension(
-    x: List[str],
+    x: list[str],
 ) -> None:
     z = str(pathlib.Path(*x[:-2])) + "." + x[-1]
     y = tuple(pathlib.Path(z).parts)

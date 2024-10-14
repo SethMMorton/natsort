@@ -2,6 +2,8 @@
 Testing for the OS sorting
 """
 
+from __future__ import annotations
+
 import platform
 
 import pytest
@@ -219,5 +221,4 @@ else:
 @pytest.mark.usefixtures("with_locale_en_us")
 def test_os_sorted_corpus() -> None:
     result = natsort.os_sorted(given)
-    print(result)
     assert result == expected

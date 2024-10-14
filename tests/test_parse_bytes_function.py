@@ -1,5 +1,7 @@
 """These test the utils.py functions."""
 
+from __future__ import annotations
+
 import pytest
 from hypothesis import given
 from hypothesis.strategies import binary

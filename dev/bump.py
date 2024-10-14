@@ -1,11 +1,16 @@
 #! /usr/bin/env python
 
 """
+Bump version of natsort.
+
 Cross-platform bump of version with special CHANGELOG modification.
 INTENDED TO BE CALLED FROM PROJECT ROOT, NOT FROM dev/!
 """
 
+from __future__ import annotations
+
 import datetime
+import pathlib
 import subprocess
 import sys
 
@@ -32,14 +37,11 @@ else:
         sys.exit('bump_type must be one of "major", "minor", or "patch"!')
 
 
-def git(cmd, *args):
-    """Wrapper for calling git"""
+def git(cmd: str, *args: str) -> None:
+    """Call git."""
     try:
         subprocess.run(["git", cmd, *args], check=True, text=True)
     except subprocess.CalledProcessError as e:
-        print("Call to git failed!", file=sys.stderr)
-        print("STDOUT:", e.stdout, file=sys.stderr)
-        print("STDERR:", e.stderr, file=sys.stderr)
         sys.exit(e.returncode)
 
 
@@ -60,26 +62,26 @@ for i in range(incr_index + 1, 3):
 next_version = ".".join(map(str, version_components))
 
 # Update the changelog.
-with open("CHANGELOG.md") as fl:
-    changelog = fl.read()
+changelog = pathlib.Path("CHANGELOG.md").read_text()
 
-    # Add a date to this entry.
-    changelog = changelog.replace(
-        "Unreleased",
-        f"Unreleased\n---\n\n[{next_version}] - {datetime.datetime.now():%Y-%m-%d}",
-    )
+# Add a date to this entry.
+changelog = changelog.replace(
+    "Unreleased",
+    f"Unreleased\n---\n\n[{next_version}] - {datetime.datetime.now():%Y-%m-%d}",
+)
 
-    # Add links to the entries.
-    changelog = changelog.replace(
-        "<!---Comparison links-->",
-        "<!---Comparison links-->\n[{new}]: {url}/{current}...{new}".format(
-            new=next_version,
-            current=current_version,
-            url="https://github.com/SethMMorton/natsort/compare",
-        ),
-    )
-with open("CHANGELOG.md", "w") as fl:
-    fl.write(changelog)
+# Add links to the entries.
+changelog = changelog.replace(
+    "<!---Comparison links-->",
+    "<!---Comparison links-->\n[{new}]: {url}/{current}...{new}".format(
+        new=next_version,
+        current=current_version,
+        url="https://github.com/SethMMorton/natsort/compare",
+    ),
+)
+
+# Write the changelog
+pathlib.Path("CHANGELOG.md").write_text(changelog)
 
 # Add the CHANGELOG.md changes and commit & tag.
 git("add", "CHANGELOG.md")

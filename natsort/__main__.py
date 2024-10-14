@@ -1,6 +1,10 @@
+"""Entry-point for command-line interface."""
+
+from __future__ import annotations
+
 import argparse
 import sys
-from typing import Callable, Iterable, List, Optional, Pattern, Tuple, Union, cast
+from typing import Callable, Iterable, Pattern, Tuple, Union, cast
 
 import natsort
 from natsort.utils import regex_chooser
@@ -13,27 +17,29 @@ NumConverter = Callable[[str], Num]
 
 
 class TypedArgs(argparse.Namespace):
+    """Typed command-line argument namespace."""
+
     paths: bool
-    filter: Optional[List[NumPair]]
-    reverse_filter: Optional[List[NumPair]]
-    exclude: List[Num]
+    filter: list[NumPair] | None
+    reverse_filter: list[NumPair] | None
+    exclude: list[Num]
     reverse: bool
     number_type: str
     nosign: bool
     sign: bool
     noexp: bool
     locale: bool
-    entries: List[str]
+    entries: list[str]
 
     def __init__(
         self,
-        filter: Optional[List[NumPair]] = None,
-        reverse_filter: Optional[List[NumPair]] = None,
-        exclude: Optional[List[Num]] = None,
-        paths: bool = False,
-        reverse: bool = False,
+        filter: list[NumPair] | None = None,
+        reverse_filter: list[NumPair] | None = None,
+        exclude: list[Num] | None = None,
+        paths: bool = False,  # noqa: FBT001, FBT002
+        reverse: bool = False,  # noqa: FBT001, FBT002
     ) -> None:
-        """Used by testing only"""
+        """To be used by testing only."""
         self.filter = filter
         self.reverse_filter = reverse_filter
         self.exclude = [] if exclude is None else exclude
@@ -47,11 +53,10 @@ class TypedArgs(argparse.Namespace):
 
 def main(*arguments: str) -> None:
     """
-    Performs a natural sort on entries given on the command-line.
+    Perform a natural sort on entries given on the command-line.
 
     Arguments are read from sys.argv.
     """
-
     from argparse import ArgumentParser, RawDescriptionHelpFormatter
     from textwrap import dedent
 
@@ -186,7 +191,9 @@ def range_check(low: Num, high: Num) -> NumPair:
     Parameters
     ----------
     low : {float, int}
+        Low end of the range.
     high : {float, int}
+        High end of the range.
 
     Returns
     -------
@@ -204,7 +211,7 @@ def range_check(low: Num, high: Num) -> NumPair:
     return low, high
 
 
-def check_filters(filters: Optional[NumPairIter]) -> Optional[List[NumPair]]:
+def check_filters(filters: NumPairIter | None) -> list[NumPair] | None:
     """
     Execute range_check for every element of an iterable.
 
@@ -249,6 +256,7 @@ def keep_entry_range(
     Parameters
     ----------
     entry : str
+        The string to check.
     lows : iterable
         Collection of low values against which to compare the entry.
     highs : iterable
@@ -285,6 +293,7 @@ def keep_entry_value(
     Parameters
     ----------
     entry : str
+        The string to check.
     values : iterable
         Collection of values against which to compare the entry.
     converter : callable
@@ -300,9 +309,8 @@ def keep_entry_value(
     return not any(converter(num) in values for num in regex.findall(entry))
 
 
-def sort_and_print_entries(entries: List[str], args: TypedArgs) -> None:
+def sort_and_print_entries(entries: list[str], args: TypedArgs) -> None:
     """Sort the entries, applying the filters first if necessary."""
-
     # Extract the proper number type.
     is_float = args.number_type in ("float", "real", "f", "r")
     signed = args.signed or args.number_type in ("real", "r")
@@ -352,7 +360,7 @@ def sort_and_print_entries(entries: List[str], args: TypedArgs) -> None:
 
     # Print off the sorted results
     for entry in natsort.natsorted(entries, reverse=args.reverse, alg=alg):
-        print(entry)
+        print(entry)  # noqa: T201
 
 
 if __name__ == "__main__":

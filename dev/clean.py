@@ -2,8 +2,11 @@
 
 """
 Cross-platform clean of working directory.
+
 INTENDED TO BE CALLED FROM PROJECT ROOT, NOT FROM dev/!
 """
+
+from __future__ import annotations
 
 import pathlib
 import shutil

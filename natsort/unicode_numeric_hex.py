@@ -1,6 +1,6 @@
-"""
-Contains all possible non-ASCII unicode numbers.
-"""
+"""Contains all possible non-ASCII unicode numbers."""
+
+from __future__ import annotations
 
 # Rather than determine what unicode characters are numeric on the fly which
 # would incur a startup runtime penalty, the hex values are hard-coded below.

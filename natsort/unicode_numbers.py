@@ -1,6 +1,6 @@
-"""
-Pre-determine the collection of unicode decimals, digits, and numerals.
-"""
+"""Pre-determine the collection of unicode decimals, digits, and numerals."""
+
+from __future__ import annotations
 
 import unicodedata
 

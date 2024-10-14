@@ -2,9 +2,11 @@
 Test the fake fastnumbers module.
 """
 
+from __future__ import annotations
+
 import unicodedata
 from math import isinf
-from typing import Union, cast
+from typing import cast
 
 from hypothesis import given
 from hypothesis.strategies import floats, integers, text
@@ -30,7 +32,7 @@ def not_a_float(x: str) -> bool:
     return not is_float(x)
 
 
-def is_int(x: Union[str, float]) -> bool:
+def is_int(x: str | float) -> bool:
     try:
         return cast(float, x).is_integer()
     except AttributeError:
@@ -47,7 +49,7 @@ def is_int(x: Union[str, float]) -> bool:
             return True
 
 
-def not_an_int(x: Union[str, float]) -> bool:
+def not_an_int(x: str | float) -> bool:
     return not is_int(x)
 
 

@@ -1,3 +1,7 @@
+"""Public interface for the natsort package."""
+
+from __future__ import annotations
+
 try:
     # The redundant "as" tells mypy to treat as explict import
     from natsort._version import __version__ as __version__

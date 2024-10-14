@@ -3,20 +3,25 @@ Here are a collection of examples of how this module can be used.
 See the README or the natsort homepage for more details.
 """
 
+from __future__ import annotations
+
 import os
-from typing import List, Tuple, Union
+from typing import TYPE_CHECKING
 
 import pytest
-from pytest_mock import MockerFixture
 
 from natsort import natsort_key, natsort_keygen, natsorted, ns
 from natsort.compat.locale import get_strxfrm, null_string_locale
-from natsort.ns_enum import NSType
-from natsort.utils import BytesTransform, FinalTransform
+
+if TYPE_CHECKING:
+    from pytest_mock import MockerFixture
+
+    from natsort.ns_enum import NSType
+    from natsort.utils import BytesTransform, FinalTransform
 
 
 @pytest.fixture
-def arbitrary_input() -> List[Union[str, float]]:
+def arbitrary_input() -> list[str | float]:
     return ["6A-5.034e+1", "/Folder (1)/Foo", 56.7]
 
 
@@ -40,7 +45,7 @@ def test_natsort_key_public() -> None:
 def test_natsort_keygen_with_invalid_alg_input_raises_value_error() -> None:
     # Invalid arguments give the correct response
     with pytest.raises(ValueError, match="'alg' argument"):
-        natsort_keygen(None, "1")  # type: ignore
+        natsort_keygen(None, "1")  # type: ignore[arg-type]
 
 
 @pytest.mark.parametrize(
@@ -49,7 +54,7 @@ def test_natsort_keygen_with_invalid_alg_input_raises_value_error() -> None:
 )
 def test_natsort_keygen_returns_natsort_key_that_parses_input(
     alg: NSType,
-    expected: Tuple[Union[str, int, float], ...],
+    expected: tuple[str | int | float, ...],
 ) -> None:
     ns_key = natsort_keygen(alg=alg)
     assert ns_key("a-5.034e1") == expected
@@ -86,7 +91,7 @@ def test_natsort_keygen_returns_natsort_key_that_parses_input(
     ],
 )
 def test_natsort_keygen_handles_arbitrary_input(
-    arbitrary_input: List[Union[str, float]],
+    arbitrary_input: list[str | float],
     alg: NSType,
     expected: FinalTransform,
 ) -> None:
@@ -148,7 +153,7 @@ def test_natsort_keygen_handles_bytes_input(
 @pytest.mark.usefixtures("with_locale_en_us")
 def test_natsort_keygen_with_locale(
     mocker: MockerFixture,
-    arbitrary_input: List[Union[str, float]],
+    arbitrary_input: list[str | float],
     alg: NSType,
     expected: FinalTransform,
     is_dumb: bool,

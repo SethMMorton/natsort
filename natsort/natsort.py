@@ -1,9 +1,10 @@
 """
-Along with ns_enum.py, this module contains all of the
-natsort public API.
+Along with ns_enum.py, this module contains all of the natsort public API.
 
 The majority of the "work" is defined in utils.py.
 """
+
+from __future__ import annotations
 
 import platform
 from functools import partial
@@ -14,10 +15,7 @@ from typing import (
     Callable,
     Iterable,
     Iterator,
-    List,
-    Optional,
     Sequence,
-    Tuple,
     TypeVar,
     cast,
 )
@@ -62,7 +60,6 @@ def decoder(encoding: str) -> Callable[[Any], Any]:
 
     Examples
     --------
-
         >>> f = decoder("utf8")
         >>> f(b"bytes") == "bytes"
         True
@@ -79,13 +76,14 @@ def decoder(encoding: str) -> Callable[[Any], Any]:
     return partial(utils.do_decoding, encoding=encoding)
 
 
-def as_ascii(s: Any) -> Any:
+def as_ascii(s: Any) -> Any:  # noqa: ANN401
     """
-    Function to decode an input with the ASCII codec, or return as-is.
+    Decode an input with the ASCII codec, or return as-is.
 
     Parameters
     ----------
     s : object
+        The object to potentially decode if it is `bytes`.
 
     Returns
     -------
@@ -102,13 +100,14 @@ def as_ascii(s: Any) -> Any:
     return utils.do_decoding(s, "ascii")
 
 
-def as_utf8(s: Any) -> Any:
+def as_utf8(s: Any) -> Any:  # noqa: ANN401
     """
-    Function to decode an input with the UTF-8 codec, or return as-is.
+    Decode an input with the UTF-8 codec, or return as-is.
 
     Parameters
     ----------
     s : object
+        The object to potentially decode if it is `bytes`.
 
     Returns
     -------
@@ -126,7 +125,7 @@ def as_utf8(s: Any) -> Any:
 
 
 def natsort_keygen(
-    key: Optional[Callable[[Any], NatsortInType]] = None,
+    key: Callable[[Any], NatsortInType] | None = None,
     alg: NSType = ns.DEFAULT,
 ) -> Callable[[Any], NatsortOutType]:
     """
@@ -245,12 +244,12 @@ natsort_keygen
 
 def natsorted(
     seq: Iterable[T],
-    key: Optional[Callable[[T], NatsortInType]] = None,
+    key: Callable[[T], NatsortInType] | None = None,
     reverse: bool = False,
     alg: NSType = ns.DEFAULT,
-) -> List[T]:
+) -> list[T]:
     """
-    Sorts an iterable naturally.
+    Sort an iterable naturally.
 
     Parameters
     ----------
@@ -300,12 +299,12 @@ def natsorted(
 
 def humansorted(
     seq: Iterable[T],
-    key: Optional[Callable[[T], NatsortInType]] = None,
+    key: Callable[[T], NatsortInType] | None = None,
     reverse: bool = False,
     alg: NSType = ns.DEFAULT,
-) -> List[T]:
+) -> list[T]:
     """
-    Convenience function to properly sort non-numeric characters.
+    Sort an iterable naturally while properly sorting non-numeric characters.
 
     This is a wrapper around ``natsorted(seq, alg=ns.LOCALE)``.
 
@@ -357,12 +356,12 @@ def humansorted(
 
 def realsorted(
     seq: Iterable[T],
-    key: Optional[Callable[[T], NatsortInType]] = None,
+    key: Callable[[T], NatsortInType] | None = None,
     reverse: bool = False,
     alg: NSType = ns.DEFAULT,
-) -> List[T]:
+) -> list[T]:
     """
-    Convenience function to properly sort signed floats.
+    Sort an iterable naturally while properly sorting signed floats.
 
     A signed float in a string could be "a-5.7". This is a wrapper around
     ``natsorted(seq, alg=ns.REAL)``.
@@ -415,10 +414,10 @@ def realsorted(
 
 def index_natsorted(
     seq: Iterable[T],
-    key: Optional[Callable[[T], NatsortInType]] = None,
+    key: Callable[[T], NatsortInType] | None = None,
     reverse: bool = False,
     alg: NSType = ns.DEFAULT,
-) -> List[int]:
+) -> list[int]:
     """
     Determine the list of the indexes used to sort the input sequence.
 
@@ -458,7 +457,6 @@ def index_natsorted(
 
     Examples
     --------
-
     Use index_natsorted if you want to sort multiple lists by the
     sorted order of one list::
 
@@ -474,12 +472,12 @@ def index_natsorted(
         ['baz', 'foo', 'bar']
 
     """
-    newkey: Callable[[Tuple[int, T]], NatsortInType]
+    newkey: Callable[[tuple[int, T]], NatsortInType]
     if key is None:
         newkey = itemgetter(1)
     else:
 
-        def newkey(x: Tuple[int, T]) -> NatsortInType:
+        def newkey(x: tuple[int, T]) -> NatsortInType:
             return key(itemgetter(1)(x))
 
     # Pair the index and sequence together, then sort by element
@@ -492,11 +490,13 @@ def index_natsorted(
 
 def index_humansorted(
     seq: Iterable[T],
-    key: Optional[Callable[[T], NatsortInType]] = None,
+    key: Callable[[T], NatsortInType] | None = None,
     reverse: bool = False,
     alg: NSType = ns.DEFAULT,
-) -> List[int]:
+) -> list[int]:
     """
+    Get the list of indexes of ``humansorted``.
+
     This is a wrapper around ``index_natsorted(seq, alg=ns.LOCALE)``.
 
     Parameters
@@ -546,11 +546,13 @@ def index_humansorted(
 
 def index_realsorted(
     seq: Iterable[T],
-    key: Optional[Callable[[T], NatsortInType]] = None,
+    key: Callable[[T], NatsortInType] | None = None,
     reverse: bool = False,
     alg: NSType = ns.DEFAULT,
-) -> List[int]:
+) -> list[int]:
     """
+    Get the list of indexes of ``realsorted``.
+
     This is a wrapper around ``index_natsorted(seq, alg=ns.REAL)``.
 
     Parameters
@@ -638,7 +640,6 @@ def order_by_index(
 
     Examples
     --------
-
     `order_by_index` is a convenience function that helps you apply
     the result of `index_natsorted`::
 
@@ -677,8 +678,8 @@ def numeric_regex_chooser(alg: NSType) -> str:
 
 
 def _split_apply(
-    v: Any,
-    key: Optional[Callable[[T], NatsortInType]] = None,
+    v: Any,  # noqa: ANN401
+    key: Callable[[T], NatsortInType] | None = None,
     treat_base: bool = True,
 ) -> Iterator[str]:
     if key is not None:
@@ -690,7 +691,7 @@ def _split_apply(
 
 # Choose the implementation based on the host OS
 if platform.system() == "Windows":
-    from ctypes import windll, wintypes  # type: ignore
+    from ctypes import windll, wintypes  # type: ignore[attr-defined]
     from functools import cmp_to_key
 
     _windows_sort_cmp = windll.Shlwapi.StrCmpLogicalW
@@ -698,8 +699,8 @@ if platform.system() == "Windows":
     _windows_sort_cmp.restype = wintypes.INT
     _winsort_key = cmp_to_key(_windows_sort_cmp)
 
-    def os_sort_keygen(
-        key: Optional[Callable[[Any], NatsortInType]] = None,
+    def os_sort_keygen(  # noqa: D103
+        key: Callable[[Any], NatsortInType] | None = None,
     ) -> Callable[[Any], NatsortOutType]:
         return cast(
             Callable[[Any], NatsortOutType],
@@ -721,15 +722,15 @@ else:
 
     except ImportError:
         # No ICU installed
-        def os_sort_keygen(
-            key: Optional[Callable[[Any], NatsortInType]] = None,
+        def os_sort_keygen(  # noqa: D103
+            key: Callable[[Any], NatsortInType] | None = None,
         ) -> Callable[[Any], NatsortOutType]:
             return natsort_keygen(key=key, alg=ns.LOCALE | ns.PATH | ns.IGNORECASE)
 
     else:
         # ICU installed
-        def os_sort_keygen(
-            key: Optional[Callable[[Any], NatsortInType]] = None,
+        def os_sort_keygen(  # noqa: D103
+            key: Callable[[Any], NatsortInType] | None = None,
         ) -> Callable[[Any], NatsortOutType]:
             loc = natsort.compat.locale.get_icu_locale()
             collator = icu.Collator.createInstance(loc)
@@ -741,7 +742,7 @@ else:
 
 
 os_sort_keygen.__doc__ = """
-Generate a sorting key to replicate your file browser's sort order
+Generate a sorting key to replicate your file browser's sort order.
 
 See :func:`os_sorted` for description and caveats.
 
@@ -767,7 +768,7 @@ collating.
 os_sort_key = os_sort_keygen()
 os_sort_key.__doc__ = """
 os_sort_key(val)
-The default key to replicate your file browser's sort order
+The default key to replicate your file browser's sort order.
 
 This is the output of :func:`os_sort_keygen` with default values.
 
@@ -780,12 +781,12 @@ os_sort_keygen
 
 def os_sorted(
     seq: Iterable[T],
-    key: Optional[Callable[[T], NatsortInType]] = None,
+    key: Callable[[T], NatsortInType] | None = None,
     reverse: bool = False,
     presort: bool = False,
-) -> List[T]:
+) -> list[T]:
     """
-    Sort elements in the same order as your operating system's file browser
+    Sort elements in the same order as your operating system's file browser.
 
     .. warning::
 

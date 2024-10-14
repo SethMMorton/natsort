@@ -1,7 +1,9 @@
 """These test the utils.py functions."""
 
+from __future__ import annotations
+
 from functools import partial
-from typing import Any, Callable, FrozenSet, Union
+from typing import Any, Callable
 
 import pytest
 from hypothesis import assume, example, given
@@ -22,7 +24,7 @@ except ValueError:
     bad_uni_chars = frozenset()
 
 
-def no_bad_uni_chars(x: str, _bad_chars: FrozenSet[str] = bad_uni_chars) -> bool:
+def no_bad_uni_chars(x: str, _bad_chars: frozenset[str] = bad_uni_chars) -> bool:
     """Ensure text does not contain bad unicode characters"""
     return not any(y in _bad_chars for y in x)
 
@@ -88,7 +90,7 @@ def input_is_ok_with_locale(x: str) -> bool:
 )
 @pytest.mark.usefixtures("with_locale_en_us")
 def test_string_component_transform_factory(
-    x: Union[str, float],
+    x: str | float,
     alg: NSType,
     example_func: Callable[[str], Any],
 ) -> None:

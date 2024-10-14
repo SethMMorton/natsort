@@ -1,6 +1,5 @@
 """
-Utilities and definitions for natsort, mostly all used to define
-the natsort_key function.
+Utilities and definitions for natsort.
 
 SOME CONVENTIONS USED IN THIS FILE.
 
@@ -39,6 +38,8 @@ and thus has a slightly improved performance at runtime.
 
 """
 
+from __future__ import annotations
+
 import re
 from functools import partial, reduce
 from itertools import chain as ichain
@@ -48,12 +49,9 @@ from typing import (
     TYPE_CHECKING,
     Any,
     Callable,
-    Dict,
     Iterable,
     Iterator,
-    List,
     Match,
-    Optional,
     Pattern,
     Tuple,
     Union,
@@ -82,12 +80,12 @@ else:
 #
 
 
-class SupportsDunderLT(Protocol):
-    def __lt__(self, __other: Any) -> bool: ...
+class SupportsDunderLT(Protocol):  # noqa: D101
+    def __lt__(self, __other: Any) -> bool: ...  # noqa: ANN401, D105
 
 
-class SupportsDunderGT(Protocol):
-    def __gt__(self, __other: Any) -> bool: ...
+class SupportsDunderGT(Protocol):  # noqa: D101
+    def __gt__(self, __other: Any) -> bool: ...  # noqa: ANN401, D105
 
 
 Sortable = Union[SupportsDunderLT, SupportsDunderGT]
@@ -117,7 +115,7 @@ FinalTransform = AnyTuple
 FinalTransformer = Callable[[Iterable[Any], str], FinalTransform]
 
 PathArg = Union[str, PurePath]
-MatchFn = Callable[[str], Optional[Match[str]]]
+MatchFn = Callable[[str], Union[Match[str], None]]
 
 # For the string parsing factory
 StrSplitter = Callable[[str], Iterable[str]]
@@ -127,10 +125,10 @@ StrParser = Callable[[PathArg], FinalTransform]
 PathSplitter = Callable[[PathArg], Tuple[FinalTransform, ...]]
 
 # For the natsort key
-NatsortInType = Optional[Sortable]
+NatsortInType = Union[Sortable, None]
 NatsortOutType = Tuple[Sortable, ...]
 KeyType = Callable[[Any], NatsortInType]
-MaybeKeyType = Optional[KeyType]
+MaybeKeyType = Union[KeyType, None]
 
 
 class NumericalRegularExpressions:
@@ -154,7 +152,7 @@ class NumericalRegularExpressions:
     @classmethod
     def _construct_regex(cls, fmt: str) -> Pattern[str]:
         """Given a format string, construct the regex with class attributes."""
-        return re.compile(fmt.format(**vars(cls)), flags=re.U)
+        return re.compile(fmt.format(**vars(cls)), flags=re.UNICODE)
 
     @classmethod
     def int_sign(cls) -> Pattern[str]:
@@ -217,8 +215,8 @@ def regex_chooser(alg: NSType) -> Pattern[str]:
     }[alg]
 
 
-def _no_op(x: Any) -> Any:
-    """A function that does nothing and returns the input as-is."""
+def _no_op(x: Any) -> Any:  # noqa: ANN401
+    """Return the input as-is and do nothing else."""
     return x
 
 
@@ -257,6 +255,7 @@ def _compose_input_factory(alg: NSType) -> StrToStr:
     func : callable
         A function that accepts string (unicode) input and returns the
         the input normalized with the desired composition scheme.
+
     """
     if alg & ns.COMPATIBILITYNORMALIZE:
         return partial(normalize, "NFKC")
@@ -267,7 +266,7 @@ def _compose_input_factory(alg: NSType) -> StrToStr:
 def natsort_key(
     val: NatsortInType,
     key: None,
-    string_func: Union[StrParser, PathSplitter],
+    string_func: StrParser | PathSplitter,
     bytes_func: BytesTransformer,
     num_func: NumTransformer,
 ) -> NatsortOutType: ...
@@ -275,18 +274,18 @@ def natsort_key(
 
 @overload
 def natsort_key(
-    val: Any,
+    val: Any,  # noqa: ANN401
     key: KeyType,
-    string_func: Union[StrParser, PathSplitter],
+    string_func: StrParser | PathSplitter,
     bytes_func: BytesTransformer,
     num_func: NumTransformer,
 ) -> NatsortOutType: ...
 
 
 def natsort_key(
-    val: Union[NatsortInType, Any],
+    val: NatsortInType | Any,
     key: MaybeKeyType,
-    string_func: Union[StrParser, PathSplitter],
+    string_func: StrParser | PathSplitter,
     bytes_func: BytesTransformer,
     num_func: NumTransformer,
 ) -> NatsortOutType:
@@ -299,6 +298,7 @@ def natsort_key(
     Parameters
     ----------
     val : str | bytes | int | float | iterable
+        The object on which to operate.
     key : callable | None
         A key to apply to the *val* before any other operations are performed.
     string_func : callable
@@ -331,7 +331,6 @@ def natsort_key(
     parse_number_or_none_factory
 
     """
-
     # Apply key if needed
     if key is not None:
         val = key(val)
@@ -417,21 +416,22 @@ def parse_number_or_none_factory(
     nan_replace = float("+inf") if alg & ns.NANLAST else float("-inf")
 
     def func(
-        val: Any,
+        val: Any,  # noqa: ANN401
+        *,
         _nan_replace: float = nan_replace,
         _sep: StrOrBytes = sep,
-        reverse: bool = nan_replace == float("+inf"),
+        _reverse: bool = nan_replace == float("+inf"),
     ) -> BasicTuple:
         """Given a number, place it in a tuple with a leading null string."""
         # Add a trailing string numbers equaling _nan_replace. This will make
         # the ordering between None NaN, and the NaN replacement value...
         # None comes first, then NaN, then the replacement value.
         if val != val:
-            return _sep, _nan_replace, "3" if reverse else "1"
+            return _sep, _nan_replace, "3" if _reverse else "1"
         if val is None:
             return _sep, _nan_replace, "2"
         if val == _nan_replace:
-            return _sep, _nan_replace, "1" if reverse else "3"
+            return _sep, _nan_replace, "1" if _reverse else "3"
         return _sep, val
 
     # Return the function, possibly wrapping in tuple if PATH is selected.
@@ -444,7 +444,7 @@ def parse_number_or_none_factory(
     return func
 
 
-def parse_string_factory(
+def parse_string_factory(  # noqa: PLR0913
     alg: NSType,
     sep: StrOrBytes,
     splitter: StrSplitter,
@@ -557,6 +557,7 @@ def sep_inserter(iterator: Iterator[Any], sep: StrOrBytes) -> Iterator[Any]:
     Parameters
     ----------
     iterator
+        The iterator on which to operate.
     sep : str
         The string character to be inserted between adjacent numeric objects.
 
@@ -620,7 +621,7 @@ def input_string_transform_factory(alg: NSType) -> StrToStr:
     dumb = alg & NS_DUMB
 
     # Build the chain of functions to execute in order.
-    function_chain: List[StrToStr] = []
+    function_chain: list[StrToStr] = []
     if (dumb and not lowfirst) or (lowfirst and not dumb):
         function_chain.append(methodcaller("swapcase"))
 
@@ -693,14 +694,14 @@ def string_component_transform_factory(alg: NSType) -> StrTransformer:
     nan_val = float("+inf") if alg & ns.NANLAST else float("-inf")
 
     # Build the chain of functions to execute in order.
-    func_chain: List[Callable[[str], StrOrBytes]] = []
+    func_chain: list[Callable[[str], StrOrBytes]] = []
     if group_letters:
         func_chain.append(groupletters)
     if use_locale:
         func_chain.append(get_strxfrm())
 
     # Return the correct chained functions.
-    kwargs: Dict[str, Union[float, Callable[[str], StrOrBytes], bool]]
+    kwargs: dict[str, float | Callable[[str], StrOrBytes] | bool]
     kwargs = {"on_fail": chain_functions(func_chain)} if func_chain else {}
     kwargs["map"] = True
     if alg & ns.FLOAT:
@@ -750,12 +751,10 @@ def final_data_transform_factory(
             _sep: StrOrBytes = sep,
             _pre_sep: str = pre_sep,
         ) -> FinalTransform:
-            """
-            Return a tuple with the first character of the first element
-            of the return value as the first element, and the return value
-            as the second element. This will be used to perform gross sorting
-            by the first letter.
-            """
+            # Return a tuple with the first character of the first element
+            # of the return value as the first element, and the return value
+            # as the second element. This will be used to perform gross sorting
+            # by the first letter.
             split_val = tuple(split_val)
             if not split_val:
                 return (), ()
@@ -788,6 +787,7 @@ def groupletters(x: str, _low: StrToStr = lower_function) -> str:
     Parameters
     ----------
     x : str
+        The sting to modify.
 
     Returns
     -------
@@ -795,7 +795,6 @@ def groupletters(x: str, _low: StrToStr = lower_function) -> str:
 
     Examples
     --------
-
         >>> groupletters("Apple")
         'aAppppllee'
 
@@ -844,16 +843,17 @@ def do_decoding(s: bytes, encoding: str) -> str: ...
 
 
 @overload
-def do_decoding(s: Any, encoding: str) -> Any: ...
+def do_decoding(s: Any, encoding: str) -> Any: ...  # noqa: ANN401
 
 
 def do_decoding(s: Any, encoding: str) -> Any:
     """
-    Helper to decode a *bytes* object, or return the object as-is.
+    Decode a *bytes* object, or return the object as-is.
 
     Parameters
     ----------
     s : bytes | object
+        The object to decode if it is *bytes*.
     encoding : str
         The encoding to use to decode *s*.
 
@@ -872,6 +872,7 @@ def do_decoding(s: Any, encoding: str) -> Any:
 # noinspection PyIncorrectDocstring
 def path_splitter(
     s: PathArg,
+    *,
     treat_base: bool = True,
     _d_match: MatchFn = re.compile(r"\.\d").match,
 ) -> Iterator[str]:
@@ -883,6 +884,7 @@ def path_splitter(
     Parameters
     ----------
     s : str | pathlib.Path
+        The path to split.
     treat_base: bool, optional
         If True, treat the base of component of the file path as
         special and split off extensions. If False, do not do this.
@@ -895,7 +897,6 @@ def path_splitter(
 
     Examples
     --------
-
         >>> tuple(path_splitter("this/thing.ext"))
         ('this', 'thing', '.ext')
 
@@ -917,8 +918,9 @@ def path_splitter(
         #  - more than two suffixes have been seen
         #  - a suffix is more than five characters (including leading ".")
         #  - there are no more extensions
+        suffix_threshold = 5
         for i, suffix in enumerate(reversed(PurePath(base).suffixes)):
-            if _d_match(suffix) or i > 1 or len(suffix) > 5:
+            if _d_match(suffix) or i > 1 or len(suffix) > suffix_threshold:
                 break
             suffixes.append(suffix)
         suffixes.reverse()

@@ -67,46 +67,44 @@ docstring-code-format = true
 
 [tool.ruff.lint]
 fixable = ["ALL"]
-select = [
-	"F",
-	"E",
-	"W",
-	"C90",  # mccabe
-	"B",    # flake8-bugbear
-	"N",    # pep8-naming
-	"I",    # isort
-	"UP",   # pyupgrade
-	"YTT",  # flake8-2020
-	"BLE",  # flake8-blind-except
-	"A",    # flake8-builtins
-	"COM",  # flake8-commas
-	"C4",   # flake8-comprehensions
-	"EM",   # flake8-errmsg
-	"EXE",  # flake8-executable
-	"ISC",  # flake8-implicit-str-concat
-	"ICN",  # flake8-import-conventions
-	"PIE",  # flake8-pie
-	"PYI",  # flake8-pyi
-	"PT",   # flake8-pytest-style
-	"Q",    # flake8-quotes
-	"RSE",  # flake8-raise
-	"RET",  # flake8-return
-	"SLF",  # flake8-self
-	"SIM",  # flake8-simplify
-	"TID",  # flake8-tidy-imports
-	"TCH",  # flake8-type-checking
-	"ARG",  # flake8-unused-arguments
-	"ERA",  # eradicate
-	"RUF",  # ruff-specific-rules
-]
+select = ["ALL"]
 ignore = [
-	"A002",    # arguments shadow builtins
-	"PT004",   # leading underscore in fixtures that return nothing
-	"RUF001",  # ambiguous-unicode-character-string
-	"COM812",  # missing trailing comma
-	"ISC001",  # single line implicit string concatenation
+	"A002",     # arguments shadow builtins
+	"PT004",    # leading underscore in fixtures that return nothing
+	"RUF001",   # ambiguous-unicode-character-string
+	"COM812",   # missing trailing comma
+	"ISC001",   # single line implicit string concatenation
+	"PLR0124",  # name compared with itself (used to check for NaN)
+	"DTZ",      # flaek8-datetimez
+	"D203",     # one blank line before docstring in class
+	"D212"      # docstring on same line as quotes
 ]
 # doctests = true  # enable when/if available
 
+[tool.ruff.lint.per-file-ignores]
+"natsort/__init__.py" = [
+	"PLC0414",  # useless import alias
+]
+"natsort/natsort.py" = [
+	"FBT",      # Boolean trap
+]
+"natsort/compat/__init__.py" = [
+	"D104",     # docstring required in public package
+]
+"tests/**.py" = [
+    "S101",     # use of assert
+	"D",        # docstring checks
+	"INP",      # implicit namespace package
+	"PLR2004",  # magic value comparison
+	"FBT",      # Boolean trap
+]
+"dev/bump.py" = [
+	"S603",     # validate input to subprocess.run
+	"S607",     # use full path of commands to subprocess.run
+]
+
 [tool.ruff.lint.mccabe]
 max-complexity = 10
+
+[tool.ruff.lint.isort]
+required-imports = ["from __future__ import annotations"]

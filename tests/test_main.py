@@ -2,14 +2,14 @@
 Test the natsort command-line tool functions.
 """
 
+from __future__ import annotations
+
 import re
-import sys
-from typing import Any, List
+from typing import TYPE_CHECKING, Any
 
 import pytest
 from hypothesis import given
 from hypothesis.strategies import DataObject, data, floats, integers, lists
-from pytest_mock import MockerFixture
 
 from natsort.__main__ import (
     TypedArgs,
@@ -20,6 +20,9 @@ from natsort.__main__ import (
     range_check,
     sort_and_print_entries,
 )
+
+if TYPE_CHECKING:
+    from pytest_mock import MockerFixture
 
 
 def test_main_passes_default_arguments_with_no_command_line_options(
@@ -64,7 +67,7 @@ def test_main_passes_arguments_with_all_command_line_options(
     assert args.locale
 
 
-mock_print = "__builtin__.print" if sys.version_info[0] == 2 else "builtins.print"
+mock_print = "builtins.print"
 
 entries = [
     "tmp/a57/path2",
@@ -128,8 +131,8 @@ entries = [
     ],
 )
 def test_sort_and_print_entries(
-    options: List[Any],
-    order: List[int],
+    options: list[Any],
+    order: list[int],
     mocker: MockerFixture,
 ) -> None:
     p = mocker.patch(mock_print)
@@ -187,7 +190,7 @@ def test_check_filters_returns_input_as_is_if_filter_is_valid_example() -> None:
 
 @given(x=lists(integers(), min_size=1), d=data())
 def test_check_filters_returns_input_as_is_if_filter_is_valid(
-    x: List[int],
+    x: list[int],
     d: DataObject,
 ) -> None:
     # ensure y is element-wise greater than x
@@ -202,7 +205,7 @@ def test_check_filters_raises_value_error_if_filter_is_invalid_example() -> None
 
 @given(x=lists(integers(), min_size=1), d=data())
 def test_check_filters_raises_value_error_if_filter_is_invalid(
-    x: List[int],
+    x: list[int],
     d: DataObject,
 ) -> None:
     # ensure y is element-wise less than or equal to x
@@ -218,11 +221,11 @@ def test_check_filters_raises_value_error_if_filter_is_invalid(
     # 3. No portion is between the bounds => False.
     [([0], [100], True), ([1, 88], [20, 90], True), ([1], [20], False)],
 )
-def test_keep_entry_range(lows: List[int], highs: List[int], truth: bool) -> None:
+def test_keep_entry_range(lows: list[int], highs: list[int], truth: bool) -> None:
     assert keep_entry_range("a56b23c89", lows, highs, int, re.compile(r"\d+")) is truth
 
 
 # 1. Values not in entry => True. 2. Values in entry => False.
 @pytest.mark.parametrize(("values", "truth"), [([100, 45], True), ([23], False)])
-def test_keep_entry_value(values: List[int], truth: bool) -> None:
+def test_keep_entry_value(values: list[int], truth: bool) -> None:
     assert keep_entry_value("a56b23c89", values, int, re.compile(r"\d+")) is truth

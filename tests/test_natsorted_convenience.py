@@ -3,8 +3,9 @@ Here are a collection of examples of how this module can be used.
 See the README or the natsort homepage for more details.
 """
 
+from __future__ import annotations
+
 from operator import itemgetter
-from typing import List
 
 import pytest
 
@@ -24,17 +25,17 @@ from natsort import (
 
 
 @pytest.fixture
-def version_list() -> List[str]:
+def version_list() -> list[str]:
     return ["1.9.9a", "1.11", "1.9.9b", "1.11.4", "1.10.1"]
 
 
 @pytest.fixture
-def float_list() -> List[str]:
+def float_list() -> list[str]:
     return ["a50", "a51.", "a50.31", "a-50", "a50.4", "a5.034e1", "a50.300"]
 
 
 @pytest.fixture
-def fruit_list() -> List[str]:
+def fruit_list() -> list[str]:
     return ["Apple", "corn", "Corn", "Banana", "apple", "banana"]
 
 
@@ -56,14 +57,14 @@ def test_as_utf8_converts_bytes_to_utf8() -> None:
 
 
 def test_realsorted_is_identical_to_natsorted_with_real_alg(
-    float_list: List[str],
+    float_list: list[str],
 ) -> None:
     assert realsorted(float_list) == natsorted(float_list, alg=ns.REAL)
 
 
 @pytest.mark.usefixtures("with_locale_en_us")
 def test_humansorted_is_identical_to_natsorted_with_locale_alg(
-    fruit_list: List[str],
+    fruit_list: list[str],
 ) -> None:
     assert humansorted(fruit_list) == natsorted(fruit_list, alg=ns.LOCALE)
 
@@ -96,14 +97,14 @@ def test_index_natsorted_can_presort() -> None:
 
 
 def test_index_realsorted_is_identical_to_index_natsorted_with_real_alg(
-    float_list: List[str],
+    float_list: list[str],
 ) -> None:
     assert index_realsorted(float_list) == index_natsorted(float_list, alg=ns.REAL)
 
 
 @pytest.mark.usefixtures("with_locale_en_us")
 def test_index_humansorted_is_identical_to_index_natsorted_with_locale_alg(
-    fruit_list: List[str],
+    fruit_list: list[str],
 ) -> None:
     assert index_humansorted(fruit_list) == index_natsorted(fruit_list, alg=ns.LOCALE)
 

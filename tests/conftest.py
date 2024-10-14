@@ -2,6 +2,8 @@
 Fixtures for pytest.
 """
 
+from __future__ import annotations
+
 import locale
 from typing import Iterator
 
