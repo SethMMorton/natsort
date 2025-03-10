@@ -29,6 +29,7 @@ class TypedArgs(argparse.Namespace):
     sign: bool
     noexp: bool
     locale: bool
+    zero_terminated: bool
     entries: list[str]
 
     def __init__(
@@ -38,6 +39,7 @@ class TypedArgs(argparse.Namespace):
         exclude: list[Num] | None = None,
         paths: bool = False,  # noqa: FBT001, FBT002
         reverse: bool = False,  # noqa: FBT001, FBT002
+        zero_terminated: bool = False,  # noqa: FBT001, FBT002
     ) -> None:
         """To be used by testing only."""
         self.filter = filter
@@ -49,6 +51,7 @@ class TypedArgs(argparse.Namespace):
         self.signed = False
         self.exp = True
         self.locale = False
+        self.zero_terminated = zero_terminated
 
 
 def main(*arguments: str) -> None:
@@ -165,11 +168,19 @@ def main(*arguments: str) -> None:
         "best results if you install PyICU.",
     )
     parser.add_argument(
+        "-z",
+        "--zero-terminated",
+        action="store_true",
+        default=False,
+        help="Causes natsort to split entries on the null character rather "
+        "than on newline characters. Only used when reading from stdin.",
+    )
+    parser.add_argument(
         "entries",
         nargs="*",
-        default=sys.stdin,
         help="The entries to sort. Taken from stdin if nothing is given on "
         "the command line.",
+        # Note: if nothing is given on the command line, args.entries is an empty list.
     )
     args = parser.parse_args(arguments or None, namespace=TypedArgs())
 
@@ -177,8 +188,17 @@ def main(*arguments: str) -> None:
     args.filter = check_filters(args.filter)
     args.reverse_filter = check_filters(args.reverse_filter)
 
+    # Read from command line or stdin? If from stdin, are split on nulls or newlines?
+    if len(args.entries) > 0:
+        entries = args.entries
+    else:
+        if args.zero_terminated:
+            entries = sys.stdin.read().rstrip("\0").split("\0")
+        else:
+            entries = sys.stdin.readlines()
+
     # Remove trailing whitespace from all the entries
-    entries = [e.strip() for e in args.entries]
+    entries = [e.strip() for e in entries]
 
     # Sort by directory then by file within directory and print.
     sort_and_print_entries(entries, args)
