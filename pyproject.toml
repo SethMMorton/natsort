@@ -11,7 +11,7 @@ dynamic = ["version"]
 requires-python = ">=3.8"
 description = "Simple yet flexible natural sorting in Python."
 readme = "README.rst"
-license = {text = "MIT"}
+license = "MIT"
 keywords = ["sort", "sorting", "natural sort", "natsort"]
 classifiers = [
 	"Development Status :: 5 - Production/Stable",
@@ -21,7 +21,6 @@ classifiers = [
 	"Intended Audience :: Information Technology",
 	"Intended Audience :: Financial and Insurance Industry",
 	"Operating System :: OS Independent",
-	"License :: OSI Approved :: MIT License",
 	"Natural Language :: English",
 	"Programming Language :: Python",
 	"Programming Language :: Python :: 3",
@@ -92,7 +91,7 @@ ignore = [
 	"D104",     # docstring required in public package
 ]
 "tests/**.py" = [
-    "S101",     # use of assert
+	"S101",     # use of assert
 	"D",        # docstring checks
 	"INP",      # implicit namespace package
 	"PLR2004",  # magic value comparison
