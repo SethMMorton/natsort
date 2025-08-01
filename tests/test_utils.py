@@ -7,7 +7,7 @@ import pathlib
 import string
 from itertools import chain
 from operator import neg as op_neg
-from typing import Pattern
+from typing import TYPE_CHECKING
 
 import pytest
 from hypothesis import given
@@ -15,6 +15,9 @@ from hypothesis.strategies import integers, lists, sampled_from, text
 
 from natsort import utils
 from natsort.ns_enum import NSType, ns
+
+if TYPE_CHECKING:
+    from re import Pattern
 
 
 def test_do_decoding_decodes_bytes_string_to_unicode() -> None:

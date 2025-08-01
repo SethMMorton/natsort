@@ -11,11 +11,9 @@ from functools import partial
 from operator import itemgetter
 from pathlib import PurePath
 from typing import (
+    TYPE_CHECKING,
     Any,
     Callable,
-    Iterable,
-    Iterator,
-    Sequence,
     TypeVar,
     cast,
 )
@@ -24,6 +22,9 @@ import natsort.compat.locale
 from natsort import utils
 from natsort.ns_enum import NS_DUMB, NSType, ns
 from natsort.utils import NatsortInType, NatsortOutType
+
+if TYPE_CHECKING:
+    from collections.abc import Iterable, Iterator, Sequence
 
 # Common input and output types
 T = TypeVar("T")

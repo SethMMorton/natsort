@@ -5,12 +5,15 @@ Fixtures for pytest.
 from __future__ import annotations
 
 import locale
-from typing import Iterator
+from typing import TYPE_CHECKING
 
 import hypothesis
 import pytest
 
 from natsort.compat.locale import dumb_sort
+
+if TYPE_CHECKING:
+    from collections.abc import Iterator
 
 # This disables the "too slow" hypothesis heath check globally.
 # For some reason it thinks that the text/binary generation is too

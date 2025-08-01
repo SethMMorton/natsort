@@ -7,7 +7,10 @@ Provides a uniform interface to fastnumbers or the fallbacks.
 from __future__ import annotations
 
 import re
-from typing import Callable, Iterable, Iterator, Union
+from typing import TYPE_CHECKING, Callable, Union
+
+if TYPE_CHECKING:
+    from collections.abc import Iterable, Iterator
 
 StrOrFloat = Union[str, float]
 StrOrInt = Union[str, int]

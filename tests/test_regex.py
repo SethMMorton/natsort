@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Pattern
+from typing import TYPE_CHECKING
 
 import pytest
 
@@ -10,6 +10,8 @@ from natsort import ns, numeric_regex_chooser
 from natsort.utils import NumericalRegularExpressions as NumRegex
 
 if TYPE_CHECKING:
+    from re import Pattern
+
     from natsort.ns_enum import NSType
 
 regex_names = {

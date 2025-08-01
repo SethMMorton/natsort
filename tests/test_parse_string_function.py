@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 import unicodedata
-from typing import Any, Callable, Iterable, Tuple
+from typing import TYPE_CHECKING, Any, Callable
 
 import pytest
 from hypothesis import given
@@ -20,8 +20,11 @@ from natsort.utils import (
     NumericalRegularExpressions as NumRegex,
 )
 
+if TYPE_CHECKING:
+    from collections.abc import Iterable
 
-class CustomTuple(Tuple[Any, ...]):  # noqa: SLOT001
+
+class CustomTuple(tuple[Any, ...]):  # noqa: SLOT001
     """Used to ensure what is given during testing is what is returned."""
 
     original: Any = None

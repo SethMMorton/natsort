@@ -41,19 +41,16 @@ and thus has a slightly improved performance at runtime.
 from __future__ import annotations
 
 import re
+from collections.abc import Iterable, Iterator
 from functools import partial, reduce
 from itertools import chain as ichain
 from operator import methodcaller
 from pathlib import PurePath
+from re import Match, Pattern
 from typing import (
     TYPE_CHECKING,
     Any,
     Callable,
-    Iterable,
-    Iterator,
-    Match,
-    Pattern,
-    Tuple,
     Union,
     cast,
     overload,
@@ -94,14 +91,14 @@ StrToStr = Callable[[str], str]
 AnyCall = Callable[[Any], Any]
 
 # For the bytes transform factory
-BytesTuple = Tuple[bytes]
-NestedBytesTuple = Tuple[Tuple[bytes]]
+BytesTuple = tuple[bytes]
+NestedBytesTuple = tuple[tuple[bytes]]
 BytesTransform = Union[BytesTuple, NestedBytesTuple]
 BytesTransformer = Callable[[bytes], BytesTransform]
 
 # For the number transform factory
-BasicTuple = Tuple[Any, ...]
-NestedAnyTuple = Tuple[BasicTuple, ...]
+BasicTuple = tuple[Any, ...]
+NestedAnyTuple = tuple[BasicTuple, ...]
 AnyTuple = Union[BasicTuple, NestedAnyTuple]
 NumTransform = AnyTuple
 NumTransformer = Callable[[Any], NumTransform]
@@ -122,11 +119,11 @@ StrSplitter = Callable[[str], Iterable[str]]
 StrParser = Callable[[PathArg], FinalTransform]
 
 # For the path parsing factory
-PathSplitter = Callable[[PathArg], Tuple[FinalTransform, ...]]
+PathSplitter = Callable[[PathArg], tuple[FinalTransform, ...]]
 
 # For the natsort key
 NatsortInType = Union[Sortable, None]
-NatsortOutType = Tuple[Sortable, ...]
+NatsortOutType = tuple[Sortable, ...]
 KeyType = Callable[[Any], NatsortInType]
 MaybeKeyType = Union[KeyType, None]
 

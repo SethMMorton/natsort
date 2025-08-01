@@ -5,14 +5,18 @@ from __future__ import annotations
 import argparse
 import sys
 import textwrap
-from typing import Callable, Iterable, Pattern, Tuple, Union, cast
+from collections.abc import Iterable
+from typing import TYPE_CHECKING, Callable, Union, cast
 
 import natsort
 from natsort.utils import regex_chooser
 
+if TYPE_CHECKING:
+    from re import Pattern
+
 Num = Union[float, int]
 NumIter = Iterable[Num]
-NumPair = Tuple[Num, Num]
+NumPair = tuple[Num, Num]
 NumPairIter = Iterable[NumPair]
 NumConverter = Callable[[str], Num]
 
