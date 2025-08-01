@@ -14,6 +14,7 @@ from hypothesis.strategies import DataObject, data, floats, integers, lists
 from natsort.__main__ import (
     TypedArgs,
     check_filters,
+    get_entries,
     keep_entry_range,
     keep_entry_value,
     main,
@@ -139,6 +140,28 @@ def test_sort_and_print_entries(
     sort_and_print_entries(entries, TypedArgs(*options))
     e = [mocker.call(entries[i]) for i in order]
     p.assert_has_calls(e)
+
+
+@pytest.mark.parametrize(
+    ("zero_terminated", "stdin_content"),
+    [
+        (False, "num-2\nnum-6\nnum-1"),
+        (False, "num-2\nnum-6\nnum-1\n"),
+        (True, "num-2\0num-6\0num-1"),
+        (True, "num-2\0num-6\0num-1\0"),
+    ],
+)
+def test_get_entries(
+    zero_terminated: bool,
+    stdin_content: str,
+    mocker: MockerFixture,
+) -> None:
+    """Test that the entries are read correctly from stdin."""
+    args = TypedArgs(zero_terminated=zero_terminated)
+    mock_stdin = mocker.patch("sys.stdin.read", return_value=stdin_content)
+    entries = get_entries(args)
+    mock_stdin.assert_called_once_with()
+    assert entries == ["num-2", "num-6", "num-1"]
 
 
 # Each test has an "example" version for demonstrative purposes,
