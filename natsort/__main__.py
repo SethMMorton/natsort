@@ -4,7 +4,7 @@ from __future__ import annotations
 
 import argparse
 import sys
-from typing import Callable, Iterable, Pattern, Tuple, Union, cast
+from typing import Callable, Iterable, List, Pattern, Tuple, Union, cast
 
 import natsort
 from natsort.utils import regex_chooser
@@ -29,6 +29,7 @@ class TypedArgs(argparse.Namespace):
     sign: bool
     noexp: bool
     locale: bool
+    zero_terminated: bool
     entries: list[str]
 
     def __init__(
@@ -38,8 +39,10 @@ class TypedArgs(argparse.Namespace):
         exclude: list[Num] | None = None,
         paths: bool = False,  # noqa: FBT001, FBT002
         reverse: bool = False,  # noqa: FBT001, FBT002
+        zero_terminated: bool = False,  # noqa: FBT001, FBT002
+        entries: list[str] | None = None,
     ) -> None:
-        """To be used by testing only."""
+        """Use this constructor only for running the unit tests."""
         self.filter = filter
         self.reverse_filter = reverse_filter
         self.exclude = [] if exclude is None else exclude
@@ -49,6 +52,10 @@ class TypedArgs(argparse.Namespace):
         self.signed = False
         self.exp = True
         self.locale = False
+        self.zero_terminated = zero_terminated
+        if entries is None:
+            entries = []
+        self.entries = entries
 
 
 def main(*arguments: str) -> None:
@@ -165,11 +172,19 @@ def main(*arguments: str) -> None:
         "best results if you install PyICU.",
     )
     parser.add_argument(
+        "-z",
+        "--zero-terminated",
+        action="store_true",
+        default=False,
+        help="When reading from stdin, split entries on nulls (\\0) "
+        "instead of newlines.",
+    )
+    parser.add_argument(
         "entries",
         nargs="*",
-        default=sys.stdin,
         help="The entries to sort. Taken from stdin if nothing is given on "
         "the command line.",
+        # Note: if nothing is given on the command line, args.entries is an empty list.
     )
     args = parser.parse_args(arguments or None, namespace=TypedArgs())
 
@@ -177,8 +192,8 @@ def main(*arguments: str) -> None:
     args.filter = check_filters(args.filter)
     args.reverse_filter = check_filters(args.reverse_filter)
 
-    # Remove trailing whitespace from all the entries
-    entries = [e.strip() for e in args.entries]
+    # Determine which entries to sort.
+    entries = get_entries(args)
 
     # Sort by directory then by file within directory and print.
     sort_and_print_entries(entries, args)
@@ -237,6 +252,20 @@ def check_filters(filters: NumPairIter | None) -> list[NumPair] | None:
         return [range_check(f[0], f[1]) for f in filters]
     except ValueError as err:
         raise ValueError("Error in --filter: " + str(err)) from None
+
+
+def get_entries(args: TypedArgs) -> List[str]:
+    """Determine which entries to sort."""
+    # Read entries from command line or stdin?
+    # If reading from stdin, are entries split on nulls or newlines?
+    if len(args.entries) > 0:
+        entries = args.entries
+    else:
+        separator = "\0" if args.zero_terminated else "\n"
+        entries = sys.stdin.read().rstrip(separator).split(separator)
+
+    # Remove trailing whitespace from all the entries
+    return [e.strip() for e in entries]
 
 
 def keep_entry_range(
