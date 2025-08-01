@@ -1,6 +1,14 @@
 Unreleased
 ---
 
+### Added
+
+- Add `--zero-terminated` option to CLI
+  ([@baldassarreFe](https://github.com/baldassarreFe), issues
+  [#179](https://github.com/SethMMorton/natsort/issues/179) and
+  [#180](https://github.com/SethMMorton/natsort/issues/180))
+- Add explicit support for Python 3.12 and 3.13
+
 ### Changed
 
 - Modernize development infrastructure
@@ -17,6 +25,7 @@ Unreleased
 ### Removed
 
 - Support for EOL Python 3.7
+- Support for EOL Python 3.8
 
 [8.4.0] - 2023-06-19
 ---
