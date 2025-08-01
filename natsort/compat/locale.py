@@ -7,7 +7,7 @@ Makes uniform API to either local or PyICU.
 from __future__ import annotations
 
 import sys
-from typing import Callable, Union, cast
+from typing import Callable, Union
 
 StrOrBytes = Union[str, bytes]
 TrxfmFunc = Callable[[str], StrOrBytes]
@@ -82,7 +82,7 @@ except ImportError:
 
     def get_thousands_sep() -> str:
         """Return the appropriate thousands seperator for this locale."""
-        sep = cast(str, locale.localeconv()["thousands_sep"])
+        sep = locale.localeconv()["thousands_sep"]
         # If this locale library is broken, some of the thousands separator
         # characters are incorrectly blank. Here is a lookup table of the
         # corrections I am aware of.
@@ -131,4 +131,4 @@ except ImportError:
 
     def get_decimal_point() -> str:
         """Return the appropriate decimal point for this locale."""
-        return cast(str, locale.localeconv()["decimal_point"])
+        return locale.localeconv()["decimal_point"]

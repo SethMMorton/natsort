@@ -34,13 +34,13 @@ def not_a_float(x: str) -> bool:
 
 def is_int(x: str | float) -> bool:
     try:
-        return cast(float, x).is_integer()
+        return cast("float", x).is_integer()
     except AttributeError:
         try:
             int(x)
         except ValueError:
             try:
-                unicodedata.digit(cast(str, x))
+                unicodedata.digit(cast("str", x))
             except (ValueError, TypeError):
                 return False
             else:
@@ -65,9 +65,9 @@ def test_fast_float_converts_float_string_to_float_example() -> None:
     assert fast_float("45.8") == 45.8
     assert fast_float("-45") == -45.0
     assert fast_float("45.8e-2", key=lambda x: x.upper()) == 45.8e-2
-    assert isinf(cast(float, fast_float("nan")))
-    assert isinf(cast(float, fast_float("+nan")))
-    assert isinf(cast(float, fast_float("-NaN")))
+    assert isinf(cast("float", fast_float("nan")))
+    assert isinf(cast("float", fast_float("+nan")))
+    assert isinf(cast("float", fast_float("-NaN")))
     assert fast_float("۱۲.۱۲") == 12.12
     assert fast_float("-۱۲.۱۲") == -12.12
 

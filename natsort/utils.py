@@ -81,11 +81,11 @@ else:
 
 
 class SupportsDunderLT(Protocol):  # noqa: D101
-    def __lt__(self, __other: Any) -> bool: ...  # noqa: ANN401, D105
+    def __lt__(self, __other: Any) -> bool: ...  # noqa: ANN401, D105, PYI063
 
 
 class SupportsDunderGT(Protocol):  # noqa: D101
-    def __gt__(self, __other: Any) -> bool: ...  # noqa: ANN401, D105
+    def __gt__(self, __other: Any) -> bool: ...  # noqa: ANN401, D105, PYI063
 
 
 Sortable = Union[SupportsDunderLT, SupportsDunderGT]
@@ -706,8 +706,8 @@ def string_component_transform_factory(alg: NSType) -> StrTransformer:
     kwargs["map"] = True
     if alg & ns.FLOAT:
         kwargs["nan"] = nan_val
-        return cast(StrTransformer, partial(try_float, **kwargs))
-    return cast(StrTransformer, partial(try_int, **kwargs))
+        return cast("StrTransformer", partial(try_float, **kwargs))
+    return cast("StrTransformer", partial(try_int, **kwargs))
 
 
 def final_data_transform_factory(
@@ -742,7 +742,7 @@ def final_data_transform_factory(
     """
     if alg & ns.UNGROUPLETTERS and alg & ns.LOCALEALPHA:
         swap = alg & NS_DUMB and alg & ns.LOWERCASEFIRST
-        transform = cast(StrToStr, methodcaller("swapcase") if swap else _no_op)
+        transform = cast("StrToStr", methodcaller("swapcase") if swap else _no_op)
 
         def func(
             split_val: Iterable[NatsortInType],
@@ -776,7 +776,7 @@ def final_data_transform_factory(
     return func
 
 
-lower_function: StrToStr = cast(StrToStr, methodcaller("casefold"))
+lower_function: StrToStr = cast("StrToStr", methodcaller("casefold"))
 
 
 # noinspection PyIncorrectDocstring

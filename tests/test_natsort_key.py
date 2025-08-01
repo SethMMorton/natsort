@@ -44,6 +44,8 @@ def test_natsort_key_with_nested_input_takes_nested_path(x: list[str]) -> None:
 
 @given(text())
 def test_natsort_key_with_key_argument_applies_key_before_processing(x: str) -> None:
-    assert natsort_key(x, len, str_func, fail, lambda y: ("", cast(int, y)))[1] == len(
+    assert natsort_key(x, len, str_func, fail, lambda y: ("", cast("int", y)))[
+        1
+    ] == len(
         x,
     )

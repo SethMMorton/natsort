@@ -4,7 +4,8 @@ from __future__ import annotations
 
 import argparse
 import sys
-from typing import Callable, Iterable, List, Pattern, Tuple, Union, cast
+import textwrap
+from typing import Callable, Iterable, Pattern, Tuple, Union, cast
 
 import natsort
 from natsort.utils import regex_chooser
@@ -32,7 +33,7 @@ class TypedArgs(argparse.Namespace):
     zero_terminated: bool
     entries: list[str]
 
-    def __init__(
+    def __init__(  # noqa: PLR0913
         self,
         filter: list[NumPair] | None = None,
         reverse_filter: list[NumPair] | None = None,
@@ -64,12 +65,9 @@ def main(*arguments: str) -> None:
 
     Arguments are read from sys.argv.
     """
-    from argparse import ArgumentParser, RawDescriptionHelpFormatter
-    from textwrap import dedent
-
-    parser = ArgumentParser(
-        description=dedent(cast(str, main.__doc__)),
-        formatter_class=RawDescriptionHelpFormatter,
+    parser = argparse.ArgumentParser(
+        description=textwrap.dedent(cast("str", main.__doc__)),
+        formatter_class=argparse.RawDescriptionHelpFormatter,
     )
     parser.add_argument(
         "--version",
@@ -254,7 +252,7 @@ def check_filters(filters: NumPairIter | None) -> list[NumPair] | None:
         raise ValueError("Error in --filter: " + str(err)) from None
 
 
-def get_entries(args: TypedArgs) -> List[str]:
+def get_entries(args: TypedArgs) -> list[str]:
     """Determine which entries to sort."""
     # Read entries from command line or stdin?
     # If reading from stdin, are entries split on nulls or newlines?

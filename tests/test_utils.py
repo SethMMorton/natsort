@@ -188,7 +188,8 @@ def test_path_splitter_splits_path_string_by_sep_and_removes_extension(
 ) -> None:
     z = str(pathlib.Path(*x[:-2])) + "." + x[-1]
     y = tuple(pathlib.Path(z).parts)
-    assert tuple(utils.path_splitter(z)) == y[:-1] + (
+    assert tuple(utils.path_splitter(z)) == (
+        *y[:-1],
         pathlib.Path(z).stem,
         pathlib.Path(z).suffix,
     )

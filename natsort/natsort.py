@@ -703,7 +703,7 @@ if platform.system() == "Windows":
         key: Callable[[Any], NatsortInType] | None = None,
     ) -> Callable[[Any], NatsortOutType]:
         return cast(
-            Callable[[Any], NatsortOutType],
+            "Callable[[Any], NatsortOutType]",
             lambda x: tuple(map(_winsort_key, _split_apply(x, key, treat_base=False))),
         )
 
