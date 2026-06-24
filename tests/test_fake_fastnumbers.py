@@ -79,18 +79,20 @@ def test_fast_float_converts_float_string_to_float(x: float) -> None:
 
 def test_fast_float_leaves_string_as_is_example() -> None:
     assert fast_float("invalid") == "invalid"
+    assert fast_float("") == ""
 
 
-@given(text().filter(not_a_float).filter(bool))
+@given(text().filter(not_a_float))
 def test_fast_float_leaves_string_as_is(x: str) -> None:
     assert fast_float(x) == x
 
 
 def test_fast_float_with_key_applies_to_string_example() -> None:
     assert fast_float("invalid", key=lambda x: x.upper()) == "INVALID"
+    assert fast_float("", key=lambda x: x.upper()) == ""
 
 
-@given(text().filter(not_a_float).filter(bool))
+@given(text().filter(not_a_float))
 def test_fast_float_with_key_applies_to_string(x: str) -> None:
     assert fast_float(x, key=lambda x: x.upper()) == x.upper()
 
@@ -120,17 +122,19 @@ def test_fast_int_converts_int_string_to_int(x: int) -> None:
 
 def test_fast_int_leaves_string_as_is_example() -> None:
     assert fast_int("invalid") == "invalid"
+    assert fast_int("") == ""
 
 
-@given(text().filter(not_an_int).filter(bool))
+@given(text().filter(not_an_int))
 def test_fast_int_leaves_string_as_is(x: str) -> None:
     assert fast_int(x) == x
 
 
 def test_fast_int_with_key_applies_to_string_example() -> None:
     assert fast_int("invalid", key=lambda x: x.upper()) == "INVALID"
+    assert fast_int("", key=lambda x: x.upper()) == ""
 
 
-@given(text().filter(not_an_int).filter(bool))
+@given(text().filter(not_an_int))
 def test_fast_int_with_key_applies_to_string(x: str) -> None:
     assert fast_int(x, key=lambda x: x.upper()) == x.upper()

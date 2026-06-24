@@ -66,6 +66,8 @@ def fast_float(
     *str* or *float*
 
     """
+    if not x:
+        return key(x)
     if x[0] in _first_char or x.lstrip()[:3] in _nan_inf:
         try:
             ret = float(x)
@@ -107,6 +109,8 @@ def fast_int(
     *str* or *int*
 
     """
+    if not x:
+        return key(x)
     if x[0] in _first_char:
         try:
             return int(x)
