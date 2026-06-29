@@ -2,9 +2,13 @@
 
 from __future__ import annotations
 
+import importlib.resources
+import json
 import unicodedata
 
-from natsort.unicode_numeric_hex import numeric_hex
+# Load the numeric hex values from the JSON file.
+with importlib.resources.open_text("natsort", "unicode_numeric_hex.json") as fl:
+    numeric_hex = json.load(fl)
 
 # Convert each hex into the literal Unicode character.
 # Stop if a ValueError is raised in case of a narrow Unicode build.

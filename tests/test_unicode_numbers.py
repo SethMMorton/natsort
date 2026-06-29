@@ -15,9 +15,9 @@ from natsort.unicode_numbers import (
     digits_no_decimals,
     numeric,
     numeric_chars,
+    numeric_hex,
     numeric_no_decimals,
 )
-from natsort.unicode_numeric_hex import numeric_hex
 
 
 def test_numeric_chars_contains_only_valid_unicode_numeric_characters() -> None:
@@ -65,7 +65,7 @@ def test_missing_unicode_number_in_collection() -> None:
     if not ok:
         warnings.warn(
             """\
-Not all numeric unicode characters are represented in natsort/unicode_numeric_hex.py
+Not all numeric unicode characters are represented in natsort/unicode_numeric_hex.json
 This can be addressed by running dev/generate_new_unicode_numbers.py with the current \
 version of Python.
 It would be much appreciated if you would submit a Pull Request to the natsort
