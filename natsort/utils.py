@@ -65,7 +65,7 @@ from natsort.compat.locale import (
     get_thousands_sep,
 )
 from natsort.ns_enum import NS_DUMB, NSType, ns
-from natsort.unicode_numbers import digits_no_decimals, numeric_no_decimals
+from natsort.unicode_numbers import UnicodeNumbers
 
 if TYPE_CHECKING:
     from typing_extensions import Protocol
@@ -138,9 +138,9 @@ class NumericalRegularExpressions:
     """
 
     # All unicode numeric characters (minus the decimal characters).
-    numeric: str = numeric_no_decimals
+    numeric: str = UnicodeNumbers.numeric_no_decimals()
     # All unicode digit characters (minus the decimal characters).
-    digits: str = digits_no_decimals
+    digits: str = UnicodeNumbers.digits_no_decimals()
     # Regular expression to match exponential component of a float.
     exp: str = r"(?:[eE][-+]?\d+)?"
     # Regular expression to match a floating point number.

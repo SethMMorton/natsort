@@ -9,7 +9,7 @@ from __future__ import annotations
 import unicodedata
 from typing import Callable, Union
 
-from natsort.unicode_numbers import decimal_chars
+from natsort.unicode_numbers import UnicodeNumbers
 
 _NAN_INF = [
     "INF",
@@ -32,7 +32,7 @@ _NAN_INF = [
 _NAN_INF.extend(["+" + x[:2] for x in _NAN_INF] + ["-" + x[:2] for x in _NAN_INF])
 NAN_INF = frozenset(_NAN_INF)
 ASCII_NUMS = "0123456789+-"
-POTENTIAL_FIRST_CHAR = frozenset(decimal_chars + list(ASCII_NUMS + "."))
+POTENTIAL_FIRST_CHAR = frozenset(UnicodeNumbers.decimal_chars() + list(ASCII_NUMS + "."))
 
 StrOrFloat = Union[str, float]
 StrOrInt = Union[str, int]
