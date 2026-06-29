@@ -831,8 +831,12 @@ def chain_functions(functions: Iterable[AnyCall]) -> AnyCall:
         return _no_op
     if len(functions) == 1:
         return functions[0]
+
     # See https://stackoverflow.com/a/39123400/1399279
-    return partial(reduce, lambda res, f: f(res), functions)
+    def reducer(result: Any, f: AnyCall) -> Any:  # noqa: ANN401
+        return f(result)
+
+    return partial(reduce, reducer, functions)
 
 
 @overload
