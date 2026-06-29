@@ -38,6 +38,7 @@ def test_numeric_chars_contains_all_valid_unicode_numeric_and_digit_characters()
     assert set_decimal_chars.isdisjoint(UnicodeNumbers.numeric_no_decimals())
     assert set_numeric_chars.issuperset(UnicodeNumbers.numeric_no_decimals())
 
+
 def test_missing_unicode_number_in_collection() -> None:
     ok = True
     set_numeric_hex = set(UnicodeNumbers.numeric_hex())

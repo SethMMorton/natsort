@@ -28,7 +28,7 @@ class UnicodeNumbers:
                 "natsort", "unicode_numeric_hex.json"
             ) as fl:
                 cls._numeric_hex = json.load(fl)
-                assert isinstance(cls._numeric_hex, list)
+                assert isinstance(cls._numeric_hex, list)  # noqa: S101
         return cls._numeric_hex
 
     @classmethod
@@ -36,7 +36,7 @@ class UnicodeNumbers:
         """Return the list of strings of unicode numerals."""
         if cls._numeric_chars is None:
             cls._populate_unicode_strings()
-        assert cls._numeric_chars is not None
+        assert cls._numeric_chars is not None  # noqa: S101
         return cls._numeric_chars
 
     @classmethod
@@ -44,7 +44,7 @@ class UnicodeNumbers:
         """Return the list of strings of unicode digits."""
         if cls._digit_chars is None:
             cls._populate_unicode_strings()
-        assert cls._digit_chars is not None
+        assert cls._digit_chars is not None  # noqa: S101
         return cls._digit_chars
 
     @classmethod
@@ -52,7 +52,7 @@ class UnicodeNumbers:
         """Return the list of strings of unicode decimals."""
         if cls._decimal_chars is None:
             cls._populate_unicode_strings()
-        assert cls._decimal_chars is not None
+        assert cls._decimal_chars is not None  # noqa: S101
         return cls._decimal_chars
 
     @classmethod
@@ -60,7 +60,7 @@ class UnicodeNumbers:
         """Return the string of unicode decimals."""
         if cls._decimal is None:
             cls._populate_unicode_strings()
-        assert cls._decimal is not None
+        assert cls._decimal is not None  # noqa: S101
         return cls._decimal
 
     @classmethod
@@ -68,7 +68,7 @@ class UnicodeNumbers:
         """Return the string of unicode digits."""
         if cls._digits is None:
             cls._populate_unicode_strings()
-        assert cls._digits is not None
+        assert cls._digits is not None  # noqa: S101
         return cls._digits
 
     @classmethod
@@ -76,7 +76,7 @@ class UnicodeNumbers:
         """Return the string of unicode numerals."""
         if cls._numeric is None:
             cls._populate_unicode_strings()
-        assert cls._numeric is not None
+        assert cls._numeric is not None  # noqa: S101
         return cls._numeric
 
     @classmethod
@@ -84,7 +84,7 @@ class UnicodeNumbers:
         """Return the string of unicode digits that are not decimals."""
         if cls._digits_no_decimals is None:
             cls._populate_unicode_strings()
-        assert cls._digits_no_decimals is not None
+        assert cls._digits_no_decimals is not None  # noqa: S101
         return cls._digits_no_decimals
 
     @classmethod
@@ -92,7 +92,7 @@ class UnicodeNumbers:
         """Return the string of unicode numerals that are not decimals."""
         if cls._numeric_no_decimals is None:
             cls._populate_unicode_strings()
-        assert cls._numeric_no_decimals is not None
+        assert cls._numeric_no_decimals is not None  # noqa: S101
         return cls._numeric_no_decimals
 
     @classmethod
