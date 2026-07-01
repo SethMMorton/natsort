@@ -146,41 +146,63 @@ class NumericalRegularExpressions:
     signed_float_exp: str = sign + unsigned_float_exp
 
     @classmethod
-    def int_sign(cls) -> Pattern[str]:
+    def int_sign(cls, include_unicode: bool = False) -> Pattern[str]:
         """Regular expression to match a signed int."""
-        digits = UnicodeNumbers.digits_no_decimals()
-        return re.compile(f"{cls.signed_int}|[{digits}]", flags=re.UNICODE)
+        if include_unicode:
+            digits = UnicodeNumbers.digits_no_decimals()
+            return re.compile(f"({cls.signed_int}|[{digits}])")
+        return re.compile(f"({cls.signed_int})")
 
     @classmethod
-    def int_nosign(cls) -> Pattern[str]:
+    def int_nosign(cls, include_unicode: bool = False) -> Pattern[str]:
         """Regular expression to match an unsigned int."""
-        digits = UnicodeNumbers.digits_no_decimals()
-        return re.compile(f"{cls.unsigned_int}|[{digits}]", flags=re.UNICODE)
+        if include_unicode:
+            digits = UnicodeNumbers.digits_no_decimals()
+            return re.compile(f"({cls.unsigned_int}|[{digits}])")
+        return re.compile(f"({cls.unsigned_int})")
 
     @classmethod
-    def float_sign_exp(cls) -> Pattern[str]:
+    def float_sign_exp(cls, include_unicode: bool = False) -> Pattern[str]:
         """Regular expression to match a signed float with exponent."""
-        numeric = UnicodeNumbers.digits_no_decimals()
-        return re.compile(f"{cls.signed_float_exp}|[{numeric}]", flags=re.UNICODE)
+        if include_unicode:
+            numeric = UnicodeNumbers.digits_no_decimals()
+            return re.compile(f"({cls.signed_float_exp}|[{numeric}])")
+        return re.compile(f"({cls.signed_float_exp})")
 
     @classmethod
-    def float_nosign_exp(cls) -> Pattern[str]:
+    def float_nosign_exp(cls, include_unicode: bool = False) -> Pattern[str]:
         """Regular expression to match an unsigned float with exponent."""
-        numeric = UnicodeNumbers.digits_no_decimals()
-        return re.compile(f"{cls.unsigned_float_exp}|[{numeric}]", flags=re.UNICODE)
+        if include_unicode:
+            numeric = UnicodeNumbers.digits_no_decimals()
+            return re.compile(f"({cls.unsigned_float_exp}|[{numeric}])")
+        return re.compile(f"({cls.unsigned_float_exp})")
 
     @classmethod
-    def float_sign_noexp(cls) -> Pattern[str]:
+    def float_sign_noexp(cls, include_unicode: bool = False) -> Pattern[str]:
         """Regular expression to match a signed float without exponent."""
-        numeric = UnicodeNumbers.digits_no_decimals()
-        return re.compile(f"{cls.signed_float}|[{numeric}]", flags=re.UNICODE)
+        if include_unicode:
+            numeric = UnicodeNumbers.digits_no_decimals()
+            return re.compile(f"({cls.signed_float}|[{numeric}])")
+        return re.compile(f"({cls.signed_float})")
 
     @classmethod
-    def float_nosign_noexp(cls) -> Pattern[str]:
+    def float_nosign_noexp(cls, include_unicode: bool = False) -> Pattern[str]:
         """Regular expression to match an unsigned float without exponent."""
-        numeric = UnicodeNumbers.digits_no_decimals()
-        return re.compile(f"{cls.unsigned_float}|[{numeric}]", flags=re.UNICODE)
+        if include_unicode:
+            numeric = UnicodeNumbers.digits_no_decimals()
+            return re.compile(f"({cls.unsigned_float}|[{numeric}])")
+        return re.compile(f"({cls.unsigned_float})")
 
+
+# Keep a dictionary mapping given combinations to their appropriate regex.
+ALG_MAP = {
+    ns.INT: NumericalRegularExpressions.int_nosign,
+    ns.FLOAT: NumericalRegularExpressions.float_nosign_exp,
+    ns.INT | ns.SIGNED: NumericalRegularExpressions.int_sign,
+    ns.FLOAT | ns.SIGNED: NumericalRegularExpressions.float_sign_exp,
+    ns.FLOAT | ns.NOEXP: NumericalRegularExpressions.float_nosign_noexp,
+    ns.FLOAT | ns.SIGNED | ns.NOEXP: NumericalRegularExpressions.float_sign_noexp,
+}
 
 def regex_chooser(alg: NSType) -> Pattern[str]:
     """
@@ -197,19 +219,12 @@ def regex_chooser(alg: NSType) -> Pattern[str]:
         Regular expression object that matches the desired number type.
 
     """
+    unicode_chars = bool(alg & ns.UNICODECHARS)
     if alg & ns.FLOAT:
         alg &= ns.FLOAT | ns.SIGNED | ns.NOEXP
     else:
         alg &= ns.INT | ns.SIGNED
-
-    return {
-        ns.INT: NumericalRegularExpressions.int_nosign(),
-        ns.FLOAT: NumericalRegularExpressions.float_nosign_exp(),
-        ns.INT | ns.SIGNED: NumericalRegularExpressions.int_sign(),
-        ns.FLOAT | ns.SIGNED: NumericalRegularExpressions.float_sign_exp(),
-        ns.FLOAT | ns.NOEXP: NumericalRegularExpressions.float_nosign_noexp(),
-        ns.FLOAT | ns.SIGNED | ns.NOEXP: NumericalRegularExpressions.float_sign_noexp(),
-    }[alg]
+    return ALG_MAP[alg](include_unicode=unicode_chars)
 
 
 def _no_op(x: Any) -> Any:  # noqa: ANN401

@@ -119,6 +119,10 @@ class ns(enum.IntEnum):  # noqa: N801
         without `PRESORT` the order of these two values would depend on
         the order they appeared in the input (because Python's `sorted`
         is a stable sorting algorithm).
+    UNICODECHARS, UC
+        Tell `natsort` to consider unicode numeric (for float) or digit
+        (for integer) characters when sorting. The default is to omit them
+        which introduces a small speedup.
 
     Notes
     -----
@@ -149,6 +153,7 @@ class ns(enum.IntEnum):  # noqa: N801
     COMPATIBILITYNORMALIZE = CN = 1 << next(_counter)
     NUMAFTER = NA = 1 << next(_counter)
     PRESORT = PS = 1 << next(_counter)
+    UNICODECHARS = UC = 1 << next(_counter)
 
     # Following were previously options but are now defaults.
     DEFAULT = 0
