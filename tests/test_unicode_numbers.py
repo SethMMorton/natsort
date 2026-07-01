@@ -7,7 +7,10 @@ from __future__ import annotations
 import unicodedata
 import warnings
 
-from natsort.unicode_numbers import UnicodeNumbers
+from natsort.unicode import UnicodeNumbers
+from natsort.unicode.decimal_hex import hex_values as decimal_hex
+from natsort.unicode.digit_hex import hex_values as digit_hex
+from natsort.unicode.numeric_hex import hex_values as numeric_hex
 
 
 def test_numeric_chars_contains_only_valid_unicode_numeric_characters() -> None:
@@ -39,9 +42,9 @@ def test_numeric_chars_contains_all_valid_unicode_numeric_and_digit_characters()
     assert set_numeric_chars.issuperset(UnicodeNumbers.numeric_no_decimals())
 
 
-def test_missing_unicode_number_in_collection() -> None:
+def test_missing_unicode_numeral_in_collection() -> None:
     ok = True
-    set_numeric_hex = set(UnicodeNumbers.numeric_hex())
+    set_numeric_hex = set(numeric_hex)
     for i in range(0x110000):
         try:
             a = chr(i)
@@ -55,7 +58,59 @@ def test_missing_unicode_number_in_collection() -> None:
     if not ok:
         warnings.warn(
             """\
-Not all numeric unicode characters are represented in natsort/unicode_numeric_hex.json
+Not all numeric unicode characters are represented in natsort/unicode/numeral_hex.py.
+This can be addressed by running dev/generate_new_unicode_numbers.py with the current \
+version of Python.
+It would be much appreciated if you would submit a Pull Request to the natsort
+repository (https://github.com/SethMMorton/natsort) with the resulting change.
+""",
+            stacklevel=2,
+        )
+
+
+def test_missing_unicode_digit_in_collection() -> None:
+    ok = True
+    set_digit_hex = set(digit_hex)
+    for i in range(0x110000):
+        try:
+            a = chr(i)
+        except ValueError:
+            break
+        if a in "0123456789":
+            continue
+        if unicodedata.digit(a, None) is not None:  # noqa: SIM102
+            if i not in set_digit_hex:
+                ok = False
+    if not ok:
+        warnings.warn(
+            """\
+Not all numeric unicode characters are represented in natsort/unicode/digit_hex.py.
+This can be addressed by running dev/generate_new_unicode_numbers.py with the current \
+version of Python.
+It would be much appreciated if you would submit a Pull Request to the natsort
+repository (https://github.com/SethMMorton/natsort) with the resulting change.
+""",
+            stacklevel=2,
+        )
+
+
+def test_missing_unicode_decimal_in_collection() -> None:
+    ok = True
+    set_decimal_hex = set(decimal_hex)
+    for i in range(0x110000):
+        try:
+            a = chr(i)
+        except ValueError:
+            break
+        if a in "0123456789":
+            continue
+        if unicodedata.decimal(a, None) is not None:  # noqa: SIM102
+            if i not in set_decimal_hex:
+                ok = False
+    if not ok:
+        warnings.warn(
+            """\
+Not all numeric unicode characters are represented in natsort/unicode/decimal_hex.py.
 This can be addressed by running dev/generate_new_unicode_numbers.py with the current \
 version of Python.
 It would be much appreciated if you would submit a Pull Request to the natsort

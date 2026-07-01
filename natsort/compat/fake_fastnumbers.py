@@ -9,7 +9,7 @@ from __future__ import annotations
 import unicodedata
 from typing import Callable, Union
 
-from natsort.unicode_numbers import UnicodeNumbers
+from natsort.unicode import UnicodeNumbers
 
 _NAN_INF = [
     "INF",

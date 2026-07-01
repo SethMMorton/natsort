@@ -65,7 +65,7 @@ from natsort.compat.locale import (
     get_thousands_sep,
 )
 from natsort.ns_enum import NS_DUMB, NSType, ns
-from natsort.unicode_numbers import UnicodeNumbers
+from natsort.unicode import UnicodeNumbers
 
 if TYPE_CHECKING:
     from typing_extensions import Protocol
@@ -137,49 +137,49 @@ class NumericalRegularExpressions:
     Not intended to be made an instance - use class methods only.
     """
 
-    # All unicode numeric characters (minus the decimal characters).
-    numeric: str = UnicodeNumbers.numeric_no_decimals()
-    # All unicode digit characters (minus the decimal characters).
-    digits: str = UnicodeNumbers.digits_no_decimals()
-    # Regular expression to match exponential component of a float.
-    exp: str = r"(?:[eE][-+]?\d+)?"
-    # Regular expression to match a floating point number.
-    float_num: str = r"(?:\d+\.?\d*|\.\d+)"
-
-    @classmethod
-    def _construct_regex(cls, fmt: str) -> Pattern[str]:
-        """Given a format string, construct the regex with class attributes."""
-        return re.compile(fmt.format(**vars(cls)), flags=re.UNICODE)
+    sign: str = r"[-+]?"
+    unsigned_int: str = r"\d+"
+    signed_int: str = sign + unsigned_int
+    unsigned_float: str = r"(?:\d+\.?\d*|\.\d+)"
+    signed_float: str = sign + unsigned_float
+    unsigned_float_exp: str = unsigned_float + r"(?:[eE][-+]?\d+)?"
+    signed_float_exp: str = sign + unsigned_float_exp
 
     @classmethod
     def int_sign(cls) -> Pattern[str]:
         """Regular expression to match a signed int."""
-        return cls._construct_regex(r"([-+]?\d+|[{digits}])")
+        digits = UnicodeNumbers.digits_no_decimals()
+        return re.compile(f"{cls.signed_int}|[{digits}]", flags=re.UNICODE)
 
     @classmethod
     def int_nosign(cls) -> Pattern[str]:
         """Regular expression to match an unsigned int."""
-        return cls._construct_regex(r"(\d+|[{digits}])")
+        digits = UnicodeNumbers.digits_no_decimals()
+        return re.compile(f"{cls.unsigned_int}|[{digits}]", flags=re.UNICODE)
 
     @classmethod
     def float_sign_exp(cls) -> Pattern[str]:
         """Regular expression to match a signed float with exponent."""
-        return cls._construct_regex(r"([-+]?{float_num}{exp}|[{numeric}])")
+        numeric = UnicodeNumbers.digits_no_decimals()
+        return re.compile(f"{cls.signed_float_exp}|[{numeric}]", flags=re.UNICODE)
 
     @classmethod
     def float_nosign_exp(cls) -> Pattern[str]:
         """Regular expression to match an unsigned float with exponent."""
-        return cls._construct_regex(r"({float_num}{exp}|[{numeric}])")
+        numeric = UnicodeNumbers.digits_no_decimals()
+        return re.compile(f"{cls.unsigned_float_exp}|[{numeric}]", flags=re.UNICODE)
 
     @classmethod
     def float_sign_noexp(cls) -> Pattern[str]:
         """Regular expression to match a signed float without exponent."""
-        return cls._construct_regex(r"([-+]?{float_num}|[{numeric}])")
+        numeric = UnicodeNumbers.digits_no_decimals()
+        return re.compile(f"{cls.signed_float}|[{numeric}]", flags=re.UNICODE)
 
     @classmethod
     def float_nosign_noexp(cls) -> Pattern[str]:
         """Regular expression to match an unsigned float without exponent."""
-        return cls._construct_regex(r"({float_num}|[{numeric}])")
+        numeric = UnicodeNumbers.digits_no_decimals()
+        return re.compile(f"{cls.unsigned_float}|[{numeric}]", flags=re.UNICODE)
 
 
 def regex_chooser(alg: NSType) -> Pattern[str]:
