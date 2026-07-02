@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import locale
 from functools import partial
 from typing import Any, Callable
 
@@ -45,6 +46,16 @@ def input_is_ok_with_locale(x: str) -> bool:
         return True
 
 
+def get_strxfrm_en_us() -> Callable[[str], str | bytes]:
+    """Return a strxfrm function for the en_US locale."""
+    orig = locale.getlocale()
+    locale.setlocale(locale.LC_ALL, "en_US.UTF-8")
+    try:
+        return get_strxfrm()
+    finally:
+        locale.setlocale(locale.LC_ALL, orig)
+
+
 @pytest.mark.parametrize(
     ("alg", "example_func"),
     [
@@ -53,13 +64,13 @@ def input_is_ok_with_locale(x: str) -> bool:
         (ns.FLOAT, partial(try_float, map=True, nan=float("-inf"))),
         (ns.FLOAT | ns.NANLAST, partial(try_float, map=True, nan=float("+inf"))),
         (ns.GROUPLETTERS, partial(try_int, map=True, on_fail=groupletters)),
-        (ns.LOCALE, partial(try_int, map=True, on_fail=get_strxfrm())),
+        (ns.LOCALE, partial(try_int, map=True, on_fail=get_strxfrm_en_us())),
         (
             ns.GROUPLETTERS | ns.LOCALE,
             partial(
                 try_int,
                 map=True,
-                on_fail=lambda x: get_strxfrm()(groupletters(x)),
+                on_fail=lambda x: get_strxfrm_en_us()(groupletters(x)),
             ),
         ),
         (
@@ -67,7 +78,7 @@ def input_is_ok_with_locale(x: str) -> bool:
             partial(
                 try_int,
                 map=True,
-                on_fail=lambda x: get_strxfrm()(groupletters(x)),
+                on_fail=lambda x: get_strxfrm_en_us()(groupletters(x)),
             ),
         ),
         (
@@ -75,7 +86,7 @@ def input_is_ok_with_locale(x: str) -> bool:
             partial(
                 try_float,
                 map=True,
-                on_fail=lambda x: get_strxfrm()(groupletters(x)),
+                on_fail=lambda x: get_strxfrm_en_us()(groupletters(x)),
                 nan=float("+inf"),
             ),
         ),

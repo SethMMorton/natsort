@@ -345,6 +345,8 @@ def humansorted(
     --------
     Use `humansorted` just like the builtin `sorted`::
 
+        >>> import locale
+        >>> _ = locale.setlocale(locale.LC_ALL, 'en_US.UTF-8')
         >>> a = ['Apple', 'Banana', 'apple', 'banana']
         >>> natsorted(a)
         ['Apple', 'Banana', 'apple', 'banana']
@@ -537,6 +539,8 @@ def index_humansorted(
     --------
     Use `index_humansorted` just like the builtin `sorted`::
 
+        >>> import locale
+        >>> _ = locale.setlocale(locale.LC_ALL, 'en_US.UTF-8')
         >>> a = ['Apple', 'Banana', 'apple', 'banana']
         >>> index_humansorted(a)
         [2, 0, 3, 1]

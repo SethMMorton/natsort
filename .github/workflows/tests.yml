@@ -53,6 +53,13 @@ jobs:
         if: matrix.extras
         run: echo WITH_EXTRAS=fast,icu >> $GITHUB_ENV
 
+      - name: Locale Demonstration
+        if: matrix.os == 'macos-latest'
+        run: |
+          locale
+          clang -o inspect-locale inspect-locale.c
+          ./inspect-locale
+
       - name: Run Tests
         run: tox
 
