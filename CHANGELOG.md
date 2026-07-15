@@ -24,6 +24,11 @@ Unreleased
   could change the sort order
   ([@baldassarreFe](https://github.com/baldassarreFe), issue
   [#181](https://github.com/SethMMorton/natsort/issues/181))
+- `path_splitter` no longer removes extension text from the middle of a
+  file name when the same text also appears at the end, which corrupted
+  the `ns.PATH` sort order
+  ([@gaoflow](https://github.com/gaoflow), PR
+  [#191](https://github.com/SethMMorton/natsort/pull/191))
 - Eliminated mypy failure related to string literals
 
 ### Removed
