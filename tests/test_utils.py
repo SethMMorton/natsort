@@ -185,6 +185,46 @@ def test_path_splitter_splits_path_string_by_sep_and_removes_extension_example(
     assert tuple(utils.path_splitter(given)) == tuple(expected)
 
 
+@pytest.mark.parametrize(
+    ("given", "expected"),
+    [
+        ("img.jpg_backup.jpg", ("img.jpg_backup", ".jpg")),
+        ("backup.tar.gz_old.tar.gz", ("backup.tar.gz_old", ".tar", ".gz")),
+        ("a.tar_v1.0.tar", ("a.tar_v1.0", ".tar")),
+        (".jpg.jpg", (".jpg", ".jpg")),
+        ("směs.png_kopie.png", ("směs.png_kopie", ".png")),
+        ("dir.jpg/img.jpg_backup.jpg", ("dir.jpg", "img.jpg_backup", ".jpg")),
+    ],
+)
+def test_path_splitter_only_removes_extension_from_end(
+    given: str,
+    expected: tuple[str, ...],
+) -> None:
+    # The extension text may also appear earlier in the path - only the
+    # trailing occurrence is an extension.
+    assert tuple(utils.path_splitter(given)) == expected
+    assert tuple(utils.path_splitter(pathlib.Path(given))) == expected
+
+
+@given(text(alphabet=string.ascii_letters, min_size=1, max_size=4))
+def test_path_splitter_is_lossless_when_extension_repeats_in_stem(
+    ext: str,
+) -> None:
+    given = f"base.{ext}_copy.{ext}"
+    assert "".join(utils.path_splitter(given)) == given
+
+
+def test_path_splitter_keeps_distinct_names_distinct() -> None:
+    with_inner_extension = tuple(utils.path_splitter("img.jpg_backup.jpg"))
+    without = tuple(utils.path_splitter("img_backup.jpg"))
+    assert with_inner_extension != without
+
+
+def test_path_splitter_treat_base_false_ignores_repeated_extension() -> None:
+    given = "img.jpg_backup.jpg"
+    assert tuple(utils.path_splitter(given, treat_base=False)) == (given,)
+
+
 @given(lists(sampled_from(string.ascii_letters), min_size=3).filter(all))
 def test_path_splitter_splits_path_string_by_sep_and_removes_extension(
     x: list[str],
