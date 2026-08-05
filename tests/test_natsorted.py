@@ -225,6 +225,14 @@ def test_natsorted_path_extensions_heuristic() -> None:
     assert natsorted(given, alg=ns.PATH) == expected
 
 
+def test_natsorted_path_sorts_repeated_extension_by_true_stem() -> None:
+    # The ".jpg" in the middle of the stem must not be removed when
+    # building the sort key, or these sort in the wrong order.
+    given = ["imgApple.jpg", "img.jpg_banana.jpg", "img.jpg_apple.jpg"]
+    expected = ["img.jpg_apple.jpg", "img.jpg_banana.jpg", "imgApple.jpg"]
+    assert natsorted(given, alg=ns.PATH) == expected
+
+
 @pytest.mark.parametrize(
     ("alg", "expected"),
     [

@@ -922,8 +922,9 @@ def path_splitter(
             suffixes.append(suffix)
         suffixes.reverse()
 
-    # Remove the suffixes from the base component
-    base = base.replace("".join(suffixes), "")
+    # Remove the suffixes from the end of the base component, taking care
+    # to not touch any earlier occurrences of the same text in the stem
+    base = base.removesuffix("".join(suffixes))
     base_component = [base] if base else []
 
     # Join all path comonents in an iterator
