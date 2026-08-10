@@ -65,7 +65,7 @@ from natsort.compat.locale import (
     get_thousands_sep,
 )
 from natsort.ns_enum import NS_DUMB, NSType, ns
-from natsort.unicode_numbers import digits_no_decimals, numeric_no_decimals
+from natsort.unicode import UnicodeNumbers
 
 if TYPE_CHECKING:
     from typing_extensions import Protocol
@@ -137,50 +137,72 @@ class NumericalRegularExpressions:
     Not intended to be made an instance - use class methods only.
     """
 
-    # All unicode numeric characters (minus the decimal characters).
-    numeric: str = numeric_no_decimals
-    # All unicode digit characters (minus the decimal characters).
-    digits: str = digits_no_decimals
-    # Regular expression to match exponential component of a float.
-    exp: str = r"(?:[eE][-+]?\d+)?"
-    # Regular expression to match a floating point number.
-    float_num: str = r"(?:\d+\.?\d*|\.\d+)"
+    sign: str = r"[-+]?"
+    unsigned_int: str = r"\d+"
+    signed_int: str = sign + unsigned_int
+    unsigned_float: str = r"(?:\d+\.?\d*|\.\d+)"
+    signed_float: str = sign + unsigned_float
+    unsigned_float_exp: str = unsigned_float + r"(?:[eE][-+]?\d+)?"
+    signed_float_exp: str = sign + unsigned_float_exp
 
     @classmethod
-    def _construct_regex(cls, fmt: str) -> Pattern[str]:
-        """Given a format string, construct the regex with class attributes."""
-        return re.compile(fmt.format(**vars(cls)), flags=re.UNICODE)
-
-    @classmethod
-    def int_sign(cls) -> Pattern[str]:
+    def int_sign(cls, include_unicode: bool = False) -> Pattern[str]:
         """Regular expression to match a signed int."""
-        return cls._construct_regex(r"([-+]?\d+|[{digits}])")
+        if include_unicode:
+            digits = UnicodeNumbers.digits_no_decimals()
+            return re.compile(f"({cls.signed_int}|[{digits}])")
+        return re.compile(f"({cls.signed_int})")
 
     @classmethod
-    def int_nosign(cls) -> Pattern[str]:
+    def int_nosign(cls, include_unicode: bool = False) -> Pattern[str]:
         """Regular expression to match an unsigned int."""
-        return cls._construct_regex(r"(\d+|[{digits}])")
+        if include_unicode:
+            digits = UnicodeNumbers.digits_no_decimals()
+            return re.compile(f"({cls.unsigned_int}|[{digits}])")
+        return re.compile(f"({cls.unsigned_int})")
 
     @classmethod
-    def float_sign_exp(cls) -> Pattern[str]:
+    def float_sign_exp(cls, include_unicode: bool = False) -> Pattern[str]:
         """Regular expression to match a signed float with exponent."""
-        return cls._construct_regex(r"([-+]?{float_num}{exp}|[{numeric}])")
+        if include_unicode:
+            numeric = UnicodeNumbers.digits_no_decimals()
+            return re.compile(f"({cls.signed_float_exp}|[{numeric}])")
+        return re.compile(f"({cls.signed_float_exp})")
 
     @classmethod
-    def float_nosign_exp(cls) -> Pattern[str]:
+    def float_nosign_exp(cls, include_unicode: bool = False) -> Pattern[str]:
         """Regular expression to match an unsigned float with exponent."""
-        return cls._construct_regex(r"({float_num}{exp}|[{numeric}])")
+        if include_unicode:
+            numeric = UnicodeNumbers.digits_no_decimals()
+            return re.compile(f"({cls.unsigned_float_exp}|[{numeric}])")
+        return re.compile(f"({cls.unsigned_float_exp})")
 
     @classmethod
-    def float_sign_noexp(cls) -> Pattern[str]:
+    def float_sign_noexp(cls, include_unicode: bool = False) -> Pattern[str]:
         """Regular expression to match a signed float without exponent."""
-        return cls._construct_regex(r"([-+]?{float_num}|[{numeric}])")
+        if include_unicode:
+            numeric = UnicodeNumbers.digits_no_decimals()
+            return re.compile(f"({cls.signed_float}|[{numeric}])")
+        return re.compile(f"({cls.signed_float})")
 
     @classmethod
-    def float_nosign_noexp(cls) -> Pattern[str]:
+    def float_nosign_noexp(cls, include_unicode: bool = False) -> Pattern[str]:
         """Regular expression to match an unsigned float without exponent."""
-        return cls._construct_regex(r"({float_num}|[{numeric}])")
+        if include_unicode:
+            numeric = UnicodeNumbers.digits_no_decimals()
+            return re.compile(f"({cls.unsigned_float}|[{numeric}])")
+        return re.compile(f"({cls.unsigned_float})")
 
+
+# Keep a dictionary mapping given combinations to their appropriate regex.
+ALG_MAP = {
+    ns.INT: NumericalRegularExpressions.int_nosign,
+    ns.FLOAT: NumericalRegularExpressions.float_nosign_exp,
+    ns.INT | ns.SIGNED: NumericalRegularExpressions.int_sign,
+    ns.FLOAT | ns.SIGNED: NumericalRegularExpressions.float_sign_exp,
+    ns.FLOAT | ns.NOEXP: NumericalRegularExpressions.float_nosign_noexp,
+    ns.FLOAT | ns.SIGNED | ns.NOEXP: NumericalRegularExpressions.float_sign_noexp,
+}
 
 def regex_chooser(alg: NSType) -> Pattern[str]:
     """
@@ -197,19 +219,12 @@ def regex_chooser(alg: NSType) -> Pattern[str]:
         Regular expression object that matches the desired number type.
 
     """
+    unicode_chars = bool(alg & ns.UNICODECHARS)
     if alg & ns.FLOAT:
         alg &= ns.FLOAT | ns.SIGNED | ns.NOEXP
     else:
         alg &= ns.INT | ns.SIGNED
-
-    return {
-        ns.INT: NumericalRegularExpressions.int_nosign(),
-        ns.FLOAT: NumericalRegularExpressions.float_nosign_exp(),
-        ns.INT | ns.SIGNED: NumericalRegularExpressions.int_sign(),
-        ns.FLOAT | ns.SIGNED: NumericalRegularExpressions.float_sign_exp(),
-        ns.FLOAT | ns.NOEXP: NumericalRegularExpressions.float_nosign_noexp(),
-        ns.FLOAT | ns.SIGNED | ns.NOEXP: NumericalRegularExpressions.float_sign_noexp(),
-    }[alg]
+    return ALG_MAP[alg](include_unicode=unicode_chars)
 
 
 def _no_op(x: Any) -> Any:  # noqa: ANN401
@@ -831,8 +846,12 @@ def chain_functions(functions: Iterable[AnyCall]) -> AnyCall:
         return _no_op
     if len(functions) == 1:
         return functions[0]
+
     # See https://stackoverflow.com/a/39123400/1399279
-    return partial(reduce, lambda res, f: f(res), functions)
+    def reducer(result: Any, f: AnyCall) -> Any:  # noqa: ANN401
+        return f(result)
+
+    return partial(reduce, reducer, functions)
 
 
 @overload
