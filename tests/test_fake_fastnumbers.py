@@ -120,6 +120,18 @@ def test_fast_int_converts_int_string_to_int(x: int) -> None:
     assert fast_int(repr(x)) == x
 
 
+def test_fast_int_converts_int_string_exceeding_str_digit_limit() -> None:
+    # A run of digits longer than Python 3.11+'s int/str conversion limit is
+    # still a valid integer and must be converted (not returned as a string),
+    # or natsort raises a TypeError while sorting. Regression test for #193.
+    # ``10 ** n`` is computed numerically, so the expected value is built
+    # without tripping the string-conversion limit itself.
+    n = 4400  # more digits than the default limit of 4300
+    big = "1" + "0" * n
+    assert fast_int(big) == 10**n
+    assert fast_int("-" + big) == -(10**n)
+
+
 def test_fast_int_leaves_string_as_is_example() -> None:
     assert fast_int("invalid") == "invalid"
     assert fast_int("") == ""

@@ -6,6 +6,7 @@ Used when the fastnumbers module is not installed.
 
 from __future__ import annotations
 
+import sys
 import unicodedata
 from typing import Callable, Union
 
@@ -111,6 +112,18 @@ def fast_int(
         try:
             return int(x)
         except ValueError:
+            # A long run of digits can exceed Python 3.11+'s int/str conversion
+            # limit (``sys.get_int_max_str_digits()``) and raise ValueError even
+            # though the string is a valid integer. Convert it with the limit
+            # lifted so natsort still sorts it numerically, matching the
+            # ``fastnumbers`` C extension (which has no such limit).
+            if x.lstrip("+-").isdigit() and hasattr(sys, "set_int_max_str_digits"):
+                previous = sys.get_int_max_str_digits()
+                sys.set_int_max_str_digits(0)
+                try:
+                    return int(x)
+                finally:
+                    sys.set_int_max_str_digits(previous)
             try:
                 return _uni(x, key(x)) if len(x) == 1 else key(x)
             except TypeError:  # pragma: no cover
