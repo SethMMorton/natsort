@@ -35,7 +35,7 @@ try:
     # This string should in theory be sorted after any other byte
     # string because it contains the max byte char repeated many times.
     # You would need some odd data to come after that.
-    null_string_locale_max = b"x7f" * 50
+    null_string_locale_max = b"\xff" * 50
 
     def dumb_sort() -> bool:
         """Determine if the locale backend is not collating correctly."""
