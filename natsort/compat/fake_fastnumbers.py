@@ -7,6 +7,7 @@ Used when the fastnumbers module is not installed.
 from __future__ import annotations
 
 import unicodedata
+from decimal import Decimal, InvalidOperation
 from typing import Callable, Union
 
 from natsort.unicode_numbers import decimal_chars
@@ -34,8 +35,29 @@ NAN_INF = frozenset(_NAN_INF)
 ASCII_NUMS = "0123456789+-"
 POTENTIAL_FIRST_CHAR = frozenset(decimal_chars + list(ASCII_NUMS + "."))
 
-StrOrFloat = Union[str, float]
+StrOrFloat = Union[str, float, Decimal]
 StrOrInt = Union[str, int]
+
+
+def _widen_if_overflowed(x: str, ret: float) -> StrOrFloat:
+    """
+    Widen a float that overflowed to +/-inf back into something orderable.
+
+    float() silently rounds a finite number with too large a magnitude to
+    +/-inf instead of raising, so two different numbers like "1e400" and
+    "1e500" would otherwise both come out as inf and compare equal, losing
+    their relative order. Decimal has a much larger exponent range, so use
+    it to keep such values distinguishable. A literal "inf"/"nan" spelling
+    is left alone as a plain float, since it isn't the result of an overflow.
+    """
+    if ret not in (float("inf"), float("-inf")):
+        return ret
+    if x.strip().lstrip("+-")[:3].lower() in ("inf", "nan"):
+        return ret
+    try:
+        return Decimal(x)
+    except InvalidOperation:  # pragma: no cover
+        return ret
 
 
 def fast_float(
@@ -75,7 +97,7 @@ def fast_float(
             except TypeError:  # pragma: no cover
                 return key(x)
         else:
-            return nan if ret != ret else ret
+            return nan if ret != ret else _widen_if_overflowed(x, ret)
     else:
         try:
             return _uni(x, key(x)) if len(x) == 1 else key(x)

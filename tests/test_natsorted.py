@@ -46,6 +46,16 @@ def test_natsorted_can_sort_as_signed_floats_with_exponents(
     assert natsorted(float_list, alg=ns.REAL) == expected
 
 
+def test_natsorted_orders_magnitudes_too_large_for_a_float() -> None:
+    # "1e400" and "1e500" both overflow to inf if parsed with a plain
+    # float(), so they used to compare equal and the result depended on
+    # which order they were given in rather than their actual size.
+    given = ["1e400", "1e500"]
+    expected = ["1e400", "1e500"]
+    assert natsorted(given, alg=ns.REAL) == expected
+    assert natsorted(reversed(given), alg=ns.REAL) == expected
+
+
 @pytest.mark.parametrize(
     # UNSIGNED is default
     "alg",
