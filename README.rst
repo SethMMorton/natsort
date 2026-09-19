@@ -32,6 +32,7 @@ Simple yet flexible natural sorting in Python.
     - `Quick Description`_
     - `Quick Examples`_
     - `FAQ`_
+    - `Feature Requests`_
     - `Requirements`_
     - `Optional Dependencies`_
     - `Installation`_
@@ -351,6 +352,20 @@ How *does* `natsort`_ work?
 
     Because a `tuple`_ is always returned, a `TypeError`_ should not be common
     unless one tries to do something odd like sort an `int`_ against a `list`_.
+
+Feature Requests
+----------------
+
+In general, feature requests must meet all of the following criteria to be
+considered for implementation in `natsort`_:
+
+- The correct behavior must be obvious: people with different backgrounds
+  would all agree that the proposed behavior is correct.
+- The feature cannot be implemented with a simple and obvious one-liner
+  using the ``key`` argument.
+- The feature will not result in infinite churn.
+
+See `Further Customizing Natsort`_ for examples of using the ``key`` argument.
 
 Shell script
 ------------
