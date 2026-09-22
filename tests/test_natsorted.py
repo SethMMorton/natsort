@@ -125,11 +125,11 @@ def test_natsorted_handles_mixed_types(
 )
 def test_natsorted_consistent_ordering_with_nan_and_friends(
     alg: NSType,
-    expected: list[str | float | None | int],
+    expected: list[str | float | int | None],
 ) -> None:
     sentinel = math.pi
     expected = [sentinel if x != x else x for x in expected]
-    given: list[str | float | None | int] = [
+    given: list[str | float | int | None] = [
         float("inf"),
         float("-inf"),
         "25",
