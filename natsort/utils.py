@@ -441,7 +441,7 @@ def parse_number_or_none_factory(
     return func
 
 
-def parse_string_factory(  # noqa: PLR0913
+def parse_string_factory(  # noqa: PLR0913, PLR0917
     alg: NSType,
     sep: StrOrBytes,
     splitter: StrSplitter,
