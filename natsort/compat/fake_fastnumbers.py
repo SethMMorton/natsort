@@ -39,7 +39,7 @@ StrOrFloat = Union[str, float, Decimal]
 StrOrInt = Union[str, int]
 
 
-def _widen_if_overflowed(x: str, ret: float) -> StrOrFloat:
+def widen_if_overflowed(x: str, ret: float) -> StrOrFloat:
     """
     Widen a float that overflowed to +/-inf back into something orderable.
 
@@ -97,7 +97,7 @@ def fast_float(
             except TypeError:  # pragma: no cover
                 return key(x)
         else:
-            return nan if ret != ret else _widen_if_overflowed(x, ret)
+            return nan if ret != ret else widen_if_overflowed(x, ret)
     else:
         try:
             return _uni(x, key(x)) if len(x) == 1 else key(x)

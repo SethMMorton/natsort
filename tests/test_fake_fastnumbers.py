@@ -5,6 +5,7 @@ Test the fake fastnumbers module.
 from __future__ import annotations
 
 import unicodedata
+from decimal import Decimal
 from math import isinf
 from typing import cast
 
@@ -83,6 +84,8 @@ def test_fast_float_widens_overflowing_magnitude_to_decimal_example() -> None:
     # Widening the result to Decimal keeps them distinguishable.
     small = fast_float("1e400")
     large = fast_float("1e500")
+    assert isinstance(small, Decimal)
+    assert isinstance(large, Decimal)
     assert small != large
     assert small < large
 
