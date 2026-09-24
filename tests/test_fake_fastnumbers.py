@@ -5,6 +5,7 @@ Test the fake fastnumbers module.
 from __future__ import annotations
 
 import unicodedata
+from decimal import Decimal
 from math import isinf
 from typing import cast
 
@@ -75,6 +76,26 @@ def test_fast_float_converts_float_string_to_float_example() -> None:
 @given(floats(allow_nan=False))
 def test_fast_float_converts_float_string_to_float(x: float) -> None:
     assert fast_float(repr(x)) == x
+
+
+def test_fast_float_widens_overflowing_magnitude_to_decimal_example() -> None:
+    # "1e400" and "1e500" both overflow float()'s range to inf, so on
+    # their own they would compare equal and lose their real order.
+    # Widening the result to Decimal keeps them distinguishable.
+    small = fast_float("1e400")
+    large = fast_float("1e500")
+    assert isinstance(small, Decimal)
+    assert isinstance(large, Decimal)
+    assert small != large
+    assert small < large
+
+
+def test_fast_float_still_returns_a_plain_float_for_literal_infinity() -> None:
+    # A string that spells out infinity is not the result of an overflow,
+    # so it should still come back as a plain float, same as before.
+    assert fast_float("inf") == float("inf")
+    assert fast_float("-inf") == float("-inf")
+    assert isinstance(fast_float("inf"), float)
 
 
 def test_fast_float_leaves_string_as_is_example() -> None:

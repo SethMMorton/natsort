@@ -42,6 +42,7 @@ from __future__ import annotations
 
 import re
 from collections.abc import Iterable, Iterator
+from decimal import Decimal
 from functools import partial, reduce
 from itertools import chain as ichain
 from operator import methodcaller
@@ -104,7 +105,9 @@ NumTransform = AnyTuple
 NumTransformer = Callable[[Any], NumTransform]
 
 # For the string component transform factory
-StrBytesNum = Union[str, bytes, float, int]
+# Decimal is included because a magnitude too large for a float (e.g.
+# "1e500") is widened to Decimal instead of silently collapsing to +/-inf.
+StrBytesNum = Union[str, bytes, float, int, Decimal]
 StrTransformer = Callable[[Iterable[str]], Iterator[StrBytesNum]]
 
 # For the final data transform factory
@@ -703,7 +706,15 @@ def string_component_transform_factory(alg: NSType) -> StrTransformer:
     kwargs["map"] = True
     if alg & ns.FLOAT:
         kwargs["nan"] = nan_val
-        return cast("StrTransformer", partial(try_float, **kwargs))
+        # The values of kwargs are a heterogeneous union (bool/float/on_fail
+        # callable), and mypy cannot distribute a dict of that shape across
+        # try_float's individual keyword-only parameter types when unpacked
+        # with **kwargs, even though each key always carries a value of the
+        # correct type for that parameter at runtime.
+        return cast(
+            "StrTransformer",
+            partial(try_float, **cast("dict[str, Any]", kwargs)),
+        )
     return cast("StrTransformer", partial(try_int, **kwargs))
 
 
