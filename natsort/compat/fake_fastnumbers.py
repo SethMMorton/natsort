@@ -7,6 +7,7 @@ Used when the fastnumbers module is not installed.
 from __future__ import annotations
 
 import unicodedata
+from decimal import Decimal
 from typing import Callable, Union
 
 from natsort.unicode_numbers import decimal_chars
@@ -111,6 +112,8 @@ def fast_int(
         try:
             return int(x)
         except ValueError:
+            if x.lstrip("+-").isdigit():
+                return Decimal(x)
             try:
                 return _uni(x, key(x)) if len(x) == 1 else key(x)
             except TypeError:  # pragma: no cover
