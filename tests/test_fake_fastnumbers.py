@@ -4,10 +4,12 @@ Test the fake fastnumbers module.
 
 from __future__ import annotations
 
+import sys
 import unicodedata
 from math import isinf
 from typing import cast
 
+import pytest
 from hypothesis import given
 from hypothesis.strategies import floats, integers, text
 
@@ -138,3 +140,31 @@ def test_fast_int_with_key_applies_to_string_example() -> None:
 @given(text().filter(not_an_int))
 def test_fast_int_with_key_applies_to_string(x: str) -> None:
     assert fast_int(x, key=lambda x: x.upper()) == x.upper()
+
+
+@pytest.mark.skipif(
+    not hasattr(sys, "set_int_max_str_digits"),
+    reason="int digit limit was added in Python 3.11",
+)
+def test_fast_int_converts_digit_run_beyond_the_str_conversion_limit() -> None:
+    # Regression test: on Python 3.11+, plain int() raises ValueError for a
+    # digit run longer than sys.get_int_max_str_digits() (4300 by default).
+    # fast_int used to fall back to returning such a string as-is, which
+    # made it silently masquerade as "not a number" even though it plainly
+    # is one, and would later blow up natsorted() with a TypeError when
+    # compared against a sibling int at the same tuple position.
+    digits = "9" * 5000
+    original_limit = sys.get_int_max_str_digits()
+    try:
+        sys.set_int_max_str_digits(0)
+        expected = int(digits)
+    finally:
+        sys.set_int_max_str_digits(original_limit)
+
+    assert fast_int(digits) == expected
+    assert fast_int("-" + digits) == -expected
+    assert fast_int("+" + digits) == expected
+
+    # The limit must be restored to whatever it was before, not left
+    # disabled as a side effect of converting the oversized number.
+    assert sys.get_int_max_str_digits() == original_limit

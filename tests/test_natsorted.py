@@ -428,3 +428,18 @@ def test_natsort_sorts_consistently_with_presort() -> None:
     given = ["a1", "a1.45", "a01", "a1.4500"]
     result = natsorted(given, alg=ns.FLOAT | ns.PRESORT)
     assert result == expected
+
+
+def test_natsorted_handles_a_digit_run_longer_than_the_str_conversion_limit() -> None:
+    # Regression test for a crash on Python 3.11+: a numeric substring
+    # with more digits than sys.get_int_max_str_digits() (4300 by
+    # default) used to make int() raise inside the pure-Python fallback,
+    # which was swallowed and the whole token kept as a plain string
+    # instead. That string then sat right next to an ordinary int at
+    # the same tuple position for a sibling entry, and comparing them
+    # during the sort raised "TypeError: '<' not supported between
+    # instances of 'str' and 'int'".
+    huge_digit_run = "9" * 5000
+    given = ["item_10.png", "item_2.png", f"item_{huge_digit_run}.png"]
+    expected = ["item_2.png", "item_10.png", f"item_{huge_digit_run}.png"]
+    assert natsorted(given) == expected
