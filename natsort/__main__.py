@@ -7,6 +7,7 @@ import sys
 import textwrap
 from collections.abc import Iterable
 from typing import TYPE_CHECKING, Callable, Union, cast
+from unicodedata import numeric
 
 import natsort
 from natsort.utils import regex_chooser
@@ -342,6 +343,11 @@ def keep_entry_value(
     return not any(converter(num) in values for num in regex.findall(entry))
 
 
+def _convert_number(value: str) -> Num:
+    """Convert a regex-matched number, including single Unicode numerals."""
+    return numeric(value) if len(value) == 1 else float(value)
+
+
 def sort_and_print_entries(entries: list[str], args: TypedArgs) -> None:
     """Sort the entries, applying the filters first if necessary."""
     # Extract the proper number type.
@@ -371,7 +377,7 @@ def sort_and_print_entries(entries: list[str], args: TypedArgs) -> None:
             entries = [
                 entry
                 for entry in entries
-                if keep_entry_range(entry, lows, highs, float, regex)
+                if keep_entry_range(entry, lows, highs, _convert_number, regex)
             ]
         if args.reverse_filter is not None:
             lows, highs = (
@@ -381,14 +387,14 @@ def sort_and_print_entries(entries: list[str], args: TypedArgs) -> None:
             entries = [
                 entry
                 for entry in entries
-                if not keep_entry_range(entry, lows, highs, float, regex)
+                if not keep_entry_range(entry, lows, highs, _convert_number, regex)
             ]
         if args.exclude:
             exclude = set(args.exclude)
             entries = [
                 entry
                 for entry in entries
-                if keep_entry_value(entry, exclude, float, regex)
+                if keep_entry_value(entry, exclude, _convert_number, regex)
             ]
 
     # Print off the sorted results
