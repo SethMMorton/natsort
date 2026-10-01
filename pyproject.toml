@@ -71,6 +71,7 @@ ignore = [
 	"A002",     # arguments shadow builtins
 	"RUF001",   # ambiguous-unicode-character-string
 	"COM812",   # missing trailing comma
+	"CPY001",   # missing copyright notice
 	"ISC001",   # single line implicit string concatenation
 	"PLR0124",  # name compared with itself (used to check for NaN)
 	"DTZ",      # flaek8-datetimez
