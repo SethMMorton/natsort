@@ -644,8 +644,10 @@ def input_string_transform_factory(alg: NSType) -> StrToStr:
             nodecimal += r"(?<!" + d + r"[0-9])"
             nodecimal += r"(?<!" + d + r"[0-9]{2})"
             nodecimal += r"(?<!" + d + r"[0-9]{3})"
+        # Input is already normalized when this expression is applied.
+        thousands_sep = _normalize_input_factory(alg)(get_thousands_sep())
         strip_thousands = strip_thousands.format(
-            thou=re.escape(get_thousands_sep()),
+            thou=re.escape(thousands_sep),
             nodecimal=nodecimal,
         )
         strip_thousands_re = re.compile(strip_thousands, flags=re.VERBOSE)

@@ -20,6 +20,8 @@ Unreleased
 
 ### Fixed
 
+- Recognize locale thousands separators when `COMPATIBILITYNORMALIZE` is enabled,
+  including non-breaking spaces used by French locales.
 - CLI no longer strips leading and trailing whitespace from entries, which
   could change the sort order
   ([@baldassarreFe](https://github.com/baldassarreFe), issue
