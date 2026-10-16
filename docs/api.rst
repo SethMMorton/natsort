@@ -23,6 +23,32 @@ The :class:`~natsort.ns` enum
 .. autodata:: ns
     :annotation:
 
+The ``ns.FLOAT`` and ``ns.REAL`` algorithms parse numeric
+components as Python ``float`` values, so they have limited precision and
+range. Very large finite decimal magnitudes can both convert to ``inf``
+when they exceed :data:`sys.float_info`'s ``max`` value, and their numeric
+ordering cannot then be preserved:
+
+.. code-block:: python
+
+    >>> from natsort import natsorted, ns
+    >>> values = ["1e500", "1e400"]
+    >>> natsorted(values, alg=ns.REAL)
+    ['1e500', '1e400']
+
+For a sequence of whole numeric strings, use :class:`decimal.Decimal` when
+exact magnitude ordering is required:
+
+.. code-block:: python
+
+    >>> from decimal import Decimal
+    >>> values = ["1e500", "1e400"]
+    >>> sorted(values, key=Decimal)
+    ['1e400', '1e500']
+
+This is for whole numeric strings only; it does not replace natural sorting
+of filenames or mixed strings.
+
 :func:`~natsort.natsort_key`
 ++++++++++++++++++++++++++++
 
