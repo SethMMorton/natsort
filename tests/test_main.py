@@ -142,6 +142,31 @@ def test_sort_and_print_entries(
     p.assert_has_calls(e)
 
 
+@pytest.mark.parametrize("option", ["--filter", "--reverse-filter", "--exclude"])
+@pytest.mark.parametrize(
+    ("number_type", "choices", "value"),
+    [
+        ("int", ["item1", "item²", "item³"], "2"),
+        ("float", ["item¼", "item½", "item1"], "0.5"),
+    ],
+)
+def test_main_filters_unicode_numbers(
+    option: str,
+    number_type: str,
+    choices: list[str],
+    value: str,
+    capsys: pytest.CaptureFixture[str],
+) -> None:
+    arguments = [option, value] if option == "--exclude" else [option, "0", value]
+    main("--number-type", number_type, *arguments, *choices)
+    expected = {
+        "--filter": choices[:2],
+        "--reverse-filter": choices[2:],
+        "--exclude": [choices[0], choices[2]],
+    }[option]
+    assert capsys.readouterr().out == "\n".join(expected) + "\n"
+
+
 @pytest.mark.parametrize(
     ("zero_terminated", "stdin_content"),
     [

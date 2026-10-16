@@ -20,6 +20,8 @@ Unreleased
 
 ### Fixed
 
+- CLI numeric filters now accept the Unicode numerals recognized by sorting,
+  including superscript digits and fractions
 - CLI no longer strips leading and trailing whitespace from entries, which
   could change the sort order
   ([@baldassarreFe](https://github.com/baldassarreFe), issue
