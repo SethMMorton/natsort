@@ -37,7 +37,7 @@ class TypedArgs(argparse.Namespace):
     zero_terminated: bool
     entries: list[str]
 
-    def __init__(  # noqa: PLR0913
+    def __init__(  # noqa: PLR0913, PLR0917
         self,
         filter: list[NumPair] | None = None,
         reverse_filter: list[NumPair] | None = None,
