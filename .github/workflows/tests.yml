@@ -76,7 +76,7 @@ jobs:
         uses: vmactions/freebsd-vm@v1
         with:
           prepare: |
-            pkg install -y python3
+            pkg install -y python3 rust
 
           run: |
             python3 -m venv .venv
