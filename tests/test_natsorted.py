@@ -39,6 +39,28 @@ def test_natsorted_numbers_in_ascending_order() -> None:
     assert natsorted(given) == expected
 
 
+@pytest.mark.parametrize("separator", ["\u00a0", "\u202f"])
+@pytest.mark.parametrize("normalize", [ns.DEFAULT, ns.COMPATIBILITYNORMALIZE])
+@pytest.mark.parametrize("number_type", [ns.INT, ns.FLOAT])
+def test_natsorted_normalizes_locale_thousands_separator(
+    separator: str,
+    normalize: NSType,
+    number_type: NSType,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    monkeypatch.setattr("natsort.utils.get_thousands_sep", lambda: separator)
+    monkeypatch.setattr("natsort.utils.get_decimal_point", lambda: ",")
+    if number_type == ns.FLOAT:
+        expected = ["999,9", f"1{separator}000,05", f"1{separator}000,5"]
+    else:
+        expected = ["999", f"1{separator}000", f"1{separator}001"]
+
+    assert (
+        natsorted(reversed(expected), alg=ns.LOCALENUM | normalize | number_type)
+        == expected
+    )
+
+
 def test_natsorted_can_sort_as_signed_floats_with_exponents(
     float_list: list[str],
 ) -> None:
