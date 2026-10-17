@@ -8,10 +8,15 @@ import unicodedata
 from math import isinf
 from typing import cast
 
+import pytest
 from hypothesis import given
 from hypothesis.strategies import floats, integers, text
 
 from natsort.compat.fake_fastnumbers import fast_float, fast_int
+from natsort.compat.fastnumbers import (
+    ensure_minimum_fastnumbers,
+    is_supported_fastnumbers,
+)
 
 
 def is_float(x: str) -> bool:
@@ -138,3 +143,34 @@ def test_fast_int_with_key_applies_to_string_example() -> None:
 @given(text().filter(not_an_int))
 def test_fast_int_with_key_applies_to_string(x: str) -> None:
     assert fast_int(x, key=lambda x: x.upper()) == x.upper()
+
+
+@pytest.mark.parametrize(
+    ("version", "full_version"),
+    [
+        ("1.9", "1.9.0"),
+        ("2.0", "2.0.0"),
+        ("5.0", "5.0.0"),
+        ("5.1", "5.1.0"),
+        ("5.0a1", "5.0.0a1"),
+        ("5.0b2", "5.0.0b2"),
+    ],
+)
+@pytest.mark.parametrize("minimum", [(2, 0, 0), (5, 0, 0), (5, 0, 1)])
+def test_missing_patch_matches_zero_patch(
+    version: str, full_version: str, minimum: tuple[int, int, int]
+) -> None:
+    assert is_supported_fastnumbers(version, minimum) == is_supported_fastnumbers(
+        full_version, minimum
+    )
+
+
+@pytest.mark.parametrize("version", ["1.9", "1.9.0"])
+def test_below_minimum_raises_import_error(version: str) -> None:
+    with pytest.raises(ImportError, match="not modern enough"):
+        ensure_minimum_fastnumbers(version)
+
+
+@pytest.mark.parametrize("version", ["2.0", "2.0.0", "5.0", "5.0.0"])
+def test_supported_version_passes_minimum_check(version: str) -> None:
+    ensure_minimum_fastnumbers(version)

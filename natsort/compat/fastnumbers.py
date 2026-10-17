@@ -34,7 +34,7 @@ def is_supported_fastnumbers(
 
     (major, minor, patch) = match.group(1, 2, 4)
 
-    return (int(major), int(minor), int(patch)) >= minimum
+    return (int(major), int(minor), int(patch or 0)) >= minimum
 
 
 def ensure_minimum_fastnumbers(fastnumbers_version: str) -> None:

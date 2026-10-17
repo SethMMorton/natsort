@@ -20,6 +20,8 @@ Unreleased
 
 ### Fixed
 
+- Treat an omitted patch component in a supported fastnumbers version string
+  as zero instead of raising `TypeError` during the compatibility check.
 - Recognize locale thousands separators when `COMPATIBILITYNORMALIZE` is enabled,
   including non-breaking spaces used by French locales.
 - CLI no longer strips leading and trailing whitespace from entries, which
