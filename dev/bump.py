@@ -9,7 +9,7 @@ INTENDED TO BE CALLED FROM PROJECT ROOT, NOT FROM dev/!
 
 from __future__ import annotations
 
-import datetime
+import datetime as dt
 import pathlib
 import subprocess
 import sys
@@ -67,7 +67,7 @@ changelog = pathlib.Path("CHANGELOG.md").read_text()
 # Add a date to this entry.
 changelog = changelog.replace(
     "Unreleased",
-    f"Unreleased\n---\n\n[{next_version}] - {datetime.datetime.now():%Y-%m-%d}",
+    f"Unreleased\n---\n\n[{next_version}] - {dt.datetime.now():%Y-%m-%d}",
 )
 
 # Add links to the entries.
