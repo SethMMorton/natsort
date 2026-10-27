@@ -619,11 +619,10 @@ def input_string_transform_factory(alg: NSType) -> StrToStr:
 
     # Build the chain of functions to execute in order.
     function_chain: list[StrToStr] = []
-    if (dumb and not lowfirst) or (lowfirst and not dumb):
-        function_chain.append(methodcaller("swapcase"))
-
     if alg & ns.IGNORECASE:
         function_chain.append(methodcaller("casefold"))
+    elif (dumb and not lowfirst) or (lowfirst and not dumb):
+        function_chain.append(methodcaller("swapcase"))
 
     if alg & ns.LOCALENUM:
         # Create a regular expression that will remove thousands separators.

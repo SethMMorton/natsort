@@ -273,6 +273,66 @@ def test_natsorted_supports_case_handling(
     assert natsorted(fruit_list, alg=alg) == expected
 
 
+@pytest.mark.parametrize("case_alg", [ns.IGNORECASE, ns.IGNORECASE | ns.LOWERCASEFIRST])
+@pytest.mark.parametrize(
+    "alg",
+    [
+        ns.DEFAULT,
+        ns.PATH,
+        ns.COMPATIBILITYNORMALIZE,
+        ns.PATH | ns.COMPATIBILITYNORMALIZE,
+    ],
+)
+@pytest.mark.parametrize(
+    ("reverse", "expected"),
+    [
+        (
+            False,
+            [
+                "Dir/i1.txt",
+                "Dir/i2.txt",
+                "Dir/s1.txt",
+                "Dir/ſ1.txt",
+                "Dir/ſ2.txt",
+                "Dir/S2.txt",
+                "Dir/ı1.txt",
+                "Dir/ı2.txt",
+            ],
+        ),
+        (
+            True,
+            [
+                "Dir/ı2.txt",
+                "Dir/ı1.txt",
+                "Dir/ſ2.txt",
+                "Dir/S2.txt",
+                "Dir/s1.txt",
+                "Dir/ſ1.txt",
+                "Dir/i2.txt",
+                "Dir/i1.txt",
+            ],
+        ),
+    ],
+)
+def test_natsorted_lowercasefirst_has_no_effect_with_ignorecase(
+    case_alg: NSType,
+    alg: NSType,
+    reverse: bool,
+    expected: list[str],
+) -> None:
+    given = [
+        "Dir/ı2.txt",
+        "Dir/i2.txt",
+        "Dir/ſ2.txt",
+        "Dir/S2.txt",
+        "Dir/ı1.txt",
+        "Dir/i1.txt",
+        "Dir/s1.txt",
+        "Dir/ſ1.txt",
+    ]
+    assert natsorted(given, alg=case_alg | alg, reverse=reverse) == expected
+
+
 @pytest.mark.parametrize(
     ("alg", "expected"),
     [

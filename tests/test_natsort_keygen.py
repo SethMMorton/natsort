@@ -42,6 +42,19 @@ def test_natsort_key_public() -> None:
     assert natsort_key("a-5.034e2") == ("a-", 5, ".", 34, "e", 2)
 
 
+@pytest.mark.parametrize("alg", [ns.IGNORECASE, ns.IGNORECASE | ns.LOWERCASEFIRST])
+@pytest.mark.parametrize(
+    ("value", "expected"),
+    [("ı", ("ı",)), ("ſ", ("s",)), ("S", ("s",)), ("A", ("a",))],
+)
+def test_natsort_keygen_ignorecase_preserves_unicode_casefold(
+    value: str,
+    expected: tuple[str, ...],
+    alg: NSType,
+) -> None:
+    assert natsort_keygen(alg=alg)(value) == expected
+
+
 def test_natsort_keygen_with_invalid_alg_input_raises_value_error() -> None:
     # Invalid arguments give the correct response
     with pytest.raises(ValueError, match="'alg' argument"):

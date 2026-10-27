@@ -36,9 +36,12 @@ def test_input_string_transform_factory_is_no_op_for_no_alg_options(x: str) -> N
         (NS_DUMB, lambda x: x.swapcase()),
         (ns.LOWERCASEFIRST, lambda x: x.swapcase()),
         (NS_DUMB | ns.LOWERCASEFIRST, lambda x: x),  # No-op
-        (ns.IGNORECASE | ns.LOWERCASEFIRST, lambda x: x.swapcase().casefold()),
+        (ns.IGNORECASE | ns.LOWERCASEFIRST, lambda x: x.casefold()),
+        (ns.IGNORECASE | NS_DUMB, lambda x: x.casefold()),
+        (ns.IGNORECASE | NS_DUMB | ns.LOWERCASEFIRST, lambda x: x.casefold()),
     ],
 )
+@example(x="ı")
 @given(x=text())
 def test_input_string_transform_factory(
     x: str,
