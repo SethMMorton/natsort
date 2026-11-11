@@ -68,6 +68,26 @@ def test_main_passes_arguments_with_all_command_line_options(
     assert args.locale
 
 
+@pytest.mark.parametrize(
+    ("options", "expected"),
+    [
+        (("--exclude", "9007199254740992"), [1, 2]),
+        (("--filter", "9007199254740992", "9007199254740993"), [0, 1]),
+        (("--reverse-filter", "9007199254740992", "9007199254740993"), [2]),
+    ],
+)
+def test_main_filters_large_integers_exactly(
+    options: tuple[str, ...],
+    expected: list[int],
+    capsys: pytest.CaptureFixture[str],
+) -> None:
+    names = [f"item{2**53 + offset}" for offset in range(3)]
+
+    main(*options, *names)
+
+    assert capsys.readouterr().out.splitlines() == [names[i] for i in expected]
+
+
 mock_print = "builtins.print"
 
 entries = [

@@ -20,6 +20,8 @@ NumPair = tuple[Num, Num]
 NumPairIter = Iterable[NumPair]
 NumConverter = Callable[[str], Num]
 
+_FLOAT_MODES = ("float", "real", "f", "r")
+
 
 class TypedArgs(argparse.Namespace):
     """Typed command-line argument namespace."""
@@ -63,6 +65,13 @@ class TypedArgs(argparse.Namespace):
         self.entries = entries
 
 
+def _int_or_float(value: str) -> Num:
+    try:
+        return int(value)
+    except ValueError:
+        return float(value)
+
+
 def main(*arguments: str) -> None:
     """
     Perform a natural sort on entries given on the command-line.
@@ -94,7 +103,7 @@ def main(*arguments: str) -> None:
         "-f",
         "--filter",
         nargs=2,
-        type=float,
+        type=_int_or_float,
         metavar=("LOW", "HIGH"),
         action="append",
         help="Used for keeping only the entries that have a number "
@@ -104,7 +113,7 @@ def main(*arguments: str) -> None:
         "-F",
         "--reverse-filter",
         nargs=2,
-        type=float,
+        type=_int_or_float,
         metavar=("LOW", "HIGH"),
         action="append",
         dest="reverse_filter",
@@ -114,7 +123,7 @@ def main(*arguments: str) -> None:
     parser.add_argument(
         "-e",
         "--exclude",
-        type=float,
+        type=_int_or_float,
         action="append",
         help="Used to exclude an entry that contains a specific number.",
     )
@@ -189,6 +198,16 @@ def main(*arguments: str) -> None:
         # Note: if nothing is given on the command line, args.entries is an empty list.
     )
     args = parser.parse_args(arguments or None, namespace=TypedArgs())
+
+    if args.number_type in _FLOAT_MODES:
+        # Convert via strings so oversized integer literals still become infinity.
+        if args.filter is not None:
+            args.filter = [(float(str(lo)), float(str(hi))) for lo, hi in args.filter]
+        if args.reverse_filter is not None:
+            args.reverse_filter = [
+                (float(str(lo)), float(str(hi))) for lo, hi in args.reverse_filter
+            ]
+        args.exclude = [float(str(value)) for value in args.exclude]
 
     # Make sure the filter range is given properly. Does nothing if no filter
     args.filter = check_filters(args.filter)
@@ -345,7 +364,7 @@ def keep_entry_value(
 def sort_and_print_entries(entries: list[str], args: TypedArgs) -> None:
     """Sort the entries, applying the filters first if necessary."""
     # Extract the proper number type.
-    is_float = args.number_type in ("float", "real", "f", "r")
+    is_float = args.number_type in _FLOAT_MODES
     signed = args.signed or args.number_type in ("real", "r")
     alg: int = (
         natsort.ns.FLOAT * is_float
@@ -366,12 +385,13 @@ def sort_and_print_entries(entries: list[str], args: TypedArgs) -> None:
             | natsort.ns.NOEXP * (not args.exp)
         )
         regex = regex_chooser(inp_options)
+        converter = float if is_float else _int_or_float
         if args.filter is not None:
             lows, highs = ([f[0] for f in args.filter], [f[1] for f in args.filter])
             entries = [
                 entry
                 for entry in entries
-                if keep_entry_range(entry, lows, highs, float, regex)
+                if keep_entry_range(entry, lows, highs, converter, regex)
             ]
         if args.reverse_filter is not None:
             lows, highs = (
@@ -381,14 +401,14 @@ def sort_and_print_entries(entries: list[str], args: TypedArgs) -> None:
             entries = [
                 entry
                 for entry in entries
-                if not keep_entry_range(entry, lows, highs, float, regex)
+                if not keep_entry_range(entry, lows, highs, converter, regex)
             ]
         if args.exclude:
             exclude = set(args.exclude)
             entries = [
                 entry
                 for entry in entries
-                if keep_entry_value(entry, exclude, float, regex)
+                if keep_entry_value(entry, exclude, converter, regex)
             ]
 
     # Print off the sorted results
