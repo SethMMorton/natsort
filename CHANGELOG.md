@@ -31,6 +31,8 @@ Unreleased
   the `ns.PATH` sort order
   ([@gaoflow](https://github.com/gaoflow), PR
   [#191](https://github.com/SethMMorton/natsort/pull/191))
+- Sorting an empty string with `ns.PATH` (or `os_sorted`) no longer treats it
+  as `"."`, so it sorts before all other paths
 - Eliminated mypy failure related to string literals
 
 ### Removed
