@@ -900,6 +900,7 @@ def path_splitter(
         ('this', 'thing', '.ext')
 
     """
+    empty = isinstance(s, str) and not s
     if not isinstance(s, PurePath):
         s = PurePath(s)
 
@@ -908,7 +909,8 @@ def path_splitter(
         *path_parts, base = s.parts
     except ValueError:
         path_parts = []
-        base = str(s)
+        # An empty string is not the same as "." (the current directory).
+        base = "" if empty else str(s)
 
     suffixes = []
     if treat_base:

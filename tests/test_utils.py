@@ -13,7 +13,7 @@ import pytest
 from hypothesis import given
 from hypothesis.strategies import integers, lists, sampled_from, text
 
-from natsort import utils
+from natsort import natsorted, utils
 from natsort.ns_enum import NSType, ns
 
 if TYPE_CHECKING:
@@ -153,6 +153,12 @@ def test_path_splitter_handles_dot_properly(given: str) -> None:
     expected = (os.path.normpath(given),)
     assert tuple(utils.path_splitter(given)) == expected
     assert tuple(utils.path_splitter(pathlib.Path(given))) == expected
+
+
+def test_path_splitter_empty_string_has_no_components() -> None:
+    # An empty string is not the current directory "." and must sort first.
+    assert tuple(utils.path_splitter("")) == ()
+    assert natsorted(["-", "!", "", "a"], alg=ns.PATH) == ["", "!", "-", "a"]
 
 
 @given(lists(sampled_from(string.ascii_letters), min_size=2).filter(all))
